@@ -62,7 +62,7 @@ html_theme = 'sphinx_rtd_theme'
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 # html_title = None
-html_title = "RTD_TESTING_GMC""
+html_title = "RTD_TESTING_GMC"
 
 # Use custom css  html_css_files = ["custom.css"]
 html_css_files = ['css/custom.css']  #, "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
