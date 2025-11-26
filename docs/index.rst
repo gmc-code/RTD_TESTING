@@ -17,4 +17,5 @@ These docs provide a simple details for sphinx testing
     :numbered:
 
     info/Intro.rst
+    info/Dictionaries.rst
 
