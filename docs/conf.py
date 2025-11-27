@@ -30,6 +30,7 @@ extensions = [
     "sphinx_togglebutton",
     "sphinx_design",
     "parsons",  # our custom directive
+    "parsons2",  # our custom directive
 ]
 
 # "sphinx.ext.doctest",
@@ -90,11 +91,12 @@ html_title = "RTD_TESTING_GMC"
 html_static_path = ["_static"]  # , 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
 # Use custom css  html_css_files = ["custom.css"]
-html_css_files = ["css/custom.css", "parsons/parsons.css"]
+html_css_files = ["css/custom.css", "parsons/parsons.css", "parsons2/parsons.css"]
 
 # Custom JS
 html_js_files = [
     "parsons/parsons.js",
+    "parsons2/parsons.js",
 ]
 
 

@@ -19,3 +19,4 @@ These docs provide a simple details for sphinx testing
     info/Intro.rst
     info/Dictionaries.rst
     info/Parsons.rst
+    info/Parsons2.rst
