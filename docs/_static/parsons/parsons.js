@@ -1,8 +1,8 @@
 // Parsons puzzle logic
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".parsons-container").forEach(container => {
-    const source = container.querySelector(".parsons-source");
-    const targets = container.querySelectorAll(".parsons-target-list");
+    const source   = container.querySelector(".parsons-source");
+    const targets  = container.querySelectorAll(".parsons-target-list");
     const resetBtn = container.querySelector(".parsons-reset");
     const checkBtn = container.querySelector(".parsons-check");
 
@@ -11,6 +11,22 @@ document.addEventListener("DOMContentLoaded", () => {
     container.querySelectorAll("div.highlight").forEach(div => {
       div.classList.add("no-copybutton");
     });
+
+    // --- Store originals and expected solution once ---
+    container._original = Array.from(source.children);
+    container._expected = container._original.map(
+      li => li.querySelector("pre").textContent.trim()
+    );
+
+    // --- Shuffle client-side if requested ---
+    if (container.dataset.shuffleJs === "true") {
+      const items = Array.from(source.children);
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      items.forEach(li => source.appendChild(li));
+    }
 
     // --- Make puzzle lines draggable ---
     container.querySelectorAll(".parsons-line").forEach(li => {
@@ -35,11 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Reset button ---
     function reset() {
       console.log("Parsons reset");
-      targets.forEach(ul => {
-        ul.querySelectorAll(".parsons-line").forEach(li => {
-          source.appendChild(li);
-        });
-      });
+      // clear all targets
+      targets.forEach(ul => ul.innerHTML = "");
+      // restore source from original copy
+      source.innerHTML = "";
+      container._original.forEach(li => source.appendChild(li.cloneNode(true)));
       container.classList.remove("parsons-correct", "parsons-incorrect");
       const msg = container.querySelector(".parsons-message");
       if (msg) msg.textContent = "";
@@ -54,9 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
           current.push(pre.textContent.trim());
         });
       });
-      const expected = Array.from(source.querySelectorAll(".parsons-line pre"))
-        .map(pre => pre.textContent.trim());
 
+      const expected = container._expected;
       const ok = current.length === expected.length &&
                  current.every((line, i) => line === expected[i]);
 
