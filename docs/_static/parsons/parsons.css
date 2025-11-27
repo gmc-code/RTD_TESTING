@@ -30,7 +30,9 @@
 }
 
 /* Compact puzzle lines */
+
 .parsons-line {
+  display: block;
   margin: 0;              /* remove extra margin between list items */
   padding: 0;             /* no padding around the LI itself */
   list-style: none;       /* hide bullet markers */
