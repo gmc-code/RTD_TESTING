@@ -44,11 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (pre) pre.classList.add("parsons-drop-hover");
       });
 
-      //remove not add
-
       li.addEventListener("dragleave", () => {
         const pre = li.querySelector("pre");
-        if (pre) pre.classList.add("parsons-drop-hover");
+        if (pre) pre.classList.remove("parsons-drop-hover");
       });
 
       li.addEventListener("drop", e => {

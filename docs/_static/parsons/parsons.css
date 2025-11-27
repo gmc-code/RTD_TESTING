@@ -11,14 +11,22 @@
   margin: 0 !important;
 }
 
-.parsons-source,
-.parsons-target-list {
+.parsons-source {
   list-style: none;
   padding-left: 0;
-  border: 1px dashed #ccc;
+  border: 1px dashed #f86f6f;
   min-height: 40px;
   margin: 4px 0;
   background: #c2e3ff;
+}
+
+.parsons-target-list {
+  list-style: none;
+  padding-left: 0;
+  border: 1px dashed #f86f6f;
+  min-height: 40px;
+  margin: 4px 0;
+  background: #d0f8be;
 }
 
 .parsons-line {
