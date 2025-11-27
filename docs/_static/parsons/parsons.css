@@ -34,40 +34,34 @@
 /* Each line increments the counter */
 .parsons-line {
   counter-increment: line;
-  display: block;
-  list-style: none;
+  display: flex;              /* number + code side by side */
+  align-items: center;
   cursor: move;
   border-radius: 6px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 6px 8px 6px 48px; /* space for number box */
-  position: relative;
-}
-
-/* Number + pipe inside rounded rectangle */
-.parsons-line::before {
-  content: counter(line) " |";
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #f1f5f9;
-  border-radius: 4px;
-  padding: 2px 6px;
+  padding: 6px 8px;
   font-family: monospace;
-  font-weight: bold;
-  color: #374151;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Code block inside line */
+/* Number + pipe inline with code */
+.parsons-line::before {
+  content: counter(line) " | ";
+  margin-right: 8px;
+  color: #374151;
+  font-weight: bold;
+}
+
+/* Code block styled inline, no separate box */
 .parsons-line pre {
   margin: 0;
-  line-height: 1.3;
-  font-size: 0.9em;
+  padding: 0;
   background: transparent;
-  border-radius: 2px;
+  border: none;
+  font-size: 0.9em;
+  line-height: 1.3;
 }
+
 
 /* Target wrapper grid */
 .parsons-target-wrapper {
