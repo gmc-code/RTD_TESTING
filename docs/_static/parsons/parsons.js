@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
-    // Allow drop
+    // Allow drop and highlighting
     [...targets, source].forEach(ul => {
       ul.addEventListener("dragover", e => e.preventDefault());
 
@@ -60,6 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
         container.__dragging = null;
       });
     });
+    // line highoighting
+
+    container.querySelectorAll(".parsons-line").forEach(li => {
+      li.addEventListener("dragenter", e => {
+        e.preventDefault();
+        li.classList.add("parsons-drop-hover");
+      });
+      li.addEventListener("dragleave", e => {
+        li.classList.remove("parsons-drop-hover");
+      });
+    });
+
 
     // Reset
     function reset() {
