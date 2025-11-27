@@ -41,6 +41,10 @@ extensions = [
 
 
 copybutton_exclude = ".highlight.no-copybutton, .highlight-python.no-copybutton, .no-copybutton"
+# Only add copy buttons to code blocks that are NOT inside Parsons puzzles
+# copybutton_selector = "div.highlight pre:not(.no-copybutton)"
+
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
