@@ -1,3 +1,8 @@
+from docutils import nodes
+from docutils.parsers.rst import Directive, directives
+import random
+
+
 class ParsonsDirective(Directive):
     has_content = True
     optional_arguments = 0
@@ -21,12 +26,10 @@ class ParsonsDirective(Directive):
 
         # Shuffle immediately if :shuffle: is set
         if shuffle:
-            import random
             random.shuffle(raw_lines)
 
         container = nodes.container(
-            classes=["parsons-container", f"parsons-cols-{columns}"]
-        )
+            classes=["parsons-container", f"parsons-cols-{columns}"])
 
         # Title
         title_para = nodes.paragraph()
@@ -50,8 +53,10 @@ class ParsonsDirective(Directive):
         # Target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
-            label = nodes.paragraph(text=f"Column {c+1}", classes=["parsons-target-label"])
+            col = nodes.container(
+                classes=["parsons-target", f"parsons-col-{c+1}"])
+            label = nodes.paragraph(text=f"Column {c+1}",
+                                    classes=["parsons-target-label"])
             col += label
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
