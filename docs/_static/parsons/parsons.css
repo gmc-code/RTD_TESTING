@@ -31,13 +31,33 @@
 }
 
 /* Puzzle lines */
-.parsons-line {
+/* .parsons-line {
   background: #fff;
   border: 1px solid #e5e7eb;
   margin: 6px;
   padding: 8px;
   border-radius: 4px;
   cursor: move;
+} */
+
+/* Compact each draggable code line */
+.parsons-line {
+  margin: 0;              /* remove extra margin between list items */
+  padding: 0;             /* no padding around the LI itself */
+  list-style: none;        /* hide bullet markers */
+}
+
+/* Reduce spacing inside highlighted code blocks */
+.parsons-line .highlight {
+  margin: 0 !important;   /* override Sphinx defaults */
+  padding: 0 !important;  /* remove inner padding */
+}
+
+/* Adjust <pre> spacing */
+.parsons-line pre {
+  margin: 0 !important;   /* no margin below the code */
+  line-height: 1.2;       /* tighter line spacing */
+  padding: 2px 4px;       /* small padding for readability */
 }
 
 /* Grid layout for multiple columns */
