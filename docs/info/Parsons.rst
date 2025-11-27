@@ -1,11 +1,10 @@
-===============
 Parsons puzzles
 ===============
 
 This is a demo page showing how Parsons puzzles render inside Sphinx.
 
-Parsons puzzles
----------------
+Build a Reversed List
+---------------------
 
 .. parsons::
    :title: Build a reversed list
@@ -19,8 +18,8 @@ Parsons puzzles
 
 ----
 
-Another Example
----------------
+Calculate a Factorial
+---------------------
 
 .. parsons::
    :title: Calculate a factorial
@@ -34,9 +33,7 @@ Another Example
    -         return n * factorial(n-1)
    - print(factorial(5))
 
-
 ----
-
 
 Two Column Puzzle
 -----------------
@@ -53,6 +50,7 @@ Two Column Puzzle
    -     result.append(x * 2)
    - print(result)
 
+----
 
 Puzzle with Distractors
 -----------------------
@@ -69,6 +67,7 @@ Puzzle with Distractors
    - print("wrong answer")   # distractor
    - xs = "not a list"       # distractor
 
+----
 
 Client‑Side Shuffle
 -------------------
@@ -81,4 +80,3 @@ Client‑Side Shuffle
    - nums = [1, 2, 3]
    - squares = [n*n for n in nums]
    - print(squares)
- -

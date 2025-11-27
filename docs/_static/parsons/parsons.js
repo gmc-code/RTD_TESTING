@@ -11,13 +11,32 @@ document.addEventListener("DOMContentLoaded", () => {
       div.classList.add("no-copybutton");
     });
 
-    // Store originals for reset
-    container._original = Array.from(source.children);
+    // Normalize lines: wrap text in <pre> if missing
+    source.querySelectorAll("li").forEach(li => {
+      if (!li.classList.contains("parsons-line")) {
+        li.classList.add("parsons-line");
+      }
+      if (!li.querySelector("pre")) {
+        const pre = document.createElement("pre");
+        pre.textContent = li.textContent.trim();
+        li.textContent = "";
+        li.appendChild(pre);
+      }
+    });
 
-    // Expected solution from data attribute
+    // Store originals for reset
+    container._original = Array.from(source.querySelectorAll(".parsons-line"));
+
+    // Expected solution from data attribute (indent::code segments)
     container._expected = container.dataset.expected
-      ? container.dataset.expected.split("|")
-      : container._original.map(li => li.querySelector("pre").textContent.trim());
+      ? container.dataset.expected.split("|").map(seg => {
+          const [indent, code] = seg.split("::");
+          return { text: code.trim(), indent: parseInt(indent, 10) };
+        })
+      : container._original.map(li => ({
+          text: (li.querySelector("pre")?.textContent || li.textContent).trim(),
+          indent: 0
+        }));
 
     // Shuffle client-side if requested
     if (container.dataset.shuffleJs === "true") {
@@ -29,30 +48,33 @@ document.addEventListener("DOMContentLoaded", () => {
       items.forEach(li => source.appendChild(li));
     }
 
-    // Make a line draggable + highlightable + droppable
+    // Make a line draggable + droppable
     function makeDraggable(li) {
       li.setAttribute("draggable", "true");
 
       li.addEventListener("dragstart", e => {
         e.dataTransfer.setData("text/plain", li.id || "dragging");
         container.__dragging = li;
+        li.classList.add("dragging");
+      });
+
+      li.addEventListener("dragend", () => {
+        li.classList.remove("dragging");
+        container.__dragging = null;
       });
 
       li.addEventListener("dragenter", e => {
         e.preventDefault();
-        const pre = li.querySelector("pre");
-        if (pre) pre.classList.add("parsons-drop-hover");
+        li.classList.add("parsons-drop-hover");
       });
 
       li.addEventListener("dragleave", () => {
-        const pre = li.querySelector("pre");
-        if (pre) pre.classList.remove("parsons-drop-hover");
+        li.classList.remove("parsons-drop-hover");
       });
 
       li.addEventListener("drop", e => {
         e.preventDefault();
-        const pre = li.querySelector("pre");
-        if (pre) pre.classList.remove("parsons-drop-hover");
+        li.classList.remove("parsons-drop-hover");
         const dragged = container.__dragging;
         if (dragged && dragged !== li) {
           li.parentNode.insertBefore(dragged, li);
@@ -106,14 +128,18 @@ document.addEventListener("DOMContentLoaded", () => {
     function check() {
       const current = [];
       targets.forEach(ul => {
+        const indent = parseInt(ul.dataset.indent, 10);
         ul.querySelectorAll(".parsons-line pre").forEach(pre => {
-          current.push(pre.textContent.trim());
+          current.push({ text: pre.textContent.trim(), indent });
         });
       });
 
       const expected = container._expected;
       const ok = current.length === expected.length &&
-                 current.every((line, i) => line === expected[i]);
+                 current.every((line, i) =>
+                   line.text === expected[i].text &&
+                   line.indent === expected[i].indent
+                 );
 
       container.classList.toggle("parsons-correct", ok);
       container.classList.toggle("parsons-incorrect", !ok);

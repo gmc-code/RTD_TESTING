@@ -6,22 +6,16 @@
   background: #f9fafb;
 }
 
-.parsons-container div[class^=highlight] pre {
-  padding: 4px !important;
-  margin: 0 !important;
-}
-
 .parsons-source,
 .parsons-target-list {
   list-style: none;
-  padding: 16px 0;   /* adds space at top and bottom inside the box */
+  padding: 16px 0;
   min-height: 40px;
-  margin: 12px 0;    /* adds space outside the box above and below */
+  margin: 12px 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;         /* consistent spacing between items */
+  gap: 8px;
 }
-
 
 .parsons-source {
   border: 1px dashed #8ecaff;
@@ -41,13 +35,8 @@
   cursor: move;
 }
 
-.parsons-line .highlight {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
 .parsons-line pre {
-  margin: 4 !important;
+  margin: 4px !important;
   line-height: 1.2;
   padding: 2px 4px;
   font-size: 0.9em;
@@ -68,6 +57,10 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+.parsons-cols-4 .parsons-target-wrapper {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
 .parsons-target-label {
   font-weight: bold;
   margin-bottom: 4px;
@@ -75,43 +68,21 @@
   color: #374151;
 }
 
-
-/* highlight when a line is a drop target */
 .parsons-drop-hover {
-  background-color: #fef3c7; /* soft amber */
+  background-color: #fef3c7;
   border: 4px dashed #f59e0b;
 }
 
-/* Highlight list as a drop zone */
 .parsons-target-list.parsons-drop-hover,
 .parsons-source.parsons-drop-hover {
-  background-color: #c9dbec; /* light slate */
-  /* outline: 4px dashed #64748b; */
+  background-color: #c9dbec;
 }
 
-/* Highlight the entire line wrapper */
 .parsons-line.parsons-drop-hover {
-  background-color: #f7ebbf; /* soft amber */
+  background-color: #f7ebbf;
   border: 4px dashed #f59e0b;
   border-radius: 4px;
 }
-
-/* Highlight only the code block itself */
-pre.parsons-drop-hover {
-  background-color: #fef3c7; /* soft amber */
-  border: 2px dashed #f59e0b;
-  border-radius: 4px;
-}
-
-
-/* Default: let the <li> handle drag events */
-.parsons-line .highlight,
-.parsons-line pre { pointer-events: none; }
-
-/* If you decide to highlight <pre> directly, remove or override */
-/* pre.parsons-drop-hover { pointer-events: auto; } */
-
-
 
 .parsons-controls {
   display: flex;
@@ -143,6 +114,7 @@ pre.parsons-drop-hover {
 .parsons-incorrect .parsons-message {
   color: #e74c3c;
 }
+
 .parsons-completed .parsons-message {
   color: #3b82f6;
 }
