@@ -34,32 +34,25 @@ document.addEventListener("DOMContentLoaded", () => {
       li.setAttribute("draggable", "true");
 
       li.addEventListener("dragstart", e => {
-        // Some browsers require setData to enable drag
         e.dataTransfer.setData("text/plain", li.id || "dragging");
-        e.dataTransfer.effectAllowed = "move";
         container.__dragging = li;
       });
 
-      // Allow drops on this specific line
-      li.addEventListener("dragover", e => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
-      });
-
-      // Highlight when hovered as a target
       li.addEventListener("dragenter", e => {
         e.preventDefault();
-        li.classList.add("parsons-drop-hover");
+        const pre = li.querySelector("pre");
+        if (pre) pre.classList.add("parsons-drop-hover");
       });
 
       li.addEventListener("dragleave", () => {
-        li.classList.remove("parsons-drop-hover");
+        const pre = li.querySelector("pre");
+        if (pre) pre.classList.remove("parsons-drop-hover");
       });
 
-      // Drop: insert before hovered line
       li.addEventListener("drop", e => {
         e.preventDefault();
-        li.classList.remove("parsons-drop-hover");
+        const pre = li.querySelector("pre");
+        if (pre) pre.classList.remove("parsons-drop-hover");
         const dragged = container.__dragging;
         if (dragged && dragged !== li) {
           li.parentNode.insertBefore(dragged, li);
