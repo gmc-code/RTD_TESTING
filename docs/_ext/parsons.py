@@ -33,11 +33,10 @@ class ParsonsDirective(Directive):
             random.shuffle(raw_lines)
 
         container = nodes.container(
-            classes=["parsons-container", f"parsons-cols-{columns}"]
-        )
+            classes=["parsons-container", f"parsons-cols-{columns}"])
 
-        # Store expected solution in a data attribute
-        container["data-expected"] = "|".join(l.strip() for l in expected_order)
+        container["data-expected"] = "|".join(l.strip()
+                                              for l in expected_order)
         container["data-shuffle-js"] = "true" if shuffle_js else "false"
 
         # Title
@@ -63,11 +62,9 @@ class ParsonsDirective(Directive):
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
             col = nodes.container(
-                classes=["parsons-target", f"parsons-col-{c+1}"]
-            )
-            label = nodes.paragraph(
-                text=f"Column {c+1}", classes=["parsons-target-label"]
-            )
+                classes=["parsons-target", f"parsons-col-{c+1}"])
+            label = nodes.paragraph(text=f"Column {c+1}",
+                                    classes=["parsons-target-label"])
             col += label
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul

@@ -1,77 +1,95 @@
-from docutils import nodes
-from docutils.parsers.rst import Directive, directives
-import random
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".parsons-container").forEach(container => {
+    const source   = container.querySelector(".parsons-source");
+    const targets  = container.querySelectorAll(".parsons-target-list");
+    const resetBtn = container.querySelector(".parsons-reset");
+    const checkBtn = container.querySelector(".parsons-check");
 
-class ParsonsDirective(Directive):
-    has_content = True
-    option_spec = {
-        "title": directives.unchanged,
-        "shuffle": directives.flag,
-        "shuffle-js": directives.flag,
-        "columns": directives.positive_int,
+    // Remove copy buttons
+    container.querySelectorAll(".copybtn").forEach(btn => btn.remove());
+    container.querySelectorAll("div.highlight").forEach(div => {
+      div.classList.add("no-copybutton");
+    });
+
+    // Store originals for reset
+    container._original = Array.from(source.children);
+
+    // Expected solution from data attribute
+    container._expected = container.dataset.expected
+      ? container.dataset.expected.split("|")
+      : container._original.map(li => li.querySelector("pre").textContent.trim());
+
+    // Shuffle client-side if requested
+    if (container.dataset.shuffleJs === "true") {
+      const items = Array.from(source.children);
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      items.forEach(li => source.appendChild(li));
     }
 
-    def run(self):
-        title = self.options.get("title", "Parsons Puzzle")
-        shuffle = "shuffle" in self.options
-        shuffle_js = "shuffle-js" in self.options
-        columns = int(self.options.get("columns", 1))
+    // Make lines draggable
+    function makeDraggable(li) {
+      li.setAttribute("draggable", "true");
+      li.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", li.id || "");
+        container.__dragging = li;
+      });
+    }
+    container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
-        # Original solution order
-        expected_order = [
-            line[2:] if line.strip().startswith("- ") else line
-            for line in self.content if line.strip()
-        ]
-        raw_lines = expected_order[:]
+    // Allow drop
+    [...targets, source].forEach(ul => {
+      ul.addEventListener("dragover", e => e.preventDefault());
+      ul.addEventListener("drop", e => {
+        e.preventDefault();
+        const li = container.__dragging;
+        if (li) ul.appendChild(li);
+        container.__dragging = null;
+      });
+    });
 
-        if shuffle:
-            random.shuffle(raw_lines)
+    // Reset
+    function reset() {
+      targets.forEach(ul => ul.innerHTML = "");
+      source.innerHTML = "";
+      container._original.forEach(li => {
+        const clone = li.cloneNode(true);
+        makeDraggable(clone);
+        source.appendChild(clone);
+      });
+      container.classList.remove("parsons-correct", "parsons-incorrect");
+      const msg = container.querySelector(".parsons-message");
+      if (msg) msg.textContent = "";
+    }
 
-        container = nodes.container(classes=["parsons-container", f"parsons-cols-{columns}"])
-        container["data-expected"] = "|".join(l.strip() for l in expected_order)
-        container["data-shuffle-js"] = "true" if shuffle_js else "false"
+    // Check
+    function check() {
+      const current = [];
+      targets.forEach(ul => {
+        ul.querySelectorAll(".parsons-line pre").forEach(pre => {
+          current.push(pre.textContent.trim());
+        });
+      });
 
-        # Title
-        title_para = nodes.paragraph()
-        title_para += nodes.strong(text=title)
-        container += title_para
+      const expected = container._expected;
+      const ok = current.length === expected.length &&
+                 current.every((line, i) => line === expected[i]);
 
-        # Source list
-        source_ul = nodes.bullet_list(classes=["parsons-source"])
-        for line in raw_lines:
-            li = nodes.list_item(classes=["parsons-line"])
-            code = nodes.literal_block(line, line)
-            code["language"] = "python"
-            li += code
-            source_ul += li
-        container += source_ul
+      container.classList.toggle("parsons-correct", ok);
+      container.classList.toggle("parsons-incorrect", !ok);
 
-        # Target area
-        target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
-        for c in range(columns):
-            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
-            label = nodes.paragraph(text=f"Column {c+1}", classes=["parsons-target-label"])
-            col += label
-            target_ul = nodes.bullet_list(classes=["parsons-target-list"])
-            col += target_ul
-            target_wrapper += col
-        container += target_wrapper
+      let msg = container.querySelector(".parsons-message");
+      if (!msg) {
+        msg = document.createElement("div");
+        msg.className = "parsons-message";
+        container.appendChild(msg);
+      }
+      msg.textContent = ok ? "✅ Correct!" : "✖ Try again";
+    }
 
-        # Controls
-        controls = nodes.raw(
-            "",
-            '<div class="parsons-controls">'
-            '<button class="parsons-check">Check</button>'
-            '<button class="parsons-reset">Reset</button>'
-            '</div>',
-            format="html",
-        )
-        container += controls
-
-        return [container]
-
-def setup(app):
-    app.add_directive("parsons", ParsonsDirective)
-    app.add_css_file("parsons/parsons.css")
-    app.add_js_file("parsons/parsons.js")
-    return {"version": "0.1", "parallel_read_safe": True, "parallel_write_safe": True}
+    resetBtn && resetBtn.addEventListener("click", reset);
+    checkBtn && checkBtn.addEventListener("click", check);
+  });
+});
