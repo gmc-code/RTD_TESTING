@@ -30,16 +30,17 @@ extensions = [
     "sphinx_togglebutton",
     "sphinx_design",
     "parsons",  # our custom directive
-    "sphinx.ext.doctest",
-    "sphinx.ext.napoleon",
 ]
+
+# "sphinx.ext.doctest",
+#     "sphinx.ext.napoleon",
 
 
 # for copybutton to allow use of :class: no-copybutton  in code blocks
 # copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"
 
-copybutton_exclude = '.no-copybutton'
 
+copybutton_exclude = ".highlight.no-copybutton, .highlight-python.no-copybutton, .no-copybutton"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
