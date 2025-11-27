@@ -11,6 +11,7 @@ class ParsonsDirective(Directive):
         "shuffle": directives.flag,
         "shuffle-js": directives.flag,
         "columns": directives.positive_int,
+        "labels": directives.unchanged,
     }
 
     def run(self):
@@ -18,6 +19,12 @@ class ParsonsDirective(Directive):
         shuffle = "shuffle" in self.options
         shuffle_js = "shuffle-js" in self.options
         columns = int(self.options.get("columns", 1))
+
+        # Parse labels if provided
+        labels_opt = self.options.get("labels")
+        labels = []
+        if labels_opt:
+            labels = [lbl.strip() for lbl in labels_opt.split(",")]
 
         # Preserve original order for solution
         expected_order = [
@@ -33,10 +40,10 @@ class ParsonsDirective(Directive):
             random.shuffle(raw_lines)
 
         container = nodes.container(
-            classes=["parsons-container", f"parsons-cols-{columns}"])
+            classes=["parsons-container", f"parsons-cols-{columns}"]
+        )
 
-        container["data-expected"] = "|".join(l.strip()
-                                              for l in expected_order)
+        container["data-expected"] = "|".join(l.strip() for l in expected_order)
         container["data-shuffle-js"] = "true" if shuffle_js else "false"
 
         # Title
@@ -62,9 +69,11 @@ class ParsonsDirective(Directive):
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
             col = nodes.container(
-                classes=["parsons-target", f"parsons-col-{c+1}"])
-            label = nodes.paragraph(text=f"Column {c+1}",
-                                    classes=["parsons-target-label"])
+                classes=["parsons-target", f"parsons-col-{c+1}"]
+            )
+            # Use provided label if available, else default
+            label_text = labels[c] if c < len(labels) else f"Column {c+1}"
+            label = nodes.paragraph(text=label_text, classes=["parsons-target-label"])
             col += label
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
@@ -87,8 +96,8 @@ class ParsonsDirective(Directive):
 
 def setup(app):
     app.add_directive("parsons", ParsonsDirective)
-    app.add_css_file("parsons/parsons.css")   # ensure file exists in _static/parsons/
-    app.add_js_file("parsons/parsons.js")     # ensure file exists in _static/parsons/
+    app.add_css_file("parsons/parsons.css")
+    app.add_js_file("parsons/parsons.js")
     return {
         "version": "0.1",
         "parallel_read_safe": True,
