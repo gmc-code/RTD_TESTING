@@ -26,7 +26,7 @@
   padding-left: 0;
   border: 1px dashed #ccc;
   min-height: 40px;
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 /* Compact puzzle lines */
@@ -56,7 +56,7 @@
 /* Grid layout for multiple columns */
 .parsons-target-wrapper {
   display: grid;
-  grid-gap: 12px;
+  grid-gap: 6px;
 }
 .parsons-cols-2 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr;
