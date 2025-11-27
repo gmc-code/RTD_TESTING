@@ -12,7 +12,6 @@ class ParsonsDirective(Directive):
     }
 
     def run(self):
-        env = self.state.document.settings.env
         title = self.options.get("title", "Parsons Puzzle")
         shuffle = "shuffle" in self.options
         columns = int(self.options.get("columns", 2))
@@ -37,9 +36,10 @@ class ParsonsDirective(Directive):
             li = nodes.list_item(classes=["parsons-line"])
             li["data-index"] = str(i)
 
+            # Literal block with no-copybutton class
             code = nodes.literal_block(line, line)
             code["language"] = "python"
-            code["classes"].append("no-copybutton")  # prevent copybutton overlay
+            code["classes"].append("no-copybutton")  # attach directly here
             li += code
             source_ul += li
 
@@ -73,7 +73,6 @@ class ParsonsDirective(Directive):
 
 def setup(app):
     app.add_directive("parsons", ParsonsDirective)
-    # Ensure assets are always included
     app.add_js_file("parsons.js")
     app.add_css_file("parsons.css")
     return {
