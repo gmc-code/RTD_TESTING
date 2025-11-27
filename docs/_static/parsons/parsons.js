@@ -1,4 +1,3 @@
-// Parsons puzzle logic
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".parsons-container").forEach(container => {
     const source   = container.querySelector(".parsons-source");
@@ -6,19 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = container.querySelector(".parsons-reset");
     const checkBtn = container.querySelector(".parsons-check");
 
-    // --- Remove copy buttons inside Parsons ---
+    // Remove copy buttons
     container.querySelectorAll(".copybtn").forEach(btn => btn.remove());
     container.querySelectorAll("div.highlight").forEach(div => {
       div.classList.add("no-copybutton");
     });
 
-    // --- Store originals and expected solution once ---
+    // Store originals for reset
     container._original = Array.from(source.children);
-    container._expected = container._original.map(
-      li => li.querySelector("pre").textContent.trim()
-    );
 
-    // --- Shuffle client-side if requested ---
+    // ✅ Store expected solution from data attribute
+    container._expected = container.dataset.expected
+      ? container.dataset.expected.split("|")
+      : container._original.map(li => li.querySelector("pre").textContent.trim());
+
+    // Shuffle client-side if requested
     if (container.dataset.shuffleJs === "true") {
       const items = Array.from(source.children);
       for (let i = items.length - 1; i > 0; i--) {
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       items.forEach(li => source.appendChild(li));
     }
 
-    // --- Make puzzle lines draggable ---
+    // Make lines draggable
     container.querySelectorAll(".parsons-line").forEach(li => {
       li.setAttribute("draggable", "true");
       li.addEventListener("dragstart", e => {
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // --- Allow drop on source and target lists ---
+    // Allow drop
     [...targets, source].forEach(ul => {
       ul.addEventListener("dragover", e => e.preventDefault());
       ul.addEventListener("drop", e => {
@@ -48,12 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // --- Reset button ---
+    // Reset
     function reset() {
-      console.log("Parsons reset");
-      // clear all targets
       targets.forEach(ul => ul.innerHTML = "");
-      // restore source from original copy
       source.innerHTML = "";
       container._original.forEach(li => source.appendChild(li.cloneNode(true)));
       container.classList.remove("parsons-correct", "parsons-incorrect");
@@ -61,9 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (msg) msg.textContent = "";
     }
 
-    // --- Check button ---
+    // Check
     function check() {
-      console.log("Parsons check");
       const current = [];
       targets.forEach(ul => {
         ul.querySelectorAll(".parsons-line pre").forEach(pre => {

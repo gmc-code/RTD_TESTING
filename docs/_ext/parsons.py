@@ -19,17 +19,26 @@ class ParsonsDirective(Directive):
         shuffle_js = "shuffle-js" in self.options
         columns = int(self.options.get("columns", 1))
 
-        raw_lines = [
+        # Preserve original order for solution
+        expected_order = [
             line[2:] if line.strip().startswith("- ") else line
             for line in self.content if line.strip()
         ]
+
+        # Copy for rendering
+        raw_lines = expected_order[:]
 
         # Shuffle immediately if :shuffle: is set
         if shuffle:
             random.shuffle(raw_lines)
 
         container = nodes.container(
-            classes=["parsons-container", f"parsons-cols-{columns}"])
+            classes=["parsons-container", f"parsons-cols-{columns}"]
+        )
+
+        # Store expected solution in a data attribute
+        container["data-expected"] = "|".join(l.strip() for l in expected_order)
+        container["data-shuffle-js"] = "true" if shuffle_js else "false"
 
         # Title
         title_para = nodes.paragraph()
@@ -54,9 +63,11 @@ class ParsonsDirective(Directive):
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
             col = nodes.container(
-                classes=["parsons-target", f"parsons-col-{c+1}"])
-            label = nodes.paragraph(text=f"Column {c+1}",
-                                    classes=["parsons-target-label"])
+                classes=["parsons-target", f"parsons-col-{c+1}"]
+            )
+            label = nodes.paragraph(
+                text=f"Column {c+1}", classes=["parsons-target-label"]
+            )
             col += label
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
@@ -74,7 +85,15 @@ class ParsonsDirective(Directive):
         )
         container += controls
 
-        # Flags for JS
-        container["data-shuffle-js"] = "true" if shuffle_js else "false"
-
         return [container]
+
+
+def setup(app):
+    app.add_directive("parsons", ParsonsDirective)
+    app.add_css_file("parsons/parsons.css")   # matches _static/parsons/parsons.css
+    app.add_js_file("parsons/parsons.js")     # matches _static/parsons/parsons.js
+    return {
+        "version": "0.1",
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }
