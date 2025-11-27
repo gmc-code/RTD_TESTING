@@ -30,13 +30,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Make lines draggable
+    // function makeDraggable(li) {
+    //   li.setAttribute("draggable", "true");
+    //   li.addEventListener("dragstart", e => {
+    //     e.dataTransfer.setData("text/plain", li.id || "");
+    //     container.__dragging = li;
+    //   });
+    // }
+
     function makeDraggable(li) {
       li.setAttribute("draggable", "true");
       li.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", li.id || "");
         container.__dragging = li;
       });
+      // highlight this line when another is dragged over it
+      li.addEventListener("dragenter", e => {
+        e.preventDefault();
+        li.classList.add("parsons-drop-hover");
+      });
+      li.addEventListener("dragleave", e => {
+        li.classList.remove("parsons-drop-hover");
+      });
+      li.addEventListener("drop", e => {
+        e.preventDefault();
+        li.classList.remove("parsons-drop-hover");
+        const dragged = container.__dragging;
+        if (dragged && dragged !== li) {
+          // insert before the hovered line
+          li.parentNode.insertBefore(dragged, li);
+        }
+        container.__dragging = null;
+      });
     }
+
+
     container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
     // Allow drop and highlighting

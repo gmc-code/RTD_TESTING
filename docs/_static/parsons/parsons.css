@@ -68,6 +68,11 @@
   border: 2px dashed #f59e0b;
 }
 
+.parsons-line.parsons-drop-hover {
+  background-color: #fef3c7; /* soft amber */
+  border: 2px dashed #f59e0b;
+}
+
 
 .parsons-controls {
   display: flex;
