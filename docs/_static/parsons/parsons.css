@@ -71,15 +71,18 @@
 /* Highlight list as a drop zone */
 .parsons-target-list.parsons-drop-hover,
 .parsons-source.parsons-drop-hover {
-  background-color: #f1f5f9; /* light slate */
+  background-color: #c9dbec; /* light slate */
   outline: 2px dashed #64748b;
 }
 
 /* Highlight individual line as a drop target */
 .parsons-line.parsons-drop-hover {
-  background-color: #fef3c7; /* soft amber */
+  background-color: #f7ebbf; /* soft amber */
   border: 2px dashed #f59e0b;
 }
+
+.parsons-line .highlight,
+.parsons-line pre { pointer-events: none; }
 
 
 .parsons-controls {
