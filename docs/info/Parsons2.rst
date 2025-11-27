@@ -1,13 +1,13 @@
-===============
-Parsons puzzles
-===============
+==================
+Parsons2 puzzles
+==================
 
 This is a demo page showing how Parsons puzzles render inside Sphinx.
 
 Build a reversed list
 ---------------------
 
-.. parson2::
+.. parsons2::
    :title: Build a reversed list
    :shuffle:
    :columns: 4
@@ -24,7 +24,7 @@ Build a reversed list
 Calculate a factorial
 ---------------------
 
-.. parson2::
+.. parsons2::
    :title: Calculate a factorial
    :shuffle:
    :columns: 4
@@ -43,7 +43,7 @@ Calculate a factorial
 Separate Input and Output
 -------------------------
 
-.. parson2::
+.. parsons2::
    :title: Separate Input and Output
    :shuffle:
    :columns: 4
@@ -61,7 +61,7 @@ Separate Input and Output
 Sum a list (with distractors)
 -----------------------------
 
-.. parson2::
+.. parsons2::
    :title: Sum a list
    :shuffle:
    :columns: 4
@@ -80,7 +80,7 @@ Sum a list (with distractors)
 Square numbers (client‑side shuffle)
 ------------------------------------
 
-.. parson2::
+.. parsons2::
    :title: Square numbers
    :shuffle-js:
    :columns: 4
