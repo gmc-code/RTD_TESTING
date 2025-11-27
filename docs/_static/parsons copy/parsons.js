@@ -103,24 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Check
-
-    function check(container, targets) {
+    function check() {
       const current = [];
       targets.forEach(ul => {
-        const indent = parseInt(ul.dataset.indent);
         ul.querySelectorAll(".parsons-line pre").forEach(pre => {
-          current.push({ text: pre.textContent.trim(), indent });
+          current.push(pre.textContent.trim());
         });
       });
 
-      const expected = container.dataset.expected.split("|").map(line => {
-        const [indent, code] = line.split("::");
-        return { text: code, indent: parseInt(indent) };
-      });
-
+      const expected = container._expected;
       const ok = current.length === expected.length &&
-                current.every((line, i) =>
-                  line.text === expected[i].text && line.indent === expected[i].indent);
+                 current.every((line, i) => line === expected[i]);
 
       container.classList.toggle("parsons-correct", ok);
       container.classList.toggle("parsons-incorrect", !ok);

@@ -6,18 +6,22 @@
   background: #f9fafb;
 }
 
-/* Reset numbering for each list */
+.parsons-container div[class^=highlight] pre {
+  padding: 4px !important;
+  margin: 0 !important;
+}
+
 .parsons-source,
 .parsons-target-list {
-  counter-reset: line;
   list-style: none;
-  padding: 16px 0;   /* space at top and bottom inside */
+  padding: 16px 0;   /* adds space at top and bottom inside the box */
   min-height: 40px;
-  margin: 12px 0;    /* space outside above and below */
+  margin: 12px 0;    /* adds space outside the box above and below */
   display: flex;
   flex-direction: column;
-  gap: 8px;          /* consistent spacing between items */
+  gap: 8px;         /* consistent spacing between items */
 }
+
 
 .parsons-source {
   border: 1px dashed #8ecaff;
@@ -29,28 +33,12 @@
   background: #d0f8be;
 }
 
-/* Each line increments the counter */
 .parsons-line {
-  counter-increment: line;
   display: block;
   margin: 0;
   padding: 0;
   list-style: none;
   cursor: move;
-  position: relative;
-  padding-left: 40px; /* space for line number */
-}
-
-/* Line number + pipe divider */
-.parsons-line::before {
-  content: counter(line) " |";
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #64748b;
-  font-weight: bold;
-  font-family: monospace;
 }
 
 .parsons-line .highlight {
@@ -59,7 +47,7 @@
 }
 
 .parsons-line pre {
-  margin: 4px !important; /* corrected unit */
+  margin: 4 !important;
   line-height: 1.2;
   padding: 2px 4px;
   font-size: 0.9em;
@@ -67,10 +55,9 @@
   border-radius: 2px;
 }
 
-/* Target wrapper grid */
 .parsons-target-wrapper {
   display: grid;
-  grid-gap: 12px;
+  grid-gap: 6px;
 }
 
 .parsons-cols-2 .parsons-target-wrapper {
@@ -81,13 +68,6 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-/* Indentation simulation */
-.parsons-target-list[data-indent="1"] { margin-left: 20px; }
-.parsons-target-list[data-indent="2"] { margin-left: 40px; }
-.parsons-target-list[data-indent="3"] { margin-left: 60px; }
-.parsons-target-list[data-indent="4"] { margin-left: 80px; }
-.parsons-target-list[data-indent="5"] { margin-left: 100px; }
-
 .parsons-target-label {
   font-weight: bold;
   margin-bottom: 4px;
@@ -95,34 +75,44 @@
   color: #374151;
 }
 
-/* Highlight states */
+
+/* highlight when a line is a drop target */
 .parsons-drop-hover {
   background-color: #fef3c7; /* soft amber */
   border: 4px dashed #f59e0b;
 }
 
+/* Highlight list as a drop zone */
 .parsons-target-list.parsons-drop-hover,
 .parsons-source.parsons-drop-hover {
   background-color: #c9dbec; /* light slate */
+  /* outline: 4px dashed #64748b; */
 }
 
+/* Highlight the entire line wrapper */
 .parsons-line.parsons-drop-hover {
   background-color: #f7ebbf; /* soft amber */
   border: 4px dashed #f59e0b;
   border-radius: 4px;
 }
 
+/* Highlight only the code block itself */
 pre.parsons-drop-hover {
-  background-color: #fef3c7;
+  background-color: #fef3c7; /* soft amber */
   border: 2px dashed #f59e0b;
   border-radius: 4px;
 }
+
 
 /* Default: let the <li> handle drag events */
 .parsons-line .highlight,
 .parsons-line pre { pointer-events: none; }
 
-/* Controls */
+/* If you decide to highlight <pre> directly, remove or override */
+/* pre.parsons-drop-hover { pointer-events: auto; } */
+
+
+
 .parsons-controls {
   display: flex;
   gap: 12px;
@@ -141,12 +131,18 @@ pre.parsons-drop-hover {
   background: #e0e7ff;
 }
 
-/* Feedback messages */
 .parsons-message {
   margin-top: 10px;
   font-weight: bold;
 }
 
-.parsons-correct .parsons-message { color: #22c55e; }
-.parsons-incorrect .parsons-message { color: #e74c3c; }
-.parsons-completed .parsons-message { color: #3b82f6; }
+.parsons-correct .parsons-message {
+  color: #22c55e;
+}
+
+.parsons-incorrect .parsons-message {
+  color: #e74c3c;
+}
+.parsons-completed .parsons-message {
+  color: #3b82f6;
+}
