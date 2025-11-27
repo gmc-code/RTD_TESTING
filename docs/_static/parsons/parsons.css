@@ -14,7 +14,7 @@
 .parsons-source {
   list-style: none;
   padding-left: 0;
-  border: 1px dashed #f86f6f;
+  border: 1px dashed #8ecaff;
   min-height: 40px;
   margin: 4px 0;
   background: #c2e3ff;
@@ -23,7 +23,7 @@
 .parsons-target-list {
   list-style: none;
   padding-left: 0;
-  border: 1px dashed #f86f6f;
+  border: 1px dashed #9efa73;
   min-height: 40px;
   margin: 4px 0;
   background: #d0f8be;
@@ -43,7 +43,7 @@
 }
 
 .parsons-line pre {
-  margin: 0 !important;
+  margin: 4 !important;
   line-height: 1.2;
   padding: 2px 4px;
   font-size: 0.9em;
@@ -82,7 +82,7 @@
 .parsons-target-list.parsons-drop-hover,
 .parsons-source.parsons-drop-hover {
   background-color: #c9dbec; /* light slate */
-  outline: 4px dashed #64748b;
+  /* outline: 4px dashed #64748b; */
 }
 
 /* Highlight the entire line wrapper */
