@@ -91,12 +91,12 @@ html_title = "RTD_TESTING_GMC"
 html_static_path = ["_static"]  # , 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
 # Use custom css  html_css_files = ["custom.css"]
-html_css_files = ["css/custom.css", "parsons/parsons.css", "parsons2/parsons.css"]
+html_css_files = ["css/custom.css", "parsons/parsons.css", "parsons2/parsons2.css"]
 
 # Custom JS
 html_js_files = [
     "parsons/parsons.js",
-    "parsons2/parsons.js",
+    "parsons2/parsons2.js",
 ]
 
 
