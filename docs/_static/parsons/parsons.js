@@ -81,6 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const clone = li.cloneNode(true);
         makeDraggable(clone);
         source.appendChild(clone);
+        clone.addEventListener("dragenter", e => {
+          e.preventDefault();
+          clone.classList.add("parsons-drop-hover");
+        });
+        clone.addEventListener("dragleave", e => {
+          clone.classList.remove("parsons-drop-hover");
+        });
+
       });
       container.classList.remove("parsons-correct", "parsons-incorrect");
       const msg = container.querySelector(".parsons-message");
