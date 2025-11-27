@@ -82,8 +82,8 @@ class ParsonsDirective(Directive):
 
 def setup(app):
     app.add_directive("parsons", ParsonsDirective)
-    app.add_js_file("parsons.js")
-    app.add_css_file("parsons.css")
+    app.add_js_file("parsons/parsons.js")
+    app.add_css_file("parsons/parsons.css")
     return {
         "version": "0.1",
         "parallel_read_safe": True,
