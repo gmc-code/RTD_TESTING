@@ -29,76 +29,71 @@ document.addEventListener("DOMContentLoaded", () => {
       items.forEach(li => source.appendChild(li));
     }
 
-    // Make lines draggable
-    // function makeDraggable(li) {
-    //   li.setAttribute("draggable", "true");
-    //   li.addEventListener("dragstart", e => {
-    //     e.dataTransfer.setData("text/plain", li.id || "");
-    //     container.__dragging = li;
-    //   });
-    // }
-
+    // Make a line draggable + highlightable + droppable
     function makeDraggable(li) {
       li.setAttribute("draggable", "true");
+
       li.addEventListener("dragstart", e => {
+        // Some browsers require setData to enable drag
+        e.dataTransfer.setData("text/plain", li.id || "dragging");
+        e.dataTransfer.effectAllowed = "move";
         container.__dragging = li;
       });
-      // highlight this line when another is dragged over it
+
+      // Allow drops on this specific line
+      li.addEventListener("dragover", e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      });
+
+      // Highlight when hovered as a target
       li.addEventListener("dragenter", e => {
         e.preventDefault();
         li.classList.add("parsons-drop-hover");
       });
-      li.addEventListener("dragleave", e => {
+
+      li.addEventListener("dragleave", () => {
         li.classList.remove("parsons-drop-hover");
       });
+
+      // Drop: insert before hovered line
       li.addEventListener("drop", e => {
         e.preventDefault();
         li.classList.remove("parsons-drop-hover");
         const dragged = container.__dragging;
         if (dragged && dragged !== li) {
-          // insert before the hovered line
           li.parentNode.insertBefore(dragged, li);
         }
         container.__dragging = null;
       });
     }
 
-
+    // Initialize lines
     container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
-    // Allow drop and highlighting
+    // Lists accept drops (drop at end of list)
     [...targets, source].forEach(ul => {
-      ul.addEventListener("dragover", e => e.preventDefault());
-
+      ul.addEventListener("dragover", e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      });
       ul.addEventListener("dragenter", e => {
         e.preventDefault();
         ul.classList.add("parsons-drop-hover");
       });
-
-      ul.addEventListener("dragleave", e => {
+      ul.addEventListener("dragleave", () => {
         ul.classList.remove("parsons-drop-hover");
       });
-
       ul.addEventListener("drop", e => {
         e.preventDefault();
         ul.classList.remove("parsons-drop-hover");
-        const li = container.__dragging;
-        if (li) ul.appendChild(li);
+        const dragged = container.__dragging;
+        if (dragged) {
+          ul.appendChild(dragged); // drop to end if not on a line
+        }
         container.__dragging = null;
       });
     });
-    // line highoighting
-
-    container.querySelectorAll(".parsons-line").forEach(li => {
-      li.addEventListener("dragenter", e => {
-        e.preventDefault();
-        li.classList.add("parsons-drop-hover");
-      });
-      li.addEventListener("dragleave", e => {
-        li.classList.remove("parsons-drop-hover");
-      });
-    });
-
 
     // Reset
     function reset() {
@@ -108,14 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const clone = li.cloneNode(true);
         makeDraggable(clone);
         source.appendChild(clone);
-        clone.addEventListener("dragenter", e => {
-          e.preventDefault();
-          clone.classList.add("parsons-drop-hover");
-        });
-        clone.addEventListener("dragleave", e => {
-          clone.classList.remove("parsons-drop-hover");
-        });
-
       });
       container.classList.remove("parsons-correct", "parsons-incorrect");
       const msg = container.querySelector(".parsons-message");

@@ -68,6 +68,14 @@
   border: 2px dashed #f59e0b;
 }
 
+/* Highlight list as a drop zone */
+.parsons-target-list.parsons-drop-hover,
+.parsons-source.parsons-drop-hover {
+  background-color: #f1f5f9; /* light slate */
+  outline: 2px dashed #64748b;
+}
+
+/* Highlight individual line as a drop target */
 .parsons-line.parsons-drop-hover {
   background-color: #fef3c7; /* soft amber */
   border: 2px dashed #f59e0b;
