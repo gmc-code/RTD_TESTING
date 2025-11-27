@@ -1,0 +1,61 @@
+.parsons-container {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin: 16px 0;
+  border-radius: 6px;
+  background: #f9fafb;
+}
+
+.parsons-source,
+.parsons-target-list {
+  list-style: none;
+  padding-left: 0;
+  border: 1px dashed #ccc;
+  min-height: 40px;
+  margin: 8px 0;
+}
+
+.parsons-line {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  margin: 6px;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: move;
+}
+
+.parsons-target-wrapper {
+  display: grid;
+  grid-gap: 12px;
+}
+
+/* 2D columns, adjustable via class */
+.parsons-cols-2 .parsons-target-wrapper {
+  grid-template-columns: 1fr 1fr;
+}
+.parsons-cols-3 .parsons-target-wrapper {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.parsons-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.parsons-check .literal,
+.parsons-reset .literal {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Feedback states */
+.parsons-correct {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+}
+.parsons-incorrect {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+}
