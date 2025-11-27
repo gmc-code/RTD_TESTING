@@ -17,6 +17,8 @@ Parsons puzzles
    -     result.append(x)
    - print(result)
 
+----
+
 Another Example
 ---------------
 
@@ -32,6 +34,8 @@ Another Example
    -         return n * factorial(n-1)
    - print(factorial(5))
 
+
+----
 
 
 Two Column Puzzle
