@@ -1,10 +1,16 @@
 /* Parsons puzzle container */
 .parsons-container {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 4px;
   margin: 16px 0;
   border-radius: 6px;
   background: #f9fafb;
+}
+
+/* Override default pre padding inside Parsons puzzles */
+.parsons-container div[class^=highlight] pre {
+  padding: 4px !important;   /* or 0 if you want no padding */
+  margin: 0 !important;
 }
 
 /* Title styling */
