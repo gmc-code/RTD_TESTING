@@ -2,6 +2,7 @@ from docutils import nodes
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst import directives
 
+
 class ParsonsDirective(Directive):
     """
     Usage in RST:
@@ -53,6 +54,7 @@ class ParsonsDirective(Directive):
             # Store the original index so we can check correctness later
             li["data-index"] = str(i)
             code = nodes.literal_block(line, line)
+            code['classes'].append('no-copybutton')
             code["language"] = "python"
             li += code
             source_ul += li
@@ -61,7 +63,8 @@ class ParsonsDirective(Directive):
         # Create N columns for assembly
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
+            col = nodes.container(
+                classes=["parsons-target", f"parsons-col-{c+1}"])
             # Empty list in each column for drop targets
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
@@ -71,12 +74,22 @@ class ParsonsDirective(Directive):
         container += target_wrapper
 
         # Controls
-        controls = nodes.container(classes=["parsons-controls"])
+        # controls = nodes.container(classes=["parsons-controls"])
+        controls = nodes.raw('', '<div class="parsons-controls">'
+                             '<button class="parsons-check">Check</button>'
+                             '<button class="parsons-reset">Reset</button>'
+                             '</div>',
+                             format='html')
+        container += controls
         check_button = nodes.literal(text="[Check]")
         reset_button = nodes.literal(text="[Reset]")
         controls += nodes.paragraph(text="")  # spacer
-        controls += nodes.paragraph("", check_button, classes=["parsons-check"])
-        controls += nodes.paragraph("", reset_button, classes=["parsons-reset"])
+        controls += nodes.paragraph("",
+                                    check_button,
+                                    classes=["parsons-check"])
+        controls += nodes.paragraph("",
+                                    reset_button,
+                                    classes=["parsons-reset"])
         container += controls
 
         # Add script/css once per page

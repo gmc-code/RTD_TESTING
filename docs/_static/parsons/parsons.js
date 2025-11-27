@@ -35,20 +35,29 @@
           if (el) {
             list.appendChild(el);
           }
+          list.classList.remove("parsons-hover");
         });
+        list.addEventListener("dragenter", () => list.classList.add("parsons-hover"));
+        list.addEventListener("dragleave", () => list.classList.remove("parsons-hover"));
       });
 
     // Make lines draggable and assign ids
-    items.forEach((li, idx) => {
+    items.forEach((li) => {
       const uid = `parsons-${Math.random().toString(36).slice(2)}`;
       li.id = uid;
       li.setAttribute("draggable", "true");
+      li.classList.add("no-copybutton"); // prevent copy-button overlay
       li.addEventListener("dragstart", e => {
         e.dataTransfer.setData("text/plain", uid);
       });
     });
 
-    // Check logic: concatenates all target columns in left-to-right order
+    // Feedback message element
+    const msg = document.createElement("div");
+    msg.className = "parsons-message";
+    container.appendChild(msg);
+
+    // Check logic
     function checkSolution() {
       const cols = Array.from(targetWrapper.querySelectorAll(".parsons-target-list"));
       const assembled = [];
@@ -59,17 +68,25 @@
       });
       const correct = assembled.length === items.length &&
         assembled.every((val, i) => val === i);
-      // Simple visual feedback
-      container.classList.toggle("parsons-correct", correct);
-      container.classList.toggle("parsons-incorrect", !correct);
+
+      if (correct) {
+        container.classList.add("parsons-correct");
+        container.classList.remove("parsons-incorrect");
+        msg.textContent = "✅ Correct!";
+      } else {
+        container.classList.add("parsons-incorrect");
+        container.classList.remove("parsons-correct");
+        msg.textContent = "❌ Try again";
+      }
     }
 
-    // Reset logic: move items back to source, remove feedback
+    // Reset logic
     function reset() {
       Array.from(targetWrapper.querySelectorAll(".parsons-line")).forEach(li => {
         source.appendChild(li);
       });
       container.classList.remove("parsons-correct", "parsons-incorrect");
+      msg.textContent = "";
     }
 
     checkBtn && checkBtn.addEventListener("click", checkSolution);

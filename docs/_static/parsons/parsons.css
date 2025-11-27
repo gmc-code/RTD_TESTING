@@ -6,6 +6,7 @@
   background: #f9fafb;
 }
 
+/* Source and target lists */
 .parsons-source,
 .parsons-target-list {
   list-style: none;
@@ -15,6 +16,7 @@
   margin: 8px 0;
 }
 
+/* Puzzle lines */
 .parsons-line {
   background: #fff;
   border: 1px solid #e5e7eb;
@@ -24,12 +26,11 @@
   cursor: move;
 }
 
+/* Grid layout for multiple columns */
 .parsons-target-wrapper {
   display: grid;
   grid-gap: 12px;
 }
-
-/* 2D columns, adjustable via class */
 .parsons-cols-2 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr;
 }
@@ -37,25 +38,37 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+/* Controls */
 .parsons-controls {
   display: flex;
   gap: 12px;
   margin-top: 8px;
 }
-
-.parsons-check .literal,
-.parsons-reset .literal {
+.parsons-controls button {
   background: #eef2ff;
   border: 1px solid #c7d2fe;
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
 }
-
-/* Feedback states */
-.parsons-correct {
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+.parsons-controls button:hover {
+  background: #e0e7ff;
 }
-.parsons-incorrect {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+
+/* Feedback message */
+.parsons-message {
+  margin-top: 10px;
+  font-weight: bold;
+}
+.parsons-correct .parsons-message {
+  color: #22c55e; /* green */
+}
+.parsons-incorrect .parsons-message {
+  color: #ef4444; /* red */
+}
+
+/* Hover state for drop targets */
+.parsons-hover {
+  background: #fef9c3; /* pale yellow highlight */
+  border-color: #facc15; /* yellow border */
 }
