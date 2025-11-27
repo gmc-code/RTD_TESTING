@@ -32,6 +32,7 @@
 }
 
 /* Each line increments the counter */
+/* Treat the whole line as one rounded rectangle */
 .parsons-line {
   counter-increment: line;
   display: flex;              /* number + code side by side */
@@ -52,7 +53,17 @@
   font-weight: bold;
 }
 
-/* Code block styled inline, no separate box */
+/* Remove extra box styling from nested highlight wrappers */
+.parsons-line .highlight,
+.parsons-line .no-copybutton {
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Code block flows inline inside the line box */
 .parsons-line pre {
   margin: 0;
   padding: 0;
