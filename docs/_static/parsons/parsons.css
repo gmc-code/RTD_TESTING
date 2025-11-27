@@ -14,12 +14,12 @@
 .parsons-source,
 .parsons-target-list {
   list-style: none;
-  padding: 8px 0;   /* adds space at top and bottom inside the box */
+  padding: 16px 0;   /* adds space at top and bottom inside the box */
   min-height: 40px;
-  margin: 8px 0;    /* adds space outside the box above and below */
+  margin: 12px 0;    /* adds space outside the box above and below */
   display: flex;
   flex-direction: column;
-  gap: 6px;         /* consistent spacing between items */
+  gap: 8px;         /* consistent spacing between items */
 }
 
 
