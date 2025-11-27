@@ -18,6 +18,7 @@
   border: 1px dashed #ccc;
   min-height: 40px;
   margin: 4px 0;
+  background: #c2e3ff;
 }
 
 .parsons-line {
@@ -62,27 +63,42 @@
   color: #374151;
 }
 
+
 /* highlight when a line is a drop target */
 .parsons-drop-hover {
   background-color: #fef3c7; /* soft amber */
-  border: 2px dashed #f59e0b;
+  border: 4px dashed #f59e0b;
 }
 
 /* Highlight list as a drop zone */
 .parsons-target-list.parsons-drop-hover,
 .parsons-source.parsons-drop-hover {
   background-color: #c9dbec; /* light slate */
-  outline: 2px dashed #64748b;
+  outline: 4px dashed #64748b;
 }
 
-/* Highlight individual line as a drop target */
+/* Highlight the entire line wrapper */
 .parsons-line.parsons-drop-hover {
   background-color: #f7ebbf; /* soft amber */
-  border: 2px dashed #f59e0b;
+  border: 4px dashed #f59e0b;
+  border-radius: 4px;
 }
 
+/* Highlight only the code block itself */
+pre.parsons-drop-hover {
+  background-color: #fef3c7; /* soft amber */
+  border: 2px dashed #f59e0b;
+  border-radius: 4px;
+}
+
+
+/* Default: let the <li> handle drag events */
 .parsons-line .highlight,
 .parsons-line pre { pointer-events: none; }
+
+/* If you decide to highlight <pre> directly, remove or override */
+/* pre.parsons-drop-hover { pointer-events: auto; } */
+
 
 
 .parsons-controls {
