@@ -1,25 +1,16 @@
-/* Parsons puzzle container */
 .parsons-container {
   border: 1px solid #ddd;
   padding: 4px;
   margin: 16px 0;
   border-radius: 6px;
-  background: #97bde3; /*#f9fafb;*/
+  background: #f9fafb;
 }
 
-/* Override default pre padding inside Parsons puzzles */
 .parsons-container div[class^=highlight] pre {
-  padding: 4px !important;   /* or 0 if you want no padding */
+  padding: 4px !important;
   margin: 0 !important;
 }
 
-/* Title styling */
-.parsons-container > p strong {
-  font-size: 1.1em;
-  color: #374151; /* neutral gray */
-}
-
-/* Source list and target lists */
 .parsons-source,
 .parsons-target-list {
   list-style: none;
@@ -29,45 +20,41 @@
   margin: 4px 0;
 }
 
-/* Compact puzzle lines */
-
 .parsons-line {
   display: block;
-  margin: 0;              /* remove extra margin between list items */
-  padding: 0;             /* no padding around the LI itself */
-  list-style: none;       /* hide bullet markers */
-  cursor: move;           /* show move cursor */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  cursor: move;
 }
 
-/* Reduce spacing inside highlighted code blocks */
 .parsons-line .highlight {
-  margin: 0 !important;   /* override Sphinx defaults */
-  padding: 0 !important;  /* remove inner padding */
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* Adjust <pre> spacing */
 .parsons-line pre {
-  margin: 0 !important;   /* no margin below the code */
-  line-height: 1.2;       /* tighter line spacing */
-  padding: 2px 4px;       /* small padding for readability */
-  font-size: 0.9em;       /* slightly smaller text */
-  background: #fff;       /* white background for clarity */
+  margin: 0 !important;
+  line-height: 1.2;
+  padding: 2px 4px;
+  font-size: 0.9em;
+  background: #fff;
   border-radius: 2px;
 }
 
-/* Grid layout for multiple columns */
 .parsons-target-wrapper {
   display: grid;
   grid-gap: 6px;
 }
+
 .parsons-cols-2 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr;
 }
+
 .parsons-cols-3 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-/* Target column labels */
 .parsons-target-label {
   font-weight: bold;
   margin-bottom: 4px;
@@ -75,12 +62,12 @@
   color: #374151;
 }
 
-/* Controls */
 .parsons-controls {
   display: flex;
   gap: 12px;
   margin-top: 8px;
 }
+
 .parsons-controls button {
   background: #eef2ff;
   border: 1px solid #c7d2fe;
@@ -88,24 +75,19 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
 .parsons-controls button:hover {
   background: #e0e7ff;
 }
 
-/* Feedback message */
 .parsons-message {
   margin-top: 10px;
   font-weight: bold;
 }
+
 .parsons-correct .parsons-message {
-  color: #22c55e; /* green */
-}
-.parsons-incorrect .parsons-message {
-  color: #ef4444; /* red */
+  color: #22c55e;
 }
 
-/* Hover state for drop targets */
-.parsons-hover {
-  background: #fef9c3; /* pale yellow highlight */
-  border-color: #facc15; /* yellow border */
-}
+.parsons-incorrect .parsons-message {
+  color: #ef

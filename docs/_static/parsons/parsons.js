@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Store originals for reset
     container._original = Array.from(source.children);
 
-    // ✅ Store expected solution from data attribute
+    // Expected solution from data attribute
     container._expected = container.dataset.expected
       ? container.dataset.expected.split("|")
       : container._original.map(li => li.querySelector("pre").textContent.trim());
@@ -30,13 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Make lines draggable
-    container.querySelectorAll(".parsons-line").forEach(li => {
+    function makeDraggable(li) {
       li.setAttribute("draggable", "true");
       li.addEventListener("dragstart", e => {
         e.dataTransfer.setData("text/plain", li.id || "");
         container.__dragging = li;
       });
-    });
+    }
+    container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
     // Allow drop
     [...targets, source].forEach(ul => {
@@ -53,7 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function reset() {
       targets.forEach(ul => ul.innerHTML = "");
       source.innerHTML = "";
-      container._original.forEach(li => source.appendChild(li.cloneNode(true)));
+      container._original.forEach(li => {
+        const clone = li.cloneNode(true);
+        makeDraggable(clone);
+        source.appendChild(clone);
+      });
       container.classList.remove("parsons-correct", "parsons-incorrect");
       const msg = container.querySelector(".parsons-message");
       if (msg) msg.textContent = "";
