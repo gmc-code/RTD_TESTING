@@ -42,8 +42,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // Allow drop
     [...targets, source].forEach(ul => {
       ul.addEventListener("dragover", e => e.preventDefault());
+
+      ul.addEventListener("dragenter", e => {
+        e.preventDefault();
+        ul.classList.add("parsons-drop-hover");
+      });
+
+      ul.addEventListener("dragleave", e => {
+        ul.classList.remove("parsons-drop-hover");
+      });
+
       ul.addEventListener("drop", e => {
         e.preventDefault();
+        ul.classList.remove("parsons-drop-hover");
         const li = container.__dragging;
         if (li) ul.appendChild(li);
         container.__dragging = null;

@@ -62,6 +62,13 @@
   color: #374151;
 }
 
+/* highlight when a line is a drop target */
+.parsons-drop-hover {
+  background-color: #fef3c7; /* soft amber */
+  border: 2px dashed #f59e0b;
+}
+
+
 .parsons-controls {
   display: flex;
   gap: 12px;
@@ -90,4 +97,8 @@
 }
 
 .parsons-incorrect .parsons-message {
-  color: #ef
+  color: #efff00;
+}
+.parsons-completed .parsons-message {
+  color: #3b82f6;
+}
