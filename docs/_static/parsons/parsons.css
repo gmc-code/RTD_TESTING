@@ -1,3 +1,4 @@
+/* Parsons puzzle container */
 .parsons-container {
   border: 1px solid #ddd;
   padding: 12px;
@@ -6,21 +7,13 @@
   background: #f9fafb;
 }
 
-
-/* Reduce spacing around Parsons code blocks */
-.parsons-source .parsons-line {
-  margin: 2px 0;   /* tighten vertical spacing */
-  padding: 0;      /* remove extra padding */
+/* Title styling */
+.parsons-container > p strong {
+  font-size: 1.1em;
+  color: #374151; /* neutral gray */
 }
 
-.parsons-source .highlight {
-  margin: 0;       /* remove default margins */
-  padding: 2px 4px; /* small padding for readability */
-  font-size: 0.9em; /* slightly smaller text if desired */
-}
-
-
-/* Source and target lists */
+/* Source list and target lists */
 .parsons-source,
 .parsons-target-list {
   list-style: none;
@@ -30,21 +23,12 @@
   margin: 8px 0;
 }
 
-/* Puzzle lines */
-/* .parsons-line {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  margin: 6px;
-  padding: 8px;
-  border-radius: 4px;
-  cursor: move;
-} */
-
-/* Compact each draggable code line */
+/* Compact puzzle lines */
 .parsons-line {
   margin: 0;              /* remove extra margin between list items */
   padding: 0;             /* no padding around the LI itself */
-  list-style: none;        /* hide bullet markers */
+  list-style: none;       /* hide bullet markers */
+  cursor: move;           /* show move cursor */
 }
 
 /* Reduce spacing inside highlighted code blocks */
@@ -58,6 +42,9 @@
   margin: 0 !important;   /* no margin below the code */
   line-height: 1.2;       /* tighter line spacing */
   padding: 2px 4px;       /* small padding for readability */
+  font-size: 0.9em;       /* slightly smaller text */
+  background: #fff;       /* white background for clarity */
+  border-radius: 2px;
 }
 
 /* Grid layout for multiple columns */
@@ -70,6 +57,14 @@
 }
 .parsons-cols-3 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Target column labels */
+.parsons-target-label {
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-align: center;
+  color: #374151;
 }
 
 /* Controls */
