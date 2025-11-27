@@ -2,6 +2,7 @@ from docutils import nodes
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst import directives
 
+
 class ParsonsDirective(Directive):
     has_content = True
     optional_arguments = 0
@@ -23,7 +24,8 @@ class ParsonsDirective(Directive):
         ]
 
         # Main container
-        container = nodes.container(classes=["parsons-container", f"parsons-cols-{columns}"])
+        container = nodes.container(
+            classes=["parsons-container", f"parsons-cols-{columns}"])
 
         # Title
         title_para = nodes.paragraph()
@@ -38,8 +40,9 @@ class ParsonsDirective(Directive):
 
             # Literal block with no-copybutton class
             code = nodes.literal_block(line, line)
-            code["language"] = "python"
-            code["classes"].append("no-copybutton")  # attach directly here
+            code['language'] = 'python'
+            # overwrite classes instead of appending to avoid extra wrapper
+            code['classes'] = ['highlight-python', 'notranslate', 'no-copybutton']
             li += code
             source_ul += li
 
@@ -48,21 +51,19 @@ class ParsonsDirective(Directive):
         # Target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
+            col = nodes.container(
+                classes=["parsons-target", f"parsons-col-{c+1}"])
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
             target_wrapper += col
         container += target_wrapper
 
         # Controls (raw HTML buttons)
-        controls = nodes.raw(
-            "",
-            '<div class="parsons-controls">'
-            '<button class="parsons-check">Check</button>'
-            '<button class="parsons-reset">Reset</button>'
-            '</div>',
-            format="html"
-        )
+        controls = nodes.raw("", '<div class="parsons-controls">'
+                             '<button class="parsons-check">Check</button>'
+                             '<button class="parsons-reset">Reset</button>'
+                             '</div>',
+                             format="html")
         container += controls
 
         # Shuffle flag for JS
