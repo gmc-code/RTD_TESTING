@@ -24,7 +24,6 @@ sys.path.append(os.path.abspath("./_ext"))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx_rtd_theme",
     "sphinx_copybutton",
     "sphinx.ext.todo",
     "sphinx.ext.autodoc",

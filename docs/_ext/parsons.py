@@ -17,13 +17,13 @@ class ParsonsDirective(Directive):
         shuffle = "shuffle" in self.options
         columns = int(self.options.get("columns", 2))
 
-        # Parse content
+        # Parse content: strip leading "- " markers
         raw_lines = [
             line[2:] if line.strip().startswith("- ") else line
             for line in self.content if line.strip()
         ]
 
-        # Container
+        # Main container
         container = nodes.container(classes=["parsons-container", f"parsons-cols-{columns}"])
 
         # Title
@@ -31,7 +31,7 @@ class ParsonsDirective(Directive):
         title_para += nodes.strong(text=title)
         container += title_para
 
-        # Source list
+        # Source list with puzzle lines
         source_ul = nodes.bullet_list(classes=["parsons-source"])
         for i, line in enumerate(raw_lines):
             li = nodes.list_item(classes=["parsons-line"])
@@ -39,7 +39,7 @@ class ParsonsDirective(Directive):
 
             code = nodes.literal_block(line, line)
             code["language"] = "python"
-            code["classes"].append("no-copybutton")  # prevent copybutton
+            code["classes"].append("no-copybutton")  # prevent copybutton overlay
             li += code
             source_ul += li
 
@@ -54,7 +54,7 @@ class ParsonsDirective(Directive):
             target_wrapper += col
         container += target_wrapper
 
-        # Controls (raw HTML only)
+        # Controls (raw HTML buttons)
         controls = nodes.raw(
             "",
             '<div class="parsons-controls">'
@@ -65,12 +65,7 @@ class ParsonsDirective(Directive):
         )
         container += controls
 
-        # Assets
-        app = env.app
-        app.add_js_file("parsons.js")
-        app.add_css_file("parsons.css")
-
-        # Shuffle flag
+        # Shuffle flag for JS
         container["data-shuffle"] = "true" if shuffle else "false"
 
         return [container]
@@ -78,6 +73,7 @@ class ParsonsDirective(Directive):
 
 def setup(app):
     app.add_directive("parsons", ParsonsDirective)
+    # Ensure assets are always included
     app.add_js_file("parsons.js")
     app.add_css_file("parsons.css")
     return {
