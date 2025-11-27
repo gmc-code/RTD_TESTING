@@ -31,25 +31,25 @@ class ParsonsDirective(Directive):
             line[2:] if line.strip().startswith("- ") else line
             for line in self.content if line.strip()
         ]
-
-        # Copy for rendering
         raw_lines = expected_order[:]
 
-        # Shuffle immediately if :shuffle: is set
         if shuffle:
             random.shuffle(raw_lines)
 
-        container = nodes.container(
-            classes=["parsons-container", f"parsons-cols-{columns}"]
-        )
+        expected_attr = "|".join(l.strip() for l in expected_order)
+        shuffle_attr = "true" if shuffle_js else "false"
 
-        container["data-expected"] = "|".join(l.strip() for l in expected_order)
-        container["data-shuffle-js"] = "true" if shuffle_js else "false"
+        # Open container with raw HTML so attributes are preserved
+        open_div = nodes.raw(
+            "",
+            f'<div class="parsons-container parsons-cols-{columns}" '
+            f'data-expected="{expected_attr}" data-shuffle-js="{shuffle_attr}">',
+            format="html",
+        )
 
         # Title
         title_para = nodes.paragraph()
         title_para += nodes.strong(text=title)
-        container += title_para
 
         # Source list
         source_ul = nodes.bullet_list(classes=["parsons-source"])
@@ -63,22 +63,17 @@ class ParsonsDirective(Directive):
             code["classes"].append("no-copybutton")
             li += code
             source_ul += li
-        container += source_ul
 
         # Target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(
-                classes=["parsons-target", f"parsons-col-{c+1}"]
-            )
-            # Use provided label if available, else default
+            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
             label_text = labels[c] if c < len(labels) else f"Column {c+1}"
             label = nodes.paragraph(text=label_text, classes=["parsons-target-label"])
             col += label
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
             target_wrapper += col
-        container += target_wrapper
 
         # Controls
         controls = nodes.raw(
@@ -86,12 +81,15 @@ class ParsonsDirective(Directive):
             '<div class="parsons-controls">'
             '<button class="parsons-check">Check</button>'
             '<button class="parsons-reset">Reset</button>'
-            "</div>",
+            '</div>',
             format="html",
         )
-        container += controls
 
-        return [container]
+        # Close container
+        close_div = nodes.raw("", "</div>", format="html")
+
+        return [open_div, title_para, source_ul, target_wrapper, controls, close_div]
+
 
 
 def setup(app):
