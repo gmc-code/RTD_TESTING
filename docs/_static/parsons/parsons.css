@@ -9,7 +9,6 @@
 /* Source and target lists */
 .parsons-source,
 .parsons-target-list {
-  counter-reset: line;
   list-style: none;
   padding: 12px 0;
   min-height: 40px;
@@ -31,11 +30,9 @@
   border-radius: 8px;
 }
 
-/* Each line increments the counter */
-/* Treat the whole line as one rounded rectangle */
+/* Unified line style */
 .parsons-line {
-  counter-increment: line;
-  display: flex;              /* number + code side by side */
+  display: flex;
   align-items: center;
   cursor: move;
   border-radius: 6px;
@@ -45,15 +42,15 @@
   font-family: monospace;
 }
 
-/* Number + pipe inline with code */
+/* Fixed numbering from data-line attribute */
 .parsons-line::before {
-  content: counter(line) " | ";
+  content: attr(data-line) " | ";
   margin-right: 8px;
   color: #374151;
   font-weight: bold;
 }
 
-/* Remove extra box styling from nested highlight wrappers */
+/* Strip extra wrappers */
 .parsons-line .highlight,
 .parsons-line .no-copybutton {
   background: transparent !important;
@@ -63,7 +60,7 @@
   box-shadow: none !important;
 }
 
-/* Code block flows inline inside the line box */
+/* Code flows inline */
 .parsons-line pre {
   margin: 0;
   padding: 0;
@@ -72,7 +69,6 @@
   font-size: 0.9em;
   line-height: 1.3;
 }
-
 
 /* Target wrapper grid */
 .parsons-target-wrapper {
@@ -83,17 +79,18 @@
 .parsons-cols-2 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr;
 }
-
 .parsons-cols-3 .parsons-target-wrapper {
   grid-template-columns: 1fr 1fr 1fr;
 }
+.parsons-cols-4 .parsons-target-wrapper {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
 
-/* Indentation simulation */
+/* Indentation simulation (visual offset) */
+.parsons-target-list[data-indent="0"] { margin-left: 0; }
 .parsons-target-list[data-indent="1"] { margin-left: 20px; }
 .parsons-target-list[data-indent="2"] { margin-left: 40px; }
 .parsons-target-list[data-indent="3"] { margin-left: 60px; }
-.parsons-target-list[data-indent="4"] { margin-left: 80px; }
-.parsons-target-list[data-indent="5"] { margin-left: 100px; }
 
 /* Highlight states */
 .parsons-drop-hover {

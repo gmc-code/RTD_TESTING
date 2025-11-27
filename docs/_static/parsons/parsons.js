@@ -19,22 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ? container.dataset.expected.split("|")
       : container._original.map(li => li.querySelector("pre").textContent.trim());
 
-    // Shuffle client-side if requested
-    if (container.dataset.shuffleJs === "true") {
-      const items = Array.from(source.children);
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-      items.forEach(li => source.appendChild(li));
-    }
-
     // Make a line draggable + highlightable + droppable
     function makeDraggable(li) {
       li.setAttribute("draggable", "true");
 
       li.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", li.id || "dragging");
+        e.dataTransfer.setData("text/plain", li.dataset.line || "dragging");
         container.__dragging = li;
       });
 
@@ -61,9 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Initialize lines
-    container.querySelectorAll(".parsons-line").forEach(makeDraggable);
-
     // Lists accept drops (drop at end of list)
     [...targets, source].forEach(ul => {
       ul.addEventListener("dragover", e => {
@@ -88,23 +75,33 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // Shuffle helper (ensures not same as original)
+    function shuffleArray(arr) {
+      let shuffled;
+      do {
+        shuffled = arr.slice().sort(() => Math.random() - 0.5);
+      } while (shuffled.every((el, i) => el === arr[i]));
+      return shuffled;
+    }
+
     // Reset
     function reset() {
       targets.forEach(ul => ul.innerHTML = "");
       source.innerHTML = "";
-      container._original.forEach(li => {
+      const clones = container._original.map((li, idx) => {
         const clone = li.cloneNode(true);
+        clone.dataset.line = idx + 1; // fixed line number
         makeDraggable(clone);
-        source.appendChild(clone);
+        return clone;
       });
+      shuffleArray(clones).forEach(clone => source.appendChild(clone));
       container.classList.remove("parsons-correct", "parsons-incorrect");
       const msg = container.querySelector(".parsons-message");
       if (msg) msg.textContent = "";
     }
 
     // Check
-
-    function check(container, targets) {
+    function check() {
       const current = [];
       targets.forEach(ul => {
         const indent = parseInt(ul.dataset.indent);
@@ -119,8 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const ok = current.length === expected.length &&
-                current.every((line, i) =>
-                  line.text === expected[i].text && line.indent === expected[i].indent);
+                 current.every((line, i) =>
+                   line.text === expected[i].text && line.indent === expected[i].indent);
 
       container.classList.toggle("parsons-correct", ok);
       container.classList.toggle("parsons-incorrect", !ok);
@@ -136,5 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resetBtn && resetBtn.addEventListener("click", reset);
     checkBtn && checkBtn.addEventListener("click", check);
+
+    // Initial shuffle
+    reset();
   });
 });
