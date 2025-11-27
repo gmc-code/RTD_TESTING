@@ -37,33 +37,41 @@ class ParsonsDirective(Directive):
         for i, line in enumerate(raw_lines):
             li = nodes.list_item(classes=["parsons-line"])
             li["data-index"] = str(i)
+            li["classes"].append("draggable")  # mark as draggable
 
             # Literal block with no-copybutton class
             code = nodes.literal_block(line, line)
             code['language'] = 'python'
-            # overwrite classes instead of appending to avoid extra wrapper
-            code['classes'] = ['highlight-python', 'notranslate', 'no-copybutton']
+            code['classes'].append('no-copybutton')
             li += code
             source_ul += li
 
         container += source_ul
 
-        # Target columns
+        # Target columns with labels
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
             col = nodes.container(
                 classes=["parsons-target", f"parsons-col-{c+1}"])
+            # Add a label above each column
+            label = nodes.paragraph(text=f"Column {c+1}")
+            label['classes'].append("parsons-target-label")
+            col += label
+
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
             col += target_ul
             target_wrapper += col
         container += target_wrapper
 
         # Controls (raw HTML buttons)
-        controls = nodes.raw("", '<div class="parsons-controls">'
-                             '<button class="parsons-check">Check</button>'
-                             '<button class="parsons-reset">Reset</button>'
-                             '</div>',
-                             format="html")
+        controls = nodes.raw(
+            "",
+            '<div class="parsons-controls">'
+            '<button class="parsons-check">Check</button>'
+            '<button class="parsons-reset">Reset</button>'
+            '</div>',
+            format="html"
+        )
         container += controls
 
         # Shuffle flag for JS

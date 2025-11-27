@@ -6,6 +6,20 @@
   background: #f9fafb;
 }
 
+
+/* Reduce spacing around Parsons code blocks */
+.parsons-source .parsons-line {
+  margin: 2px 0;   /* tighten vertical spacing */
+  padding: 0;      /* remove extra padding */
+}
+
+.parsons-source .highlight {
+  margin: 0;       /* remove default margins */
+  padding: 2px 4px; /* small padding for readability */
+  font-size: 0.9em; /* slightly smaller text if desired */
+}
+
+
 /* Source and target lists */
 .parsons-source,
 .parsons-target-list {
