@@ -1,0 +1,152 @@
+/* Container styling */
+.parsons-container {
+  border: 1px solid #e5e7eb;
+  padding: 1.2em;
+  margin-bottom: 1.5em;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Source and target lists */
+.parsons-source,
+.parsons-target-list {
+  list-style: none;
+  padding: 0.8em;
+  margin: 0.8em 0;
+  min-height: 2.5em;
+  border: 2px dashed #cbd5e1;
+  border-radius: 6px;
+  background: #f9fafb;
+}
+
+.parsons-drop-hover {
+  background: #e0f2fe;
+  border-color: #3b82f6;
+}
+
+/* Individual lines: one rounded rectangle */
+.parsons-line {
+  display: flex;
+  align-items: baseline; /* align label and code on text baseline */
+  margin: 0.3em 0;
+  padding: 0.4em 0.8em;
+  background: #a3daff;
+  cursor: grab;
+  border-radius: 20px;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.parsons-line:hover {
+  background: #e5e7eb;
+}
+
+.parsons-line.dragging {
+  opacity: 0.6;
+  transform: scale(1.02);
+}
+
+/* Number + pipe badge */
+.line-label {
+  flex-shrink: 0;
+  margin-right: 0.8em;
+  padding: 0.2em 0.6em;
+  background: #e0e7ff;
+  color: #1e3a8a;
+  font-weight: bold;
+  border-radius: 4px;
+  font-family: monospace;       /* match code font */
+  line-height: 1.4;             /* match pre line-height */
+  display: inline-flex;
+  align-items: baseline;        /* align with code text */
+}
+
+/* Code text */
+.parsons-line pre {
+  margin: 0;
+  font-family: monospace;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
+/* Controls */
+.parsons-controls {
+  margin-top: 0.8em;
+  display: flex;
+  gap: 0.6em;
+}
+
+.parsons-controls button {
+  flex: 1;
+  padding: 0.6em 1em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.parsons-controls button:hover {
+  transform: translateY(-2px);
+}
+
+/* Distinct colours for each button */
+.parsons-check {
+  background: #3b82f6; /* blue */
+}
+.parsons-check:hover {
+  background: #2563eb;
+}
+
+.parsons-reset {
+  background: #6b7280; /* gray */
+}
+.parsons-reset:hover {
+  background: #4b5563;
+}
+
+.parsons-solution {
+  background: #f97316; /* orange */
+}
+.parsons-solution:hover {
+  background: #ea580c;
+}
+
+/* Feedback message */
+.parsons-message {
+  margin-top: 0.6em;
+  font-weight: bold;
+  color: #374151;
+}
+
+/* Container states */
+.parsons-correct {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.3);
+}
+
+.parsons-incorrect {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231,76,60,0.3);
+}
+
+/* Per-line highlighting */
+.line-correct {
+  background-color: #d1fae5; /* soft green */
+  border-left: 4px solid #22c55e;
+}
+.line-correct .line-label {
+  background-color: #22c55e;
+  color: #fff;
+}
+
+.line-incorrect {
+  background-color: #fee2e2; /* light red */
+  border-left: 4px solid #e74c3c;
+}
+.line-incorrect .line-label {
+  background-color: #e74c3c;
+  color: #fff;
+}
