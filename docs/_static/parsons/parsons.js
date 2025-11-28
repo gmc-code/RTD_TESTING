@@ -46,7 +46,6 @@ function normalizeSourceLines(source) {
     if (!li.dataset.line) {
       li.dataset.line = idx + 1;
     }
-    // inject label + pre
     const codeText = li.textContent.trim();
     li.textContent = "";
     const label = document.createElement("span");

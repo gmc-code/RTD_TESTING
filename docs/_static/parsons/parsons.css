@@ -42,12 +42,6 @@
   background: #e5e7eb;
 }
 
-.parsons-line.dragging {
-  opacity: 0.6;
-  transform: scale(1.02);
-}
-
-/* Number + pipe block */
 .line-label {
   flex-shrink: 0;
   margin-right: 0.8em;
@@ -63,6 +57,13 @@
   font-family: monospace;
   flex-grow: 1;
 }
+
+
+.parsons-line.dragging {
+  opacity: 0.6;
+  transform: scale(1.02);
+}
+
 
 /* Controls */
 .parsons-controls {
