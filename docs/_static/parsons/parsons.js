@@ -16,30 +16,25 @@ function initParsons(container) {
     controls.appendChild(solutionBtn);
   }
 
-  // --- State ---
-  // Keep a copy of the *raw* original lines before shuffling
+  // store raw lines before any mutation
   const rawLines = Array.from(source.querySelectorAll("li"));
   container.__rawLines = rawLines;
 
-  // Shuffle once at init
+  // initial shuffle
   const originalLines = normalizeSourceLines(source, rawLines);
   container.__originalLines = originalLines;
-  const expected = parseExpected(container, originalLines);
+  container.__expected = parseExpected(container, originalLines);
 
-  // --- Event bindings ---
+  // bindings
   resetBtn?.addEventListener("click", () => reset(container, source, targets));
-  checkBtn?.addEventListener("click", () =>
-    check(container, source, targets, container.__expected)
-  );
-  solutionBtn?.addEventListener("click", () =>
-    showSolution(container, source, targets, container.__expected)
-  );
+  checkBtn?.addEventListener("click", () => check(container, source, targets, container.__expected));
+  solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, container.__expected));
 
-
-  // Enable drag/drop
+  // drag/drop
   container.querySelectorAll(".parsons-line").forEach(makeDraggable(container));
   targets.forEach(enableDrop(container));
 }
+
 
 /* ---------- Helpers ---------- */
 
@@ -59,9 +54,9 @@ function shuffleArray(arr) {
   return arr;
 }
 
-// Normalize source: shuffle, renumber, clean text, rebuild label + pre
+// normalize with provided raw lines
 function normalizeSourceLines(source, rawLines) {
-  let lines = shuffleArray(rawLines.map(li => li.cloneNode(true)));
+  const lines = shuffleArray(rawLines.map(li => li.cloneNode(true)));
 
   lines.forEach((li, idx) => {
     li.classList.add("parsons-line");
@@ -85,6 +80,7 @@ function normalizeSourceLines(source, rawLines) {
   lines.forEach(li => source.appendChild(li));
   return lines;
 }
+
 
 /*
 Expected parsing:
@@ -250,16 +246,16 @@ function reset(container, source, targets) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
 
-  // reshuffle from rawLines every reset
+  // reshuffle from raw lines every reset
   const reshuffled = normalizeSourceLines(source, container.__rawLines);
   container.__originalLines = reshuffled;
 
+  // make the lines draggable in place (they're already appended by normalize)
   reshuffled.forEach(li => {
     makeDraggable(container)(li);
-    source.appendChild(li);
   });
 
-  // re‑parse expected against the new shuffle
+  // rebuild expected against the new shuffle
   container.__expected = parseExpected(container, reshuffled);
 
   container.classList.remove("parsons-correct", "parsons-incorrect");
