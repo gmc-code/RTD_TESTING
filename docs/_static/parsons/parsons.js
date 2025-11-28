@@ -5,12 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = container.querySelector(".parsons-reset");
     const checkBtn = container.querySelector(".parsons-check");
 
-    // Remove copy buttons
-    container.querySelectorAll(".copybtn").forEach(btn => btn.remove());
-    container.querySelectorAll("div.highlight").forEach(div => {
-      div.classList.add("no-copybutton");
-    });
-
     // Normalize lines: wrap text in <pre> if missing
     source.querySelectorAll("li").forEach(li => {
       if (!li.classList.contains("parsons-line")) {
@@ -51,27 +45,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // Make a line draggable
     function makeDraggable(li) {
       li.setAttribute("draggable", "true");
-
       li.addEventListener("dragstart", e => {
         e.dataTransfer.setData("text/plain", li.id || "dragging");
         container.__dragging = li;
         li.classList.add("dragging");
       });
-
       li.addEventListener("dragend", () => {
         li.classList.remove("dragging");
         container.__dragging = null;
       });
-
       li.addEventListener("dragenter", e => {
         e.preventDefault();
         li.classList.add("parsons-drop-hover");
       });
-
       li.addEventListener("dragleave", () => {
         li.classList.remove("parsons-drop-hover");
       });
-      // no li-level drop handler
     }
 
     // Initialize lines
@@ -89,15 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
         for (const sib of siblings) {
           const rect = sib.getBoundingClientRect();
           const mid = rect.top + rect.height / 2;
-          if (y < mid) {
-            insertBeforeNode = sib;
-            break;
-          }
+          if (y < mid) { insertBeforeNode = sib; break; }
         }
         if (insertBeforeNode) ul.insertBefore(dragging, insertBeforeNode);
         else ul.appendChild(dragging);
       });
-
       ul.addEventListener("dragenter", e => {
         e.preventDefault();
         ul.classList.add("parsons-drop-hover");
@@ -108,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ul.addEventListener("drop", e => {
         e.preventDefault();
         ul.classList.remove("parsons-drop-hover");
-        container.__dragging = null; // position already handled in dragover
+        container.__dragging = null;
       });
     });
 
@@ -128,7 +113,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Normalize text
     function norm(s) {
-      return s.replace(/\s+/g, " ").trim();
+      return s.replace(/\u00A0/g, " ")
+              .replace(/\t/g, "    ")
+              .replace(/[ \f\r\v]+/g, " ")
+              .trim();
+    }
+
+    // Show feedback message
+    function showMessage(text) {
+      let msg = container.querySelector(".parsons-message");
+      if (!msg) {
+        msg = document.createElement("div");
+        msg.className = "parsons-message";
+        container.appendChild(msg);
+      }
+      msg.textContent = text;
     }
 
     // Check
@@ -137,11 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
       targets.forEach(ul => {
         const indent = parseInt(ul.dataset.indent, 10);
         ul.querySelectorAll(".parsons-line pre").forEach(pre => {
-          current.push({ text: norm(pre.textContent), indent });
+          current.push({ text: norm(pre.textContent), indent: isNaN(indent) ? 0 : indent });
         });
       });
 
-      // require all lines to be placed
+      // Require all lines to be placed
       if (source.querySelectorAll(".parsons-line").length > 0) {
         showMessage("✖ Move all lines into the target area before checking.");
         container.classList.add("parsons-incorrect");
@@ -154,27 +153,16 @@ document.addEventListener("DOMContentLoaded", () => {
         indent: e.indent
       }));
 
-      const ok =
-        current.length === expected.length &&
-        current.every((line, i) =>
-          line.text === expected[i].text && line.indent === expected[i].indent
-        );
+      const ok = current.length === expected.length &&
+                 current.every((line, i) =>
+                   line.text === expected[i].text && line.indent === expected[i].indent
+                 );
 
       container.classList.toggle("parsons-correct", ok);
       container.classList.toggle("parsons-incorrect", !ok);
       showMessage(ok ? "✅ Correct!" : "✖ Try again");
 
       console.log({ ok, expected, current });
-    }
-
-    function showMessage(text) {
-      let msg = container.querySelector(".parsons-message");
-      if (!msg) {
-        msg = document.createElement("div");
-        msg.className = "parsons-message";
-        container.appendChild(msg);
-      }
-      msg.textContent = text;
     }
 
     resetBtn && resetBtn.addEventListener("click", reset);
