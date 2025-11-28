@@ -16,22 +16,22 @@ function initParsons(container) {
     controls.appendChild(solutionBtn);
   }
 
-  // --- Initial shuffle and expected ---
-  reshuffle(container, source); // sets container.__originalLines
-  container.__expected = parseExpected(container, container.__originalLines);
+  // --- State ---
+  const originalLines = normalizeSourceLines(source); // shuffled lines with data-line
+  container.__originalLines = originalLines;
+  const expected = parseExpected(container, originalLines);
 
   // --- Event bindings ---
-  resetBtn?.addEventListener("click", () => {
-    reshuffle(container, source);
-    container.__expected = parseExpected(container, container.__originalLines);
-  });
-  checkBtn?.addEventListener("click", () => check(container, source, targets, container.__expected));
-  solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, container.__expected));
+  resetBtn?.addEventListener("click", () => reset(container, source, targets, originalLines));
+  checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
+  solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, expected));
 
   // Enable drag/drop
   container.querySelectorAll(".parsons-line").forEach(makeDraggable(container));
   targets.forEach(enableDrop(container));
 }
+
+/* ---------- Helpers ---------- */
 
 function createButton(className, text) {
   const btn = document.createElement("button");
@@ -40,6 +40,7 @@ function createButton(className, text) {
   return btn;
 }
 
+// Fisher–Yates shuffle
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -48,6 +49,7 @@ function shuffleArray(arr) {
   return arr;
 }
 
+// Normalize source: shuffle, renumber, clean text, rebuild label + pre
 function normalizeSourceLines(source) {
   let lines = Array.from(source.querySelectorAll("li"));
   lines = shuffleArray(lines);
@@ -57,7 +59,7 @@ function normalizeSourceLines(source) {
     li.dataset.line = idx + 1;
 
     let codeText = li.textContent.trim();
-    codeText = codeText.replace(/^\d+\s*\|/, "");
+    codeText = codeText.replace(/^\d+\s*\|/, "");      // strip leading "N |"
     codeText = codeText.replace(/Copy to clipboard/i, "").trim();
 
     li.textContent = "";
@@ -75,6 +77,14 @@ function normalizeSourceLines(source) {
   return lines;
 }
 
+/*
+Expected parsing:
+- If container.dataset.expected is absent: build expected from shuffled source (indent = 0, number = shuffled badge).
+- If present:
+  - Supports "number::indent::code" (explicit mapping).
+  - Or "indent::code" (numbers taken from shuffled source by index).
+Segments separated by "|".
+*/
 function parseExpected(container, originalLines) {
   const raw = container.dataset.expected;
   if (!raw) {
@@ -90,21 +100,26 @@ function parseExpected(container, originalLines) {
     let number, indent, code;
 
     if (parts.length === 3) {
+      // number::indent::code
       number = parseInt(parts[0], 10);
       indent = parseInt(parts[1], 10);
       code   = parts[2];
     } else if (parts.length === 2) {
-      number = parseInt(originalLines[idx]?.dataset.line, 10);
+      // indent::code, number taken from shuffled source by index
+      number = parseInt(originalLines[idx]?.dataset.line, 10) || (idx + 1);
       indent = parseInt(parts[0], 10);
       code   = parts[1];
     } else {
       throw new Error("Invalid expected format. Use 'number::indent::code' or 'indent::code'.");
     }
 
-    return { text: code.trim(), indent, number };
+    return {
+      text: (code || "").trim(),
+      indent: isFinite(indent) ? indent : 0,
+      number: isFinite(number) ? number : (idx + 1)
+    };
   });
 }
-
 
 function makeDraggable(container) {
   return li => {
@@ -161,97 +176,7 @@ function showMessage(container, text, ok) {
   msg.style.color = ok ? "#22c55e" : "#e74c3c";
 }
 
-function collectCurrent(container) {
-  const current = [];
-  container.querySelectorAll(".parsons-target-list").forEach(ul => {
-    const indent = parseInt(ul.dataset.indent, 10) || 0;
-    ul.querySelectorAll(".parsons-line").forEach(li => {
-      const pre = li.querySelector("pre");
-      current.push({
-        text: norm(pre.textContent),
-        indent,
-        number: parseInt(li.dataset.line, 10)
-      });
-    });
-  });
-  return current;
-}
-
-function highlightLines(container, expected, current) {
-  container.querySelectorAll(".parsons-line").forEach(li => {
-    li.classList.remove("line-correct", "line-incorrect");
-  });
-  const placed = Array.from(container.querySelectorAll(".parsons-target-list .parsons-line"));
-  placed.forEach((li, i) => {
-    const e = expected[i], c = current[i];
-    if (!c || !e) return;
-    const isCorrect =
-      c.text === e.text &&
-      c.indent === e.indent &&
-      c.number === e.number;
-    li.classList.add(isCorrect ? "line-correct" : "line-incorrect");
-  });
-}
-
-function check(container, source, targets, expected) {
-  const current = collectCurrent(container);
-
-  if (source.querySelectorAll(".parsons-line").length > 0) {
-    container.classList.add("parsons-incorrect");
-    showMessage(container, "✖ Move all lines into the target area before checking.", false);
-    return;
-  }
-
-  const ok = current.length === expected.length &&
-             current.every((line, i) =>
-               line.text === norm(expected[i].text) &&
-               line.indent === expected[i].indent &&
-               line.number === expected[i].number
-             );
-
-  container.classList.toggle("parsons-correct", ok);
-  container.classList.toggle("parsons-incorrect", !ok);
-  showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
-  highlightLines(container, expected, current);
-
-  console.log("Check result:", { ok, expected, current });
-}
-
-function reshuffle(container, source) {
-  const targets = container.querySelectorAll(".parsons-target-list");
-  targets.forEach(ul => ul.innerHTML = "");
-  source.innerHTML = "";
-
-  const reshuffled = normalizeSourceLines(source);
-  container.__originalLines = reshuffled;
-
-  reshuffled.forEach(li => {
-    const clone = li.cloneNode(true);
-    makeDraggable(container)(clone);
-    source.appendChild(clone);
-  });
-
-  container.classList.remove("parsons-correct", "parsons-incorrect");
-  const msg = container.querySelector(".parsons-message");
-  if (msg) msg.textContent = "";
-  logCurrentState(container);
-}
-
-function showSolution(container, source, targets, expected) {
-  targets.forEach(ul => ul.innerHTML = "");
-  source.innerHTML = "";
-
-  expected.forEach(exp => {
-    const li = document.createElement("li");
-    li.className = "parsons-line line-correct";
-    li.dataset.line = exp.number;
-
-    const label = document.createElement("span");
-    label.className = "line-label";
-    label.textContent = `${exp.number} |`;
-
-    const pre = document.createElement("pre");
-    pre.textContent = exp.text
+/* ---------- Collection, check, and highlight ---------- */
 
 function collectCurrent(container) {
   const current = [];
@@ -288,18 +213,19 @@ function highlightLines(container, expected, current) {
 function check(container, source, targets, expected) {
   const current = collectCurrent(container);
 
+  // Must place all lines
   if (source.querySelectorAll(".parsons-line").length > 0) {
     container.classList.add("parsons-incorrect");
     showMessage(container, "✖ Move all lines into the target area before checking.", false);
     return;
   }
 
-  const ok = current.length === expected.length &&
-             current.every((line, i) =>
-               line.text === norm(expected[i].text) &&
-               line.indent === expected[i].indent &&
-               line.number === expected[i].number
-             );
+  const sameLength = current.length === expected.length;
+  const ok = sameLength && current.every((line, i) =>
+    line.text === norm(expected[i].text) &&
+    line.indent === expected[i].indent &&
+    line.number === expected[i].number
+  );
 
   container.classList.toggle("parsons-correct", ok);
   container.classList.toggle("parsons-incorrect", !ok);
@@ -309,21 +235,16 @@ function check(container, source, targets, expected) {
   console.log("Check result:", { ok, expected, current });
 }
 
-// Reset now reshuffles each time
-function reshuffle(container, source) {
-  const targets = container.querySelectorAll(".parsons-target-list");
+/* ---------- Reset and solution ---------- */
+
+function reset(container, source, targets, originalLines) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
-
-  const reshuffled = normalizeSourceLines(source);
-  container.__originalLines = reshuffled;
-
-  reshuffled.forEach(li => {
-    const clone = li.cloneNode(true);
+  originalLines.forEach(li => {
+    const clone = li.cloneNode(true); // preserves data-line badge number
     makeDraggable(container)(clone);
     source.appendChild(clone);
   });
-
   container.classList.remove("parsons-correct", "parsons-incorrect");
   const msg = container.querySelector(".parsons-message");
   if (msg) msg.textContent = "";
@@ -356,8 +277,6 @@ function showSolution(container, source, targets, expected) {
   showMessage(container, "✨ Solution revealed", true);
   logCurrentState(container);
 }
-
-
 
 /* ---------- Debug ---------- */
 
