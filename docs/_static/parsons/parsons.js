@@ -28,8 +28,13 @@ function initParsons(container) {
 
   // --- Event bindings ---
   resetBtn?.addEventListener("click", () => reset(container, source, targets));
-  checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
-  solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, expected));
+  checkBtn?.addEventListener("click", () =>
+    check(container, source, targets, container.__expected)
+  );
+  solutionBtn?.addEventListener("click", () =>
+    showSolution(container, source, targets, container.__expected)
+  );
+
 
   // Enable drag/drop
   container.querySelectorAll(".parsons-line").forEach(makeDraggable(container));
@@ -251,7 +256,11 @@ function reset(container, source, targets) {
 
   reshuffled.forEach(li => {
     makeDraggable(container)(li);
+    source.appendChild(li);
   });
+
+  // re‑parse expected against the new shuffle
+  container.__expected = parseExpected(container, reshuffled);
 
   container.classList.remove("parsons-correct", "parsons-incorrect");
   const msg = container.querySelector(".parsons-message");
