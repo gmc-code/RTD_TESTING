@@ -39,15 +39,26 @@ function createButton(className, text) {
   return btn;
 }
 
+// Fisher–Yates shuffle
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 function normalizeSourceLines(source) {
-  const lines = Array.from(source.querySelectorAll("li"));
+  let lines = Array.from(source.querySelectorAll("li"));
+
+  // Shuffle the lines before numbering
+  lines = shuffleArray(lines);
+
   lines.forEach((li, idx) => {
     li.classList.add("parsons-line");
-    if (!li.dataset.line) {
-      li.dataset.line = idx + 1;
-    }
+    li.dataset.line = idx + 1; // assign new number based on shuffled order
 
-    // Clean code text: remove leading number/pipe and unwanted fragments
+    // Clean code text: remove any leading number/pipe and unwanted fragments
     let codeText = li.textContent.trim();
     codeText = codeText.replace(/^\d+\s*\|/, ""); // strip "N |"
     codeText = codeText.replace(/Copy to clipboard/i, "").trim();
@@ -62,6 +73,11 @@ function normalizeSourceLines(source) {
     li.appendChild(label);
     li.appendChild(pre);
   });
+
+  // Replace source list with shuffled, renumbered lines
+  source.innerHTML = "";
+  lines.forEach(li => source.appendChild(li));
+
   return lines;
 }
 
@@ -69,16 +85,16 @@ function parseExpected(container, originalLines) {
   if (!container.dataset.expected) {
     return originalLines.map(li => ({
       text: li.querySelector("pre")?.textContent.trim(),
-      indent: 0,
-      line: parseInt(li.dataset.line, 10)
+      indent: 0
+      // line numbers ignored in correctness check
     }));
   }
-  return container.dataset.expected.split("|").map((seg, idx) => {
+  return container.dataset.expected.split("|").map(seg => {
     const [indent, code] = seg.split("::");
     return {
       text: code.trim(),
-      indent: parseInt(indent, 10),
-      line: idx + 1
+      indent: parseInt(indent, 10)
+      // line numbers ignored
     };
   });
 }
@@ -147,7 +163,7 @@ function highlightLines(container, expected, current) {
     const e = expected[i], c = current[i];
     if (!c) return;
     li.classList.add(
-      c.text === e.text && c.indent === e.indent && c.line === e.line
+      c.text === e.text && c.indent === e.indent
         ? "line-correct"
         : "line-incorrect"
     );
@@ -164,8 +180,8 @@ function check(container, source, targets, expected) {
       const pre = li.querySelector("pre");
       current.push({
         text: norm(pre.textContent),
-        indent,
-        line: parseInt(li.dataset.line, 10)
+        indent
+        // line numbers ignored
       });
     });
   });
@@ -179,8 +195,7 @@ function check(container, source, targets, expected) {
   const ok = current.length === expected.length &&
              current.every((line, i) =>
                line.text === norm(expected[i].text) &&
-               line.indent === expected[i].indent &&
-               line.line === expected[i].line
+               line.indent === expected[i].indent
              );
 
   container.classList.toggle("parsons-correct", ok);
@@ -211,10 +226,9 @@ function showSolution(container, source, targets, expected) {
   expected.forEach(exp => {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
-    li.dataset.line = exp.line;
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${exp.line} |`;
+    label.textContent = "|"; // solution view doesn’t need shuffled numbers
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
     li.appendChild(label);
@@ -236,8 +250,8 @@ function logCurrentState(container) {
       const pre = li.querySelector("pre");
       current.push({
         text: norm(pre.textContent),
-        indent,
-        line: parseInt(li.dataset.line, 10)
+        indent
+        // line numbers ignored
       });
     });
   });
