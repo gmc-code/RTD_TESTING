@@ -120,14 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Show feedback message
-    function showMessage(text) {
+    function showMessage(text, ok) {
       let msg = container.querySelector(".parsons-message");
       if (!msg) {
         msg = document.createElement("div");
         msg.className = "parsons-message";
         container.appendChild(msg);
       }
-      msg.textContent = text; // always overwrite
+      msg.textContent = text;
+      // force color by inline style to override stale classes
+      msg.style.color = ok ? "#22c55e" : "#e74c3c";
     }
 
     // Check
@@ -144,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (source.querySelectorAll(".parsons-line").length > 0) {
         container.classList.remove("parsons-correct", "parsons-incorrect");
         container.classList.add("parsons-incorrect");
-        showMessage("✖ Move all lines into the target area before checking.");
+        showMessage("✖ Move all lines into the target area before checking.", false);
         return;
       }
 
@@ -163,10 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (ok) {
         container.classList.add("parsons-correct");
-        showMessage("✅ Correct!");
+        showMessage("✅ Correct!", true);
       } else {
         container.classList.add("parsons-incorrect");
-        showMessage("✖ Try again");
+        showMessage("✖ Try again", false);
       }
 
       console.log({ ok, expected, current });
