@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       items.forEach(li => source.appendChild(li));
     }
 
-    // Make a line draggable + droppable
+    // Make a line draggable
     function makeDraggable(li) {
       li.setAttribute("draggable", "true");
 
@@ -71,27 +71,33 @@ document.addEventListener("DOMContentLoaded", () => {
       li.addEventListener("dragleave", () => {
         li.classList.remove("parsons-drop-hover");
       });
-
-      li.addEventListener("drop", e => {
-        e.preventDefault();
-        li.classList.remove("parsons-drop-hover");
-        const dragged = container.__dragging;
-        if (dragged && dragged !== li) {
-          li.parentNode.insertBefore(dragged, li);
-        }
-        container.__dragging = null;
-      });
+      // no li-level drop handler
     }
 
     // Initialize lines
     container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
-    // Lists accept drops (drop at end of list)
+    // Lists accept drops (position by pointer Y)
     [...targets, source].forEach(ul => {
       ul.addEventListener("dragover", e => {
         e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
+        const dragging = container.querySelector(".dragging");
+        if (!dragging) return;
+        const siblings = Array.from(ul.children).filter(c => c !== dragging);
+        const y = e.clientY;
+        let insertBeforeNode = null;
+        for (const sib of siblings) {
+          const rect = sib.getBoundingClientRect();
+          const mid = rect.top + rect.height / 2;
+          if (y < mid) {
+            insertBeforeNode = sib;
+            break;
+          }
+        }
+        if (insertBeforeNode) ul.insertBefore(dragging, insertBeforeNode);
+        else ul.appendChild(dragging);
       });
+
       ul.addEventListener("dragenter", e => {
         e.preventDefault();
         ul.classList.add("parsons-drop-hover");
@@ -102,11 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ul.addEventListener("drop", e => {
         e.preventDefault();
         ul.classList.remove("parsons-drop-hover");
-        const dragged = container.__dragging;
-        if (dragged) {
-          ul.appendChild(dragged); // drop to end if not on a line
-        }
-        container.__dragging = null;
+        container.__dragging = null; // position already handled in dragover
       });
     });
 
@@ -124,33 +126,55 @@ document.addEventListener("DOMContentLoaded", () => {
       if (msg) msg.textContent = "";
     }
 
+    // Normalize text
+    function norm(s) {
+      return s.replace(/\s+/g, " ").trim();
+    }
+
     // Check
     function check() {
       const current = [];
       targets.forEach(ul => {
         const indent = parseInt(ul.dataset.indent, 10);
         ul.querySelectorAll(".parsons-line pre").forEach(pre => {
-          current.push({ text: pre.textContent.trim(), indent });
+          current.push({ text: norm(pre.textContent), indent });
         });
       });
 
-      const expected = container._expected;
-      const ok = current.length === expected.length &&
-                 current.every((line, i) =>
-                   line.text === expected[i].text &&
-                   line.indent === expected[i].indent
-                 );
+      // require all lines to be placed
+      if (source.querySelectorAll(".parsons-line").length > 0) {
+        showMessage("✖ Move all lines into the target area before checking.");
+        container.classList.add("parsons-incorrect");
+        container.classList.remove("parsons-correct");
+        return;
+      }
+
+      const expected = container._expected.map(e => ({
+        text: norm(e.text),
+        indent: e.indent
+      }));
+
+      const ok =
+        current.length === expected.length &&
+        current.every((line, i) =>
+          line.text === expected[i].text && line.indent === expected[i].indent
+        );
 
       container.classList.toggle("parsons-correct", ok);
       container.classList.toggle("parsons-incorrect", !ok);
+      showMessage(ok ? "✅ Correct!" : "✖ Try again");
 
+      console.log({ ok, expected, current });
+    }
+
+    function showMessage(text) {
       let msg = container.querySelector(".parsons-message");
       if (!msg) {
         msg = document.createElement("div");
         msg.className = "parsons-message";
         container.appendChild(msg);
       }
-      msg.textContent = ok ? "✅ Correct!" : "✖ Try again";
+      msg.textContent = text;
     }
 
     resetBtn && resetBtn.addEventListener("click", reset);
