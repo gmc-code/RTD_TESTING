@@ -46,7 +46,13 @@ function normalizeSourceLines(source) {
     if (!li.dataset.line) {
       li.dataset.line = idx + 1;
     }
-    const codeText = li.textContent.trim();
+
+    // Clean code text: remove leading number/pipe and unwanted fragments
+    let codeText = li.textContent.trim();
+    codeText = codeText.replace(/^\d+\s*\|/, ""); // strip "N |"
+    codeText = codeText.replace(/Copy to clipboard/i, "").trim();
+
+    // Clear and rebuild
     li.textContent = "";
     const label = document.createElement("span");
     label.className = "line-label";
