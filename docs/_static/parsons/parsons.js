@@ -140,11 +140,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      // Require all lines to be placed
       if (source.querySelectorAll(".parsons-line").length > 0) {
         showMessage("✖ Move all lines into the target area before checking.");
+        container.classList.remove("parsons-correct", "parsons-incorrect");
         container.classList.add("parsons-incorrect");
-        container.classList.remove("parsons-correct");
         return;
       }
 
@@ -154,16 +153,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
 
       const ok = current.length === expected.length &&
-                 current.every((line, i) =>
-                   line.text === expected[i].text && line.indent === expected[i].indent
-                 );
+                current.every((line, i) =>
+                  line.text === expected[i].text && line.indent === expected[i].indent
+                );
 
-      container.classList.toggle("parsons-correct", ok);
-      container.classList.toggle("parsons-incorrect", !ok);
-      showMessage(ok ? "✅ Correct!" : "✖ Try again");
+      container.classList.remove("parsons-correct", "parsons-incorrect");
+      if (ok) {
+        container.classList.add("parsons-correct");
+        showMessage("✅ Correct!");
+      } else {
+        container.classList.add("parsons-incorrect");
+        showMessage("✖ Try again");
+      }
 
       console.log({ ok, expected, current });
     }
+
 
     resetBtn && resetBtn.addEventListener("click", reset);
     checkBtn && checkBtn.addEventListener("click", check);
