@@ -22,14 +22,7 @@ function initParsons(container) {
   const expected = parseExpected(container, originalLines);
 
   // --- Event bindings ---
-  resetBtn?.addEventListener("click", () => reset(container, source, targets));
-  // resetBtn?.addEventListener("click", () => reset(container, source, targets, originalLines));
-  // resetBtn?.addEventListener("click", () => {
-  //   reset(container, source, targets);
-  //   container.__expected = parseExpected(container, container.__originalLines);
-  // });
-
-
+  resetBtn?.addEventListener("click", () => reset(container, source, targets, originalLines));
   checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
   solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, expected));
 
@@ -244,26 +237,19 @@ function check(container, source, targets, expected) {
 
 /* ---------- Reset and solution ---------- */
 
-function reset(container, source, targets) {
+function reset(container, source, targets, originalLines) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
-
-  // reshuffle every reset
-  const reshuffled = normalizeSourceLines(source);
-  container.__originalLines = reshuffled;
-
-  reshuffled.forEach(li => {
-    const clone = li.cloneNode(true);
+  originalLines.forEach(li => {
+    const clone = li.cloneNode(true); // preserves data-line badge number
     makeDraggable(container)(clone);
     source.appendChild(clone);
   });
-
   container.classList.remove("parsons-correct", "parsons-incorrect");
   const msg = container.querySelector(".parsons-message");
   if (msg) msg.textContent = "";
   logCurrentState(container);
 }
-
 
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");

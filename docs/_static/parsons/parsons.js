@@ -17,12 +17,17 @@ function initParsons(container) {
   }
 
   // --- State ---
-  const originalLines = normalizeSourceLines(source); // shuffled lines with data-line
+  // Keep a copy of the *raw* original lines before shuffling
+  const rawLines = Array.from(source.querySelectorAll("li"));
+  container.__rawLines = rawLines;
+
+  // Shuffle once at init
+  const originalLines = normalizeSourceLines(source, rawLines);
   container.__originalLines = originalLines;
   const expected = parseExpected(container, originalLines);
 
   // --- Event bindings ---
-  resetBtn?.addEventListener("click", () => reset(container, source, targets, originalLines));
+  resetBtn?.addEventListener("click", () => reset(container, source, targets));
   checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
   solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, expected));
 
@@ -50,16 +55,15 @@ function shuffleArray(arr) {
 }
 
 // Normalize source: shuffle, renumber, clean text, rebuild label + pre
-function normalizeSourceLines(source) {
-  let lines = Array.from(source.querySelectorAll("li"));
-  lines = shuffleArray(lines);
+function normalizeSourceLines(source, rawLines) {
+  let lines = shuffleArray(rawLines.map(li => li.cloneNode(true)));
 
   lines.forEach((li, idx) => {
     li.classList.add("parsons-line");
     li.dataset.line = idx + 1;
 
     let codeText = li.textContent.trim();
-    codeText = codeText.replace(/^\d+\s*\|/, "");      // strip leading "N |"
+    codeText = codeText.replace(/^\d+\s*\|/, "");
     codeText = codeText.replace(/Copy to clipboard/i, "").trim();
 
     li.textContent = "";
@@ -237,19 +241,24 @@ function check(container, source, targets, expected) {
 
 /* ---------- Reset and solution ---------- */
 
-function reset(container, source, targets, originalLines) {
+function reset(container, source, targets) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
-  originalLines.forEach(li => {
-    const clone = li.cloneNode(true); // preserves data-line badge number
-    makeDraggable(container)(clone);
-    source.appendChild(clone);
+
+  // reshuffle from rawLines every reset
+  const reshuffled = normalizeSourceLines(source, container.__rawLines);
+  container.__originalLines = reshuffled;
+
+  reshuffled.forEach(li => {
+    makeDraggable(container)(li);
   });
+
   container.classList.remove("parsons-correct", "parsons-incorrect");
   const msg = container.querySelector(".parsons-message");
   if (msg) msg.textContent = "";
   logCurrentState(container);
 }
+
 
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
