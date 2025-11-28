@@ -31,9 +31,9 @@
   align-items: baseline; /* align label and code on text baseline */
   margin: 0.3em 0;
   padding: 0.4em 0.8em;
-  background: #f3f4f6;
+  background: #a3daff;
   cursor: grab;
-  border-radius: 6px;
+  border-radius: 20px;
   transition: all 0.25s ease-in-out;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
