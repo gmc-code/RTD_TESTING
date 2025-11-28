@@ -48,11 +48,30 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background: #ddd;
+  color: #fff;
+  font-weight: 600;
 }
 
-.parsons-controls button:hover {
-  background: #ccc;
+/* Distinct colours for each button */
+.parsons-check {
+  background: #3b82f6; /* blue */
+}
+.parsons-check:hover {
+  background: #2563eb;
+}
+
+.parsons-reset {
+  background: #6b7280; /* gray */
+}
+.parsons-reset:hover {
+  background: #4b5563;
+}
+
+.parsons-solution {
+  background: #f97316; /* orange */
+}
+.parsons-solution:hover {
+  background: #ea580c;
 }
 
 /* Feedback message */

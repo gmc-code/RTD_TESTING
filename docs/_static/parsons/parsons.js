@@ -5,6 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetBtn = container.querySelector(".parsons-reset");
     const checkBtn = container.querySelector(".parsons-check");
 
+    // Add Show Solution button dynamically
+    let solutionBtn = container.querySelector(".parsons-solution");
+    if (!solutionBtn) {
+      solutionBtn = document.createElement("button");
+      solutionBtn.className = "parsons-solution";
+      solutionBtn.textContent = "Show Solution";
+      container.querySelector(".parsons-controls").appendChild(solutionBtn);
+    }
+
     // Normalize lines: wrap text in <pre> if missing
     source.querySelectorAll("li").forEach(li => {
       if (!li.classList.contains("parsons-line")) {
@@ -54,62 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
         li.classList.remove("dragging");
         container.__dragging = null;
       });
-      li.addEventListener("dragenter", e => {
-        e.preventDefault();
-        li.classList.add("parsons-drop-hover");
-      });
-      li.addEventListener("dragleave", () => {
-        li.classList.remove("parsons-drop-hover");
-      });
     }
 
-    // Initialize lines
     container.querySelectorAll(".parsons-line").forEach(makeDraggable);
-
-    // Lists accept drops (position by pointer Y)
-    [...targets, source].forEach(ul => {
-      ul.addEventListener("dragover", e => {
-        e.preventDefault();
-        const dragging = container.querySelector(".dragging");
-        if (!dragging) return;
-        const siblings = Array.from(ul.children).filter(c => c !== dragging);
-        const y = e.clientY;
-        let insertBeforeNode = null;
-        for (const sib of siblings) {
-          const rect = sib.getBoundingClientRect();
-          const mid = rect.top + rect.height / 2;
-          if (y < mid) { insertBeforeNode = sib; break; }
-        }
-        if (insertBeforeNode) ul.insertBefore(dragging, insertBeforeNode);
-        else ul.appendChild(dragging);
-      });
-      ul.addEventListener("dragenter", e => {
-        e.preventDefault();
-        ul.classList.add("parsons-drop-hover");
-      });
-      ul.addEventListener("dragleave", () => {
-        ul.classList.remove("parsons-drop-hover");
-      });
-      ul.addEventListener("drop", e => {
-        e.preventDefault();
-        ul.classList.remove("parsons-drop-hover");
-        container.__dragging = null;
-      });
-    });
-
-    // Reset
-    function reset() {
-      targets.forEach(ul => ul.innerHTML = "");
-      source.innerHTML = "";
-      container._original.forEach(li => {
-        const clone = li.cloneNode(true);
-        makeDraggable(clone);
-        source.appendChild(clone);
-      });
-      container.classList.remove("parsons-correct", "parsons-incorrect");
-      const msg = container.querySelector(".parsons-message");
-      if (msg) msg.textContent = "";
-    }
 
     // Normalize text
     function norm(s) {
@@ -133,19 +89,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Highlight lines
     function highlightLines(expected, current) {
-      // Clear old highlights
       container.querySelectorAll(".parsons-line").forEach(li => {
         li.classList.remove("line-correct", "line-incorrect");
       });
-
-      const maxLen = Math.max(expected.length, current.length);
-      for (let i = 0; i < maxLen; i++) {
+      const placed = Array.from(container.querySelectorAll(".parsons-target-list .parsons-line"));
+      for (let i = 0; i < expected.length; i++) {
         const e = expected[i];
         const c = current[i];
-        if (!c) continue;
-        const li = targets[0].querySelectorAll(".parsons-line")[i];
+        const li = placed[i];
         if (!li) continue;
-        if (e && c.text === e.text && c.indent === e.indent) {
+        if (c && c.text === e.text && c.indent === e.indent) {
           li.classList.add("line-correct");
         } else {
           li.classList.add("line-incorrect");
@@ -163,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      // Require all lines to be placed
       if (source.querySelectorAll(".parsons-line").length > 0) {
         container.classList.remove("parsons-correct", "parsons-incorrect");
         container.classList.add("parsons-incorrect");
@@ -195,7 +147,38 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log({ ok, expected, current });
     }
 
+    // Reset
+    function reset() {
+      targets.forEach(ul => ul.innerHTML = "");
+      source.innerHTML = "";
+      container._original.forEach(li => {
+        const clone = li.cloneNode(true);
+        makeDraggable(clone);
+        source.appendChild(clone);
+      });
+      container.classList.remove("parsons-correct", "parsons-incorrect");
+      const msg = container.querySelector(".parsons-message");
+      if (msg) msg.textContent = "";
+    }
+
+    // Show Solution
+    function showSolution() {
+      targets.forEach(ul => ul.innerHTML = "");
+      source.innerHTML = "";
+      container._expected.forEach(exp => {
+        const li = document.createElement("li");
+        li.className = "parsons-line line-correct";
+        const pre = document.createElement("pre");
+        pre.textContent = exp.text;
+        li.appendChild(pre);
+        const target = targets[exp.indent] || targets[0];
+        target.appendChild(li);
+      });
+      showMessage("✨ Solution revealed", true);
+    }
+
     resetBtn && resetBtn.addEventListener("click", reset);
     checkBtn && checkBtn.addEventListener("click", check);
+    solutionBtn && solutionBtn.addEventListener("click", showSolution);
   });
 });

@@ -1,4 +1,4 @@
-from docutils import nodes
+docs/_ext/__pycache__ docs/_ext/__pycache__/parsons.cpython-314.pyc docs/_ext/parsons.py docs/_ext/parsons2.pyfrom docutils import nodes
 from docutils.parsers.rst import Directive, directives
 import random
 
@@ -27,19 +27,26 @@ class ParsonsDirective(Directive):
             labels = [lbl.strip() for lbl in labels_opt.split(",")]
 
         # Preserve original order for solution
-        expected_order = [
-            line[2:] if line.strip().startswith("- ") else line
-            for line in self.content if line.strip()
-        ]
-        raw_lines = expected_order[:]
+        expected_order = []
+        for line in self.content:
+            if not line.strip():
+                continue
+            if line.strip().startswith("- "):
+                raw = line.strip()[2:]
+            else:
+                raw = line.strip()
+            indent = len(line) - len(line.lstrip(" "))
+            expected_order.append((indent, raw))
+
+        raw_lines = [code for _, code in expected_order]
 
         if shuffle:
             random.shuffle(raw_lines)
 
-        expected_attr = "|".join(l.strip() for l in expected_order)
+        expected_attr = "|".join(f"{indent}::{code}" for indent, code in expected_order)
         shuffle_attr = "true" if shuffle_js else "false"
 
-        # Open container with raw HTML so attributes are preserved
+        # Open container
         open_div = nodes.raw(
             "",
             f'<div class="parsons-container parsons-cols-{columns}" '
@@ -72,6 +79,7 @@ class ParsonsDirective(Directive):
             label = nodes.paragraph(text=label_text, classes=["parsons-target-label"])
             col += label
             target_ul = nodes.bullet_list(classes=["parsons-target-list"])
+            target_ul["data-indent"] = str(c)  # ensure indent is always set
             col += target_ul
             target_wrapper += col
 
@@ -85,19 +93,17 @@ class ParsonsDirective(Directive):
             format="html",
         )
 
-        # Close container
         close_div = nodes.raw("", "</div>", format="html")
 
         return [open_div, title_para, source_ul, target_wrapper, controls, close_div]
 
 
-
 def setup(app):
-    app.add_directive("parsons2", ParsonsDirective)
-    app.add_css_file("parsons2/parsons2.css")
-    app.add_js_file("parsons2/parsons2.js")
+    app.add_directive("parsons", ParsonsDirective)
+    app.add_css_file("parsons/parsons.css")
+    app.add_js_file("parsons/parsons.js")
     return {
-        "version": "0.1",
+        "version": "0.3",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
