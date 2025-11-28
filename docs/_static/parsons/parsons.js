@@ -18,6 +18,7 @@ function initParsons(container) {
 
   // --- State ---
   const originalLines = normalizeSourceLines(source);
+  container.__originalLines = originalLines; // keep shuffled lines for solution mapping
   const expected = parseExpected(container, originalLines);
 
   // --- Event bindings ---
@@ -223,19 +224,29 @@ function reset(container, source, targets, originalLines) {
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
-  expected.forEach(exp => {
+
+  expected.forEach((exp, idx) => {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
+
+    // Use the shuffled number from originalLines[idx]
+    const shuffledLine = container.__originalLines?.[idx];
+    const lineNumber = shuffledLine?.dataset.line || (idx + 1);
+
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = "|"; // solution view doesn’t need shuffled numbers
+    label.textContent = `${lineNumber} |`;
+
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
+
     li.appendChild(label);
     li.appendChild(pre);
+
     const target = targets[exp.indent] || targets[0];
     target.appendChild(li);
   });
+
   showMessage(container, "✨ Solution revealed", true);
   logCurrentState(container);
 }
