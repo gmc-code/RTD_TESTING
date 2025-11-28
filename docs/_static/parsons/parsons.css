@@ -6,11 +6,6 @@
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  transition: box-shadow 0.3s ease;
-}
-
-.parsons-container:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 /* Source and target lists */
@@ -23,7 +18,6 @@
   border: 2px dashed #cbd5e1;
   border-radius: 6px;
   background: #f9fafb;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .parsons-drop-hover {
@@ -31,27 +25,17 @@
   border-color: #3b82f6;
 }
 
-/* Individual lines with number + pipe */
+/* Individual lines with number + pipe inside rectangle */
 .parsons-line {
-  position: relative;
+  display: flex;
+  align-items: center;
   margin: 0.3em 0;
-  padding: 0.5em 0.8em 0.5em 2.8em; /* extra left padding for number */
+  padding: 0.5em 0.8em;
   background: #f3f4f6;
   cursor: grab;
   border-radius: 6px;
   transition: all 0.25s ease-in-out;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-/* Pipe + number on the left */
-.parsons-line::before {
-  content: attr(data-line) " |";
-  position: absolute;
-  left: 0.8em;
-  top: 50%;
-  transform: translateY(-50%);
-  font-weight: bold;
-  color: #6b7280; /* gray */
 }
 
 .parsons-line:hover {
@@ -63,6 +47,23 @@
   transform: scale(1.02);
 }
 
+/* Number + pipe block */
+.line-label {
+  flex-shrink: 0;
+  margin-right: 0.8em;
+  padding: 0.2em 0.6em;
+  background: #e0e7ff;
+  color: #1e3a8a;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.parsons-line pre {
+  margin: 0;
+  font-family: monospace;
+  flex-grow: 1;
+}
+
 /* Controls */
 .parsons-controls {
   margin-top: 0.8em;
@@ -72,7 +73,7 @@
 
 .parsons-controls button {
   flex: 1;
-  padding: 0.5em 0.9em;
+  padding: 0.6em 1em;
   border: none;
   border-radius: 6px;
   cursor: pointer;

@@ -43,16 +43,19 @@ function normalizeSourceLines(source) {
   const lines = Array.from(source.querySelectorAll("li"));
   lines.forEach((li, idx) => {
     li.classList.add("parsons-line");
-    // assign line number if missing
     if (!li.dataset.line) {
       li.dataset.line = idx + 1;
     }
-    if (!li.querySelector("pre")) {
-      const pre = document.createElement("pre");
-      pre.textContent = li.textContent.trim();
-      li.textContent = "";
-      li.appendChild(pre);
-    }
+    // inject label + pre
+    const codeText = li.textContent.trim();
+    li.textContent = "";
+    const label = document.createElement("span");
+    label.className = "line-label";
+    label.textContent = `${li.dataset.line} |`;
+    const pre = document.createElement("pre");
+    pre.textContent = codeText;
+    li.appendChild(label);
+    li.appendChild(pre);
   });
   return lines;
 }
@@ -70,7 +73,7 @@ function parseExpected(container, originalLines) {
     return {
       text: code.trim(),
       indent: parseInt(indent, 10),
-      line: idx + 1 // expected numbering
+      line: idx + 1
     };
   });
 }
@@ -105,7 +108,7 @@ function enableDrop(container) {
       const li = container.__dragging;
       if (li) {
         target.appendChild(li);
-        logCurrentState(container); // log array after drop
+        logCurrentState(container);
       }
     });
   };
@@ -204,8 +207,12 @@ function showSolution(container, source, targets, expected) {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
     li.dataset.line = exp.line;
+    const label = document.createElement("span");
+    label.className = "line-label";
+    label.textContent = `${exp.line} |`;
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
+    li.appendChild(label);
     li.appendChild(pre);
     const target = targets[exp.indent] || targets[0];
     target.appendChild(li);
