@@ -128,8 +128,29 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(msg);
       }
       msg.textContent = text;
-      // force color by inline style to override stale classes
       msg.style.color = ok ? "#22c55e" : "#e74c3c";
+    }
+
+    // Highlight lines
+    function highlightLines(expected, current) {
+      // Clear old highlights
+      container.querySelectorAll(".parsons-line").forEach(li => {
+        li.classList.remove("line-correct", "line-incorrect");
+      });
+
+      const maxLen = Math.max(expected.length, current.length);
+      for (let i = 0; i < maxLen; i++) {
+        const e = expected[i];
+        const c = current[i];
+        if (!c) continue;
+        const li = targets[0].querySelectorAll(".parsons-line")[i];
+        if (!li) continue;
+        if (e && c.text === e.text && c.indent === e.indent) {
+          li.classList.add("line-correct");
+        } else {
+          li.classList.add("line-incorrect");
+        }
+      }
     }
 
     // Check
@@ -160,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
                    line.text === expected[i].text && line.indent === expected[i].indent
                  );
 
-      // Clear both states first
       container.classList.remove("parsons-correct", "parsons-incorrect");
 
       if (ok) {
@@ -171,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showMessage("✖ Try again", false);
       }
 
+      highlightLines(expected, current);
       console.log({ ok, expected, current });
     }
 
