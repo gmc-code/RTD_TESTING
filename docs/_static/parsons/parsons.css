@@ -28,9 +28,9 @@
 /* Individual lines: one rounded rectangle */
 .parsons-line {
   display: flex;
-  align-items: center;
+  align-items: baseline; /* align label and code on text baseline */
   margin: 0.3em 0;
-  padding: 0.5em 0.8em;
+  padding: 0.4em 0.8em;
   background: #f3f4f6;
   cursor: grab;
   border-radius: 6px;
@@ -56,13 +56,17 @@
   color: #1e3a8a;
   font-weight: bold;
   border-radius: 4px;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: monospace;       /* match code font */
+  line-height: 1.4;             /* match pre line-height */
+  display: inline-flex;
+  align-items: baseline;        /* align with code text */
 }
 
 /* Code text */
 .parsons-line pre {
   margin: 0;
   font-family: monospace;
+  line-height: 1.4;
   flex-grow: 1;
 }
 
