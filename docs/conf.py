@@ -39,8 +39,8 @@ extensions = [
 # for copybutton to allow use of :class: no-copybutton  in code blocks
 # copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"
 
-
-copybutton_exclude = ".highlight.no-copybutton, .highlight-python.no-copybutton, .no-copybutton"
+copybutton_exclude = ".no-copybutton"
+# copybutton_exclude = ".highlight.no-copybutton, .highlight-python.no-copybutton, .no-copybutton"
 # Only add copy buttons to code blocks that are NOT inside Parsons puzzles
 # copybutton_selector = "div.highlight pre:not(.no-copybutton)"
 
