@@ -45,7 +45,7 @@ class ParsonsDirective(Directive):
                 "correction": ""  # placeholder for correction output
             })
 
-        raw_lines = [item["code"] for item in expected_order]
+        raw_lines = [item["code_text"] for item in expected_order]
 
 
 

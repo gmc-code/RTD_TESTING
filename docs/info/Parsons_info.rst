@@ -61,22 +61,6 @@ The source (“palette”) the learner drags from is created as a bullet list. E
 - ``class="no-copybutton"`` to avoid extra toolbar clutter if using copy buttons.
 - ``data-index`` storing the 1 - based line number. This preserves the original line numbers even if the display order changes.
 
-A note on the raw lines array
------------------------------
-
-There is a small mismatch to fix before using the directive:
-
-- The code builds ``expected_order`` entries with ``"code_text"``, not ``"code"``.
-- The line ``raw_lines = [item["code"] for item in expected_order]`` will raise a ``KeyError`` because ``"code"`` doesn't exist.
-
-You should change this to:
-
-::
-
-  raw_lines = [item["code_text"] for item in expected_order]
-
-This ensures the source list displays the actual code lines extracted earlier.
-
 Target columns and 2D layout
 ----------------------------
 
