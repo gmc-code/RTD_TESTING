@@ -95,7 +95,6 @@ html_css_files = ["css/custom.css", "parsons/parsons.css"]
 # Custom JS
 html_js_files = [
     "parsons/parsons.js",
-    "parsons2/parsons2.js",
 ]
 
 # for rtd
