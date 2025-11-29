@@ -1,5 +1,5 @@
 /* ==============================
-   Parsons Puzzle — Enhanced Layout v0.6
+   Parsons Puzzle — Optimized Layout
    ============================== */
 
 .parsons-container {
@@ -9,7 +9,6 @@
   background: var(--pst-color-surface, #fafafa);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --indent-step: 4px; /* default, overridden by JS if needed */
 }
 
 /* Title */
@@ -77,7 +76,6 @@
   cursor: grab;
   border-radius: 6px;
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-  --indent: 0; /* default indent level */
 }
 
 .parsons-line:last-child {
@@ -99,7 +97,6 @@
   border-radius: 6px;
   border: 1px solid var(--pst-color-border, #ddd);
   overflow-x: auto;
-  margin-left: calc(var(--indent) * var(--indent-step));
 }
 
 /* ==============================
@@ -117,6 +114,7 @@
   user-select: none;
 }
 
+
 /* Focus & accessibility */
 .parsons-line:focus {
   outline: 2px dashed var(--pst-color-primary, #007bff);
@@ -128,28 +126,20 @@
    Dragging / Ghost states
    ============================== */
 
-.parsons-line.dragging {
-  opacity: 0.7;
+.parsons-ghost {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.parsons-drag {
+  opacity: 0.8;
   background-color: var(--pst-color-primary-bg, #e0eaff);
 }
 
-.parsons-target-list.drag-over,
-.parsons-source.drag-over {
+/* Highlight drop zones */
+.parsons-target-list.sortable-ghost,
+.parsons-source.sortable-ghost {
   border: 2px dashed var(--pst-color-primary, #007bff);
-}
-
-/* ==============================
-   Feedback states
-   ============================== */
-
-.parsons-line.is-correct pre {
-  border-color: #28a745;
-  background-color: #e6f4ea;
-}
-
-.parsons-line.is-incorrect pre {
-  border-color: #dc3545;
-  background-color: #fbe9eb;
 }
 
 /* ==============================
