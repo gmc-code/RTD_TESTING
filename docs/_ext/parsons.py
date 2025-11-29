@@ -163,7 +163,7 @@ class ParsonsDirective(Directive):
             f'<script type="application/json" id="{widget_id}-expected">{json.dumps(expected_order, separators=(",", ":"))}</script>',
             format="html")
 
-            noscript = nodes.raw(
+        noscript = nodes.raw(
             "",
             '<noscript><p>This puzzle requires JavaScript to interact.</p></noscript>',
             format="html")
