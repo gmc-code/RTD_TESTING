@@ -18,7 +18,8 @@ class ParsonsDirective(Directive):
         "seed": directives.nonnegative_int,
         "buttons": directives.unchanged,
         "indent-step": directives.nonnegative_int,
-        "check-mode": directives.unchanged,  # NEW: strict, order-only, indent-only
+        "check-mode":
+        directives.unchanged,  # NEW: strict, order-only, indent-only
         "auto-format": directives.flag,
     }
 
@@ -53,7 +54,9 @@ class ParsonsDirective(Directive):
         btn_labels = next(csv.reader([btn_csv]))
         while len(btn_labels) < 3:
             btn_labels.append("")
-        btn_check, btn_reset, btn_solution = [html.escape(lbl) for lbl in btn_labels[:3]]
+        btn_check, btn_reset, btn_solution = [
+            html.escape(lbl) for lbl in btn_labels[:3]
+        ]
 
         # Labels for columns
         labels_opt = self.options.get("labels")
@@ -83,9 +86,13 @@ class ParsonsDirective(Directive):
             })
 
         if not expected_order:
-            return [nodes.paragraph(text="(No lines provided for this Parsons puzzle.)")]
+            return [
+                nodes.paragraph(
+                    text="(No lines provided for this Parsons puzzle.)")
+            ]
 
-        raw_lines = [(item["line_number"], item["code_text"]) for item in expected_order]
+        raw_lines = [(item["line_number"], item["code_text"])
+                     for item in expected_order]
 
         if shuffle and not shuffle_js:
             random.shuffle(raw_lines)
@@ -100,8 +107,7 @@ class ParsonsDirective(Directive):
             f' data-indent-step="{indent_step}"'
             f' data-columns="{columns}"'
             f' data-seed="{html.escape(str(seed)) if seed is not None else ""}"'
-            f' data-check-mode="{check_mode}"'
-        )
+            f' data-check-mode="{check_mode}"')
 
         open_div = nodes.raw("", f"<div{container_attrs}>", format="html")
 
@@ -109,10 +115,17 @@ class ParsonsDirective(Directive):
         title_para += nodes.strong(text=title)
 
         source_ul = nodes.bullet_list(classes=["parsons-source"])
-        source_ul["attributes"] = {"role": "list", "aria-label": "Source lines"}
+        source_ul["attributes"] = {
+            "role": "list",
+            "aria-label": "Source lines"
+        }
         for line_number, code_line in raw_lines:
-            li = nodes.list_item(classes=["parsons-line", "draggable"])
-            li["attributes"] = {"role": "listitem", "tabindex": "0"}
+            li = nodes.list_item(classes=["parsons-line", "no-copybutton"])
+            li["attributes"] = {
+                "role": "listitem",
+                "tabindex": "0",
+                "draggable": "true"
+            }
             code = nodes.literal_block(code_line, code_line)
             code["language"] = lang
             code["classes"].append("no-copybutton")
@@ -122,11 +135,16 @@ class ParsonsDirective(Directive):
 
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
+            col = nodes.container(
+                classes=["parsons-target", f"parsons-col-{c+1}"])
             label_text = labels[c] if c < len(labels) else f"Column {c+1}"
-            col += nodes.paragraph(text=label_text, classes=["parsons-target-label"])
+            col += nodes.paragraph(text=label_text,
+                                   classes=["parsons-target-label"])
             ul = nodes.bullet_list(classes=["parsons-target-list"])
-            ul["attributes"] = {"role": "list", "aria-label": f"Target {c+1}: {label_text}"}
+            ul["attributes"] = {
+                "role": "list",
+                "aria-label": f"Target {c+1}: {label_text}"
+            }
             ul["data-col-index"] = str(c)
             col += ul
             target_wrapper += col
@@ -136,21 +154,25 @@ class ParsonsDirective(Directive):
             f'<button type="button" class="parsons-check" aria-label="Check solution">{btn_check}</button>'
             f'<button type="button" class="parsons-reset" aria-label="Reset puzzle">{btn_reset}</button>'
             f'<button type="button" class="parsons-show-solution" aria-label="Show solution">{btn_solution}</button>'
-            '</div>'
-        )
+            '</div>')
         controls = nodes.raw("", controls_html, format="html")
 
         expected_json_node = nodes.raw(
             "",
             f'<script type="application/json" id="{widget_id}-expected">{html.escape(json.dumps(expected_order, separators=(",", ":")))}</script>',
-            format="html"
-        )
+            format="html")
 
-        noscript = nodes.raw("", '<noscript><p>This puzzle requires JavaScript to interact.</p></noscript>', format="html")
+        noscript = nodes.raw(
+            "",
+            '<noscript><p>This puzzle requires JavaScript to interact.</p></noscript>',
+            format="html")
 
         close_div = nodes.raw("", "</div>", format="html")
 
-        return [open_div, title_para, source_ul, target_wrapper, controls, expected_json_node, noscript, close_div]
+        return [
+            open_div, title_para, source_ul, target_wrapper, controls,
+            expected_json_node, noscript, close_div
+        ]
 
 
 def setup(app):
@@ -158,7 +180,7 @@ def setup(app):
     app.add_css_file("parsons/parsons.css")
     app.add_js_file("parsons/parsons.js")
     return {
-        "version": "0.6",
+        "version": "0.7",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
