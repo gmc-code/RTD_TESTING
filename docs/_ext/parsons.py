@@ -126,10 +126,14 @@ class ParsonsDirective(Directive):
                 "tabindex": "0",
                 "draggable": "true"
             }
+
+            # Create the literal block and mark it with no-copybutton
             code = nodes.literal_block(code_line, code_line)
             code["language"] = lang
+            # Apply the exclusion class directly to <pre>
             code["classes"].append("no-copybutton")
             code["data-index"] = str(line_number)
+
             li += code
             source_ul += li
 
