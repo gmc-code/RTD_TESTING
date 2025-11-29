@@ -91,13 +91,25 @@ html_title = "RTD_TESTING_GMC"
 html_static_path = ["_static"]  # , 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
 # Use custom css  html_css_files = ["custom.css"]
-html_css_files = ["css/custom.css", "parsons/parsons.css", "parsons2/parsons2.css"]
+html_css_files = ["css/custom.css", "parsons/parsons.css"]
 
 # Custom JS
 html_js_files = [
     "parsons/parsons.js",
     "parsons2/parsons2.js",
 ]
+
+# for rtd
+def setup(app):
+    for css in ["css/custom.css", "parsons/parsons.css"]:
+        app.add_css_file(css)
+
+    for js in ["parsons/parsons.js"]:
+        app.add_js_file(js)
+
+    # external library
+    app.add_js_file(
+        "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js")
 
 
 # , "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]

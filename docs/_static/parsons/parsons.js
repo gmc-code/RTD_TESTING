@@ -1,300 +1,170 @@
+/* global Sortable */
 document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".parsons-container").forEach(initParsons);
+  const puzzles = document.querySelectorAll(".parsons-container");
+  puzzles.forEach(initParsons);
 });
 
+
 function initParsons(container) {
-  const source   = container.querySelector(".parsons-source");
-  const targets  = container.querySelectorAll(".parsons-target-list");
-  const controls = container.querySelector(".parsons-controls");
+  const source = container.querySelector(".parsons-source");
+  const targetCols = container.querySelectorAll(".parsons-target-list");
+  const btnCheck = container.querySelector(".parsons-check");
+  const btnReset = container.querySelector(".parsons-reset");
+  const btnSolution = container.querySelector(".parsons-show-solution");
 
-  const resetBtn    = controls.querySelector(".parsons-reset");
-  const checkBtn    = controls.querySelector(".parsons-check");
-  let solutionBtn   = controls.querySelector(".parsons-solution");
-
-  if (!solutionBtn) {
-    solutionBtn = createButton("parsons-solution", "Show Solution");
-    controls.appendChild(solutionBtn);
-  }
-
-  // store raw lines before any mutation
-  const rawLines = Array.from(source.querySelectorAll("li"));
-  container.__rawLines = rawLines;
-
-  // initial shuffle
-  const originalLines = normalizeSourceLines(source, rawLines);
-  container.__originalLines = originalLines;
-  container.__expected = parseExpected(container, originalLines);
-
-  // bindings
-  resetBtn?.addEventListener("click", () => reset(container, source, targets));
-  checkBtn?.addEventListener("click", () => check(container, source, targets, container.__expected));
-  solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, container.__expected));
-
-  // drag/drop
-  container.querySelectorAll(".parsons-line").forEach(makeDraggable(container));
-  targets.forEach(enableDrop(container));
-}
-
-
-/* ---------- Helpers ---------- */
-
-function createButton(className, text) {
-  const btn = document.createElement("button");
-  btn.className = className;
-  btn.textContent = text;
-  return btn;
-}
-
-// Fisher–Yates shuffle
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-// normalize with provided raw lines
-function normalizeSourceLines(source, rawLines) {
-  const lines = shuffleArray(rawLines.map(li => li.cloneNode(true)));
-
-  lines.forEach((li, idx) => {
-    li.classList.add("parsons-line");
-    li.dataset.line = idx + 1;
-
-    let codeText = li.textContent.trim();
-    codeText = codeText.replace(/^\d+\s*\|/, "");
-    codeText = codeText.replace(/Copy to clipboard/i, "").trim();
-
-    li.textContent = "";
-    const label = document.createElement("span");
-    label.className = "line-label";
-    label.textContent = `${li.dataset.line} |`;
-    const pre = document.createElement("pre");
-    pre.textContent = codeText;
-    li.appendChild(label);
-    li.appendChild(pre);
-  });
-
-  source.innerHTML = "";
-  lines.forEach(li => source.appendChild(li));
-  return lines;
-}
-
-
-/*
-Expected parsing:
-- If container.dataset.expected is absent: build expected from shuffled source (indent = 0, number = shuffled badge).
-- If present:
-  - Supports "number::indent::code" (explicit mapping).
-  - Or "indent::code" (numbers taken from shuffled source by index).
-Segments separated by "|".
-*/
-function parseExpected(container, originalLines) {
-  const raw = container.dataset.expected;
-  if (!raw) {
-    return originalLines.map(li => ({
-      text: li.querySelector("pre")?.textContent.trim(),
-      indent: 0,
-      number: parseInt(li.dataset.line, 10)
-    }));
-  }
-
-  return raw.split("|").map((seg, idx) => {
-    const parts = seg.split("::");
-    let number, indent, code;
-
-    if (parts.length === 3) {
-      // number::indent::code
-      number = parseInt(parts[0], 10);
-      indent = parseInt(parts[1], 10);
-      code   = parts[2];
-    } else if (parts.length === 2) {
-      // indent::code, number taken from shuffled source by index
-      number = parseInt(originalLines[idx]?.dataset.line, 10) || (idx + 1);
-      indent = parseInt(parts[0], 10);
-      code   = parts[1];
-    } else {
-      throw new Error("Invalid expected format. Use 'number::indent::code' or 'indent::code'.");
-    }
-
-    return {
-      text: (code || "").trim(),
-      indent: isFinite(indent) ? indent : 0,
-      number: isFinite(number) ? number : (idx + 1)
-    };
-  });
-}
-
-function makeDraggable(container) {
-  return li => {
-    li.setAttribute("draggable", "true");
-    li.addEventListener("dragstart", e => {
-      e.dataTransfer.setData("text/plain", li.id || "dragging");
-      container.__dragging = li;
-      li.classList.add("dragging");
-    });
-    li.addEventListener("dragend", () => {
-      li.classList.remove("dragging");
-      container.__dragging = null;
-    });
+  // Each puzzle keeps a deep copy of the original DOM for reset
+  const originalHTML = {
+    source: source.innerHTML,
+    targets: Array.from(targetCols).map(col => col.innerHTML)
   };
-}
 
-function enableDrop(container) {
-  return target => {
-    target.addEventListener("dragover", e => {
-      e.preventDefault();
-      target.classList.add("parsons-drop-hover");
-    });
-    target.addEventListener("dragleave", () => {
-      target.classList.remove("parsons-drop-hover");
-    });
-    target.addEventListener("drop", e => {
-      e.preventDefault();
-      target.classList.remove("parsons-drop-hover");
-      const li = container.__dragging;
-      if (li) {
-        target.appendChild(li);
-        logCurrentState(container);
-      }
-    });
-  };
-}
-
-function norm(s) {
-  return s.replace(/\u00A0/g, " ")
-          .replace(/\t/g, "    ")
-          .replace(/[ \f\r\v]+/g, " ")
-          .trim();
-}
-
-function showMessage(container, text, ok) {
-  let msg = container.querySelector(".parsons-message");
-  if (!msg) {
-    msg = document.createElement("div");
-    msg.className = "parsons-message";
-    msg.setAttribute("aria-live", "polite");
-    container.appendChild(msg);
+  // Load expected solution from JSON
+  let expected = [];
+  try {
+    expected = JSON.parse(container.dataset.expected);
+  } catch (e) {
+    console.error("Invalid Parsons JSON:", container.dataset.expected);
   }
-  msg.textContent = text;
-  msg.style.color = ok ? "#22c55e" : "#e74c3c";
-}
 
-/* ---------- Collection, check, and highlight ---------- */
+  const shuffleJS = container.dataset.shuffleJs === "true";
 
-function collectCurrent(container) {
-  const current = [];
-  container.querySelectorAll(".parsons-target-list").forEach(ul => {
-    const indent = parseInt(ul.dataset.indent, 10) || 0;
-    ul.querySelectorAll(".parsons-line").forEach(li => {
-      const pre = li.querySelector("pre");
-      current.push({
-        text: norm(pre.textContent),
-        indent,
-        number: parseInt(li.dataset.line, 10)
+  // If JS shuffle enabled, shuffle source items
+  if (shuffleJS) {
+    shuffleChildren(source);
+  }
+
+  // Setup drag-drop using SortableJS
+  makeSortable(source, "shared-" + Math.random());
+  targetCols.forEach(col => makeSortable(col, "shared-" + Math.random()));
+
+  // Button: Check answer
+  if (btnCheck) {
+    btnCheck.addEventListener("click", () => {
+      const user = readUserAnswer(targetCols);
+      const ok = compareUserSolution(user, expected);
+      alert(ok ? "✓ Correct!" : "✗ Incorrect. Try again.");
+    });
+  }
+
+  // Button: Reset
+  if (btnReset) {
+    btnReset.addEventListener("click", () => {
+      // restore source
+      source.innerHTML = originalHTML.source;
+      // restore target columns
+      targetCols.forEach((col, i) => {
+        col.innerHTML = originalHTML.targets[i];
       });
+
+      // re-bind Sortable after DOM reset
+      makeSortable(source, "shared-" + Math.random());
+      targetCols.forEach(col => makeSortable(col, "shared-" + Math.random()));
     });
-  });
-  return current;
-}
-
-function highlightLines(container, expected, current) {
-  container.querySelectorAll(".parsons-line").forEach(li => {
-    li.classList.remove("line-correct", "line-incorrect");
-  });
-  const placed = Array.from(container.querySelectorAll(".parsons-target-list .parsons-line"));
-  placed.forEach((li, i) => {
-    const e = expected[i], c = current[i];
-    if (!c || !e) return;
-    const isCorrect =
-      c.text === e.text &&
-      c.indent === e.indent &&
-      c.number === e.number;
-    li.classList.add(isCorrect ? "line-correct" : "line-incorrect");
-  });
-}
-
-function check(container, source, targets, expected) {
-  const current = collectCurrent(container);
-
-  // Must place all lines
-  if (source.querySelectorAll(".parsons-line").length > 0) {
-    container.classList.add("parsons-incorrect");
-    showMessage(container, "✖ Move all lines into the target area before checking.", false);
-    return;
   }
 
-  const sameLength = current.length === expected.length;
-  const ok = sameLength && current.every((line, i) =>
-    line.text === norm(expected[i].text) &&
-    line.indent === expected[i].indent &&
-    line.number === expected[i].number
-  );
-
-  container.classList.toggle("parsons-correct", ok);
-  container.classList.toggle("parsons-incorrect", !ok);
-  showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
-  highlightLines(container, expected, current);
-
-  console.log("Check result:", { ok, expected, current });
+  // Button: Show solution
+  if (btnSolution) {
+    btnSolution.addEventListener("click", () => {
+      showSolution(container, expected);
+    });
+  }
 }
 
-/* ---------- Reset and solution ---------- */
 
-function reset(container, source, targets) {
-  targets.forEach(ul => ul.innerHTML = "");
-  source.innerHTML = "";
+/* -------------------------------
+   Drag-drop setup
+--------------------------------*/
 
-  // reshuffle from raw lines every reset
-  const reshuffled = normalizeSourceLines(source, container.__rawLines);
-  container.__originalLines = reshuffled;
+function makeSortable(element, groupName) {
+  Sortable.create(element, {
+    group: groupName,
+    animation: 150,
+    ghostClass: "parsons-ghost",
+    dragClass: "parsons-drag",
+    fallbackOnBody: true,
+    swapThreshold: 0.65
+  });
+}
 
-  // make the lines draggable in place (they're already appended by normalize)
-  reshuffled.forEach(li => {
-    makeDraggable(container)(li);
+
+/* --------------------------------
+   Shuffle helper
+----------------------------------*/
+function shuffleChildren(parent) {
+  const nodes = Array.from(parent.children);
+  for (let i = nodes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    parent.appendChild(nodes[j]);
+  }
+}
+
+
+/* --------------------------------
+   Read user solution
+----------------------------------*/
+
+function readUserAnswer(targetCols) {
+  const result = [];
+
+  targetCols.forEach((col, colIndex) => {
+    Array.from(col.children).forEach(li => {
+      const codeBlock = li.querySelector("pre, code");
+      if (!codeBlock) return;
+
+      const code = codeBlock.innerText.trim();
+      // User indent = target column index OR allow parsing embedded indent?
+      const indent = parseInt(col.dataset.indent) * 4 || 0;
+      result.push({ indent, code });
+    });
   });
 
-  // rebuild expected against the new shuffle
-  container.__expected = parseExpected(container, reshuffled);
-
-  container.classList.remove("parsons-correct", "parsons-incorrect");
-  const msg = container.querySelector(".parsons-message");
-  if (msg) msg.textContent = "";
-  logCurrentState(container);
+  return result;
 }
 
 
-function showSolution(container, source, targets, expected) {
-  targets.forEach(ul => ul.innerHTML = "");
+/* ---------------------------------------
+   Compare user solution with expected
+----------------------------------------*/
+
+function compareUserSolution(user, expected) {
+  if (user.length !== expected.length) return false;
+
+  for (let i = 0; i < user.length; i++) {
+    if (user[i].indent !== expected[i].indent) return false;
+    if (user[i].code !== expected[i].code) return false;
+  }
+
+  return true;
+}
+
+
+/* ---------------------------------------
+   Show solution inside the container
+----------------------------------------*/
+
+function showSolution(container, expected) {
+  const source = container.querySelector(".parsons-source");
+  const targetCols = container.querySelectorAll(".parsons-target-list");
+
+  // Clear everything
   source.innerHTML = "";
+  targetCols.forEach(col => (col.innerHTML = ""));
 
-  expected.forEach(exp => {
+  // Reconstruct solution
+  expected.forEach(item => {
     const li = document.createElement("li");
-    li.className = "parsons-line line-correct";
-    li.dataset.line = exp.number;
-
-    const label = document.createElement("span");
-    label.className = "line-label";
-    label.textContent = `${exp.number} |`;
+    li.className = "parsons-line draggable";
 
     const pre = document.createElement("pre");
-    pre.textContent = exp.text;
+    pre.className = "no-copybutton language-python";
+    pre.textContent = item.code;
 
-    li.appendChild(label);
     li.appendChild(pre);
 
-    const target = targets[exp.indent] || targets[0];
-    target.appendChild(li);
+    // Put into correct column by indent level
+    // indent = indent/4, so indent 8 → col 2
+    const targetIndex = item.indent / 4;
+    const col = targetCols[targetIndex] ?? targetCols[0];
+    col.appendChild(li);
   });
-
-  showMessage(container, "✨ Solution revealed", true);
-  logCurrentState(container);
-}
-
-/* ---------- Debug ---------- */
-
-function logCurrentState(container) {
-  const current = collectCurrent(container);
-  console.log("Current state:", current);
 }
