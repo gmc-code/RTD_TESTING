@@ -188,38 +188,45 @@ class ParsonsDirective(Directive):
 
         # Source lines (if not hidden)
         source_nodes = []
+                # Source lines (if not hidden)
         if not hide_source:
-            source_ul = nodes.bullet_list(classes=["parsons-source"])  # will render as <ul>
-            source_ul["attributes"] = {"role": "list", "aria-label": "Source lines"}
+            source_ul = nodes.bullet_list(classes=["parsons-source"])
+            source_ul["role"] = "list"
+            source_ul["aria-label"] = "Source lines"
 
             for line_number, code_line, locked in raw_lines:
-                li = nodes.list_item(classes=["parsons-line"])  # list item wrapper
-                li["attributes"] = {"role": "listitem", "tabindex": "0", "draggable": "true"}
-                if locked:
-                    li['classes'].append('parsons-locked')
+                li = nodes.list_item(classes=["parsons-line"])
+                li["role"] = "listitem"
+                li["tabindex"] = "0"
+                li["draggable"] = "true"
 
-                # Create <pre><code> block
-                # Use literal_block so Sphinx recognizes it; also add classes for copybutton exclusion
+                if locked:
+                    li["class"].append("parsons-locked")
+
+                # ✔ FIX: proper Docutils attribute assignment
+                li["data-line"] = str(line_number)
+                li["data-line-number"] = str(line_number)
+                li["data-locked"] = "true" if locked else "false"
+
                 code_node = nodes.literal_block(code_line, code_line)
                 code_node["language"] = lang
                 code_node["classes"].append("no-copybutton")
-                # store meta attrs on the wrapper li as data attributes — used by JS
-                li['data-line-number'] = str(line_number)
-                li['data-locked'] = "true" if locked else "false"
-                li['attributes']['data-line'] = str(line_number)
 
-                # Add visible prefix if requested (rendered inside the pre for best theme compatibility)
                 if prefix_mode != "none":
-                    # The JS/CSS expects a small <span class="parsons-prefix"> inside the pre
-                    # We embed raw HTML in the literal block; many themes will preserve it.
                     prefix_text = self._format_prefix(prefix_mode, line_number)
-                    raw_html = f"<pre><code class='parsons-code'><span class='parsons-prefix'>{html.escape(prefix_text)}</span>{html.escape(code_line)}</code></pre>"
+                    raw_html = (
+                        f"<pre><code class='parsons-code'>"
+                        f"<span class='parsons-prefix'>{html.escape(prefix_text)}</span>"
+                        f"{html.escape(code_line)}</code></pre>"
+                    )
                     li += nodes.raw('', raw_html, format='html')
                 else:
                     li += code_node
 
                 source_ul += li
-            source_nodes = [source_ul]
+
+        source_nodes = [source_ul]
+
 
         # Target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
