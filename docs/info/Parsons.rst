@@ -10,6 +10,7 @@ Build a Reversed List
    :title: Build a reversed list
    :shuffle:
    :columns: 1
+   :class: no-copy
 
    - result = []
    - for x in reversed(xs):
