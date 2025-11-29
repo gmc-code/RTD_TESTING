@@ -1,17 +1,14 @@
-from docutils import nodes
-from docutils.parsers.rst import Directive, directives
-import random
-
+# ... keep your imports and class definition ...
 
 class ParsonsDirective(Directive):
     has_content = True
-    optional_arguments = 0
     option_spec = {
         "title": directives.unchanged,
         "shuffle": directives.flag,
         "shuffle-js": directives.flag,
         "columns": directives.positive_int,
         "labels": directives.unchanged,
+        "auto-format": directives.flag,
     }
 
     def run(self):
@@ -20,90 +17,78 @@ class ParsonsDirective(Directive):
         shuffle_js = "shuffle-js" in self.options
         columns = int(self.options.get("columns", 1))
 
-        # Parse labels if provided
+        # Parse labels (CSV-safe)
         labels_opt = self.options.get("labels")
-        labels = []
-        if labels_opt:
-            labels = [lbl.strip() for lbl in labels_opt.split(",")]
+        labels = next(csv.reader([labels_opt])) if labels_opt else []
 
-        # Preserve original order for solution
+        # Build expected order with consistent indent
         expected_order = []
         for line in self.content:
             if not line.strip():
                 continue
-            if line.strip().startswith("- "):
-                raw = line.strip()[2:]
-            else:
-                raw = line.strip()
-            indent = len(line) - len(line.lstrip(" "))
-            expected_order.append((indent, raw))
+            expanded = line.expandtabs(4)
+            indent = len(expanded) - len(expanded.lstrip())
+            raw = expanded.strip()
+            expected_order.append({"indent": indent, "code": raw})
 
-        raw_lines = [code for _, code in expected_order]
+        raw_lines = [item["code"] for item in expected_order]
 
-        if shuffle:
+        # shuffle in Python only if JS won't do it
+        if shuffle and not shuffle_js:
             random.shuffle(raw_lines)
 
-        expected_attr = "|".join(f"{indent}::{code}" for indent, code in expected_order)
+        # embed JSON safely
+        expected_json = html.escape(json.dumps(expected_order))
         shuffle_attr = "true" if shuffle_js else "false"
 
-        # Open container
+        # open wrapper
         open_div = nodes.raw(
             "",
             f'<div class="parsons-container parsons-cols-{columns}" '
-            f'data-expected="{expected_attr}" data-shuffle-js="{shuffle_attr}">',
+            f'data-expected="{expected_json}" data-shuffle-js="{shuffle_attr}">',
             format="html",
         )
 
-        # Title
+        # title
         title_para = nodes.paragraph()
         title_para += nodes.strong(text=title)
 
-        # Source list
+        # source list
         source_ul = nodes.bullet_list(classes=["parsons-source"])
-        for i, line in enumerate(raw_lines):
-            li = nodes.list_item(classes=["parsons-line"])
-            li["data-index"] = str(i)
-            li["classes"].append("draggable")
+        for i, code_line in enumerate(raw_lines):
+            li = nodes.list_item(classes=["parsons-line", "draggable"])
 
-            code = nodes.literal_block(line, line)
+            code = nodes.literal_block(code_line, code_line)
             code["language"] = "python"
             code["classes"].append("no-copybutton")
+
+            # store original line number on <pre>
+            code["data-index"] = str(i + 1)  # +1 so numbering starts at 1
+
             li += code
             source_ul += li
 
-        # Target columns
+        # target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
             col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
             label_text = labels[c] if c < len(labels) else f"Column {c+1}"
-            label = nodes.paragraph(text=label_text, classes=["parsons-target-label"])
-            col += label
-            target_ul = nodes.bullet_list(classes=["parsons-target-list"])
-            target_ul["data-indent"] = str(c)  # ensure indent is always set
-            col += target_ul
+            col += nodes.paragraph(text=label_text, classes=["parsons-target-label"])
+
+            ul = nodes.bullet_list(classes=["parsons-target-list"])
+            ul["data-indent"] = str(c)
+            col += ul
             target_wrapper += col
 
-        # Controls
-        controls = nodes.raw(
-            "",
+        # controls
+        controls_html = (
             '<div class="parsons-controls">'
             '<button class="parsons-check">Check</button>'
             '<button class="parsons-reset">Reset</button>'
-            '</div>',
-            format="html",
+            '<button class="parsons-show-solution">Solution</button>'
+            '</div>'
         )
-
+        controls = nodes.raw("", controls_html, format="html")
         close_div = nodes.raw("", "</div>", format="html")
 
         return [open_div, title_para, source_ul, target_wrapper, controls, close_div]
-
-
-def setup(app):
-    app.add_directive("parsons", ParsonsDirective)
-    app.add_css_file("parsons/parsons.css")
-    app.add_js_file("parsons/parsons.js")
-    return {
-        "version": "0.3",
-        "parallel_read_safe": True,
-        "parallel_write_safe": True,
-    }

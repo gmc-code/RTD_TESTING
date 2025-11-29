@@ -99,6 +99,22 @@
   overflow-x: auto;
 }
 
+/* ==============================
+   Original line numbers with pipe
+   ============================== */
+
+.parsons-line pre::before {
+  content: attr(data-index) " | ";
+  display: inline-block;
+  width: 2.5rem;
+  text-align: right;
+  margin-right: 0.5rem;
+  color: var(--pst-color-text-muted, #888);
+  font-family: monospace;
+  user-select: none;
+}
+
+
 /* Focus & accessibility */
 .parsons-line:focus {
   outline: 2px dashed var(--pst-color-primary, #007bff);

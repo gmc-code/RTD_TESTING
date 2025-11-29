@@ -6,6 +6,8 @@ import html
 import csv
 
 
+# ... keep your imports and class definition ...
+
 class ParsonsDirective(Directive):
     has_content = True
     option_spec = {
@@ -32,14 +34,11 @@ class ParsonsDirective(Directive):
         for line in self.content:
             if not line.strip():
                 continue
-
             expanded = line.expandtabs(4)
             indent = len(expanded) - len(expanded.lstrip())
             raw = expanded.strip()
-
             expected_order.append({"indent": indent, "code": raw})
 
-        # raw lines
         raw_lines = [item["code"] for item in expected_order]
 
         # shuffle in Python only if JS won't do it
@@ -48,7 +47,6 @@ class ParsonsDirective(Directive):
 
         # embed JSON safely
         expected_json = html.escape(json.dumps(expected_order))
-
         shuffle_attr = "true" if shuffle_js else "false"
 
         # open wrapper
@@ -67,10 +65,14 @@ class ParsonsDirective(Directive):
         source_ul = nodes.bullet_list(classes=["parsons-source"])
         for i, code_line in enumerate(raw_lines):
             li = nodes.list_item(classes=["parsons-line", "draggable"])
-            li["data-index"] = str(i)
+
             code = nodes.literal_block(code_line, code_line)
             code["language"] = "python"
             code["classes"].append("no-copybutton")
+
+            # store original line number on <pre>
+            code["data-index"] = str(i + 1)  # +1 so numbering starts at 1
+
             li += code
             source_ul += li
 
@@ -94,7 +96,6 @@ class ParsonsDirective(Directive):
             '<button class="parsons-show-solution">Solution</button>'
             '</div>'
         )
-
         controls = nodes.raw("", controls_html, format="html")
         close_div = nodes.raw("", "</div>", format="html")
 
