@@ -1,5 +1,5 @@
 /* ==============================
-   Parsons Puzzle — Optimized Layout
+   Parsons Puzzle — Modern Layout
    ============================== */
 
 .parsons-container {
@@ -7,35 +7,29 @@
   padding: 1rem;
   margin: 1.5rem 0;
   background: var(--pst-color-surface, #fafafa);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
 }
 
 /* Title */
 .parsons-container strong {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   display: block;
   margin-bottom: 0.8rem;
+  color: var(--pst-color-text-base, #222);
 }
 
-/* ==============================
-   Source + Target columns
-   ============================== */
-
+/* Source + Target columns */
 .parsons-source,
 .parsons-target-list {
   list-style: none;
   padding: 0.5rem;
   margin: 0;
   min-height: 40px;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: border-color 0.2s, background 0.2s;
-}
-
-.parsons-source {
-  border: 1px dashed #ccc;
-  margin-bottom: 1rem;
   background: var(--pst-color-background, #fff);
+  border: 1px dashed #ccc;
 }
 
 /* Multi-column container */
@@ -51,12 +45,11 @@
   flex: 1;
   min-width: 200px;
   border: 1px solid var(--pst-color-border, #ccc);
-  padding: 0.5rem;
-  border-radius: 6px;
-  background: var(--pst-color-background, #fff);
+  padding: 0.6rem;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #fefefe, #f5f5f5);
   min-height: 100px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 /* Column labels */
@@ -68,56 +61,52 @@
 }
 
 /* ==============================
-   Draggable list item
+   Draggable list item with numbers
    ============================== */
 
 .parsons-line {
-  margin: 0 0 0.4rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem 0;
+  padding: 0.4rem 0.6rem;
   cursor: grab;
-  border-radius: 6px;
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  font-family: "Fira Code", monospace;
 }
 
-.parsons-line:last-child {
-  margin-bottom: 0;
+/* Line number and pipe */
+.parsons-line .line-label {
+  font-weight: bold;
+  color: var(--pst-color-primary, #4a78ff);
+  flex-shrink: 0;
+  user-select: none;
 }
 
-.parsons-line pre,
-.parsons-line code,
-.parsons-line .literal-block {
-  margin: 0;
-  font-family: "Fira Code", "Courier New", monospace;
-  white-space: pre-wrap;
-}
-
-/* Background for code blocks */
+/* Pre inside line */
 .parsons-line pre {
-  padding: 0.5rem;
-  background: var(--pst-color-surface, #f5f5f5);
-  border-radius: 6px;
-  border: 1px solid var(--pst-color-border, #ddd);
+  margin: 0;
+  white-space: pre-wrap;
+  flex: 1;
   overflow-x: auto;
+  background: #f8f8f8;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #eee;
 }
 
-/* Focus & accessibility */
-.parsons-line:focus {
-  outline: 2px dashed var(--pst-color-primary, #007bff);
-  outline-offset: 2px;
-  background-color: var(--pst-color-primary-bg, #e0eaff);
-}
-
-/* ==============================
-   Dragging / Ghost states
-   ============================== */
-
+/* Dragging / Ghost states */
 .parsons-ghost {
   opacity: 0.5;
   transform: scale(0.95);
 }
 
 .parsons-drag {
-  opacity: 0.8;
-  background-color: var(--pst-color-primary-bg, #e0eaff);
+  opacity: 0.85;
+  background-color: #e0eaff;
 }
 
 /* Highlight drop zones */
@@ -138,12 +127,12 @@
 }
 
 .parsons-controls button {
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
   font-size: 0.95rem;
   background: var(--pst-color-primary, #4a78ff);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
@@ -158,7 +147,7 @@
   transform: scale(0.97);
 }
 
-/* “Solution” button override */
+/* Solution button */
 .parsons-show-solution {
   background: #8968ff !important;
 }
