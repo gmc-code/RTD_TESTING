@@ -6,9 +6,6 @@ import html
 import csv
 
 
-# ... keep your imports and class definition ...
-
-
 class ParsonsDirective(Directive):
     has_content = True
     option_spec = {
@@ -17,101 +14,143 @@ class ParsonsDirective(Directive):
         "shuffle-js": directives.flag,
         "columns": directives.positive_int,
         "labels": directives.unchanged,
+        "language": directives.unchanged,
+        "seed": directives.nonnegative_int,
+        "buttons": directives.unchanged,
+        "indent-step": directives.nonnegative_int,
+        "check-mode": directives.unchanged,  # NEW: strict, order-only, indent-only
         "auto-format": directives.flag,
     }
 
     def run(self):
-        title = self.options.get("title", "Parsons Puzzle")
+        # Title
+        title = html.escape(self.options.get("title", "Parsons Puzzle"))
+
+        # Shuffle options
         shuffle = "shuffle" in self.options
         shuffle_js = "shuffle-js" in self.options
-        columns = int(self.options.get("columns", 1))
 
-        # Parse labels (CSV-safe)
+        # Columns validation
+        columns = int(self.options.get("columns", 1))
+        if columns < 1:
+            columns = 1
+
+        # Language
+        lang = html.escape(self.options.get("language", "python"))
+
+        # Indent step
+        indent_step = int(self.options.get("indent-step", 4))
+        if indent_step <= 0:
+            indent_step = 4
+
+        # Seed
+        seed = self.options.get("seed")
+        if seed is not None:
+            random.seed(int(seed))
+
+        # Button labels
+        btn_csv = self.options.get("buttons", "Check,Reset,Solution")
+        btn_labels = next(csv.reader([btn_csv]))
+        while len(btn_labels) < 3:
+            btn_labels.append("")
+        btn_check, btn_reset, btn_solution = [html.escape(lbl) for lbl in btn_labels[:3]]
+
+        # Labels for columns
         labels_opt = self.options.get("labels")
         labels = next(csv.reader([labels_opt])) if labels_opt else []
+        labels = [html.escape(lbl) for lbl in labels]
 
-        # Build expected order with consistent indent
+        # Check mode validation
+        check_mode = self.options.get("check-mode", "strict").lower()
+        if check_mode not in ("strict", "order-only", "indent-only"):
+            check_mode = "strict"
+
+        # Build expected order
         expected_order = []
         for i, line in enumerate(self.content, start=1):
             if not line.strip():
                 continue
             expanded = line.expandtabs(4)
-            indent = len(expanded) - len(expanded.lstrip())
-            raw = expanded.strip()
+            indent_spaces = len(expanded) - len(expanded.lstrip())
+            code_text = expanded.strip()
+            indent_level = indent_spaces // indent_step
             expected_order.append({
                 "line_number": i,
-                "indent": indent,
-                "code_text": raw,
-                "correction": ""  # placeholder for correction output
+                "indent": indent_spaces,
+                "indent_level": indent_level,
+                "code_text": code_text,
+                "correction": ""
             })
 
-        raw_lines = [item["code_text"] for item in expected_order]
+        if not expected_order:
+            return [nodes.paragraph(text="(No lines provided for this Parsons puzzle.)")]
 
+        raw_lines = [(item["line_number"], item["code_text"]) for item in expected_order]
 
-
-            # shuffle in Python only if JS won't do it
         if shuffle and not shuffle_js:
             random.shuffle(raw_lines)
 
-        # embed JSON safely
-        expected_json = html.escape(json.dumps(expected_order))
+        widget_id = f"parsons-{random.randint(10000, 99999)}"
         shuffle_attr = "true" if shuffle_js else "false"
 
-        # open wrapper
-        open_div = nodes.raw(
-            "",
-            f'<div class="parsons-container parsons-cols-{columns}" '
-            f'data-expected="{expected_json}" data-shuffle-js="{shuffle_attr}">',
-            format="html",
+        container_attrs = (
+            f' id="{widget_id}"'
+            f' class="parsons-container parsons-cols-{columns}"'
+            f' data-shuffle-js="{shuffle_attr}"'
+            f' data-indent-step="{indent_step}"'
+            f' data-columns="{columns}"'
+            f' data-seed="{html.escape(str(seed)) if seed is not None else ""}"'
+            f' data-check-mode="{check_mode}"'
         )
 
-        # title
+        open_div = nodes.raw("", f"<div{container_attrs}>", format="html")
+
         title_para = nodes.paragraph()
         title_para += nodes.strong(text=title)
 
-        # source list
         source_ul = nodes.bullet_list(classes=["parsons-source"])
-        for i, code_line in enumerate(raw_lines):
+        source_ul["attributes"] = {"role": "list", "aria-label": "Source lines"}
+        for line_number, code_line in raw_lines:
             li = nodes.list_item(classes=["parsons-line", "draggable"])
-
+            li["attributes"] = {"role": "listitem", "tabindex": "0"}
             code = nodes.literal_block(code_line, code_line)
-            code["language"] = "python"
+            code["language"] = lang
             code["classes"].append("no-copybutton")
-
-            # store original line number on <pre>
-            code["data-index"] = str(i + 1)  # +1 so numbering starts at 1
-
+            code["data-index"] = str(line_number)
             li += code
             source_ul += li
 
-        # target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(
-                classes=["parsons-target", f"parsons-col-{c+1}"])
+            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
             label_text = labels[c] if c < len(labels) else f"Column {c+1}"
-            col += nodes.paragraph(text=label_text,
-                                   classes=["parsons-target-label"])
-
+            col += nodes.paragraph(text=label_text, classes=["parsons-target-label"])
             ul = nodes.bullet_list(classes=["parsons-target-list"])
-            ul["data-indent"] = str(c)
+            ul["attributes"] = {"role": "list", "aria-label": f"Target {c+1}: {label_text}"}
+            ul["data-col-index"] = str(c)
             col += ul
             target_wrapper += col
 
-        # controls
         controls_html = (
             '<div class="parsons-controls">'
-            '<button class="parsons-check">Check</button>'
-            '<button class="parsons-reset">Reset</button>'
-            '<button class="parsons-show-solution">Solution</button>'
-            '</div>')
+            f'<button type="button" class="parsons-check" aria-label="Check solution">{btn_check}</button>'
+            f'<button type="button" class="parsons-reset" aria-label="Reset puzzle">{btn_reset}</button>'
+            f'<button type="button" class="parsons-show-solution" aria-label="Show solution">{btn_solution}</button>'
+            '</div>'
+        )
         controls = nodes.raw("", controls_html, format="html")
+
+        expected_json_node = nodes.raw(
+            "",
+            f'<script type="application/json" id="{widget_id}-expected">{html.escape(json.dumps(expected_order, separators=(",", ":")))}</script>',
+            format="html"
+        )
+
+        noscript = nodes.raw("", '<noscript><p>This puzzle requires JavaScript to interact.</p></noscript>', format="html")
+
         close_div = nodes.raw("", "</div>", format="html")
 
-        return [
-            open_div, title_para, source_ul, target_wrapper, controls,
-            close_div
-        ]
+        return [open_div, title_para, source_ul, target_wrapper, controls, expected_json_node, noscript, close_div]
 
 
 def setup(app):
@@ -119,7 +158,7 @@ def setup(app):
     app.add_css_file("parsons/parsons.css")
     app.add_js_file("parsons/parsons.js")
     return {
-        "version": "0.4",
+        "version": "0.6",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
