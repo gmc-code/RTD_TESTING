@@ -1,0 +1,9 @@
+.parsons-prefix {
+  color: #666;
+  font-weight: bold;
+  margin-right: 0.5rem;
+  user-select: none;
+  display: inline-block;
+  width: 3em; /* fixed width for alignment */
+  text-align: right;
+}

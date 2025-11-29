@@ -215,9 +215,8 @@ class ParsonsDirective(Directive):
                 if prefix_mode != "none":
                     prefix_text = self._format_prefix(prefix_mode, line_number)
                     raw_html = (
-                        f"<pre><code class='parsons-code'>"
-                        f"<span class='parsons-prefix'>{html.escape(prefix_text)}</span>"
-                        f"{html.escape(code_line)}</code></pre>"
+                        f"<pre class='parsons-code'><span class='parsons-prefix'>{html.escape(prefix_text)}</span>"
+                        f"{html.escape(code_line)}</pre>"
                     )
                     li += nodes.raw('', raw_html, format='html')
                 else:
