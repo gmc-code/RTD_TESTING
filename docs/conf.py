@@ -102,12 +102,13 @@ def setup(app):
     for css in ["css/custom.css", "parsons/parsons.css"]:
         app.add_css_file(css)
 
-    for js in ["parsons/parsons.js"]:
+    for js in ["parsons/parsons.js","parsons/Sortable.min.js"]:
         app.add_js_file(js)
 
     # external library
-    app.add_js_file(
-        "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js")
+    # app.add_js_file(
+    #     "https://unpkg.com/sortablejs@1.15.0.js")
+
 
 
 # , "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
