@@ -8,6 +8,7 @@ import csv
 
 # ... keep your imports and class definition ...
 
+
 class ParsonsDirective(Directive):
     has_content = True
     option_spec = {
@@ -31,17 +32,24 @@ class ParsonsDirective(Directive):
 
         # Build expected order with consistent indent
         expected_order = []
-        for line in self.content:
+        for i, line in enumerate(self.content, start=1):
             if not line.strip():
                 continue
             expanded = line.expandtabs(4)
             indent = len(expanded) - len(expanded.lstrip())
             raw = expanded.strip()
-            expected_order.append({"indent": indent, "code": raw})
+            expected_order.append({
+                "line_number": i,
+                "indent": indent,
+                "code_text": raw,
+                "correction": ""  # placeholder for correction output
+            })
 
         raw_lines = [item["code"] for item in expected_order]
 
-        # shuffle in Python only if JS won't do it
+
+
+            # shuffle in Python only if JS won't do it
         if shuffle and not shuffle_js:
             random.shuffle(raw_lines)
 
@@ -79,9 +87,11 @@ class ParsonsDirective(Directive):
         # target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
         for c in range(columns):
-            col = nodes.container(classes=["parsons-target", f"parsons-col-{c+1}"])
+            col = nodes.container(
+                classes=["parsons-target", f"parsons-col-{c+1}"])
             label_text = labels[c] if c < len(labels) else f"Column {c+1}"
-            col += nodes.paragraph(text=label_text, classes=["parsons-target-label"])
+            col += nodes.paragraph(text=label_text,
+                                   classes=["parsons-target-label"])
 
             ul = nodes.bullet_list(classes=["parsons-target-list"])
             ul["data-indent"] = str(c)
@@ -94,12 +104,14 @@ class ParsonsDirective(Directive):
             '<button class="parsons-check">Check</button>'
             '<button class="parsons-reset">Reset</button>'
             '<button class="parsons-show-solution">Solution</button>'
-            '</div>'
-        )
+            '</div>')
         controls = nodes.raw("", controls_html, format="html")
         close_div = nodes.raw("", "</div>", format="html")
 
-        return [open_div, title_para, source_ul, target_wrapper, controls, close_div]
+        return [
+            open_div, title_para, source_ul, target_wrapper, controls,
+            close_div
+        ]
 
 
 def setup(app):
