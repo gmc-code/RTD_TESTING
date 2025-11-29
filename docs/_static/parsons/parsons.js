@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   containers.forEach(initParsons);
 });
 
-function initParsons(container) {
+ function initParsons(container) {
   const widgetId = container.id;
   const expectedScript = document.getElementById(`${widgetId}-expected`);
   if (!expectedScript) return;
@@ -14,6 +14,27 @@ function initParsons(container) {
   const indentStep = parseInt(container.dataset.indentStep || "4", 10);
   const shuffleJs = container.dataset.shuffleJs === "true";
   const checkMode = container.dataset.checkMode || "strict";
+
+  // If Sortable.js is available, use it
+  if (window.Sortable) {
+    Sortable.create(container.querySelector(".parsons-source"), {
+      group: "parsons",
+      animation: 150,
+      fallbackOnBody: true,
+      swapThreshold: 0.65
+    });
+    container.querySelectorAll(".parsons-target-list").forEach(list => {
+      Sortable.create(list, {
+        group: "parsons",
+        animation: 150,
+        fallbackOnBody: true,
+        swapThreshold: 0.65
+      });
+    });
+  } else {
+    // Fallback: use native drag/drop
+    enableNativeDrag(container);
+  }
 
   // Make lines focusable and initialize indent
   container.querySelectorAll(".parsons-line").forEach(line => {
@@ -193,4 +214,42 @@ function applyFeedback(container, feedback) {
       line.classList.add("is-incorrect");
     }
   });
+}
+function enableNativeDrag(container) {
+  container.querySelectorAll(".parsons-line").forEach(line => {
+    line.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/plain", line.dataset.index);
+      line.classList.add("dragging");
+    });
+    line.addEventListener("dragend", () => {
+      line.classList.remove("dragging");
+    });
+  });
+
+  container.querySelectorAll(".parsons-target-list, .parsons-source").forEach(list => {
+    list.addEventListener("dragover", e => {
+      e.preventDefault();
+      const dragging = container.querySelector(".dragging");
+      if (!dragging) return;
+      const afterElement = getDragAfterElement(list, e.clientY);
+      if (afterElement == null) {
+        list.appendChild(dragging);
+      } else {
+        list.insertBefore(dragging, afterElement);
+      }
+    });
+  });
+}
+
+function getDragAfterElement(list, y) {
+  const elements = [...list.querySelectorAll(".parsons-line:not(.dragging)")];
+  return elements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
 }

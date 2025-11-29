@@ -180,6 +180,7 @@ def setup(app):
     app.add_directive("parsons", ParsonsDirective)
     app.add_css_file("parsons/parsons.css")
     app.add_js_file("parsons/parsons.js")
+    app.add_js_file("parsons/Sortable.min.js")
     return {
         "version": "0.7",
         "parallel_read_safe": True,
