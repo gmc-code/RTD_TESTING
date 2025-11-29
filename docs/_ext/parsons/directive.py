@@ -206,6 +206,7 @@ class ParsonsDirective(Directive):
                 # store meta attrs on the wrapper li as data attributes — used by JS
                 li['data-line-number'] = str(line_number)
                 li['data-locked'] = "true" if locked else "false"
+                li['attributes']['data-line'] = str(line_number)
 
                 # Add visible prefix if requested (rendered inside the pre for best theme compatibility)
                 if prefix_mode != "none":
