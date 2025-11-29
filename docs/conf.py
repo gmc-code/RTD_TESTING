@@ -29,7 +29,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx_togglebutton",
     "sphinx_design",
-    "parsons",  # our custom directive
+    "parsons.directive",  # our custom directive
 ]
 
 # "sphinx.ext.doctest",

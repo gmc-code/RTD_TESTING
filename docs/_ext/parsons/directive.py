@@ -286,6 +286,7 @@ class ParsonsDirective(Directive):
 
 
 def setup(app):
+    app.add_directive("parsons", ParsonsDirective)
     # register static files that should be copied to _static during build
     # Put parsons.css, Sortable.min.js and parsons.js under _static/parsons/
     app.add_css_file("parsons/parsons.css")
