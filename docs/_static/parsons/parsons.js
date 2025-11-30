@@ -246,11 +246,11 @@ function showSolution(container, source, targets, expected) {
   expected.forEach(exp => {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
-    li.dataset.line = exp.line;          // keep original line id
-    li.dataset.text = exp.text;          // store clean code
+    li.dataset.line = exp.line;
+    li.dataset.text = exp.text;
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${li.dataset.line} |`; // use dataset.line
+    label.textContent = `${li.dataset.line} |`;
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
     li.appendChild(label);
