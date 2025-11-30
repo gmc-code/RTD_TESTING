@@ -69,14 +69,23 @@ function normalizeSourceLines(source) {
     if (!li.dataset.line) {
       li.dataset.line = idx + 1;
     }
+
+    // Get raw text and strip any leading number + pipe
     const rawText = li.textContent.trim();
-    const cleanText = normalizeLineText(rawText); // strip "N |"
+    const cleanText = normalizeLineText(rawText); // remove "N |" prefix
+
+    // Clear existing content
     li.textContent = "";
+
+    // Add label span
     const label = document.createElement("span");
     label.className = "line-label";
     label.textContent = `${li.dataset.line} |`;
+
+    // Add clean code in <pre>
     const pre = document.createElement("pre");
     pre.textContent = cleanText;
+
     li.appendChild(label);
     li.appendChild(pre);
   });
