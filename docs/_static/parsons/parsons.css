@@ -51,6 +51,7 @@
   flex-shrink: 0;
   margin-right: 0.8em;
   padding: 0.2em 0.6em;
+  align-items: center;
   background: #e0e7ff;
   color: #1e3a8a;
   font-weight: bold;
