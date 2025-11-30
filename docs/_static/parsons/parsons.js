@@ -103,15 +103,14 @@ function parseExpected(container, originalLines) {
     }));
   }
 
-  const expectedSegments = container.dataset.expected.split("|");
-  return expectedSegments.map((seg, idx) => {
+  const segs = container.dataset.expected.split("|");
+  return segs.map((seg, idx) => {
     const [indent, code] = seg.split("::");
-    // Use the original line id from originalLines[idx]
-    const origLine = parseInt(originalLines[idx].dataset.line, 10);
+    const origLineId = parseInt(originalLines[idx].dataset.line, 10); // preserve shuffled id
     return {
       text: code.trim(),
       indent: parseInt(indent, 10),
-      line: origLine
+      line: origLineId
     };
   });
 }
