@@ -64,6 +64,9 @@ class ParsonsDirective(Directive):
         # Source list
         source_ul = nodes.bullet_list(classes=["parsons-source"])
 
+
+        # ----------------------------------------------------------------------------------------
+
         def strip_number_prefix(s: str) -> str:
             # Remove leading "N |" if present; also guard against accidental "NNcode"
             s = s.strip()
@@ -74,6 +77,9 @@ class ParsonsDirective(Directive):
                     return right.strip()
             # If someone concatenated digits with code (e.g., "11nums"), keep original
             return s
+
+        # ----------------------------------------------------------------------------------------
+
 
         for indent, code, orig_line in lines:
             clean = strip_number_prefix(code)
