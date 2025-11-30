@@ -61,7 +61,6 @@ function createButton(className, text) {
   btn.textContent = text;
   return btn;
 }
-
 function normalizeSourceLines(source) {
   const lines = Array.from(source.querySelectorAll("li"));
   lines.forEach((li, idx) => {
@@ -70,9 +69,8 @@ function normalizeSourceLines(source) {
       li.dataset.line = idx + 1;
     }
 
-    // Get raw text and strip any leading number + pipe
-    const rawText = li.textContent.trim();
-    const cleanText = normalizeLineText(rawText); // remove "N |" prefix
+    // Use the clean code from data-text (set by directive)
+    const cleanText = li.dataset.text || "";
 
     // Clear existing content
     li.textContent = "";
@@ -91,6 +89,7 @@ function normalizeSourceLines(source) {
   });
   return lines;
 }
+
 
 
 function parseExpected(container, originalLines) {

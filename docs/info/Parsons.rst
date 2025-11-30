@@ -18,14 +18,14 @@ Basic Puzzle
 
 ----
 
-Factorial Puzzle (Strict Check)
+Factorial Puzzle
 -------------------------------
 
 .. parsons::
    :title: Factorial function
    :shuffle:
    :columns: 1
-   :check-mode: strict
+
 
    - def factorial(n):
    -     if n == 0:
@@ -43,7 +43,7 @@ Order-Only Check
    :title: Order matters, indent ignored
    :shuffle:
    :columns: 1
-   :check-mode: order-only
+
 
    - for i in range(3):
    - print(i)
@@ -57,8 +57,6 @@ Indent-Only Check
    :title: Indentation matters, order ignored
    :shuffle:
    :columns: 1
-   :check-mode: indent-only
-   :indent-step: 2
 
    - for i in range(3):
    -     print(i)
@@ -123,28 +121,11 @@ Custom Buttons
    :title: Custom button labels
    :shuffle:
    :columns: 1
-   :buttons: Verify,Restart,Reveal
+
 
    - nums = [1, 2, 3]
    - squares = [n*n for n in nums]
    - print(squares)
-
-----
-
-Multi-Language Puzzle
----------------------
-
-.. parsons::
-   :title: Factorial in JavaScript
-   :language: javascript
-   :shuffle:
-   :columns: 1
-
-   - function factorial(n) {
-   -   if (n === 0) return 1;
-   -   else return n * factorial(n-1);
-   - }
-   - console.log(factorial(5));
 
 ----
 

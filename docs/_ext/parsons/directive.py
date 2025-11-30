@@ -20,6 +20,9 @@ class ParsonsDirective(Directive):
         shuffle_js = "shuffle-js" in self.options
         columns = int(self.options.get("columns", 1))
 
+        # print("Directive content:", self.content)
+        # print to  python terminal on build for checking
+
         # Parse labels if provided
         labels_opt = self.options.get("labels")
         labels = []
@@ -73,24 +76,26 @@ class ParsonsDirective(Directive):
             return s
 
         for i, line in enumerate(raw_lines):
-            # Ensure code text is clean (no prefixed numbers)
-            clean = strip_number_prefix(line)
+            # Strip any accidental number prefixes
+            clean = line.strip()
+            if "|" in clean:
+                left, right = clean.split("|", 1)
+                if left.strip().isdigit():
+                    clean = right.strip()
 
-            li = nodes.list_item(classes=["parsons-line", "draggable"])
-            li["data-line"] = str(i + 1)
-            li["data-text"] = clean  # used by JS checker; avoids reading mutated DOM
+            # Build raw HTML for the list item
+            li_html = (
+                f'<li class="parsons-line draggable" '
+                f'data-line="{i+1}" '
+                f'data-text="{clean}">'
+                f'<span class="line-label">{i+1} |</span>'
+                f'<pre class="no-copybutton no-lineno">{clean}</pre>'
+                f'</li>'
+            )
 
-            # Line number label only (no pipe in code)
-            label = nodes.raw("", f'<span class="line-label">{i + 1}</span>', format="html")
-            li += label
-
-            # Raw <pre> prevents copybutton/lineno hooks from modifying content
-            # Also add a defensive class for CSS-based hiding if needed
-            pre_html = f'<pre class="no-copybutton no-lineno">{clean}</pre>'
-            pre = nodes.raw("", pre_html, format="html")
-            li += pre
-
+            li = nodes.raw("", li_html, format="html")
             source_ul += li
+
 
         # Target columns
         target_wrapper = nodes.container(classes=["parsons-target-wrapper"])
