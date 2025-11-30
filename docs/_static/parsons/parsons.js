@@ -1,35 +1,11 @@
 /*
-Parsons Puzzle Runtime for Sphinx/RTD
+Patched Parsons Puzzle Runtime for Sphinx/RTD
 Works with SortableJS
-
-Features:
-- Prefix (pipe / bracket / custom) display
-- Locked lines (non-draggable, cannot move)
-- Deterministic random order from directive
-- Check modes: strict, order-only, indent-only
-- Supports multiple target columns
-- Show solution
-- Reset
-
-Expected JSON schema (embedded by directive):
-{
-  expected: [
-    {
-      line_number: 1,
-      indent: 0,
-      indent_level: 0,
-      code_text: "print()",
-      locked: false,
-      correction: ""
-    }, ...
-  ],
-  config: {
-    indent_step: 4,
-    check_mode: "strict",
-    columns: 2,
-    prefix: "pipe"
-  }
-}
+Fixes:
+- Draggable items with nested <pre> + copy button
+- Compute correct indent ignoring prefix span
+- Buttons Check/Reset/Solution now functional
+- Drag handle set to <pre> to prevent losing lines
 */
 
 (function () {
@@ -55,13 +31,11 @@ Expected JSON schema (embedded by directive):
     const columns = parseInt(container.dataset.columns || cfg.columns, 10);
     const prefixMode = container.dataset.prefix || cfg.prefix || "none";
 
-    // random order (server-determined), used if shuffle-js == true
+    const shuffleJS = container.dataset.shuffleJs === "true";
     let randomOrder = [];
     if (container.dataset.randomOrder) {
       try { randomOrder = JSON.parse(container.dataset.randomOrder); } catch (_) {}
     }
-
-    const shuffleJS = container.dataset.shuffleJs === "true";
 
     const sourceList = container.querySelector(".parsons-source");
     const targetLists = [...container.querySelectorAll(".parsons-target-list")];
@@ -69,13 +43,12 @@ Expected JSON schema (embedded by directive):
     // ---------- APPLY JS SHUFFLE IF ENABLED ----------
     if (shuffleJS && randomOrder.length > 0 && sourceList) {
       const items = [...sourceList.children];
-      // Sort items by their line number order in randomOrder
       items.sort((a, b) => {
         const lnA = parseInt(a.dataset.lineNumber, 10);
         const lnB = parseInt(b.dataset.lineNumber, 10);
         return randomOrder.indexOf(lnA) - randomOrder.indexOf(lnB);
       });
-      items.forEach((li) => sourceList.appendChild(li));
+      items.forEach(li => sourceList.appendChild(li));
     }
 
     // ---------- MAKE DRAGGABLE WITH SORTABLE ----------
@@ -84,13 +57,20 @@ Expected JSON schema (embedded by directive):
       animation: 150,
       fallbackOnBody: true,
       swapThreshold: 0.65,
+      handle: "pre", // drag only via <pre> block
       onMove(evt) {
         return !evt.dragged.classList.contains("parsons-locked");
       },
     };
 
+    // Set draggable correctly on each <li>
+    const allItems = [...sourceList.children];
+    allItems.forEach(li => {
+      li.draggable = !li.classList.contains("parsons-locked");
+    });
+
     if (sourceList) Sortable.create(sourceList, sortableOpts);
-    targetLists.forEach((ul) => Sortable.create(ul, sortableOpts));
+    targetLists.forEach(ul => Sortable.create(ul, sortableOpts));
 
     // ---------- BUTTONS ----------
     const btnCheck = container.querySelector(".parsons-check");
@@ -124,17 +104,12 @@ Expected JSON schema (embedded by directive):
 
       // INDENT CHECK
       if (checkMode !== "order-only") {
-        const usrIndent = usr.indent;
-        if (usrIndent !== exp.indent) correct = false;
+        if (usr.indent !== exp.indent) correct = false;
       }
 
       const li = usr.element;
-      if (correct) {
-        li.classList.add("parsons-correct");
-      } else {
-        li.classList.add("parsons-wrong");
-        allCorrect = false;
-      }
+      if (correct) li.classList.add("parsons-correct");
+      else { li.classList.add("parsons-wrong"); allCorrect = false; }
     });
 
     if (allCorrect) container.classList.add("parsons-solved");
@@ -148,8 +123,8 @@ Expected JSON schema (embedded by directive):
     const cols = [...container.querySelectorAll(".parsons-target-list")];
     let collected = [];
 
-    cols.forEach((ul) => {
-      [...ul.children].forEach((li) => {
+    cols.forEach(ul => {
+      [...ul.children].forEach(li => {
         const ln = parseInt(li.dataset.lineNumber, 10);
         const indent = computeIndentFromDOM(li);
         collected.push({ line_number: ln, indent, element: li });
@@ -160,7 +135,7 @@ Expected JSON schema (embedded by directive):
   }
 
   // ------------------------------------------------------------
-  // Extract indentation based on prefix or visual CSS margin (you may refine)
+  // Compute indent ignoring prefix span
   // ------------------------------------------------------------
   function computeIndentFromDOM(li) {
     const pre = li.querySelector("pre.parsons-code");
@@ -168,22 +143,17 @@ Expected JSON schema (embedded by directive):
 
     let txt = pre.textContent || "";
 
-    // Remove prefix text if present (e.g., "1 | " or "[1] ")
-    const prefixSpan = pre.querySelector(".parsons-prefix");
-    if (prefixSpan) {
-      txt = txt.replace(prefixSpan.textContent, "");
-    }
+    const prefix = pre.querySelector(".parsons-prefix");
+    if (prefix) txt = txt.replace(prefix.textContent, "");
 
-    const leading = txt.length - txt.trimStart().length;
-    return leading;
+    return txt.length - txt.trimStart().length;
   }
-
 
   // ------------------------------------------------------------
   // CLEAR HIGHLIGHTS
   // ------------------------------------------------------------
   function clearHighlights(container) {
-    container.querySelectorAll(".parsons-correct, .parsons-wrong").forEach((el) => {
+    container.querySelectorAll(".parsons-correct, .parsons-wrong").forEach(el => {
       el.classList.remove("parsons-correct", "parsons-wrong");
     });
   }
@@ -198,11 +168,9 @@ Expected JSON schema (embedded by directive):
     const source = container.querySelector(".parsons-source");
     if (!source) return;
 
-    // move all items back to source in original order
-    // order them by their line_number
     const items = [...container.querySelectorAll(".parsons-line")];
     items.sort((a, b) => parseInt(a.dataset.lineNumber) - parseInt(b.dataset.lineNumber));
-    items.forEach((li) => source.appendChild(li));
+    items.forEach(li => source.appendChild(li));
   }
 
   // ------------------------------------------------------------
@@ -213,14 +181,11 @@ Expected JSON schema (embedded by directive):
     container.classList.remove("parsons-solved");
 
     const cols = [...container.querySelectorAll(".parsons-target-list")];
-    const source = container.querySelector(".parsons-source");
-    if (!source) return;
+    if (cols.length === 0) return;
 
-    // empty all columns first
-    cols.forEach((ul) => ul.innerHTML = "");
+    cols.forEach(ul => ul.innerHTML = "");
 
-    // Put everything in col 1 in expected order
-    expected.forEach((exp) => {
+    expected.forEach(exp => {
       const li = container.querySelector(`.parsons-line[data-line-number='${exp.line_number}']`);
       if (li) cols[0].appendChild(li);
     });
