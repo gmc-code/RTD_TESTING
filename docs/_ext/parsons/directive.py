@@ -1,3 +1,53 @@
+"""
+Enhanced Parsons Sphinx directive
+- Normalizes indentation with textwrap.dedent
+- Stable widget id via md5 hash of content (deterministic)
+- Optional prefix numbering (pipe/bracket/custom)
+- Per-line `:lock:` flag support
+- Deterministic shuffle support (server-side seed exported to JS)
+- Debugging output with PARSONS_DEBUG env var
+- Improved ARIA roles + attributes
+- RTD-friendly static registration hints in setup()
+
+Drop accompanying static files into: _static/parsons/
+  - parsons.css
+  - Sortable.min.js
+  - parsons.js
+
+Usage in rst:
+.. parsons::
+   :title: Example
+   :shuffle:
+   :prefix: pipe
+   :columns: 2
+
+   print('Hello')
+   \tif True:    :lock:
+   print('Done')
+
+"""
+
+from docutils import nodes
+from docutils.parsers.rst import Directive, directives
+import textwrap
+import random
+import json
+import html
+import csv
+import hashlib
+import os
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def _parse_buttons(btn_csv: str):
+    labels = next(csv.reader([btn_csv]))
+    while len(labels) < 3:
+        labels.append("")
+    return [html.escape(lbl) for lbl in labels[:3]]
+
+
 class ParsonsDirective(Directive):
     has_content = True
     option_spec = {
