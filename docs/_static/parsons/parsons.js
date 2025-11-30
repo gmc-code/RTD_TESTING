@@ -227,16 +227,27 @@ function check(container, source, targets, expected) {
 }
 
 
+function shuffleArray(arr) {
+  let shuffled;
+  do {
+    shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+  } while (shuffled.every((li, idx) => li.dataset.line === arr[idx].dataset.line));
+  return shuffled;
+}
+
+
+
+
 function reset(container, source, targets, originalLines) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
 
   // Shuffle a copy of originalLines
-  const shuffled = [...originalLines];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
+  const shuffled = shuffleArray(originalLines);
 
   shuffled.forEach(li => {
     const clone = li.cloneNode(true);
