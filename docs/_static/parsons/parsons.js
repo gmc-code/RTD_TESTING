@@ -163,13 +163,21 @@ Expected JSON schema (embedded by directive):
   // Extract indentation based on prefix or visual CSS margin (you may refine)
   // ------------------------------------------------------------
   function computeIndentFromDOM(li) {
-    const code = li.querySelector("code");
-    if (!code) return 0;
+    const pre = li.querySelector("pre.parsons-code");
+    if (!pre) return 0;
 
-    const txt = code.textContent || "";
+    let txt = pre.textContent || "";
+
+    // Remove prefix text if present (e.g., "1 | " or "[1] ")
+    const prefixSpan = pre.querySelector(".parsons-prefix");
+    if (prefixSpan) {
+      txt = txt.replace(prefixSpan.textContent, "");
+    }
+
     const leading = txt.length - txt.trimStart().length;
     return leading;
   }
+
 
   // ------------------------------------------------------------
   // CLEAR HIGHLIGHTS
