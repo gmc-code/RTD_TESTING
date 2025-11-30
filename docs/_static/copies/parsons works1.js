@@ -53,13 +53,6 @@ function initParsons(container) {
     shuffleAndRender(source, originalLines, container);
   }
 
-  // Populate puzzle label map after first render
-  container._puzzleLabelMap = new Map();
-  source.querySelectorAll(".parsons-line").forEach(li => {
-    container._puzzleLabelMap.set(norm(li.dataset.text), li.dataset.puzzleLabel);
-  });
-
-
   // Bind
   resetBtn?.addEventListener("click", () => reset(container, source, targets, expected));
   checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
@@ -171,7 +164,6 @@ function shuffleArray(arr) {
 /* ============================================================
    DRAG AND DROP
    ============================================================ */
-
 function makeDraggable(container) {
   return li => {
     li.setAttribute("draggable", "true");
@@ -179,26 +171,20 @@ function makeDraggable(container) {
     li.addEventListener("dragstart", e => {
       container.__dragging = li;
       li.classList.add("dragging");
-      li.style.opacity = "0.6";
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", "dragging"); // required for Firefox
+      e.dataTransfer.setData("text/plain", "dragging");
     });
 
     li.addEventListener("dragend", () => {
       li.classList.remove("dragging");
-      li.style.opacity = "1";
       container.__dragging = null;
     });
   };
 }
 
-
-
 function enableDrop(container) {
   return target => {
     target.addEventListener("dragover", e => {
       e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
       target.classList.add("parsons-drop-hover");
     });
 
@@ -209,24 +195,8 @@ function enableDrop(container) {
     target.addEventListener("drop", e => {
       e.preventDefault();
       target.classList.remove("parsons-drop-hover");
-
       const li = container.__dragging;
-      if (!li) return;
-
-      // Insert at the correct position based on cursor
-      const afterElement = Array.from(target.children)
-        .reverse()
-        .find(child => {
-          if (child === li) return false; // skip the dragged element itself
-          const rect = child.getBoundingClientRect();
-          return e.clientY > rect.top + rect.height / 2;
-        });
-
-      if (afterElement) {
-        target.insertBefore(li, afterElement.nextSibling);
-      } else {
-        target.prepend(li);
-      }
+      if (li) target.appendChild(li);
     });
   };
 }
@@ -272,7 +242,8 @@ function reset(container, source, targets, expected) {
   // Store puzzle labels mapped by NORMALIZED text
   container._puzzleLabelMap = new Map();
   source.querySelectorAll(".parsons-line").forEach(li => {
-    container._puzzleLabelMap.set(norm(li.dataset.text), li.dataset.puzzleLabel);
+    const norm = li.dataset.text.trim().replace(/\s+/g, " ");
+    container._puzzleLabelMap.set(norm, li.dataset.puzzleLabel);
   });
 
   const msg = container.querySelector(".parsons-message");
@@ -329,7 +300,7 @@ function showSolution(container, source, targets, expected) {
   // Sort expected by indent & solution order
   expected.forEach(exp => {
     const li = document.createElement("li");
-    li.className = "parsons-line line-correct line-solution"; // <-- add line-solution
+    li.className = "parsons-line line-correct";
 
     // Puzzle label must remain the SAME label
     // We find the actual puzzle label by matching text
@@ -357,20 +328,13 @@ function showSolution(container, source, targets, expected) {
   showMessage(container, "✨ Solution revealed", true);
 }
 
-
 /* ============================================================
    PUZZLE LABEL LOOKUP
    ============================================================ */
 
-// function findPuzzleLabel(container, text) {
-//   if (!container._puzzleLabelMap) return "?";
-//   return container._puzzleLabelMap.get(text) || "?";
-// }
-
 function findPuzzleLabel(container, text) {
   if (!container._puzzleLabelMap) return "?";
-  const key = norm(text);  // normalise
-  return container._puzzleLabelMap.get(key) || "?";
+  return container._puzzleLabelMap.get(text) || "?";
 }
 
 

@@ -135,3 +135,11 @@
   background-color: #e74c3c;
   color: #fff;
 }
+.line-solution {
+  background-color: #fef9c3;
+  border-left: 4px solid #fbbf24;
+}
+.line-solution .line-label {
+  background-color: #f59e0b;
+  color: #fff;
+}
