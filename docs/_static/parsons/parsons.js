@@ -9,9 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
+
 function normalizeLineText(text) {
   return text.replace(/^\s*\d+\s*\|\s*/, "").trim();
 }
+
 
 function getCurrentLines() {
   return Array.from(document.querySelectorAll(".parsons-source .parsons-line")).map((li, idx) => {
@@ -27,6 +30,7 @@ function getCurrentLines() {
 }
 
 
+// --------------------------------------------------------------------------
 function initParsons(container) {
   const source   = container.querySelector(".parsons-source");
   const targets  = container.querySelectorAll(".parsons-target-list");
@@ -35,43 +39,53 @@ function initParsons(container) {
   const resetBtn    = controls.querySelector(".parsons-reset");
   const checkBtn    = controls.querySelector(".parsons-check");
   let solutionBtn   = controls.querySelector(".parsons-solution");
-
   if (!solutionBtn) {
     solutionBtn = createButton("parsons-solution", "Show Solution");
     controls.appendChild(solutionBtn);
   }
 
-  // --- State ---
-  let originalLines = normalizeSourceLines(source);
+  const expected = parseExpected(container);
+  const solutionIndex = buildSolutionIndex(expected);
 
-  // Shuffle once at init
-  originalLines = shuffleArray(originalLines);
+  // Normalize source to set dataset.text + canonical solution IDs
+  let originalLines = normalizeSourceLines(source, solutionIndex);
 
-  // Rebuild source with shuffled lines
-  source.innerHTML = "";
-  originalLines.forEach(li => {
-    const clone = li.cloneNode(true);
-    clone.dataset.line = li.dataset.line;
-    clone.dataset.text = li.dataset.text;
+  // Initial shuffle if requested
+  if (container.dataset.shuffleJs === "true") {
+    const canonicalOrder = expected.map(e => e.text);
+    const canonicalNodes = canonicalOrder.map(text =>
+      originalLines.find(li => norm(li.dataset.text) === norm(text))
+    );
+    const avoid = [originalLines, canonicalNodes.filter(Boolean)];
+    const shuffled = shuffleArrayAvoidOrders(originalLines, avoid);
 
-    clone.innerHTML = "";
-    const label = document.createElement("span");
-    label.className = "line-label";
-    label.textContent = `${clone.dataset.line} |`;
-    const pre = document.createElement("pre");
-    pre.textContent = clone.dataset.text;
+    // Rebuild source with shuffled nodes and sequential puzzle labels
+    source.innerHTML = "";
+    shuffled.forEach((li, idx) => {
+      const clone = li.cloneNode(true);
+      clone.dataset.text = li.dataset.text;
+      clone.dataset.solutionLine = li.dataset.solutionLine;
+      clone.dataset.puzzleLine = idx + 1;
 
-    clone.appendChild(label);
-    clone.appendChild(pre);
+      clone.innerHTML = "";
+      const label = document.createElement("span");
+      label.className = "line-label";
+      label.textContent = `${clone.dataset.puzzleLine} |`;
+      const pre = document.createElement("pre");
+      pre.textContent = clone.dataset.text;
+      clone.appendChild(label);
+      clone.appendChild(pre);
 
-    makeDraggable(container)(clone);
-    source.appendChild(clone);
-  });
+      makeDraggable(container)(clone);
+      source.appendChild(clone);
+    });
 
-  const expected = parseExpected(container, originalLines);
+    // Replace originalLines with the newly rendered nodes for future resets
+    originalLines = Array.from(source.querySelectorAll("li"));
+  }
 
-  // --- Event bindings ---
-  resetBtn?.addEventListener("click", () => reset(container, source, targets, originalLines));
+  // Bind actions to the canonical expected and the current source set
+  resetBtn?.addEventListener("click", () => reset(container, source, targets, expected));
   checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
   solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, expected));
 
@@ -79,6 +93,7 @@ function initParsons(container) {
   container.querySelectorAll(".parsons-line").forEach(makeDraggable(container));
   targets.forEach(enableDrop(container));
 }
+
 
 
 /* ---------- Helpers ---------- */
@@ -92,28 +107,27 @@ function createButton(className, text) {
 
 
 
-function normalizeSourceLines(source) {
+function normalizeSourceLines(source, solutionIndex) {
   const lines = Array.from(source.querySelectorAll("li"));
   lines.forEach((li, idx) => {
-    // Canonical solution ID comes from the directive's data-line (never changes)
-    const solutionId = parseInt(li.dataset.line || li.dataset.solutionLine || (idx + 1), 10);
-    li.dataset.solutionLine = solutionId;
+    const text = li.dataset.text || norm(li.querySelector("pre")?.textContent || "");
+    li.dataset.text = text;
 
-    // Ensure clean text is set
-    const cleanText = li.dataset.text || norm(li.querySelector("pre")?.textContent || "");
-    li.dataset.text = cleanText;
+    // Canonical solution ID from expected by text (not from current order)
+    const solId = solutionIndex.get(norm(text));
+    li.dataset.solutionLine = solId;
 
-    // Initialize puzzle ID (will be reassigned on shuffle/reset)
+    // Initial puzzle label (will be reassigned on shuffle/reset)
     li.dataset.puzzleLine = idx + 1;
 
-    // Render label + code using puzzle ID as the visible label
+    // Render label from puzzle ID
     li.classList.add("parsons-line");
     li.innerHTML = "";
     const label = document.createElement("span");
     label.className = "line-label";
     label.textContent = `${li.dataset.puzzleLine} |`;
     const pre = document.createElement("pre");
-    pre.textContent = li.dataset.text;
+    pre.textContent = text;
     li.appendChild(label);
     li.appendChild(pre);
   });
@@ -122,28 +136,64 @@ function normalizeSourceLines(source) {
 
 
 
-function parseExpected(container, originalLines) {
-  // If no explicit expected was provided, assume canonical order equals originalLines order
-  if (!container.dataset.expected) {
-    return originalLines.map((li, idx) => ({
-      text: li.dataset.text,
-      indent: 0,
-      solutionLine: idx + 1 // canonical solution numbering 1..N
-    }));
-  }
 
-  // Otherwise parse the dataset.expected format "indent::code|indent::code|..."
-  const segs = container.dataset.expected.split("|");
+function norm(s) {
+  return (s || "")
+    .replace(/\u00A0/g, " ")
+    .replace(/\t/g, "    ")
+    .replace(/[ \f\r\v]+/g, " ")
+    .trim();
+}
+
+
+
+function parseExpected(container) {
+  // data-expected format: "indent::code|indent::code|..."
+  const segs = (container.dataset.expected || "").split("|");
   return segs.map((seg, idx) => {
     const [indent, code] = seg.split("::");
     return {
-      text: (code || "").trim(),
+      text: norm(code || ""),
       indent: parseInt(indent || "0", 10),
-      solutionLine: idx + 1 // canonical solution numbering 1..N
+      solutionLine: idx + 1 // canonical 1..N
     };
   });
 }
 
+
+
+// Map canonical solution IDs by text (normalised)
+function buildSolutionIndex(expected) {
+  const index = new Map();
+  expected.forEach(e => index.set(norm(e.text), e.solutionLine));
+  return index;
+}
+
+
+
+function isSameOrderByText(arrA, arrB) {
+  if (arrA.length !== arrB.length) return false;
+  return arrA.every((li, i) => norm(li.dataset.text) === norm(arrB[i].dataset.text));
+}
+
+
+
+
+function shuffleArrayAvoidOrders(arr, avoidOrders) {
+  let shuffled;
+  let tries = 0;
+  do {
+    shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    tries++;
+    // Stop pathological loops after some attempts
+    if (tries > 20) break;
+  } while (avoidOrders.some(order => isSameOrderByText(shuffled, order)));
+  return shuffled;
+}
 
 
 
@@ -185,12 +235,8 @@ function enableDrop(container) {
   };
 }
 
-function norm(s) {
-  return s.replace(/\u00A0/g, " ")
-    .replace(/\t/g, "    ")
-    .replace(/[ \f\r\v]+/g, " ")
-    .trim();
-}
+
+
 
 function showMessage(container, text, ok) {
   let msg = container.querySelector(".parsons-message");
@@ -203,6 +249,8 @@ function showMessage(container, text, ok) {
   msg.textContent = text;
   msg.style.color = ok ? "#22c55e" : "#e74c3c";
 }
+
+
 
 function highlightLines(container, expected, current) {
   container.querySelectorAll(".parsons-line").forEach(li => {
@@ -234,33 +282,38 @@ function shuffleArray(arr) {
   return shuffled;
 }
 
-function reset(container, source, targets, originalLines) {
+
+
+function reset(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
 
-  // Shuffle the DOM nodes and re-label puzzle IDs 1..N
-  const shuffled = shuffleArray(originalLines);
+  // Rebuild a working set from current source (or expected by text)
+  const current = expected.map(e => {
+    const li = document.createElement("li");
+    li.className = "parsons-line";
+    li.dataset.text = e.text;
+    li.dataset.solutionLine = e.solutionLine;
+    return li;
+  });
 
+  // Define avoid orders (identity and canonical expected order)
+  const avoid = [current /* identity */, current /* canonical by text (same here) */];
+  const shuffled = shuffleArrayAvoidOrders(current, avoid);
+
+  // Render shuffled with sequential puzzle labels
   shuffled.forEach((li, idx) => {
-    const clone = li.cloneNode(true);
-
-    // Preserve canonical solution attributes
-    clone.dataset.solutionLine = li.dataset.solutionLine;
-    clone.dataset.text = li.dataset.text;
-
-    // Assign fresh puzzle ID and render as label
-    clone.dataset.puzzleLine = idx + 1;
-    clone.innerHTML = "";
+    li.dataset.puzzleLine = idx + 1;
+    li.innerHTML = "";
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${clone.dataset.puzzleLine} |`;
+    label.textContent = `${li.dataset.puzzleLine} |`;
     const pre = document.createElement("pre");
-    pre.textContent = clone.dataset.text;
-    clone.appendChild(label);
-    clone.appendChild(pre);
-
-    makeDraggable(container)(clone);
-    source.appendChild(clone);
+    pre.textContent = li.dataset.text;
+    li.appendChild(label);
+    li.appendChild(pre);
+    makeDraggable(container)(li);
+    source.appendChild(li);
   });
 
   container.classList.remove("parsons-correct", "parsons-incorrect");
@@ -269,6 +322,7 @@ function reset(container, source, targets, originalLines) {
 
   logCurrentState(container);
 }
+
 
 
 // ---------------------------------------------------------------------
@@ -281,19 +335,17 @@ function check(container, source, targets, expected) {
       current.push({
         text: li.dataset.text || norm(li.querySelector("pre")?.textContent || ""),
         indent,
-        solutionLine: parseInt(li.dataset.solutionLine, 10) // canonical ID
+        solutionLine: parseInt(li.dataset.solutionLine, 10)
       });
     });
   });
 
-  // Must place all lines
   if (source.querySelectorAll(".parsons-line").length > 0) {
     container.classList.add("parsons-incorrect");
     showMessage(container, "✖ Move all lines into the target area before checking.", false);
     return;
   }
 
-  // Validate text + indent + canonical solution ID 1..N sequence
   const ok = current.length === expected.length &&
              current.every((line, i) =>
                norm(line.text) === norm(expected[i].text) &&
@@ -311,9 +363,7 @@ function check(container, source, targets, expected) {
 
 
 
-
 // -----------------------------------------------------------------
-
 
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
@@ -327,7 +377,7 @@ function showSolution(container, source, targets, expected) {
 
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${exp.solutionLine} |`; // canonical 1..N
+    label.textContent = `${exp.solutionLine} |`; // canonical numbering
 
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
@@ -342,7 +392,6 @@ function showSolution(container, source, targets, expected) {
   showMessage(container, "✨ Solution revealed", true);
   logCurrentState(container);
 }
-
 
 
 
