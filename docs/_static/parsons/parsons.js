@@ -274,17 +274,15 @@ function reset(container, source, targets, originalLines) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
 
-  // Shuffle a copy of originalLines
   const shuffled = shuffleArray(originalLines);
 
   shuffled.forEach((li, idx) => {
     const clone = li.cloneNode(true);
 
-    // Assign new sequential line numbers
+    // Sequential renumbering for reset
     clone.dataset.line = idx + 1;
     clone.dataset.text = li.dataset.text;
 
-    // Rebuild label and pre
     clone.innerHTML = "";
     const label = document.createElement("span");
     label.className = "line-label";
@@ -306,14 +304,17 @@ function reset(container, source, targets, originalLines) {
   logCurrentState(container);
 }
 
-
+// -----------------------------------------------------------------
 
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
+
   expected.forEach(exp => {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
+
+    // Preserve original IDs from expected
     li.dataset.line = exp.line;
     li.dataset.text = exp.text;
 
@@ -330,9 +331,11 @@ function showSolution(container, source, targets, expected) {
     const target = targets[exp.indent] || targets[0];
     target.appendChild(li);
   });
+
   showMessage(container, "✨ Solution revealed", true);
   logCurrentState(container);
 }
+
 
 
 /* ---------- Debug ---------- */
