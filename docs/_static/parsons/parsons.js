@@ -215,45 +215,6 @@ function highlightLines(container, expected, current) {
 
 /* ---------- Actions ---------- */
 
-function check(container, source, targets, expected) {
-  const current = [];
-
-  // Collect current state from target lists
-  targets.forEach(ul => {
-    const indent = parseInt(ul.dataset.indent, 10) || 0;
-    ul.querySelectorAll(".parsons-line").forEach(li => {
-      current.push({
-        text: li.dataset.text || norm(li.querySelector("pre")?.textContent || ""),
-        indent,
-        line: parseInt(li.dataset.line, 10)
-      });
-    });
-  });
-
-  // If any lines are still in the source list, fail immediately
-  if (source.querySelectorAll(".parsons-line").length > 0) {
-    container.classList.add("parsons-incorrect");
-    showMessage(container, "✖ Move all lines into the target area before checking.", false);
-    return;
-  }
-
-  // Compare current vs expected by original line id and text
-  const ok = current.length === expected.length &&
-    current.every((line, i) =>
-      norm(line.text) === norm(expected[i].text) &&
-      line.indent === expected[i].indent &&
-      line.line === expected[i].line
-    );
-
-  container.classList.toggle("parsons-correct", ok);
-  container.classList.toggle("parsons-incorrect", !ok);
-  showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
-  highlightLines(container, expected, current);
-
-  console.log("Check result:", { ok, expected, current });
-}
-
-
 function shuffleArray(arr) {
   let shuffled;
   do {
@@ -265,6 +226,46 @@ function shuffleArray(arr) {
   } while (shuffled.every((li, idx) => li.dataset.line === arr[idx].dataset.line));
   return shuffled;
 }
+
+
+// ---------------------------------------------------------------------
+
+function check(container, source, targets, expected) {
+  const current = [];
+
+  targets.forEach(ul => {
+    const indent = parseInt(ul.dataset.indent, 10) || 0;
+    ul.querySelectorAll(".parsons-line").forEach(li => {
+      current.push({
+        text: li.dataset.text || norm(li.querySelector("pre")?.textContent || ""),
+        indent,
+        solutionLine: parseInt(li.dataset.solutionLine, 10)
+      });
+    });
+  });
+
+  if (source.querySelectorAll(".parsons-line").length > 0) {
+    container.classList.add("parsons-incorrect");
+    showMessage(container, "✖ Move all lines into the target area before checking.", false);
+    return;
+  }
+
+  const ok = current.length === expected.length &&
+             current.every((line, i) =>
+               norm(line.text) === norm(expected[i].text) &&
+               line.indent === expected[i].indent &&
+               line.solutionLine === expected[i].solutionLine
+             );
+
+  container.classList.toggle("parsons-correct", ok);
+  container.classList.toggle("parsons-incorrect", !ok);
+  showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
+  highlightLines(container, expected, current);
+
+  console.log("Check result:", { ok, expected, current });
+}
+
+
 
 
 
@@ -279,14 +280,18 @@ function reset(container, source, targets, originalLines) {
   shuffled.forEach((li, idx) => {
     const clone = li.cloneNode(true);
 
-    // Sequential renumbering for reset
-    clone.dataset.line = idx + 1;
+    // Preserve canonical solution ID
+    clone.dataset.solutionLine = li.dataset.solutionLine || li.dataset.line;
     clone.dataset.text = li.dataset.text;
 
+    // Assign new sequential puzzle ID
+    clone.dataset.puzzleLine = idx + 1;
+
+    // Rebuild label and pre using puzzle ID
     clone.innerHTML = "";
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${clone.dataset.line} |`;
+    label.textContent = `${clone.dataset.puzzleLine} |`;
     const pre = document.createElement("pre");
     pre.textContent = clone.dataset.text;
 
@@ -304,6 +309,7 @@ function reset(container, source, targets, originalLines) {
   logCurrentState(container);
 }
 
+
 // -----------------------------------------------------------------
 
 function showSolution(container, source, targets, expected) {
@@ -314,13 +320,13 @@ function showSolution(container, source, targets, expected) {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
 
-    // Preserve original IDs from expected
-    li.dataset.line = exp.line;
+    // Use canonical solution IDs
+    li.dataset.solutionLine = exp.solutionLine;
     li.dataset.text = exp.text;
 
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${exp.line} |`;
+    label.textContent = `${exp.solutionLine} |`;
 
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
