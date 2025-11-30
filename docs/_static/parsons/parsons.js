@@ -97,20 +97,25 @@ function normalizeSourceLines(source) {
 function parseExpected(container, originalLines) {
   if (!container.dataset.expected) {
     return originalLines.map(li => ({
-      text: li.querySelector("pre")?.textContent.trim(),
+      text: li.dataset.text || li.querySelector("pre")?.textContent.trim(),
       indent: 0,
       line: parseInt(li.dataset.line, 10)
     }));
   }
-  return container.dataset.expected.split("|").map((seg, idx) => {
+
+  const expectedSegments = container.dataset.expected.split("|");
+  return expectedSegments.map((seg, idx) => {
     const [indent, code] = seg.split("::");
+    // Use the original line id from originalLines[idx]
+    const origLine = parseInt(originalLines[idx].dataset.line, 10);
     return {
       text: code.trim(),
       indent: parseInt(indent, 10),
-      line: idx + 1
+      line: origLine
     };
   });
 }
+
 
 function makeDraggable(container) {
   return li => {
@@ -269,13 +274,17 @@ function showSolution(container, source, targets, expected) {
     li.className = "parsons-line line-correct";
     li.dataset.line = exp.line;
     li.dataset.text = exp.text;
+
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${li.dataset.line} |`;
+    label.textContent = `${exp.line} |`;
+
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
+
     li.appendChild(label);
     li.appendChild(pre);
+
     const target = targets[exp.indent] || targets[0];
     target.appendChild(li);
   });
