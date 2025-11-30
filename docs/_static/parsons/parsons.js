@@ -187,6 +187,8 @@ function highlightLines(container, expected, current) {
 
 function check(container, source, targets, expected) {
   const current = [];
+
+  // Collect current state from target lists
   targets.forEach(ul => {
     const indent = parseInt(ul.dataset.indent, 10) || 0;
     ul.querySelectorAll(".parsons-line").forEach(li => {
@@ -198,18 +200,20 @@ function check(container, source, targets, expected) {
     });
   });
 
+  // If any lines are still in the source list, fail immediately
   if (source.querySelectorAll(".parsons-line").length > 0) {
     container.classList.add("parsons-incorrect");
     showMessage(container, "✖ Move all lines into the target area before checking.", false);
     return;
   }
 
+  // Compare current vs expected by original line id and text
   const ok = current.length === expected.length &&
-    current.every((line, i) =>
-      norm(line.text) === norm(expected[i].text) &&
-      line.indent === expected[i].indent &&
-      line.line === expected[i].line
-    );
+             current.every((line, i) =>
+               norm(line.text) === norm(expected[i].text) &&
+               line.indent === expected[i].indent &&
+               line.line === expected[i].line
+             );
 
   container.classList.toggle("parsons-correct", ok);
   container.classList.toggle("parsons-incorrect", !ok);
