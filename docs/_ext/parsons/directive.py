@@ -182,6 +182,7 @@ class ParsonsDirective(Directive):
         # Source lines
         # -------------------------
         source_nodes = []
+        # ---------- Source lines (if not hidden) ----------
         if not hide_source:
             source_ul = nodes.bullet_list(classes=["parsons-source"])
             source_ul["role"] = "list"
@@ -191,15 +192,18 @@ class ParsonsDirective(Directive):
                 li = nodes.list_item(classes=["parsons-line"])
                 li["role"] = "listitem"
                 li["tabindex"] = "0"
-                li["draggable"] = "true"
+                # Set draggable dynamically: locked lines not draggable
+                li["draggable"] = not locked
 
                 if locked:
-                    li["classes"].append("parsons-locked")
+                    li["class"].append("parsons-locked")
 
+                # Data attributes for JS
                 li["data-line"] = str(line_number)
                 li["data-line-number"] = str(line_number)
                 li["data-locked"] = "true" if locked else "false"
 
+                # Use literal_block for copy/highlight but JS will drag the <pre>
                 code_node = nodes.literal_block(code_line, code_line)
                 code_node["language"] = lang
                 code_node["classes"].append("no-copybutton")
@@ -216,7 +220,8 @@ class ParsonsDirective(Directive):
 
                 source_ul += li
 
-            source_nodes = [source_ul]
+        source_nodes = [source_ul]
+
 
         # -------------------------
         # Target columns

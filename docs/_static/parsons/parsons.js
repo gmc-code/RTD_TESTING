@@ -1,11 +1,10 @@
 /*
 Patched Parsons Puzzle Runtime for Sphinx/RTD
-Works with SortableJS
-Fixes:
-- Draggable items with nested <pre> + copy button
-- Compute correct indent ignoring prefix span
-- Buttons Check/Reset/Solution now functional
-- Drag handle set to <pre> to prevent losing lines
+- Buttons always work
+- Drag handles set to <pre>, ignores buttons
+- Locked lines non-draggable
+- Client/server shuffle sync
+- Check/Reset/Solution functional
 */
 
 (function () {
@@ -31,11 +30,13 @@ Fixes:
     const columns = parseInt(container.dataset.columns || cfg.columns, 10);
     const prefixMode = container.dataset.prefix || cfg.prefix || "none";
 
-    const shuffleJS = container.dataset.shuffleJs === "true";
+    // random order (server-determined), used if shuffle-js == true
     let randomOrder = [];
     if (container.dataset.randomOrder) {
       try { randomOrder = JSON.parse(container.dataset.randomOrder); } catch (_) {}
     }
+
+    const shuffleJS = container.dataset.shuffleJs === "true";
 
     const sourceList = container.querySelector(".parsons-source");
     const targetLists = [...container.querySelectorAll(".parsons-target-list")];
@@ -48,7 +49,7 @@ Fixes:
         const lnB = parseInt(b.dataset.lineNumber, 10);
         return randomOrder.indexOf(lnA) - randomOrder.indexOf(lnB);
       });
-      items.forEach(li => sourceList.appendChild(li));
+      items.forEach((li) => sourceList.appendChild(li));
     }
 
     // ---------- MAKE DRAGGABLE WITH SORTABLE ----------
@@ -57,29 +58,32 @@ Fixes:
       animation: 150,
       fallbackOnBody: true,
       swapThreshold: 0.65,
-      handle: "pre", // drag only via <pre> block
+      handle: "pre", // drag only via <pre>, buttons ignored
       onMove(evt) {
         return !evt.dragged.classList.contains("parsons-locked");
       },
     };
 
-    // Set draggable correctly on each <li>
-    const allItems = [...sourceList.children];
-    allItems.forEach(li => {
-      li.draggable = !li.classList.contains("parsons-locked");
-    });
-
     if (sourceList) Sortable.create(sourceList, sortableOpts);
-    targetLists.forEach(ul => Sortable.create(ul, sortableOpts));
+    targetLists.forEach((ul) => Sortable.create(ul, sortableOpts));
 
     // ---------- BUTTONS ----------
     const btnCheck = container.querySelector(".parsons-check");
     const btnReset = container.querySelector(".parsons-reset");
     const btnSolution = container.querySelector(".parsons-show-solution");
 
-    if (btnCheck) btnCheck.addEventListener("click", () => checkSolution(container, expected, checkMode, indentStep));
-    if (btnReset) btnReset.addEventListener("click", () => resetPuzzle(container, expected));
-    if (btnSolution) btnSolution.addEventListener("click", () => showSolution(container, expected));
+    if (btnCheck) btnCheck.addEventListener("click", () => {
+      console.log("Check clicked");
+      checkSolution(container, expected, checkMode, indentStep);
+    });
+    if (btnReset) btnReset.addEventListener("click", () => {
+      console.log("Reset clicked");
+      resetPuzzle(container, expected);
+    });
+    if (btnSolution) btnSolution.addEventListener("click", () => {
+      console.log("Solution clicked");
+      showSolution(container, expected);
+    });
   }
 
   // ------------------------------------------------------------
@@ -97,19 +101,20 @@ Fixes:
 
       let correct = true;
 
-      // ORDER CHECK
       if (checkMode !== "indent-only") {
         if (usr.line_number !== exp.line_number) correct = false;
       }
 
-      // INDENT CHECK
       if (checkMode !== "order-only") {
         if (usr.indent !== exp.indent) correct = false;
       }
 
       const li = usr.element;
       if (correct) li.classList.add("parsons-correct");
-      else { li.classList.add("parsons-wrong"); allCorrect = false; }
+      else {
+        li.classList.add("parsons-wrong");
+        allCorrect = false;
+      }
     });
 
     if (allCorrect) container.classList.add("parsons-solved");
@@ -117,14 +122,14 @@ Fixes:
   }
 
   // ------------------------------------------------------------
-  // GET USER STATE: returns ordered list of { line_number, indent, element }
+  // GET USER STATE
   // ------------------------------------------------------------
   function getUserState(container) {
     const cols = [...container.querySelectorAll(".parsons-target-list")];
     let collected = [];
 
-    cols.forEach(ul => {
-      [...ul.children].forEach(li => {
+    cols.forEach((ul) => {
+      [...ul.children].forEach((li) => {
         const ln = parseInt(li.dataset.lineNumber, 10);
         const indent = computeIndentFromDOM(li);
         collected.push({ line_number: ln, indent, element: li });
@@ -134,33 +139,19 @@ Fixes:
     return collected;
   }
 
-  // ------------------------------------------------------------
-  // Compute indent ignoring prefix span
-  // ------------------------------------------------------------
   function computeIndentFromDOM(li) {
-    const pre = li.querySelector("pre.parsons-code");
+    const pre = li.querySelector("pre");
     if (!pre) return 0;
-
-    let txt = pre.textContent || "";
-
-    const prefix = pre.querySelector(".parsons-prefix");
-    if (prefix) txt = txt.replace(prefix.textContent, "");
-
+    const txt = pre.textContent || "";
     return txt.length - txt.trimStart().length;
   }
 
-  // ------------------------------------------------------------
-  // CLEAR HIGHLIGHTS
-  // ------------------------------------------------------------
   function clearHighlights(container) {
-    container.querySelectorAll(".parsons-correct, .parsons-wrong").forEach(el => {
+    container.querySelectorAll(".parsons-correct, .parsons-wrong").forEach((el) => {
       el.classList.remove("parsons-correct", "parsons-wrong");
     });
   }
 
-  // ------------------------------------------------------------
-  // RESET PUZZLE
-  // ------------------------------------------------------------
   function resetPuzzle(container, expected) {
     clearHighlights(container);
     container.classList.remove("parsons-solved");
@@ -170,12 +161,12 @@ Fixes:
 
     const items = [...container.querySelectorAll(".parsons-line")];
     items.sort((a, b) => parseInt(a.dataset.lineNumber) - parseInt(b.dataset.lineNumber));
-    items.forEach(li => source.appendChild(li));
+    items.forEach((li) => {
+      li.draggable = !li.classList.contains("parsons-locked");
+      source.appendChild(li);
+    });
   }
 
-  // ------------------------------------------------------------
-  // SHOW SOLUTION
-  // ------------------------------------------------------------
   function showSolution(container, expected) {
     clearHighlights(container);
     container.classList.remove("parsons-solved");
@@ -183,11 +174,14 @@ Fixes:
     const cols = [...container.querySelectorAll(".parsons-target-list")];
     if (cols.length === 0) return;
 
-    cols.forEach(ul => ul.innerHTML = "");
+    cols.forEach((ul) => ul.innerHTML = "");
 
-    expected.forEach(exp => {
+    expected.forEach((exp) => {
       const li = container.querySelector(`.parsons-line[data-line-number='${exp.line_number}']`);
-      if (li) cols[0].appendChild(li);
+      if (li) {
+        li.draggable = !li.classList.contains("parsons-locked");
+        cols[0].appendChild(li);
+      }
     });
   }
 
