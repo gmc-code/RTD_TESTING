@@ -60,26 +60,35 @@ class ParsonsDirective(Directive):
 
         # Source list
         source_ul = nodes.bullet_list(classes=["parsons-source"])
+
+        def strip_number_prefix(s: str) -> str:
+            # Remove leading "N |" if present; also guard against accidental "NNcode"
+            s = s.strip()
+            # Pattern: digits optional spaces then pipe
+            if "|" in s:
+                left, right = s.split("|", 1)
+                if left.strip().isdigit():
+                    return right.strip()
+            # If someone concatenated digits with code (e.g., "11nums"), keep original
+            return s
+
         for i, line in enumerate(raw_lines):
-            li = nodes.list_item(classes=["parsons-line"])
-            li["data-index"] = str(i)
-            li["classes"].append("draggable")
+            # Ensure code text is clean (no prefixed numbers)
+            clean = strip_number_prefix(line)
 
-            # strip any leading "N |" prefix
-            clean_line = line
-            if "|" in line and line.split("|", 1)[0].strip().isdigit():
-                clean_line = line.split("|", 1)[1].strip()
+            li = nodes.list_item(classes=["parsons-line", "draggable"])
+            li["data-line"] = str(i + 1)
+            li["data-text"] = clean  # used by JS checker; avoids reading mutated DOM
 
-            code = nodes.literal_block(clean_line, clean_line)
-            code["language"] = "python"
-            code["classes"].append("no-copybutton")
-            code_html = f'<pre class="no-copybutton">{line}</pre>'
-            code = nodes.raw('', code_html, format='html')
-            li += code
+            # Line number label only (no pipe in code)
+            label = nodes.raw("", f'<span class="line-label">{i + 1}</span>', format="html")
+            li += label
 
-            # add a separate label span for the number
-            label = nodes.raw("", f'<span class="line-label">{i+1}</span>', format="html")
-            li.insert(0, label)
+            # Raw <pre> prevents copybutton/lineno hooks from modifying content
+            # Also add a defensive class for CSS-based hiding if needed
+            pre_html = f'<pre class="no-copybutton no-lineno">{clean}</pre>'
+            pre = nodes.raw("", pre_html, format="html")
+            li += pre
 
             source_ul += li
 

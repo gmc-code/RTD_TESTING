@@ -65,9 +65,11 @@
   flex-grow: 1;
 }
 
+.parsons-line pre .lineno,
 .parsons-line pre .copybutton,
-.parsons-line pre:has(.copybutton) {
-  display: none;
+.parsons-line pre .copybtn,
+.parsons-line pre .sphinx-copybutton {
+  display: none !important;
 }
 
 /* Controls */
