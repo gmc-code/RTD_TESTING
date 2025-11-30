@@ -1,20 +1,14 @@
-for i, line in enumerate(raw_lines):
-    # Strip any accidental number prefixes
-    clean = line.strip()
-    if "|" in clean:
-        left, right = clean.split("|", 1)
-        if left.strip().isdigit():
-            clean = right.strip()
+lines = [(indent, code, idx+1) for idx, (indent, code) in enumerate(expected_order)]
 
-    # Build raw HTML for the list item
+if shuffle:
+    random.shuffle(lines)
+
+for indent, code, orig_line in lines:
+    clean = strip_number_prefix(code)
     li_html = (
-        f'<li class="parsons-line draggable" '
-        f'data-line="{i+1}" '
-        f'data-text="{clean}">'
-        f'<span class="line-label">{i+1} |</span>'
+        f'<li class="parsons-line draggable" data-line="{orig_line}" data-text="{clean}">'
+        f'<span class="line-label">{orig_line} |</span>'
         f'<pre class="no-copybutton no-lineno">{clean}</pre>'
         f'</li>'
     )
-
-    li = nodes.raw("", li_html, format="html")
-    source_ul += li
+    source_ul += nodes.raw("", li_html, format="html")

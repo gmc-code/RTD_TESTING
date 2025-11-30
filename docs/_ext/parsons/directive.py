@@ -41,10 +41,10 @@ class ParsonsDirective(Directive):
             indent = len(line) - len(line.lstrip(" "))
             expected_order.append((indent, raw))
 
-        raw_lines = [code for _, code in expected_order]
+        lines = [(indent, code, idx+1) for idx, (indent, code) in enumerate(expected_order)]
 
         if shuffle:
-            random.shuffle(raw_lines)
+            random.shuffle(lines)
 
         expected_attr = "|".join(f"{indent}::{code}" for indent, code in expected_order)
         shuffle_attr = "true" if shuffle_js else "false"
@@ -75,26 +75,16 @@ class ParsonsDirective(Directive):
             # If someone concatenated digits with code (e.g., "11nums"), keep original
             return s
 
-        for i, line in enumerate(raw_lines):
-            # Strip any accidental number prefixes
-            clean = line.strip()
-            if "|" in clean:
-                left, right = clean.split("|", 1)
-                if left.strip().isdigit():
-                    clean = right.strip()
-
-            # Build raw HTML for the list item
+        for indent, code, orig_line in lines:
+            clean = strip_number_prefix(code)
             li_html = (
-                f'<li class="parsons-line draggable" '
-                f'data-line="{i+1}" '
-                f'data-text="{clean}">'
-                f'<span class="line-label">{i+1} |</span>'
+                f'<li class="parsons-line draggable" data-line="{orig_line}" data-text="{clean}">'
+                f'<span class="line-label">{orig_line} |</span>'
                 f'<pre class="no-copybutton no-lineno">{clean}</pre>'
                 f'</li>'
             )
+            source_ul += nodes.raw("", li_html, format="html")
 
-            li = nodes.raw("", li_html, format="html")
-            source_ul += li
 
 
         # Target columns
