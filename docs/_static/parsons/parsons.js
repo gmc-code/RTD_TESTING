@@ -285,17 +285,18 @@ function reset(container, source, targets, expected) {
 /* ============================================================
    CHECK
    ============================================================ */
-function check(container, source, targets, expected) {
+
+   function check(container, source, targets, expected) {
   const current = [];
 
   targets.forEach(ul => {
     const indent = parseInt(ul.dataset.indent, 10) || 0;
     ul.querySelectorAll(".parsons-line").forEach(li => {
       current.push({
+        li,
         text: li.dataset.text,
         indent,
         solutionLine: parseInt(li.dataset.solutionLine),
-        puzzleLabel: li.dataset.puzzleLabel
       });
     });
   });
@@ -305,18 +306,65 @@ function check(container, source, targets, expected) {
     return;
   }
 
-  const ok =
-    current.length === expected.length &&
-    current.every((line, i) =>
+  let allCorrect = true;
+
+  current.forEach((line, i) => {
+    // Remove old classes
+    line.li.classList.remove("line-correct", "line-incorrect");
+
+    // Compare with expected
+    const correct =
       norm(line.text) === norm(expected[i].text) &&
       line.indent === expected[i].indent &&
-      line.solutionLine === expected[i].solutionLine
-    );
+      line.solutionLine === expected[i].solutionLine;
 
-  showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
-  container.classList.toggle("parsons-correct", ok);
-  container.classList.toggle("parsons-incorrect", !ok);
+    if (correct) {
+      line.li.classList.add("line-correct");
+    } else {
+      line.li.classList.add("line-incorrect");
+      allCorrect = false;
+    }
+  });
+
+  showMessage(container, allCorrect ? "✅ Correct!" : "✖ Try again", allCorrect);
+  container.classList.toggle("parsons-correct", allCorrect);
+  container.classList.toggle("parsons-incorrect", !allCorrect);
 }
+
+
+
+// function check(container, source, targets, expected) {
+//   const current = [];
+
+//   targets.forEach(ul => {
+//     const indent = parseInt(ul.dataset.indent, 10) || 0;
+//     ul.querySelectorAll(".parsons-line").forEach(li => {
+//       current.push({
+//         text: li.dataset.text,
+//         indent,
+//         solutionLine: parseInt(li.dataset.solutionLine),
+//         puzzleLabel: li.dataset.puzzleLabel
+//       });
+//     });
+//   });
+
+//   if (source.querySelectorAll(".parsons-line").length > 0) {
+//     showMessage(container, "✖ Move all lines into the target area before checking.", false);
+//     return;
+//   }
+
+//   const ok =
+//     current.length === expected.length &&
+//     current.every((line, i) =>
+//       norm(line.text) === norm(expected[i].text) &&
+//       line.indent === expected[i].indent &&
+//       line.solutionLine === expected[i].solutionLine
+//     );
+
+//   showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
+//   container.classList.toggle("parsons-correct", ok);
+//   container.classList.toggle("parsons-incorrect", !ok);
+// }
 
 /* ============================================================
    SOLUTION

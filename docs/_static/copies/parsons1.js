@@ -53,6 +53,13 @@ function initParsons(container) {
     shuffleAndRender(source, originalLines, container);
   }
 
+  // Populate puzzle label map after first render
+  container._puzzleLabelMap = new Map();
+  source.querySelectorAll(".parsons-line").forEach(li => {
+    container._puzzleLabelMap.set(norm(li.dataset.text), li.dataset.puzzleLabel);
+  });
+
+
   // Bind
   resetBtn?.addEventListener("click", () => reset(container, source, targets, expected));
   checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
@@ -164,6 +171,7 @@ function shuffleArray(arr) {
 /* ============================================================
    DRAG AND DROP
    ============================================================ */
+
 function makeDraggable(container) {
   return li => {
     li.setAttribute("draggable", "true");
@@ -171,20 +179,26 @@ function makeDraggable(container) {
     li.addEventListener("dragstart", e => {
       container.__dragging = li;
       li.classList.add("dragging");
-      e.dataTransfer.setData("text/plain", "dragging");
+      li.style.opacity = "0.6";
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", "dragging"); // required for Firefox
     });
 
     li.addEventListener("dragend", () => {
       li.classList.remove("dragging");
+      li.style.opacity = "1";
       container.__dragging = null;
     });
   };
 }
 
+
+
 function enableDrop(container) {
   return target => {
     target.addEventListener("dragover", e => {
       e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
       target.classList.add("parsons-drop-hover");
     });
 
@@ -195,8 +209,24 @@ function enableDrop(container) {
     target.addEventListener("drop", e => {
       e.preventDefault();
       target.classList.remove("parsons-drop-hover");
+
       const li = container.__dragging;
-      if (li) target.appendChild(li);
+      if (!li) return;
+
+      // Insert at the correct position based on cursor
+      const afterElement = Array.from(target.children)
+        .reverse()
+        .find(child => {
+          if (child === li) return false; // skip the dragged element itself
+          const rect = child.getBoundingClientRect();
+          return e.clientY > rect.top + rect.height / 2;
+        });
+
+      if (afterElement) {
+        target.insertBefore(li, afterElement.nextSibling);
+      } else {
+        target.prepend(li);
+      }
     });
   };
 }
@@ -242,8 +272,7 @@ function reset(container, source, targets, expected) {
   // Store puzzle labels mapped by NORMALIZED text
   container._puzzleLabelMap = new Map();
   source.querySelectorAll(".parsons-line").forEach(li => {
-    const norm = li.dataset.text.trim().replace(/\s+/g, " ");
-    container._puzzleLabelMap.set(norm, li.dataset.puzzleLabel);
+    container._puzzleLabelMap.set(norm(li.dataset.text), li.dataset.puzzleLabel);
   });
 
   const msg = container.querySelector(".parsons-message");
@@ -256,17 +285,18 @@ function reset(container, source, targets, expected) {
 /* ============================================================
    CHECK
    ============================================================ */
-function check(container, source, targets, expected) {
+
+   function check(container, source, targets, expected) {
   const current = [];
 
   targets.forEach(ul => {
     const indent = parseInt(ul.dataset.indent, 10) || 0;
     ul.querySelectorAll(".parsons-line").forEach(li => {
       current.push({
+        li,
         text: li.dataset.text,
         indent,
         solutionLine: parseInt(li.dataset.solutionLine),
-        puzzleLabel: li.dataset.puzzleLabel
       });
     });
   });
@@ -276,18 +306,65 @@ function check(container, source, targets, expected) {
     return;
   }
 
-  const ok =
-    current.length === expected.length &&
-    current.every((line, i) =>
+  let allCorrect = true;
+
+  current.forEach((line, i) => {
+    // Remove old classes
+    line.li.classList.remove("line-correct", "line-incorrect");
+
+    // Compare with expected
+    const correct =
       norm(line.text) === norm(expected[i].text) &&
       line.indent === expected[i].indent &&
-      line.solutionLine === expected[i].solutionLine
-    );
+      line.solutionLine === expected[i].solutionLine;
 
-  showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
-  container.classList.toggle("parsons-correct", ok);
-  container.classList.toggle("parsons-incorrect", !ok);
+    if (correct) {
+      line.li.classList.add("line-correct");
+    } else {
+      line.li.classList.add("line-incorrect");
+      allCorrect = false;
+    }
+  });
+
+  showMessage(container, allCorrect ? "✅ Correct!" : "✖ Try again", allCorrect);
+  container.classList.toggle("parsons-correct", allCorrect);
+  container.classList.toggle("parsons-incorrect", !allCorrect);
 }
+
+
+
+// function check(container, source, targets, expected) {
+//   const current = [];
+
+//   targets.forEach(ul => {
+//     const indent = parseInt(ul.dataset.indent, 10) || 0;
+//     ul.querySelectorAll(".parsons-line").forEach(li => {
+//       current.push({
+//         text: li.dataset.text,
+//         indent,
+//         solutionLine: parseInt(li.dataset.solutionLine),
+//         puzzleLabel: li.dataset.puzzleLabel
+//       });
+//     });
+//   });
+
+//   if (source.querySelectorAll(".parsons-line").length > 0) {
+//     showMessage(container, "✖ Move all lines into the target area before checking.", false);
+//     return;
+//   }
+
+//   const ok =
+//     current.length === expected.length &&
+//     current.every((line, i) =>
+//       norm(line.text) === norm(expected[i].text) &&
+//       line.indent === expected[i].indent &&
+//       line.solutionLine === expected[i].solutionLine
+//     );
+
+//   showMessage(container, ok ? "✅ Correct!" : "✖ Try again", ok);
+//   container.classList.toggle("parsons-correct", ok);
+//   container.classList.toggle("parsons-incorrect", !ok);
+// }
 
 /* ============================================================
    SOLUTION
@@ -300,7 +377,7 @@ function showSolution(container, source, targets, expected) {
   // Sort expected by indent & solution order
   expected.forEach(exp => {
     const li = document.createElement("li");
-    li.className = "parsons-line line-correct";
+    li.className = "parsons-line line-correct line-solution"; // <-- add line-solution
 
     // Puzzle label must remain the SAME label
     // We find the actual puzzle label by matching text
@@ -328,13 +405,20 @@ function showSolution(container, source, targets, expected) {
   showMessage(container, "✨ Solution revealed", true);
 }
 
+
 /* ============================================================
    PUZZLE LABEL LOOKUP
    ============================================================ */
 
+// function findPuzzleLabel(container, text) {
+//   if (!container._puzzleLabelMap) return "?";
+//   return container._puzzleLabelMap.get(text) || "?";
+// }
+
 function findPuzzleLabel(container, text) {
   if (!container._puzzleLabelMap) return "?";
-  return container._puzzleLabelMap.get(text) || "?";
+  const key = norm(text);  // normalise
+  return container._puzzleLabelMap.get(key) || "?";
 }
 
 
