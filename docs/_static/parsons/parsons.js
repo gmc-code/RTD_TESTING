@@ -93,7 +93,6 @@ function normalizeSourceLines(source) {
 }
 
 
-
 function parseExpected(container, originalLines) {
   if (!container.dataset.expected) {
     return originalLines.map(li => ({
@@ -106,14 +105,14 @@ function parseExpected(container, originalLines) {
   const segs = container.dataset.expected.split("|");
   return segs.map((seg, idx) => {
     const [indent, code] = seg.split("::");
-    const origLineId = parseInt(originalLines[idx].dataset.line, 10); // preserve shuffled id
     return {
       text: code.trim(),
       indent: parseInt(indent, 10),
-      line: origLineId
+      line: parseInt(originalLines[idx].dataset.line, 10) // preserve shuffled id
     };
   });
 }
+
 
 
 function makeDraggable(container) {
@@ -229,19 +228,21 @@ function check(container, source, targets, expected) {
 
 
 function reset(container, source, targets, originalLines) {
-  // Clear targets and source
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
 
-  // Rebuild source list from originalLines
-  originalLines.forEach(li => {
-    const clone = li.cloneNode(true);
+  // Shuffle a copy of originalLines
+  const shuffled = [...originalLines];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
 
-    // Preserve attributes
+  shuffled.forEach(li => {
+    const clone = li.cloneNode(true);
     clone.dataset.line = li.dataset.line;
     clone.dataset.text = li.dataset.text;
 
-    // Rebuild label and pre to ensure consistency
     clone.innerHTML = "";
     const label = document.createElement("span");
     label.className = "line-label";
@@ -255,6 +256,14 @@ function reset(container, source, targets, originalLines) {
     makeDraggable(container)(clone);
     source.appendChild(clone);
   });
+
+  container.classList.remove("parsons-correct", "parsons-incorrect");
+  const msg = container.querySelector(".parsons-message");
+  if (msg) msg.textContent = "";
+
+  logCurrentState(container);
+}
+
 
   // Reset state
   container.classList.remove("parsons-correct", "parsons-incorrect");
