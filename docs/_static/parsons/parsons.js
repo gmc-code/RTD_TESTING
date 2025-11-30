@@ -69,18 +69,20 @@ function normalizeSourceLines(source) {
     if (!li.dataset.line) {
       li.dataset.line = idx + 1;
     }
-    const codeText = li.textContent.trim();
+    const rawText = li.textContent.trim();
+    const cleanText = normalizeLineText(rawText); // strip "N |"
     li.textContent = "";
     const label = document.createElement("span");
     label.className = "line-label";
     label.textContent = `${li.dataset.line} |`;
     const pre = document.createElement("pre");
-    pre.textContent = codeText;
+    pre.textContent = cleanText;
     li.appendChild(label);
     li.appendChild(pre);
   });
   return lines;
 }
+
 
 function parseExpected(container, originalLines) {
   if (!container.dataset.expected) {
