@@ -1,21 +1,6 @@
-.parsons-line {
-  position: relative;
-  padding-left: 3rem;  /* make room for numbers */
-  font-family: var(--pst-font-monospace, monospace);
-}
+from docutils import nodes
 
-/* Line number prefix (JS or directive inserts data-line) */
-.parsons-line::before {
-  content: attr(data-line) " | ";
-  position: absolute;
-  left: 0.6rem;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  color: #888;
-  font-weight: bold;
-  pointer-events: none;
-  white-space: pre;
-}
-
+# inside your loop
+code_html = f'<pre class="no-copybutton">{line}</pre>'
+code = nodes.raw('', code_html, format='html')
+li += code

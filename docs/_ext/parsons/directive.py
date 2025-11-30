@@ -68,6 +68,8 @@ class ParsonsDirective(Directive):
             code = nodes.literal_block(line, line)
             code["language"] = "python"
             code["classes"].append("no-copybutton")
+            code_html = f'<pre class="no-copybutton">{line}</pre>'
+            code = nodes.raw('', code_html, format='html')
             li += code
             source_ul += li
 

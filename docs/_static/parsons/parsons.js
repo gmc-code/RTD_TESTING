@@ -2,6 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".parsons-container").forEach(initParsons);
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".parsons-line pre").forEach(pre => {
+    // Remove any injected copy text
+    pre.innerHTML = pre.innerHTML.replace(/Copy to clipboard/g, "");
+  });
+});
+
+
 function initParsons(container) {
   const source   = container.querySelector(".parsons-source");
   const targets  = container.querySelectorAll(".parsons-target-list");
