@@ -26,13 +26,13 @@ function getCurrentLines() {
 }
 
 function initParsons(container) {
-  const source   = container.querySelector(".parsons-source");
-  const targets  = container.querySelectorAll(".parsons-target-list");
+  const source = container.querySelector(".parsons-source");
+  const targets = container.querySelectorAll(".parsons-target-list");
   const controls = container.querySelector(".parsons-controls");
 
-  const resetBtn    = controls.querySelector(".parsons-reset");
-  const checkBtn    = controls.querySelector(".parsons-check");
-  let solutionBtn   = controls.querySelector(".parsons-solution");
+  const resetBtn = controls.querySelector(".parsons-reset");
+  const checkBtn = controls.querySelector(".parsons-check");
+  let solutionBtn = controls.querySelector(".parsons-solution");
 
   if (!solutionBtn) {
     solutionBtn = createButton("parsons-solution", "Show Solution");
@@ -148,9 +148,9 @@ function enableDrop(container) {
 
 function norm(s) {
   return s.replace(/\u00A0/g, " ")
-          .replace(/\t/g, "    ")
-          .replace(/[ \f\r\v]+/g, " ")
-          .trim();
+    .replace(/\t/g, "    ")
+    .replace(/[ \f\r\v]+/g, " ")
+    .trim();
 }
 
 function showMessage(container, text, ok) {
@@ -183,15 +183,13 @@ function highlightLines(container, expected, current) {
 
 /* ---------- Actions ---------- */
 
-
 function check(container, source, targets, expected) {
   const current = [];
   targets.forEach(ul => {
     const indent = parseInt(ul.dataset.indent, 10) || 0;
     ul.querySelectorAll(".parsons-line").forEach(li => {
-      const pre = li.querySelector("pre");
       current.push({
-        text: norm(pre.textContent),
+        text: li.dataset.text || norm(li.querySelector("pre")?.textContent || ""),
         indent,
         line: parseInt(li.dataset.line, 10)
       });
@@ -205,11 +203,11 @@ function check(container, source, targets, expected) {
   }
 
   const ok = current.length === expected.length &&
-             current.every((line, i) =>
-               line.text === norm(expected[i].text) &&
-               line.indent === expected[i].indent &&
-               line.line === expected[i].line
-             );
+    current.every((line, i) =>
+      norm(line.text) === norm(expected[i].text) &&
+      line.indent === expected[i].indent &&
+      line.line === expected[i].line
+    );
 
   container.classList.toggle("parsons-correct", ok);
   container.classList.toggle("parsons-incorrect", !ok);
@@ -218,6 +216,7 @@ function check(container, source, targets, expected) {
 
   console.log("Check result:", { ok, expected, current });
 }
+
 
 function reset(container, source, targets, originalLines) {
   targets.forEach(ul => ul.innerHTML = "");
@@ -233,16 +232,19 @@ function reset(container, source, targets, originalLines) {
   logCurrentState(container);
 }
 
+
+
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
   expected.forEach(exp => {
     const li = document.createElement("li");
     li.className = "parsons-line line-correct";
-    li.dataset.line = exp.line;
+    li.dataset.line = exp.line;          // keep original line id
+    li.dataset.text = exp.text;          // store clean code
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${exp.line} |`;
+    label.textContent = `${li.dataset.line} |`; // use dataset.line
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
     li.appendChild(label);
@@ -253,6 +255,7 @@ function showSolution(container, source, targets, expected) {
   showMessage(container, "✨ Solution revealed", true);
   logCurrentState(container);
 }
+
 
 /* ---------- Debug ---------- */
 
