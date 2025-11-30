@@ -225,19 +225,40 @@ function check(container, source, targets, expected) {
 
 
 function reset(container, source, targets, originalLines) {
+  // Clear targets and source
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
+
+  // Rebuild source list from originalLines
   originalLines.forEach(li => {
     const clone = li.cloneNode(true);
+
+    // Preserve attributes
+    clone.dataset.line = li.dataset.line;
+    clone.dataset.text = li.dataset.text;
+
+    // Rebuild label and pre to ensure consistency
+    clone.innerHTML = "";
+    const label = document.createElement("span");
+    label.className = "line-label";
+    label.textContent = `${clone.dataset.line} |`;
+    const pre = document.createElement("pre");
+    pre.textContent = clone.dataset.text;
+
+    clone.appendChild(label);
+    clone.appendChild(pre);
+
     makeDraggable(container)(clone);
     source.appendChild(clone);
   });
+
+  // Reset state
   container.classList.remove("parsons-correct", "parsons-incorrect");
   const msg = container.querySelector(".parsons-message");
   if (msg) msg.textContent = "";
+
   logCurrentState(container);
 }
-
 
 
 function showSolution(container, source, targets, expected) {
