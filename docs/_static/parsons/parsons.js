@@ -212,11 +212,11 @@ function check(container, source, targets, expected) {
 
   // Compare current vs expected by original line id and text
   const ok = current.length === expected.length &&
-             current.every((line, i) =>
-               norm(line.text) === norm(expected[i].text) &&
-               line.indent === expected[i].indent &&
-               line.line === expected[i].line
-             );
+    current.every((line, i) =>
+      norm(line.text) === norm(expected[i].text) &&
+      line.indent === expected[i].indent &&
+      line.line === expected[i].line
+    );
 
   container.classList.toggle("parsons-correct", ok);
   container.classList.toggle("parsons-incorrect", !ok);
@@ -264,14 +264,6 @@ function reset(container, source, targets, originalLines) {
   logCurrentState(container);
 }
 
-
-  // Reset state
-  container.classList.remove("parsons-correct", "parsons-incorrect");
-  const msg = container.querySelector(".parsons-message");
-  if (msg) msg.textContent = "";
-
-  logCurrentState(container);
-}
 
 
 function showSolution(container, source, targets, expected) {
