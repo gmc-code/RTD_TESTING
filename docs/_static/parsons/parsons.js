@@ -26,14 +26,15 @@ function getCurrentLines() {
   });
 }
 
+
 function initParsons(container) {
-  const source = container.querySelector(".parsons-source");
-  const targets = container.querySelectorAll(".parsons-target-list");
+  const source   = container.querySelector(".parsons-source");
+  const targets  = container.querySelectorAll(".parsons-target-list");
   const controls = container.querySelector(".parsons-controls");
 
-  const resetBtn = controls.querySelector(".parsons-reset");
-  const checkBtn = controls.querySelector(".parsons-check");
-  let solutionBtn = controls.querySelector(".parsons-solution");
+  const resetBtn    = controls.querySelector(".parsons-reset");
+  const checkBtn    = controls.querySelector(".parsons-check");
+  let solutionBtn   = controls.querySelector(".parsons-solution");
 
   if (!solutionBtn) {
     solutionBtn = createButton("parsons-solution", "Show Solution");
@@ -41,7 +42,32 @@ function initParsons(container) {
   }
 
   // --- State ---
-  const originalLines = normalizeSourceLines(source);
+  let originalLines = normalizeSourceLines(source);
+
+  // Shuffle once at init
+  originalLines = shuffleArray(originalLines);
+
+  // Rebuild source with shuffled lines
+  source.innerHTML = "";
+  originalLines.forEach(li => {
+    const clone = li.cloneNode(true);
+    clone.dataset.line = li.dataset.line;
+    clone.dataset.text = li.dataset.text;
+
+    clone.innerHTML = "";
+    const label = document.createElement("span");
+    label.className = "line-label";
+    label.textContent = `${clone.dataset.line} |`;
+    const pre = document.createElement("pre");
+    pre.textContent = clone.dataset.text;
+
+    clone.appendChild(label);
+    clone.appendChild(pre);
+
+    makeDraggable(container)(clone);
+    source.appendChild(clone);
+  });
+
   const expected = parseExpected(container, originalLines);
 
   // --- Event bindings ---
@@ -53,6 +79,7 @@ function initParsons(container) {
   container.querySelectorAll(".parsons-line").forEach(makeDraggable(container));
   targets.forEach(enableDrop(container));
 }
+
 
 /* ---------- Helpers ---------- */
 
@@ -241,6 +268,7 @@ function shuffleArray(arr) {
 
 
 
+// -----------------------------------------------------------------
 
 function reset(container, source, targets, originalLines) {
   targets.forEach(ul => ul.innerHTML = "");
@@ -249,11 +277,14 @@ function reset(container, source, targets, originalLines) {
   // Shuffle a copy of originalLines
   const shuffled = shuffleArray(originalLines);
 
-  shuffled.forEach(li => {
+  shuffled.forEach((li, idx) => {
     const clone = li.cloneNode(true);
-    clone.dataset.line = li.dataset.line;
+
+    // Assign new sequential line numbers
+    clone.dataset.line = idx + 1;
     clone.dataset.text = li.dataset.text;
 
+    // Rebuild label and pre
     clone.innerHTML = "";
     const label = document.createElement("span");
     label.className = "line-label";
