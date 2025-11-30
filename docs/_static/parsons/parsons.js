@@ -1,188 +1,133 @@
-/*
-Patched Parsons Puzzle Runtime for Sphinx/RTD
-- Buttons always work
-- Drag handles set to <pre>, ignores buttons
-- Locked lines non-draggable
-- Client/server shuffle sync
-- Check/Reset/Solution functional
-*/
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".parsons-container").forEach(container => {
+    const source   = container.querySelector(".parsons-source");
+    const targets  = container.querySelectorAll(".parsons-target-list");
+    const resetBtn = container.querySelector(".parsons-reset");
+    const checkBtn = container.querySelector(".parsons-check");
 
-(function () {
-  document.addEventListener("DOMContentLoaded", initAllParsons);
+    // Remove copy buttons
+    container.querySelectorAll(".copybtn").forEach(btn => btn.remove());
+    container.querySelectorAll("div.highlight").forEach(div => {
+      div.classList.add("no-copybutton");
+    });
 
-  function initAllParsons() {
-    document.querySelectorAll(".parsons-container").forEach(initParsons);
-  }
+    // Store originals for reset
+    container._original = Array.from(source.children);
 
-  function initParsons(container) {
-    const widgetId = container.id;
-    if (!widgetId) return;
+    // Expected solution from data attribute
+    container._expected = container.dataset.expected
+      ? container.dataset.expected.split("|")
+      : container._original.map(li => li.querySelector("pre").textContent.trim());
 
-    const expectedScript = document.getElementById(`${widgetId}-expected`);
-    if (!expectedScript) return;
-
-    const payload = JSON.parse(expectedScript.textContent);
-    const expected = payload.expected;
-    const cfg = payload.config;
-
-    const checkMode = container.dataset.checkMode || cfg.check_mode;
-    const indentStep = parseInt(container.dataset.indentStep || cfg.indent_step, 10);
-    const columns = parseInt(container.dataset.columns || cfg.columns, 10);
-    const prefixMode = container.dataset.prefix || cfg.prefix || "none";
-
-    // random order (server-determined), used if shuffle-js == true
-    let randomOrder = [];
-    if (container.dataset.randomOrder) {
-      try { randomOrder = JSON.parse(container.dataset.randomOrder); } catch (_) {}
+    // Shuffle client-side if requested
+    if (container.dataset.shuffleJs === "true") {
+      const items = Array.from(source.children);
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      items.forEach(li => source.appendChild(li));
     }
 
-    const shuffleJS = container.dataset.shuffleJs === "true";
+    // Make a line draggable + highlightable + droppable
+    function makeDraggable(li) {
+      li.setAttribute("draggable", "true");
 
-    const sourceList = container.querySelector(".parsons-source");
-    const targetLists = [...container.querySelectorAll(".parsons-target-list")];
-
-    // ---------- APPLY JS SHUFFLE IF ENABLED ----------
-    if (shuffleJS && randomOrder.length > 0 && sourceList) {
-      const items = [...sourceList.children];
-      items.sort((a, b) => {
-        const lnA = parseInt(a.dataset.lineNumber, 10);
-        const lnB = parseInt(b.dataset.lineNumber, 10);
-        return randomOrder.indexOf(lnA) - randomOrder.indexOf(lnB);
+      li.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", li.id || "dragging");
+        container.__dragging = li;
       });
-      items.forEach((li) => sourceList.appendChild(li));
+
+      li.addEventListener("dragenter", e => {
+        e.preventDefault();
+        const pre = li.querySelector("pre");
+        if (pre) pre.classList.add("parsons-drop-hover");
+      });
+
+      li.addEventListener("dragleave", () => {
+        const pre = li.querySelector("pre");
+        if (pre) pre.classList.remove("parsons-drop-hover");
+      });
+
+      li.addEventListener("drop", e => {
+        e.preventDefault();
+        const pre = li.querySelector("pre");
+        if (pre) pre.classList.remove("parsons-drop-hover");
+        const dragged = container.__dragging;
+        if (dragged && dragged !== li) {
+          li.parentNode.insertBefore(dragged, li);
+        }
+        container.__dragging = null;
+      });
     }
 
-    // ---------- MAKE DRAGGABLE WITH SORTABLE ----------
-    const sortableOpts = {
-      group: widgetId,
-      animation: 150,
-      fallbackOnBody: true,
-      swapThreshold: 0.65,
-      handle: "pre", // drag only via <pre>, buttons ignored
-      onMove(evt) {
-        return !evt.dragged.classList.contains("parsons-locked");
-      },
-    };
+    // Initialize lines
+    container.querySelectorAll(".parsons-line").forEach(makeDraggable);
 
-    if (sourceList) Sortable.create(sourceList, sortableOpts);
-    targetLists.forEach((ul) => Sortable.create(ul, sortableOpts));
-
-    // ---------- BUTTONS ----------
-    const btnCheck = container.querySelector(".parsons-check");
-    const btnReset = container.querySelector(".parsons-reset");
-    const btnSolution = container.querySelector(".parsons-show-solution");
-
-    if (btnCheck) btnCheck.addEventListener("click", () => {
-      console.log("Check clicked");
-      checkSolution(container, expected, checkMode, indentStep);
-    });
-    if (btnReset) btnReset.addEventListener("click", () => {
-      console.log("Reset clicked");
-      resetPuzzle(container, expected);
-    });
-    if (btnSolution) btnSolution.addEventListener("click", () => {
-      console.log("Solution clicked");
-      showSolution(container, expected);
-    });
-  }
-
-  // ------------------------------------------------------------
-  // CHECK SOLUTION
-  // ------------------------------------------------------------
-  function checkSolution(container, expected, checkMode, indentStep) {
-    const userOrder = getUserState(container);
-    clearHighlights(container);
-
-    let allCorrect = true;
-
-    expected.forEach((exp, idx) => {
-      const usr = userOrder[idx];
-      if (!usr) { allCorrect = false; return; }
-
-      let correct = true;
-
-      if (checkMode !== "indent-only") {
-        if (usr.line_number !== exp.line_number) correct = false;
-      }
-
-      if (checkMode !== "order-only") {
-        if (usr.indent !== exp.indent) correct = false;
-      }
-
-      const li = usr.element;
-      if (correct) li.classList.add("parsons-correct");
-      else {
-        li.classList.add("parsons-wrong");
-        allCorrect = false;
-      }
-    });
-
-    if (allCorrect) container.classList.add("parsons-solved");
-    else container.classList.remove("parsons-solved");
-  }
-
-  // ------------------------------------------------------------
-  // GET USER STATE
-  // ------------------------------------------------------------
-  function getUserState(container) {
-    const cols = [...container.querySelectorAll(".parsons-target-list")];
-    let collected = [];
-
-    cols.forEach((ul) => {
-      [...ul.children].forEach((li) => {
-        const ln = parseInt(li.dataset.lineNumber, 10);
-        const indent = computeIndentFromDOM(li);
-        collected.push({ line_number: ln, indent, element: li });
+    // Lists accept drops (drop at end of list)
+    [...targets, source].forEach(ul => {
+      ul.addEventListener("dragover", e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      });
+      ul.addEventListener("dragenter", e => {
+        e.preventDefault();
+        ul.classList.add("parsons-drop-hover");
+      });
+      ul.addEventListener("dragleave", () => {
+        ul.classList.remove("parsons-drop-hover");
+      });
+      ul.addEventListener("drop", e => {
+        e.preventDefault();
+        ul.classList.remove("parsons-drop-hover");
+        const dragged = container.__dragging;
+        if (dragged) {
+          ul.appendChild(dragged); // drop to end if not on a line
+        }
+        container.__dragging = null;
       });
     });
 
-    return collected;
-  }
+    // Reset
+    function reset() {
+      targets.forEach(ul => ul.innerHTML = "");
+      source.innerHTML = "";
+      container._original.forEach(li => {
+        const clone = li.cloneNode(true);
+        makeDraggable(clone);
+        source.appendChild(clone);
+      });
+      container.classList.remove("parsons-correct", "parsons-incorrect");
+      const msg = container.querySelector(".parsons-message");
+      if (msg) msg.textContent = "";
+    }
 
-  function computeIndentFromDOM(li) {
-    const pre = li.querySelector("pre");
-    if (!pre) return 0;
-    const txt = pre.textContent || "";
-    return txt.length - txt.trimStart().length;
-  }
+    // Check
+    function check() {
+      const current = [];
+      targets.forEach(ul => {
+        ul.querySelectorAll(".parsons-line pre").forEach(pre => {
+          current.push(pre.textContent.trim());
+        });
+      });
 
-  function clearHighlights(container) {
-    container.querySelectorAll(".parsons-correct, .parsons-wrong").forEach((el) => {
-      el.classList.remove("parsons-correct", "parsons-wrong");
-    });
-  }
+      const expected = container._expected;
+      const ok = current.length === expected.length &&
+                 current.every((line, i) => line === expected[i]);
 
-  function resetPuzzle(container, expected) {
-    clearHighlights(container);
-    container.classList.remove("parsons-solved");
+      container.classList.toggle("parsons-correct", ok);
+      container.classList.toggle("parsons-incorrect", !ok);
 
-    const source = container.querySelector(".parsons-source");
-    if (!source) return;
-
-    const items = [...container.querySelectorAll(".parsons-line")];
-    items.sort((a, b) => parseInt(a.dataset.lineNumber) - parseInt(b.dataset.lineNumber));
-    items.forEach((li) => {
-      li.draggable = !li.classList.contains("parsons-locked");
-      source.appendChild(li);
-    });
-  }
-
-  function showSolution(container, expected) {
-    clearHighlights(container);
-    container.classList.remove("parsons-solved");
-
-    const cols = [...container.querySelectorAll(".parsons-target-list")];
-    if (cols.length === 0) return;
-
-    cols.forEach((ul) => ul.innerHTML = "");
-
-    expected.forEach((exp) => {
-      const li = container.querySelector(`.parsons-line[data-line-number='${exp.line_number}']`);
-      if (li) {
-        li.draggable = !li.classList.contains("parsons-locked");
-        cols[0].appendChild(li);
+      let msg = container.querySelector(".parsons-message");
+      if (!msg) {
+        msg = document.createElement("div");
+        msg.className = "parsons-message";
+        container.appendChild(msg);
       }
-    });
-  }
+      msg.textContent = ok ? "✅ Correct!" : "✖ Try again";
+    }
 
-})();
+    resetBtn && resetBtn.addEventListener("click", reset);
+    checkBtn && checkBtn.addEventListener("click", check);
+  });
+});
