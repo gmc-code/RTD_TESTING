@@ -148,6 +148,22 @@ Multi-Language Puzzle
 
 ----
 
+
+Python-Side Shuffle
+-------------------
+
+.. parsons::
+   :title: Square numbers
+   :shuffle:
+   :columns: 1
+
+   - nums = [1, 2, 3]
+   - squares = [n*n for n in nums]
+   - print(squares)
+
+----
+
+
 Client-Side Shuffle
 -------------------
 
