@@ -17,6 +17,7 @@ function getCurrentLines() {
   return Array.from(document.querySelectorAll(".parsons-source .parsons-line")).map((li, idx) => {
     // Prefer the clean data-text set by the directive
     const clean = li.dataset.text ?? normalizeLineText(li.querySelector("pre")?.innerText || "");
+
     return {
       text: clean,
       indent: 0, // your logic here if indent is tracked
@@ -70,7 +71,8 @@ function normalizeSourceLines(source) {
     }
 
     // Use the clean code from data-text (set by directive)
-    const cleanText = li.dataset.text || "";
+    // const cleanText = li.dataset.text || "";
+    const cleanText = li.dataset.text || norm(li.querySelector("pre")?.textContent || "");
 
     // Clear existing content
     li.textContent = "";
