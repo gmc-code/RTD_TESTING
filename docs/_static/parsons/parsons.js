@@ -31,35 +31,33 @@ function getCurrentLines() {
 
 
 // --------------------------------------------------------------------------
+
 function initParsons(container) {
   const source   = container.querySelector(".parsons-source");
   const targets  = container.querySelectorAll(".parsons-target-list");
   const controls = container.querySelector(".parsons-controls");
 
-  const resetBtn    = controls.querySelector(".parsons-reset");
-  const checkBtn    = controls.querySelector(".parsons-check");
-  let solutionBtn   = controls.querySelector(".parsons-solution");
+  const resetBtn  = controls.querySelector(".parsons-reset");
+  const checkBtn  = controls.querySelector(".parsons-check");
+  let solutionBtn = controls.querySelector(".parsons-solution");
   if (!solutionBtn) {
     solutionBtn = createButton("parsons-solution", "Show Solution");
     controls.appendChild(solutionBtn);
   }
 
   const expected = parseExpected(container);
-  const solutionIndex = buildSolutionIndex(expected);
+  let lines = normalizeSourceLines(source);
 
-  // Normalize source to set dataset.text + canonical solution IDs
-  let originalLines = normalizeSourceLines(source, solutionIndex);
-
-  // Initial shuffle if requested
   if (container.dataset.shuffleJs === "true") {
     const canonicalOrder = expected.map(e => e.text);
-    const canonicalNodes = canonicalOrder.map(text =>
-      originalLines.find(li => norm(li.dataset.text) === norm(text))
-    );
-    const avoid = [originalLines, canonicalNodes.filter(Boolean)];
-    const shuffled = shuffleArrayAvoidOrders(originalLines, avoid);
+    const canonicalNodes = canonicalOrder.map(text => lines.find(li => norm(li.dataset.text) === norm(text))).filter(Boolean);
 
-    // Rebuild source with shuffled nodes and sequential puzzle labels
+    let shuffled = shuffleArray(lines);
+    // Avoid identity and canonical order
+    while (isSameOrderByText(shuffled, lines) || isSameOrderByText(shuffled, canonicalNodes)) {
+      shuffled = shuffleArray(lines);
+    }
+
     source.innerHTML = "";
     shuffled.forEach((li, idx) => {
       const clone = li.cloneNode(true);
@@ -79,12 +77,9 @@ function initParsons(container) {
       makeDraggable(container)(clone);
       source.appendChild(clone);
     });
-
-    // Replace originalLines with the newly rendered nodes for future resets
-    originalLines = Array.from(source.querySelectorAll("li"));
   }
 
-  // Bind actions to the canonical expected and the current source set
+  // Bind actions
   resetBtn?.addEventListener("click", () => reset(container, source, targets, expected));
   checkBtn?.addEventListener("click", () => check(container, source, targets, expected));
   solutionBtn?.addEventListener("click", () => showSolution(container, source, targets, expected));
@@ -107,20 +102,20 @@ function createButton(className, text) {
 
 
 
-function normalizeSourceLines(source, solutionIndex) {
+function normalizeSourceLines(source) {
   const lines = Array.from(source.querySelectorAll("li"));
   lines.forEach((li, idx) => {
     const text = li.dataset.text || norm(li.querySelector("pre")?.textContent || "");
     li.dataset.text = text;
 
-    // Canonical solution ID from expected by text (not from current order)
-    const solId = solutionIndex.get(norm(text));
+    // Canonical solution ID (keep from directive if present, else idx+1)
+    const solId = parseInt(li.dataset.solutionLine || li.dataset.line || (idx + 1), 10);
     li.dataset.solutionLine = solId;
 
-    // Initial puzzle label (will be reassigned on shuffle/reset)
+    // Initial cosmetic puzzle label (sequential; will be reassigned on shuffle/reset)
     li.dataset.puzzleLine = idx + 1;
 
-    // Render label from puzzle ID
+    // Render label from puzzle ID for puzzle view
     li.classList.add("parsons-line");
     li.innerHTML = "";
     const label = document.createElement("span");
@@ -137,6 +132,7 @@ function normalizeSourceLines(source, solutionIndex) {
 
 
 
+
 function norm(s) {
   return (s || "")
     .replace(/\u00A0/g, " ")
@@ -148,7 +144,6 @@ function norm(s) {
 
 
 function parseExpected(container) {
-  // data-expected format: "indent::code|indent::code|..."
   const segs = (container.dataset.expected || "").split("|");
   return segs.map((seg, idx) => {
     const [indent, code] = seg.split("::");
@@ -167,13 +162,6 @@ function buildSolutionIndex(expected) {
   const index = new Map();
   expected.forEach(e => index.set(norm(e.text), e.solutionLine));
   return index;
-}
-
-
-
-function isSameOrderByText(arrA, arrB) {
-  if (arrA.length !== arrB.length) return false;
-  return arrA.every((li, i) => norm(li.dataset.text) === norm(arrB[i].dataset.text));
 }
 
 
@@ -270,26 +258,40 @@ function highlightLines(container, expected, current) {
 
 /* ---------- Actions ---------- */
 
+// function shuffleArray(arr) {
+//   let shuffled;
+//   do {
+//     shuffled = [...arr];
+//     for (let i = shuffled.length - 1; i > 0; i--) {
+//       const j = Math.floor(Math.random() * (i + 1));
+//       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+//     }
+//   } while (shuffled.every((li, idx) => li.dataset.puzzleLine == arr[idx].dataset.puzzleLine));
+//   return shuffled;
+// }
+
 function shuffleArray(arr) {
-  let shuffled;
-  do {
-    shuffled = [...arr];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-  } while (shuffled.every((li, idx) => li.dataset.puzzleLine == arr[idx].dataset.puzzleLine));
-  return shuffled;
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 
+
+function isSameOrderByText(a, b) {
+  if (a.length !== b.length) return false;
+  return a.every((li, i) => norm(a[i].dataset.text) === norm(b[i].dataset.text));
+}
 
 function reset(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
 
-  // Rebuild a working set from current source (or expected by text)
-  const current = expected.map(e => {
+  // Build canonical working set from expected
+  const canonical = expected.map(e => {
     const li = document.createElement("li");
     li.className = "parsons-line";
     li.dataset.text = e.text;
@@ -297,11 +299,12 @@ function reset(container, source, targets, expected) {
     return li;
   });
 
-  // Define avoid orders (identity and canonical expected order)
-  const avoid = [current /* identity */, current /* canonical by text (same here) */];
-  const shuffled = shuffleArrayAvoidOrders(current, avoid);
+  let shuffled = shuffleArray(canonical);
+  // Avoid canonical order
+  while (isSameOrderByText(shuffled, canonical)) {
+    shuffled = shuffleArray(canonical);
+  }
 
-  // Render shuffled with sequential puzzle labels
   shuffled.forEach((li, idx) => {
     li.dataset.puzzleLine = idx + 1;
     li.innerHTML = "";
@@ -326,9 +329,9 @@ function reset(container, source, targets, expected) {
 
 
 // ---------------------------------------------------------------------
-
 function check(container, source, targets, expected) {
   const current = [];
+
   targets.forEach(ul => {
     const indent = parseInt(ul.dataset.indent, 10) || 0;
     ul.querySelectorAll(".parsons-line").forEach(li => {
@@ -363,8 +366,8 @@ function check(container, source, targets, expected) {
 
 
 
-// -----------------------------------------------------------------
 
+// -----------------------------------------------------------------
 function showSolution(container, source, targets, expected) {
   targets.forEach(ul => ul.innerHTML = "");
   source.innerHTML = "";
@@ -377,8 +380,7 @@ function showSolution(container, source, targets, expected) {
 
     const label = document.createElement("span");
     label.className = "line-label";
-    label.textContent = `${exp.solutionLine} |`; // canonical numbering
-
+    label.textContent = `${exp.solutionLine} |`; // canonical 1..N
     const pre = document.createElement("pre");
     pre.textContent = exp.text;
 
@@ -396,6 +398,7 @@ function showSolution(container, source, targets, expected) {
 
 
 
+
 /* ---------- Debug ---------- */
 
 function logCurrentState(container) {
@@ -407,7 +410,7 @@ function logCurrentState(container) {
       current.push({
         text: norm(pre.textContent),
         indent,
-        line: parseInt(li.dataset.line, 10)
+        line: parseInt(li.dataset.solutionLine, 10) // canonical ID
       });
     });
   });
