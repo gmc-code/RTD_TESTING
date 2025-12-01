@@ -1,0 +1,9 @@
+.mcq { border: 1px solid #ddd; padding: 0.75rem; border-radius: 6px; margin: 1rem 0; }
+.mcq-header p { font-weight: 600; margin: 0 0 0.5rem; }
+.mcq-choices { display: grid; gap: 0.5rem; }
+.mcq-choice label { margin-left: 0.35rem; cursor: pointer; }
+.mcq-check { margin-top: 0.75rem; }
+.mcq-feedback { margin-top: 0.5rem; font-weight: 600; }
+.mcq-explain { display: none; margin-left: 1.75rem; color: #444; }
+.mcq-correct .mcq-explain { display: block; }
+.mcq-incorrect .mcq-explain { display: block; color: #a33; }

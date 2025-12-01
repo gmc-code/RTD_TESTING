@@ -30,6 +30,7 @@ extensions = [
     "sphinx_togglebutton",
     "sphinx_design",
     "parsons.directive",  # our custom directive
+    "mcq",  # custom directive
 ]
 
 # "sphinx.ext.doctest",
@@ -91,7 +92,10 @@ html_title = "RTD_TESTING_GMC"
 html_static_path = ["_static"]  # , 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
 # Use custom css  html_css_files = ["custom.css"]
-html_css_files = ["css/custom.css", "parsons/parsons.css"]
+html_css_files = [
+    "css/custom.css",
+    "parsons/parsons.css",
+]
 
 # Custom JS
 html_js_files = [
@@ -100,10 +104,10 @@ html_js_files = [
 
 # for rtd
 def setup(app):
-    for css in ["css/custom.css", "parsons/parsons.css"]:
+    for css in ["css/custom.css", "parsons/parsons.css",]:
         app.add_css_file(css)
 
-    for js in ["parsons/parsons.js","parsons/Sortable.min.js"]:
+    for js in ["parsons/parsons.js","parsons/Sortable.min.js",]:
         app.add_js_file(js)
 
     # external library

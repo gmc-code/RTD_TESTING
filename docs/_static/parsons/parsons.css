@@ -1,3 +1,7 @@
+/* ==============================
+   Parsons Puzzle — Enhanced CSS
+   ============================== */
+
 /* Container styling */
 .parsons-container {
   border: 1px solid #e5e7eb;
@@ -36,19 +40,27 @@
   cursor: grab;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    /* Add smooth transition for background and border */
-  transition: background-color 0.3s ease, border-left 0.3s ease;
+  transition: background-color 0.3s ease, border-left 0.3s ease, margin-left 0.3s ease;
 }
 
-
-
+/* Hover effect */
 .parsons-line:hover {
-  background: #e5e7eb;
+  background: #e0f2fe;
+  border-left: 4px solid #3b82f6;
 }
+
+/* Drag feedback */
 .parsons-line.dragging {
   opacity: 0.6;
   transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
+
+/* Optional indentation markers */
+.parsons-line[data-indent="1"] { border-left-color: #dbeafe; }
+.parsons-line[data-indent="2"] { border-left-color: #bfdbfe; }
+.parsons-line[data-indent="3"] { border-left-color: #93c5fd; }
+/* Add more if deeper nesting */
 
 /* Number badge */
 .line-label {
@@ -131,6 +143,7 @@
   background-color: #22c55e;
   color: #fff;
 }
+
 .line-incorrect {
   background-color: #fee2e2;
   border-left: 4px solid #e74c3c;
@@ -139,6 +152,7 @@
   background-color: #e74c3c;
   color: #fff;
 }
+
 .line-solution {
   background-color: #fef9c3;
   border-left: 4px solid #fbbf24;
