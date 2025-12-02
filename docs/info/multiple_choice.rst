@@ -1,27 +1,99 @@
-==================================
-Multiple Choice Questions
-==================================
+MCQ Test — All Cases
+====================
 
-This page demonstrates the full range of options available in the mcq directive.
-
-Basic MCQ
-------------
-
+Single correct  unshuffled2
+-------------------------------------------
 
 .. mcq::
-   :question: Which index type ensures unique values in a column?
+   :question: What is the correct way to print "Hello, World" in Python?
+
+   [ ] echo "Hello, World"
+   [x] print("Hello, World") | Correct! print() is used to output text in Python.
+   [ ] printf("Hello, World")
+   [ ] echo(Hello, World)
+
+Single correct shuffled
+-----------------------------
+
+.. mcq::
+   :question: What is the correct way to print "Hello, World" in Python?
    :shuffle:
 
-   .. choice:: Primary key
-      :correct:
-      :explain: A primary key enforces uniqueness and non-null across rows.
+   [ ] echo "Hello, World"
+   [x] print("Hello, World") | Correct! print() is used to output text in Python.
+   [ ] printf("Hello, World")
+   [ ] echo(Hello, World)
 
-   .. choice:: Full-text index
-      :explain: Full-text indexes support text search; they do not enforce uniqueness.
+Single correct letters
+------------------------
 
-   .. choice:: Unique index
-      :correct:
-      :explain: A unique index enforces unique values but allows a single NULL in many databases.
+.. mcq::
+   :question: Which of these are valid variable names in Python?
+   :shuffle:
+   :letters:
 
-   .. choice:: Foreign key
-      :explain: Foreign keys enforce referential integrity, not uniqueness of the referencing column.
+   [x] my_var | Valid variable name
+   [ ] 2var | Cannot start with a number
+   [ ] @var | Cannot start with a symbol
+   [ ] my-var | Hyphens are not allowed
+
+Single correct radio
+------------------------
+
+.. mcq::
+   :question: Which of these are valid variable names in Python?
+   :shuffle:
+   :radio:
+
+   [x] my_var | Valid variable name
+   [ ] 2var | Cannot start with a number
+   [ ] @var | Cannot start with a symbol
+   [ ] my-var | Hyphens are not allowed
+
+Single correct radio letters
+-----------------------------
+
+.. mcq::
+   :question: Which of these are valid variable names in Python?
+   :shuffle:
+   :letters:
+   :radio:
+
+   [x] my_var | Valid variable name
+   [ ] 2var | Cannot start with a number
+   [ ] @var | Cannot start with a symbol
+   [ ] my-var | Hyphens are not allowed
+
+code block letters
+--------------------
+
+.. mcq::
+   :question: What is the output of the following code?
+   :shuffle:
+   :letters:
+
+   .. code-block:: python
+
+      x = 5
+      y = 2
+      print(x ** y)
+
+   [x] 25 | Correct: `**` is exponentiation, so output is 25
+   [ ] 5^2
+   [ ] 10
+   [ ] 7
+
+multiple correct
+---------------------------------------
+
+.. mcq::
+   :question: Which of the following are Python data types?
+   :shuffle:
+   :letters:
+
+   [x] int | Integer type
+   [x] str | String type
+   [x] list | List type
+   [ ] integer | Not a Python type
+   [ ] character | Not a Python type
+

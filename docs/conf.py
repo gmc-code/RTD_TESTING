@@ -30,7 +30,7 @@ extensions = [
     "sphinx_togglebutton",
     "sphinx_design",
     "parsons.directive",  # our custom directive
-    "mcq",  # custom directive
+    "mcq.mcq",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

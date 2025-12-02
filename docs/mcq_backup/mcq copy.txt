@@ -1,0 +1,211 @@
+import html
+import random
+import os
+
+from docutils import nodes
+from sphinx.util.docutils import SphinxDirective
+from docutils.parsers.rst import directives
+
+
+# ─────────────────────────────────────────────
+# NODES
+# ─────────────────────────────────────────────
+
+class mcq_node(nodes.General, nodes.Element):
+    """Container node for an MCQ block."""
+    pass
+
+
+class mcq_choice(nodes.General, nodes.Element):
+    """Single MCQ choice node."""
+    pass
+
+
+# ─────────────────────────────────────────────
+# HTML RENDERING
+# ─────────────────────────────────────────────
+
+def visit_mcq_html(self, node):
+    radio_attr = "true" if node.get("radio") else "false"
+    self.body.append(
+        f'<div class="mcq-block" data-mcq-radio="{radio_attr}">'
+        f'<p class="mcq-question">{html.escape(node["question"])}</p>'
+    )
+
+
+def depart_mcq_html(self, node):
+    self.body.append("</div>")
+
+
+def visit_mcq_choice_html(self, node):
+    cls = "mcq-choice"
+    cls += " mcq-correct" if node.get("correct") else " mcq-incorrect"
+
+    # Letters A. B. C. if enabled
+    letter = ""
+    if node.parent.get("letters"):
+        idx = node["index"]
+        letter = chr(ord('A') + idx) + ". "
+
+    if node.parent.get("radio"):
+        name_attr = f"mcq-{id(node.parent)}"
+        self.body.append(
+            f'<div class="{cls}">'
+            f'<label>'
+            f'<input type="radio" name="{name_attr}"> '
+            f'<span class="mcq-choice-label">{html.escape(letter + node["text"])}</span>'
+            f'</label>'
+        )
+    else:
+        self.body.append(
+            f'<div class="{cls}" data-correct="{str(node.get("correct")).lower()}">'
+            f'<span class="mcq-letter">{html.escape(letter)}</span>'
+            f'<span class="mcq-choice-label">{html.escape(node["text"])}</span>'
+        )
+
+    # Explanation (hidden until selected)
+    if node.get("explain"):
+        self.body.append(
+            f'<div class="mcq-explanation">{html.escape(node["explain"])}</div>'
+        )
+
+
+def depart_mcq_choice_html(self, node):
+    self.body.append("</div>")
+
+
+# ─────────────────────────────────────────────
+# DIRECTIVE
+# ─────────────────────────────────────────────
+
+class MCQDirective(SphinxDirective):
+
+    has_content = True
+
+    option_spec = {
+        "question": directives.unchanged_required,
+        "shuffle": directives.flag,
+        "letters": directives.flag,
+        "radio": directives.flag,
+    }
+
+    def run(self):
+        # Extract options
+        question = self.options["question"]
+        use_letters = "letters" in self.options
+        use_radio = "radio" in self.options
+
+        block = mcq_node()
+        block["question"] = question
+        block["letters"] = use_letters
+        block["radio"] = use_radio
+
+        choices = []
+
+        inside_code = False
+        code_indent = 0
+        literal_block = None
+
+        for line in self.content:
+            raw = line.rstrip("\n")
+
+            # ─────────────────────────────────────────────
+            # Detect start of code block
+            # ─────────────────────────────────────────────
+            if raw.strip().startswith(".. code-block::"):
+                inside_code = True
+
+                # indentation of ".. code-block::"
+                code_indent = len(line) - len(line.lstrip(" "))
+
+                # create literal block node
+                literal_block = nodes.literal_block()
+                lang = raw.strip().split("::")[1].strip() or "python"
+                literal_block["language"] = lang
+                block += literal_block
+                continue
+
+            # ─────────────────────────────────────────────
+            # Collect code lines
+            # ─────────────────────────────────────────────
+            if inside_code:
+                indent = len(line) - len(line.lstrip(" "))
+                if indent > code_indent:
+                    # inside literal block
+                    literal_block += nodes.Text(raw.lstrip())
+                    literal_block += nodes.Text("\n")
+                    continue
+                else:
+                    # end of code block
+                    inside_code = False
+
+            # ─────────────────────────────────────────────
+            # Detect MCQ choices:  [ ]  text   or  [x] text|explanation
+            # ─────────────────────────────────────────────
+            stripped = raw.strip()
+            if stripped.startswith("[") and "]" in stripped:
+                marker = stripped[1].lower()
+                correct = marker == "x"
+
+                after = stripped[stripped.index("]") + 1:].strip()
+
+                if "|" in after:
+                    text, explain = after.split("|", 1)
+                    text = text.strip()
+                    explain = explain.strip()
+                else:
+                    text = after
+                    explain = None
+
+                choices.append((text, correct, explain))
+                continue
+
+            # ─────────────────────────────────────────────
+            # Remaining non-empty lines → normal paragraph
+            # ─────────────────────────────────────────────
+            if stripped:
+                block += nodes.paragraph(text=stripped)
+
+        # ─────────────────────────────────────────────
+        # Shuffle choices if requested
+        # ─────────────────────────────────────────────
+        if "shuffle" in self.options:
+            random.shuffle(choices)
+
+        # ─────────────────────────────────────────────
+        # Insert choices into block node
+        # ─────────────────────────────────────────────
+        for i, (text, correct, explain) in enumerate(choices):
+            c = mcq_choice()
+            c["text"] = text
+            c["correct"] = correct
+            c["explain"] = explain
+            c["index"] = i
+            block += c
+
+        return [block]
+
+
+# ─────────────────────────────────────────────
+# SETUP
+# ─────────────────────────────────────────────
+
+def setup(app):
+    app.add_node(mcq_node, html=(visit_mcq_html, depart_mcq_html))
+    app.add_node(mcq_choice, html=(visit_mcq_choice_html, depart_mcq_choice_html))
+
+    app.add_directive("mcq", MCQDirective)
+
+    # static path for JS/CSS
+    app.config.html_static_path.append(
+        os.path.join(os.path.dirname(__file__), "_static")
+    )
+
+    app.add_css_file("mcq.css")
+    app.add_js_file("mcq.js")
+
+    return {
+        "version": "0.7",
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }

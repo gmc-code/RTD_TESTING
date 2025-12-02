@@ -1,0 +1,50 @@
+.mcq-block {
+  border: 1px solid #ddd;
+  padding: 1em;
+  margin-bottom: 1.5em;
+  background: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.mcq-question {
+  font-weight: bold;
+  margin-bottom: 0.8em;
+}
+
+.mcq-choice {
+  margin: 0.5em 0;
+  padding: 0.4em 0.6em;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.mcq-choice:hover {
+  background: #f0f0f0;
+}
+
+.mcq-choice input {
+  margin-right: 0.5em;
+}
+
+.mcq-letter {
+  font-weight: bold;
+  margin-right: 0.3em;
+}
+
+.mcq-explanation {
+  margin-top: 0.3em;
+  font-size: 0.9em;
+  color: #555;
+  padding-left: 1.5em;
+}
+
+.mcq-choice.mcq-correct.selected {
+  background-color: #d4edda;
+  border-left: 4px solid #28a745;
+}
+
+.mcq-choice.mcq-incorrect.selected {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+}

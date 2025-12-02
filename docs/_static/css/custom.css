@@ -111,7 +111,7 @@ button.copybtn {
 	opacity: 1;
     border: #1b1f2426 1px solid;
     background-color: #f6f8fa;
-    color: #57606a
+    color: #57606a;
     /* The colors that GitHub uses
     border: #1b1f2426 1px solid;
     background-color: #f6f8fa;
@@ -252,4 +252,36 @@ button.copybtn svg {
 /*=======================================*/
 
 /*font awesome*/
+
+/*=======================================*/
+
+/*html code blocks to make grey*/
+/* Overall HTML code block background and text */
+/* Light grey background for HTML code blocks */
+.rst-content div.highlight-html,
+.rst-content div.highlight-html .highlight {
+    background-color: #f0f0f0 !important;  /* light grey */
+    border: 1px solid #d0d0d0;             /* subtle border */
+    border-radius: 4px;                    /* rounded corners */
+    padding: 8px;                          /* spacing inside */
+}
+
+/* Light grey background for reST code blocks */
+.rst-content div.highlight-rest,
+.rst-content div.highlight-rest .highlight {
+    background-color: #f0f0f0 !important;  /* light grey */
+    border: 1px solid #d0d0d0;             /* optional subtle border */
+    border-radius: 4px;                    /* optional rounded corners */
+    padding: 8px;                          /* space inside the block */
+}
+
+/* Light grey background for CSS code blocks */
+.rst-content div.highlight-css,
+.rst-content div.highlight-css .highlight {
+    background-color: #f0f0f0 !important;  /* light grey */
+    border: 1px solid #d0d0d0;             /* subtle border */
+    border-radius: 4px;                    /* rounded corners */
+    padding: 8px;                          /* spacing inside */
+}
+
 
