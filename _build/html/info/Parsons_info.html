@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. ParsonsDirective Walkthrough &mdash; RTD_TESTING_GMC</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/parsons/parsons.css?v=5e12d34c" />
+      <link rel="stylesheet" type="text/css" href="../_static/mcqscore.css?v=dc6b2f66" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a7326204" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a7326204" />
+      <link rel="stylesheet" type="text/css" href="../_static/parsons/parsons.css?v=5e12d34c" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=43638c3e"></script>
+      <script src="../_static/parsons/parsons.js?v=1203bc87"></script>
+      <script src="../_static/mcqscore.js?v=50d30890"></script>
+      <script src="../_static/parsons/Sortable.min.js?v=0632bbf8"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script src="../_static/parsons/parsons.js?v=1203bc87"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. MCQ Test — All Cases" href="multiple_choice.html" />
+    <link rel="prev" title="3. Parsons Puzzles — Feature Showcase" href="Parsons.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: linear-gradient(to right, blueviolet 15%, limegreen 50%, royalblue 80%)" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RTD_TESTING
+              <img src="../_static/logo_navyblue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dictionaries.html">2. Dictionaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#dictionary-structure">2.1. Dictionary structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#getting-a-value-from-a-dictionary">2.2. Getting a value from a dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#case-sensitive-keys">2.3. Case sensitive keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#empty-dictionary">2.4. Empty dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#making-a-dictionary">2.5. Making a dictionary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-curly-brackets">2.5.1. Making a dictionary: curly brackets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-a-list-of-lists">2.5.2. Making a dictionary from a list of lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-a-list-of-tuples">2.5.3. Making a dictionary from a list of tuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists">2.5.4. Making a dictionary from 2 lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists-update">2.5.4.1. Making a dictionary from 2 lists –update</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists-set-key-value">2.5.4.2. Making a dictionary from 2 lists –set key value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists-dict-and-zip">2.5.4.3. Making a dictionary from 2 lists –dict and zip</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-by-dictionary-comprehension-from-2-lists">2.5.5. Making a dictionary by dictionary comprehension from 2 lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-key-word-arguments">2.5.6. Making a dictionary from key word arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parsons.html">3. Parsons Puzzles — Feature Showcase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#basic-puzzle">3.1. Basic Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#factorial-puzzle">3.2. Factorial Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#order-only-check">3.3. Order-Only Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#indent-only-check">3.4. Indent-Only Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#multi-column-puzzle">3.5. Multi-Column Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#three-column-puzzle">3.6. Three Column Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#puzzle-with-distractors">3.7. Puzzle with Distractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#custom-buttons">3.8. Custom Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#python-side-shuffle">3.9. Python-Side Shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#client-side-shuffle">3.10. Client-Side Shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#accessibility-note">3.11. Accessibility Note</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. ParsonsDirective Walkthrough</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#directive-definition">4.1. Directive Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">4.2. Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-handling">4.3. Input Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-attributes-for-js">4.4. Data Attributes for JS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#html-node-construction">4.5. HTML Node Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#return-value">4.6. Return Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-function">4.7. Setup Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary-of-flow">4.8. Summary of Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice.html">5. MCQ Test — All Cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-unshuffled2">5.1. Single correct  unshuffled2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-shuffled">5.2. Single correct shuffled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-letters">5.3. Single correct letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-radio">5.4. Single correct radio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-radio-letters">5.5. Single correct radio letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#code-block-letters">5.6. code block letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#multiple-correct">5.7. multiple correct</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_score.html">6. MCQ score</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_score.html#single-correct-unshuffled2">6.1. Single correct  unshuffled2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_score.html#single-correct-shuffled">6.2. Single correct shuffled</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_score2.html">7. MCQScore Demo2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_info.html">8. MCQ Extension Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#purpose">8.1. Purpose</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="multiple_choice_info.html#mcq-directive-in-rst">8.1.1. MCQ Directive in RST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#id1">8.2. Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#basic-syntax">8.3. Basic Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#directive-options">8.4. Directive Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#choices">8.5. Choices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#example-single-selection-question">8.6. Example - Single-selection Question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#example-multi-selection-question">8.7. Example - Multi-selection Question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#basic-html-structure">8.8. Basic HTML Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#key-attributes">8.9. Key Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#javascript-behavior">8.10. JavaScript Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#css-styling">8.11. CSS Styling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#summary-of-workflow">8.12. Summary of Workflow</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: linear-gradient(to right, blueviolet 15%, limegreen 50%, royalblue 80%)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RTD_TESTING</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>ParsonsDirective Walkthrough</li>
+
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="Parsons.html" class="btn btn-neutral float-left" title="3. Parsons Puzzles — Feature Showcase" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multiple_choice.html" class="btn btn-neutral float-right" title="5. MCQ Test — All Cases" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parsonsdirective-walkthrough">
+<h1><span class="section-number">4. </span>ParsonsDirective Walkthrough<a class="headerlink" href="#parsonsdirective-walkthrough" title="Link to this heading"></a></h1>
+<p>This document explains how the custom <code class="docutils literal notranslate"><span class="pre">ParsonsDirective</span></code> works in Sphinx/Docutils.</p>
+<section id="directive-definition">
+<h2><span class="section-number">4.1. </span>Directive Definition<a class="headerlink" href="#directive-definition" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ParsonsDirective</span><span class="p">(</span><span class="n">Directive</span><span class="p">):</span>
+    <span class="n">has_content</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">optional_arguments</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">option_spec</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">unchanged</span><span class="p">,</span>
+        <span class="s2">&quot;shuffle&quot;</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">flag</span><span class="p">,</span>
+        <span class="s2">&quot;shuffle-js&quot;</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">flag</span><span class="p">,</span>
+        <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">positive_int</span><span class="p">,</span>
+        <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">unchanged</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="options">
+<h2><span class="section-number">4.2. </span>Options<a class="headerlink" href="#options" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: Custom puzzle title (string).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shuffle</span></code>: Shuffle lines server-side (Python).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shuffle-js</span></code>: Shuffle lines client-side (JavaScript).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">columns</span></code>: Number of target columns (integer).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: Comma-separated labels for columns.</p></li>
+</ul>
+</section>
+<section id="input-handling">
+<h2><span class="section-number">4.3. </span>Input Handling<a class="headerlink" href="#input-handling" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Options Parsing</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;Parsons Puzzle&quot;</span><span class="p">)</span>
+<span class="n">shuffle</span> <span class="o">=</span> <span class="s2">&quot;shuffle&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span>
+<span class="n">shuffle_js</span> <span class="o">=</span> <span class="s2">&quot;shuffle-js&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Labels</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">labels_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">lbl</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="n">labels_opt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span> <span class="k">if</span> <span class="n">labels_opt</span> <span class="k">else</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Expected Order</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">expected_order</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;- &quot;</span><span class="p">):</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">indent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span>
+    <span class="n">expected_order</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">indent</span><span class="p">,</span> <span class="n">raw</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Line Metadata</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lines</span> <span class="o">=</span> <span class="p">[(</span><span class="n">indent</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">indent</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expected_order</span><span class="p">)]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Shuffle Option</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="data-attributes-for-js">
+<h2><span class="section-number">4.4. </span>Data Attributes for JS<a class="headerlink" href="#data-attributes-for-js" title="Link to this heading"></a></h2>
+<ul>
+<li><p><strong>Expected Solution</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">expected_attr</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">::</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">indent</span><span class="p">,</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">expected_order</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Shuffle Flag</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">shuffle_attr</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">shuffle_js</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="html-node-construction">
+<h2><span class="section-number">4.5. </span>HTML Node Construction<a class="headerlink" href="#html-node-construction" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Container ``&lt;div&gt;``</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">open_div</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s1">&#39;&lt;div class=&quot;parsons-container parsons-cols-</span><span class="si">{</span><span class="n">columns</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;data-expected=&quot;</span><span class="si">{</span><span class="n">expected_attr</span><span class="si">}</span><span class="s1">&quot; data-shuffle-js=&quot;</span><span class="si">{</span><span class="n">shuffle_attr</span><span class="si">}</span><span class="s1">&quot;&gt;&#39;</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;html&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Title</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">title_para</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">paragraph</span><span class="p">()</span>
+<span class="n">title_para</span> <span class="o">+=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">strong</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Source List (draggable lines)</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">source_ul</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">bullet_list</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parsons-source&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Each line becomes an <code class="docutils literal notranslate"><span class="pre">&lt;li&gt;</span></code> with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data-line</span></code> (original line number)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data-text</span></code> (cleaned code)</p></li>
+<li><p>A visible label and <code class="docutils literal notranslate"><span class="pre">&lt;pre&gt;</span></code> block</p></li>
+</ul>
+<p>Helper function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">strip_number_prefix</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;|&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span>
+</pre></div>
+</div>
+<p>Example HTML:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">li</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;parsons-line draggable&quot;</span> <span class="na">data-line</span><span class="o">=</span><span class="s">&quot;3&quot;</span> <span class="na">data-text</span><span class="o">=</span><span class="s">&quot;print(&#39;Hello&#39;)&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;line-label&quot;</span><span class="p">&gt;</span>3 |<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">pre</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;no-copybutton no-lineno&quot;</span><span class="p">&gt;</span>print(&#39;Hello&#39;)<span class="p">&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Target Columns</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target_wrapper</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parsons-target-wrapper&quot;</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parsons-target&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;parsons-col-</span><span class="si">{</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+    <span class="n">label_text</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;Column </span><span class="si">{</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">label_text</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parsons-target-label&quot;</span><span class="p">])</span>
+    <span class="n">target_ul</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">bullet_list</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parsons-target-list&quot;</span><span class="p">])</span>
+    <span class="n">target_ul</span><span class="p">[</span><span class="s2">&quot;data-indent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">col</span> <span class="o">+=</span> <span class="n">label</span>
+    <span class="n">col</span> <span class="o">+=</span> <span class="n">target_ul</span>
+    <span class="n">target_wrapper</span> <span class="o">+=</span> <span class="n">col</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Controls</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">controls</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span>
+    <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;div class=&quot;parsons-controls&quot;&gt;&#39;</span>
+    <span class="s1">&#39;&lt;button class=&quot;parsons-check&quot;&gt;Check&lt;/button&gt;&#39;</span>
+    <span class="s1">&#39;&lt;button class=&quot;parsons-reset&quot;&gt;Reset&lt;/button&gt;&#39;</span>
+    <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;html&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Closing Div</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">close_div</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="return-value">
+<h2><span class="section-number">4.6. </span>Return Value<a class="headerlink" href="#return-value" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="p">[</span><span class="n">open_div</span><span class="p">,</span> <span class="n">title_para</span><span class="p">,</span> <span class="n">source_ul</span><span class="p">,</span> <span class="n">target_wrapper</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">close_div</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="setup-function">
+<h2><span class="section-number">4.7. </span>Setup Function<a class="headerlink" href="#setup-function" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_directive</span><span class="p">(</span><span class="s2">&quot;parsons&quot;</span><span class="p">,</span> <span class="n">ParsonsDirective</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_css_file</span><span class="p">(</span><span class="s2">&quot;parsons/parsons.css&quot;</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_js_file</span><span class="p">(</span><span class="s2">&quot;parsons/parsons.js&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;parallel_read_safe&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;parallel_write_safe&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="summary-of-flow">
+<h2><span class="section-number">4.8. </span>Summary of Flow<a class="headerlink" href="#summary-of-flow" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>User writes:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">parsons</span><span class="p">::</span>
+   <span class="nc">:title:</span> Example Puzzle
+   <span class="nc">:shuffle:</span>
+   <span class="nc">:columns:</span> 2
+   <span class="nc">:labels:</span> Left, Right
+
+   <span class="m">-</span> print(&quot;Hello&quot;)
+   <span class="m">-</span> x = 5
+   <span class="m">-</span> if x &gt; 3:
+   <span class="m">-</span>     print(&quot;Big&quot;)
+</pre></div>
+</div>
+</li>
+<li><p>Directive parses options and content.</p></li>
+<li><p>Builds HTML with draggable <code class="docutils literal notranslate"><span class="pre">&lt;li&gt;</span></code> items.</p></li>
+<li><p>Encodes correct solution in <code class="docutils literal notranslate"><span class="pre">data-expected</span></code>.</p></li>
+<li><p>Provides target columns and control buttons.</p></li>
+<li><p>JavaScript handles drag/drop, checking, and resetting.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Parsons.html" class="btn btn-neutral float-left" title="3. Parsons Puzzles — Feature Showcase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multiple_choice.html" class="btn btn-neutral float-right" title="5. MCQ Test — All Cases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, GMC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>

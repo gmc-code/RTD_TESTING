@@ -1,10 +1,10 @@
-MCQ Test — All Cases
+mcq
 ====================
 
 Single correct  unshuffled2
 -------------------------------------------
 
-.. mcq::
+.. mcqscore::
    :question: What is the correct way to print "Hello, World" in Python?
 
    [ ] echo "Hello, World"
@@ -15,9 +15,8 @@ Single correct  unshuffled2
 Single correct shuffled
 -----------------------------
 
-.. mcq::
+.. mcqscore::
    :question: What is the correct way to print "Hello, World" in Python?
-   :shuffle:
 
    [ ] echo "Hello, World"
    [x] print("Hello, World") | Correct! print() is used to output text in Python.
@@ -27,10 +26,8 @@ Single correct shuffled
 Single correct letters
 ------------------------
 
-.. mcq::
+.. mcqscore::
    :question: Which of these are valid variable names in Python?
-   :shuffle:
-   :letters:
 
    [x] my_var | Valid variable name
    [ ] 2var | Cannot start with a number
@@ -40,10 +37,8 @@ Single correct letters
 Single correct radio
 ------------------------
 
-.. mcq::
+.. mcqscore::
    :question: Which of these are valid variable names in Python?
-   :shuffle:
-   :radio:
 
    [x] my_var | Valid variable name
    [ ] 2var | Cannot start with a number
@@ -53,11 +48,8 @@ Single correct radio
 Single correct radio letters
 -----------------------------
 
-.. mcq::
+.. mcqscore::
    :question: Which of these are valid variable names in Python?
-   :shuffle:
-   :letters:
-   :radio:
 
    [x] my_var | Valid variable name
    [ ] 2var | Cannot start with a number
@@ -67,10 +59,8 @@ Single correct radio letters
 code block letters
 --------------------
 
-.. mcq::
+.. mcqscore::
    :question: What is the output of the following code?
-   :shuffle:
-   :letters:
 
    .. code-block:: python
 
@@ -86,10 +76,9 @@ code block letters
 multiple correct
 ---------------------------------------
 
-.. mcq::
+.. mcqscore::
    :question: Which of the following are Python data types?
-   :shuffle:
-   :letters:
+    :multi:
 
    [x] int | Integer type
    [x] str | String type

@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8. MCQ Extension Guide &mdash; RTD_TESTING_GMC</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/parsons/parsons.css?v=5e12d34c" />
+      <link rel="stylesheet" type="text/css" href="../_static/mcqscore.css?v=dc6b2f66" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a7326204" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a7326204" />
+      <link rel="stylesheet" type="text/css" href="../_static/parsons/parsons.css?v=5e12d34c" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=43638c3e"></script>
+      <script src="../_static/parsons/parsons.js?v=1203bc87"></script>
+      <script src="../_static/mcqscore.js?v=50d30890"></script>
+      <script src="../_static/parsons/Sortable.min.js?v=0632bbf8"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script src="../_static/parsons/parsons.js?v=1203bc87"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="7. MCQScore Demo2" href="multiple_choice_score2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: linear-gradient(to right, blueviolet 15%, limegreen 50%, royalblue 80%)" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RTD_TESTING
+              <img src="../_static/logo_navyblue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dictionaries.html">2. Dictionaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#dictionary-structure">2.1. Dictionary structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#getting-a-value-from-a-dictionary">2.2. Getting a value from a dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#case-sensitive-keys">2.3. Case sensitive keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#empty-dictionary">2.4. Empty dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Dictionaries.html#making-a-dictionary">2.5. Making a dictionary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-curly-brackets">2.5.1. Making a dictionary: curly brackets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-a-list-of-lists">2.5.2. Making a dictionary from a list of lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-a-list-of-tuples">2.5.3. Making a dictionary from a list of tuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists">2.5.4. Making a dictionary from 2 lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists-update">2.5.4.1. Making a dictionary from 2 lists –update</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists-set-key-value">2.5.4.2. Making a dictionary from 2 lists –set key value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-2-lists-dict-and-zip">2.5.4.3. Making a dictionary from 2 lists –dict and zip</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-by-dictionary-comprehension-from-2-lists">2.5.5. Making a dictionary by dictionary comprehension from 2 lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Dictionaries.html#making-a-dictionary-from-key-word-arguments">2.5.6. Making a dictionary from key word arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parsons.html">3. Parsons Puzzles — Feature Showcase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#basic-puzzle">3.1. Basic Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#factorial-puzzle">3.2. Factorial Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#order-only-check">3.3. Order-Only Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#indent-only-check">3.4. Indent-Only Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#multi-column-puzzle">3.5. Multi-Column Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#three-column-puzzle">3.6. Three Column Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#puzzle-with-distractors">3.7. Puzzle with Distractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#custom-buttons">3.8. Custom Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#python-side-shuffle">3.9. Python-Side Shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#client-side-shuffle">3.10. Client-Side Shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#accessibility-note">3.11. Accessibility Note</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parsons_info.html">4. ParsonsDirective Walkthrough</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#directive-definition">4.1. Directive Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#options">4.2. Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#input-handling">4.3. Input Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#data-attributes-for-js">4.4. Data Attributes for JS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#html-node-construction">4.5. HTML Node Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#return-value">4.6. Return Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#setup-function">4.7. Setup Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#summary-of-flow">4.8. Summary of Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice.html">5. MCQ Test — All Cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-unshuffled2">5.1. Single correct  unshuffled2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-shuffled">5.2. Single correct shuffled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-letters">5.3. Single correct letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-radio">5.4. Single correct radio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-radio-letters">5.5. Single correct radio letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#code-block-letters">5.6. code block letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#multiple-correct">5.7. multiple correct</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_score.html">6. MCQ score</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_score.html#single-correct-unshuffled2">6.1. Single correct  unshuffled2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_score.html#single-correct-shuffled">6.2. Single correct shuffled</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_score2.html">7. MCQScore Demo2</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. MCQ Extension Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#purpose">8.1. Purpose</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mcq-directive-in-rst">8.1.1. MCQ Directive in RST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">8.2. Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-syntax">8.3. Basic Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#directive-options">8.4. Directive Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#choices">8.5. Choices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-single-selection-question">8.6. Example - Single-selection Question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-multi-selection-question">8.7. Example - Multi-selection Question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-html-structure">8.8. Basic HTML Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-attributes">8.9. Key Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#javascript-behavior">8.10. JavaScript Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#css-styling">8.11. CSS Styling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary-of-workflow">8.12. Summary of Workflow</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: linear-gradient(to right, blueviolet 15%, limegreen 50%, royalblue 80%)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RTD_TESTING</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8. </span>MCQ Extension Guide</li>
+
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="multiple_choice_score2.html" class="btn btn-neutral float-left" title="7. MCQScore Demo2" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mcq-extension-guide">
+<h1><span class="section-number">8. </span>MCQ Extension Guide<a class="headerlink" href="#mcq-extension-guide" title="Link to this heading"></a></h1>
+<section id="purpose">
+<h2><span class="section-number">8.1. </span>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The MCQ extension allows you to create <strong>interactive multiple-choice questions</strong> in your Sphinx documentation.
+It supports:</p>
+<ul class="simple">
+<li><p>Single-click selection (click anywhere on the choice)</p></li>
+<li><p>Radio-style single-selection questions</p></li>
+<li><p>Multi-select checkbox questions</p></li>
+<li><p>Automatic coloring for correct/incorrect choices</p></li>
+<li><p>Toggleable explanations (“hint” text)</p></li>
+</ul>
+<hr class="docutils" />
+<section id="mcq-directive-in-rst">
+<h3><span class="section-number">8.1.1. </span>MCQ Directive in RST<a class="headerlink" href="#mcq-directive-in-rst" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id1">
+<h2><span class="section-number">8.2. </span>Purpose<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">mcq::</span></code> directive allows you to define multiple-choice questions directly in reStructuredText, without writing raw HTML.
+It supports <strong>single-selection</strong>, <strong>multi-selection</strong>, and <strong>radio button</strong> questions, with optional explanations.</p>
+</section>
+<section id="basic-syntax">
+<h2><span class="section-number">8.3. </span>Basic Syntax<a class="headerlink" href="#basic-syntax" title="Link to this heading"></a></h2>
+<div class="highlight-rest notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mcq</span><span class="p">::</span>
+   <span class="nc">:question:</span> What is the correct way to print &quot;Hello, World&quot; in Python?
+
+   [ ] echo &quot;Hello, World&quot;
+   [x] print(&quot;Hello, World&quot;) | Correct! print() is used to output text in Python.
+   [ ] printf(&quot;Hello, World&quot;)
+   [ ] echo(Hello, World)
+</pre></div>
+</div>
+</section>
+<section id="directive-options">
+<h2><span class="section-number">8.4. </span>Directive Options<a class="headerlink" href="#directive-options" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>:shuffle:</cite></p></td>
+<td><p>If present, shuffles the choices randomly each time</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>:letters:</cite></p></td>
+<td><p>If present, adds letters (A, B, C, …) to each choice</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>:radio:</cite></p></td>
+<td><p>If present , uses radio button behavior
+(only one choice can be selected)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="choices">
+<h2><span class="section-number">8.5. </span>Choices<a class="headerlink" href="#choices" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Each choice is defined using the <cite>[ ]</cite> or <cite>[x]</cite> syntax.
+- <cite>[x]</cite> marks the correct choice.
+- <cite>[ ]</cite> marks incorrect choices.</p></li>
+<li><p>Use <cite>|</cite> followed by text to provide a hint or feedback explanation.</p></li>
+<li><p>Works for single-selection and multi-selection questions.</p></li>
+</ul>
+</section>
+<section id="example-single-selection-question">
+<h2><span class="section-number">8.6. </span>Example - Single-selection Question<a class="headerlink" href="#example-single-selection-question" title="Link to this heading"></a></h2>
+<div class="highlight-rest notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mcq</span><span class="p">::</span>
+   <span class="nc">:question:</span> Which of these are valid variable names in Python?
+   <span class="nc">:shuffle:</span>
+   <span class="nc">:letters:</span>
+   <span class="nc">:radio:</span>
+
+   [x] my_var | Valid variable name
+   [ ] 2var | Cannot start with a number
+   [ ] @var | Cannot start with a symbol
+   [ ] my-var | Hyphens are not allowed
+</pre></div>
+</div>
+</section>
+<section id="example-multi-selection-question">
+<h2><span class="section-number">8.7. </span>Example - Multi-selection Question<a class="headerlink" href="#example-multi-selection-question" title="Link to this heading"></a></h2>
+<div class="highlight-rest notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mcq</span><span class="p">::</span>
+   <span class="nc">:question:</span> Which of the following are Python data types?
+   <span class="nc">:shuffle:</span>
+   <span class="nc">:letters:</span>
+
+   [x] int | Integer type
+   [x] str | String type
+   [x] list | List type
+   [ ] integer | Not a Python type
+   [ ] character | Not a Python type
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="basic-html-structure">
+<h2><span class="section-number">8.8. </span>Basic HTML Structure<a class="headerlink" href="#basic-html-structure" title="Link to this heading"></a></h2>
+<p>When rendered by the MCQ extension, each question becomes a <cite>.mcq-block</cite> in the HTML:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-block&quot;</span> <span class="na">data-mcq-radio</span><span class="o">=</span><span class="s">&quot;false&quot;</span> <span class="na">data-mcq-single</span><span class="o">=</span><span class="s">&quot;true&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-question&quot;</span><span class="p">&gt;</span>What is the correct way to print &quot;Hello, World&quot; in Python?<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-choice&quot;</span> <span class="na">data-correct</span><span class="o">=</span><span class="s">&quot;false&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;mcq1&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-letter&quot;</span><span class="p">&gt;</span>A<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-choice-label&quot;</span><span class="p">&gt;</span>echo &quot;Hello, World&quot;<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-explanation&quot;</span><span class="p">&gt;</span>Incorrect: echo is not Python syntax<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-choice&quot;</span> <span class="na">data-correct</span><span class="o">=</span><span class="s">&quot;true&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;mcq1&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-letter&quot;</span><span class="p">&gt;</span>B<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-choice-label&quot;</span><span class="p">&gt;</span>print(&quot;Hello, World&quot;)<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mcq-explanation&quot;</span><span class="p">&gt;</span>Correct! print() outputs text in Python.<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="key-attributes">
+<h2><span class="section-number">8.9. </span>Key Attributes<a class="headerlink" href="#key-attributes" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>data-mcq-radio</p></td>
+<td><p>“true” for radio-style single-selection (<cite>:radio:</cite> option)
+“false” for normal checkbox/multi-select</p></td>
+</tr>
+<tr class="row-odd"><td><p>data-mcq-single</p></td>
+<td><p>“true” to allow single-click selection on the entire choice
+(used for single-selection behavior)</p></td>
+</tr>
+<tr class="row-even"><td><p>data-correct</p></td>
+<td><p>“true” for correct choices, “false” for incorrect</p></td>
+</tr>
+<tr class="row-odd"><td><p>.mcq-letter</p></td>
+<td><p>Optional: letter label (A, B, C, …) added via <cite>:letters:</cite></p></td>
+</tr>
+<tr class="row-even"><td><p>.mcq-explanation</p></td>
+<td><p>Hint or feedback text that appears when a choice is selected</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="javascript-behavior">
+<h2><span class="section-number">8.10. </span>JavaScript Behavior<a class="headerlink" href="#javascript-behavior" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Single-click mode (`data-mcq-single=”true”`)</strong>:
+Click anywhere on a choice to select it. Only one choice is selected at a time. Explanation is shown immediately if present.</p></li>
+<li><p><strong>Radio mode (`data-mcq-radio=”true”`)</strong>:
+Behaves like standard radio buttons. Selecting one choice deselects others. Explanations appear on selection.</p></li>
+<li><p><strong>Multi-select mode (`data-mcq-single=”false”` and `data-mcq-radio=”false”`)</strong>:
+Each choice can be selected independently. Correct/incorrect coloring applies immediately. Explanations toggle on click.</p></li>
+</ul>
+</section>
+<section id="css-styling">
+<h2><span class="section-number">8.11. </span>CSS Styling<a class="headerlink" href="#css-styling" title="Link to this heading"></a></h2>
+<p>You can adjust styles for readability and alignment:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/* Container for the MCQ question */</span>
+<span class="p">.</span><span class="nc">mcq-block</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#e5e7eb</span><span class="p">;</span>
+<span class="w">  </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">margin-bottom</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#ffffff</span><span class="p">;</span>
+<span class="w">  </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">  </span><span class="k">box-shadow</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="w"> </span><span class="mi">6</span><span class="kt">px</span><span class="w"> </span><span class="nb">rgba</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.08</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/* Individual choice */</span>
+<span class="p">.</span><span class="nc">mcq-choice</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">cursor</span><span class="p">:</span><span class="w"> </span><span class="kc">pointer</span><span class="p">;</span>
+<span class="w">  </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
+<span class="w">  </span><span class="k">align-items</span><span class="p">:</span><span class="w"> </span><span class="kc">flex-start</span><span class="p">;</span>
+<span class="w">  </span><span class="k">margin-bottom</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">mcq-choice</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#f0f0f0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Letter labels (A, B, C, …) */</span>
+<span class="p">.</span><span class="nc">mcq-letter</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">font-weight</span><span class="p">:</span><span class="w"> </span><span class="kc">bold</span><span class="p">;</span>
+<span class="w">  </span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Choice text */</span>
+<span class="p">.</span><span class="nc">mcq-choice-label</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">flex</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Explanation / hint text */</span>
+<span class="p">.</span><span class="nc">mcq-explanation</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">margin-left</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="kt">em</span><span class="p">;</span><span class="w">  </span><span class="c">/* aligns under choice label */</span>
+<span class="w">  </span><span class="k">margin-top</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#555</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/* Selected correct/incorrect coloring */</span>
+<span class="p">.</span><span class="nc">mcq-choice</span><span class="p">.</span><span class="nc">selected</span><span class="p">.</span><span class="nc">mcq-correct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#d4edda</span><span class="p">;</span>
+<span class="w">  </span><span class="k">border-left</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#28a745</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">.</span><span class="nc">mcq-choice</span><span class="p">.</span><span class="nc">selected</span><span class="p">.</span><span class="nc">mcq-incorrect</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#f8d7da</span><span class="p">;</span>
+<span class="w">  </span><span class="k">border-left</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#dc3545</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="summary-of-workflow">
+<h2><span class="section-number">8.12. </span>Summary of Workflow<a class="headerlink" href="#summary-of-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Define the question using <cite>.. mcq::</cite> with <cite>:question:</cite>, <cite>:shuffle:</cite>, <cite>:letters:</cite>, or <cite>:radio:</cite> options as needed.</p></li>
+<li><p>Use <cite>[ ]</cite> for incorrect or <cite>[x]</cite> for correct choices.</p></li>
+<li><p>Add explanations after <cite>|</cite>.</p></li>
+<li><p>JS handles selection behavior, coloring, and toggling hints.</p></li>
+<li><p>CSS controls appearance, alignment, and spacing.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="multiple_choice_score2.html" class="btn btn-neutral float-left" title="7. MCQScore Demo2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, GMC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>

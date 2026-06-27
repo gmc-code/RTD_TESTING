@@ -1,0 +1,43 @@
+MCQScore Demo2
+===============
+
+.. mcqscore-start::
+
+
+
+.. mcqscore::
+   :question: What is the correct output of print("Hello, World") in Python?
+   :shuffle:
+
+   [ ] echo "Hello, World" | Not Python
+   [x] print("Hello, World") | Correct!
+   [ ] printf("Hello, World") | Not Python
+   [ ] console.log("Hello, World") | JavaScript
+
+
+
+.. mcqscore::
+   :question: What is the correct output of print("Hello, World") in Python?
+   :letters:
+   :shuffle:
+
+   [ ] echo "Hello, World" | Not Python
+   [x] print("Hello, World") | Correct!
+   [ ] printf("Hello, World") | Not Python
+   [ ] console.log("Hello, World") | JavaScript
+
+
+.. mcqscore::
+
+   :question: Which of the following are Python data types?
+   :letters:
+   :shuffle:
+
+   [x] int | Integer type
+   [x] str | String type
+   [ ] html | Not a Python type
+   [x] float | Floating-point number
+
+
+
+.. mcqscore-end::

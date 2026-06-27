@@ -1,0 +1,174 @@
+/* ─────────────────────────────────────
+   MCQ Container
+────────────────────────────────────── */
+
+.mcqscore-block {
+  border: 1px solid #ddd;
+  padding: 1em;
+  margin-bottom: 1.5em;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Question text */
+.mcqscore-question {
+  font-weight: bold;
+  margin-bottom: 0.8em;
+  font-size: 1.05em;
+}
+
+/* Choice container */
+.mcqscore-choice {
+  margin: 0.5em 0;
+  padding: 0.55em 0.8em;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.1s ease, border-left 0.1s ease;
+}
+
+/* Hover effect (only when active) */
+.mcqscore-choice:not(.mcqscore-disabled):hover {
+  background: #f0f4ff;
+}
+
+/* Selected choice (on click) */
+.mcqscore-choice.selected {
+  background-color: #e8f0ff;   /* light blue */
+  border-left: 4px solid #3399ff;
+}
+
+/* Input spacing */
+.mcqscore-choice input {
+  margin-right: 0.6em;
+  pointer-events: none;
+}
+
+/* Letter label (A/B/C...) */
+.mcqscore-letter {
+  font-weight: bold;
+  margin-right: 0.4em;
+  min-width: 1.1em;
+}
+
+/* Explanation text */
+.mcqscore-explanation {
+  margin-top: 0.3em;
+  font-size: 0.9em;
+  color: #555;
+  padding-left: 1.8em;
+  line-height: 1.4;
+  display: none; /* hidden by default, shown on scoring */
+}
+
+/* ─────────────────────────────────────
+   Block background based on type
+────────────────────────────────────── */
+
+/* Single-answer questions */
+.mcqscore-block[data-mcqscore-single="true"] {
+  background-color: #fcfcff;
+}
+
+/* Multi-select questions */
+.mcqscore-block[data-mcqscore-single="false"] {
+  background-color: #f5fbff;
+}
+
+/* ─────────────────────────────────────
+   Correct / Incorrect (only on scoring)
+────────────────────────────────────── */
+.mcqscore-choice.mcqscore-correct {
+  background-color: #dbffde !important;   /* pale green */
+  border-left: 4px solid #28a745;
+}
+
+.mcqscore-choice.mcqscore-incorrect {
+  background-color: #ffd4d4 !important;   /* pale red */
+  border-left: 4px solid #dc3545;
+}
+
+/* Neutral selected (pre-scoring) removed to avoid red/green flash */
+.mcqscore-choice.selected:not(.mcqscore-correct):not(.mcqscore-incorrect) {
+  background-color: #e8f0ff; /* light blue */
+  border-left: 4px solid #3399ff;
+}
+
+/* Disabled state (after scoring) */
+.mcqscore-choice.mcqscore-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mcqscore-choice.mcqscore-disabled:hover {
+  background: none;
+}
+
+/* ─────────────────────────────────────
+   Global Score + Reset buttons
+────────────────────────────────────── */
+.mcqscore-global-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1em;
+  padding-top: 1.5em;
+  margin-top: 2em;
+  margin-bottom: 1.5em;  /* add spacing below buttons */
+  border-top: 1px solid #ddd;
+}
+
+
+.mcqscore-global-buttons button {
+  font-size: 1em;
+  padding: 0.6em 1.2em;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.1s ease, transform 0.05s ease;
+}
+
+/* Score = blue */
+.mcqscore-btn-score {
+  background: #007bff;
+  color: white;
+}
+
+.mcqscore-btn-score:hover {
+  background: #0069d9;
+}
+
+.mcqscore-btn-score:active {
+  transform: scale(0.97);
+}
+
+/* Reset = grey */
+.mcqscore-btn-reset {
+  background: #6c757d;
+  color: white;
+}
+
+.mcqscore-btn-reset:hover {
+  background: #5a6268;
+}
+
+.mcqscore-btn-reset:active {
+  transform: scale(0.97);
+}
+
+/* Buttons disabled (optional; js sets disabled only on inputs) */
+.mcqscore-global-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Score output badge */
+.mcqscore-output {
+  font-weight: bold;
+  padding: 0.5em 1em;
+  background: #eef5ff;
+  border-radius: 5px;
+  border: 1px solid #ccd9ff;
+  display: none; /* hidden on page load and reset */
+}

@@ -1,6 +1,5 @@
 import importlib.metadata
 
-import importlib.metadata
 
 def show_installed_requirements(requirements_file="requirements.txt"):
     # Read package names from requirements.txt
@@ -20,13 +19,14 @@ def show_installed_requirements(requirements_file="requirements.txt"):
 
     # Get all installed packages
     installed = {dist.metadata["Name"]: dist.version for dist in importlib.metadata.distributions()}
-
+    # print(installed)
     # Print only those that are in requirements.txt
     for pkg in required:
         if pkg in installed:
             print(f"{pkg}=={installed[pkg]}")
         else:
             print(f"{pkg} (not installed)")
+
 
 if __name__ == "__main__":
     req_file_path = r"C:\Users\gmccarthy\Documents\PC_RTD_GITHUB_resources\RTD_TESTING\docs\requirements.txt"

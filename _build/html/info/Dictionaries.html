@@ -1,0 +1,753 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. Dictionaries &mdash; RTD_TESTING_GMC</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/parsons/parsons.css?v=5e12d34c" />
+      <link rel="stylesheet" type="text/css" href="../_static/mcqscore.css?v=dc6b2f66" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a7326204" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a7326204" />
+      <link rel="stylesheet" type="text/css" href="../_static/parsons/parsons.css?v=5e12d34c" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=43638c3e"></script>
+      <script src="../_static/parsons/parsons.js?v=1203bc87"></script>
+      <script src="../_static/mcqscore.js?v=50d30890"></script>
+      <script src="../_static/parsons/Sortable.min.js?v=0632bbf8"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script src="../_static/parsons/parsons.js?v=1203bc87"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. Parsons Puzzles — Feature Showcase" href="Parsons.html" />
+    <link rel="prev" title="1. Introduction" href="Intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: linear-gradient(to right, blueviolet 15%, limegreen 50%, royalblue 80%)" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RTD_TESTING
+              <img src="../_static/logo_navyblue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Intro.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Dictionaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dictionary-structure">2.1. Dictionary structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-a-value-from-a-dictionary">2.2. Getting a value from a dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#case-sensitive-keys">2.3. Case sensitive keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#empty-dictionary">2.4. Empty dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-a-dictionary">2.5. Making a dictionary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-dictionary-curly-brackets">2.5.1. Making a dictionary: curly brackets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-dictionary-from-a-list-of-lists">2.5.2. Making a dictionary from a list of lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-dictionary-from-a-list-of-tuples">2.5.3. Making a dictionary from a list of tuples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-dictionary-from-2-lists">2.5.4. Making a dictionary from 2 lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#making-a-dictionary-from-2-lists-update">2.5.4.1. Making a dictionary from 2 lists –update</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#making-a-dictionary-from-2-lists-set-key-value">2.5.4.2. Making a dictionary from 2 lists –set key value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#making-a-dictionary-from-2-lists-dict-and-zip">2.5.4.3. Making a dictionary from 2 lists –dict and zip</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-dictionary-by-dictionary-comprehension-from-2-lists">2.5.5. Making a dictionary by dictionary comprehension from 2 lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-dictionary-from-key-word-arguments">2.5.6. Making a dictionary from key word arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parsons.html">3. Parsons Puzzles — Feature Showcase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#basic-puzzle">3.1. Basic Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#factorial-puzzle">3.2. Factorial Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#order-only-check">3.3. Order-Only Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#indent-only-check">3.4. Indent-Only Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#multi-column-puzzle">3.5. Multi-Column Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#three-column-puzzle">3.6. Three Column Puzzle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#puzzle-with-distractors">3.7. Puzzle with Distractors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#custom-buttons">3.8. Custom Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#python-side-shuffle">3.9. Python-Side Shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#client-side-shuffle">3.10. Client-Side Shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons.html#accessibility-note">3.11. Accessibility Note</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parsons_info.html">4. ParsonsDirective Walkthrough</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#directive-definition">4.1. Directive Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#options">4.2. Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#input-handling">4.3. Input Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#data-attributes-for-js">4.4. Data Attributes for JS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#html-node-construction">4.5. HTML Node Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#return-value">4.6. Return Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#setup-function">4.7. Setup Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parsons_info.html#summary-of-flow">4.8. Summary of Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice.html">5. MCQ Test — All Cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-unshuffled2">5.1. Single correct  unshuffled2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-shuffled">5.2. Single correct shuffled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-letters">5.3. Single correct letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-radio">5.4. Single correct radio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#single-correct-radio-letters">5.5. Single correct radio letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#code-block-letters">5.6. code block letters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice.html#multiple-correct">5.7. multiple correct</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_score.html">6. MCQ score</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_score.html#single-correct-unshuffled2">6.1. Single correct  unshuffled2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_score.html#single-correct-shuffled">6.2. Single correct shuffled</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_score2.html">7. MCQScore Demo2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_choice_info.html">8. MCQ Extension Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#purpose">8.1. Purpose</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="multiple_choice_info.html#mcq-directive-in-rst">8.1.1. MCQ Directive in RST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#id1">8.2. Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#basic-syntax">8.3. Basic Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#directive-options">8.4. Directive Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#choices">8.5. Choices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#example-single-selection-question">8.6. Example - Single-selection Question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#example-multi-selection-question">8.7. Example - Multi-selection Question</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#basic-html-structure">8.8. Basic HTML Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#key-attributes">8.9. Key Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#javascript-behavior">8.10. JavaScript Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#css-styling">8.11. CSS Styling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple_choice_info.html#summary-of-workflow">8.12. Summary of Workflow</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: linear-gradient(to right, blueviolet 15%, limegreen 50%, royalblue 80%)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RTD_TESTING</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>Dictionaries</li>
+
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="Intro.html" class="btn btn-neutral float-left" title="1. Introduction" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Parsons.html" class="btn btn-neutral float-right" title="3. Parsons Puzzles — Feature Showcase" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dictionaries">
+<h1><span class="section-number">2. </span>Dictionaries<a class="headerlink" href="#dictionaries" title="Link to this heading"></a></h1>
+<div class="line-block">
+<div class="line">Suggested refs:</div>
+<div class="line"><a class="reference external" href="https://www.programiz.com/python-programming/dictionary">https://www.programiz.com/python-programming/dictionary</a></div>
+<div class="line"><a class="reference external" href="https://realpython.com/python-dicts/">https://realpython.com/python-dicts/</a></div>
+</div>
+<hr class="docutils" />
+<section id="dictionary-structure">
+<h2><span class="section-number">2.1. </span>Dictionary structure<a class="headerlink" href="#dictionary-structure" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">A Python dictionary is a collection of items.</div>
+<div class="line">Each item  is a <code class="docutils literal notranslate"><span class="pre">key:</span> <span class="pre">value</span></code> pair.</div>
+<div class="line">Dictionary items are <strong>ordered</strong>, <strong>changeable</strong>, and do not allow duplicates.</div>
+<div class="line">All keys must be <strong>immutable</strong> (not able to be changed) such as integers, strings and tuples of integers or strings.</div>
+<div class="line">Values can be any data types such as string, int, float, boolean, tuple, list, dictionary.</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">dict_var</span> <span class="pre">=</span> <span class="pre">{key1</span> <span class="pre">:</span> <span class="pre">value1,</span> <span class="pre">key2</span> <span class="pre">:</span> <span class="pre">value2,</span> <span class="pre">…..}</span></span></dt>
+<dd><p>Returns a dictionary with the specified key: value pairs.</p>
+</dd></dl>
+
+<div class="line-block">
+<div class="line">An example of a dictionary of states and capitals is below.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eastern_state_capitals</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;Victoria&#39;</span><span class="p">:</span> <span class="s1">&#39;Melbourne&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;New South Wales&#39;</span><span class="p">:</span> <span class="s1">&#39;Sydney&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Queensland&#39;</span><span class="p">:</span> <span class="s1">&#39;Brisbane&#39;</span>
+                <span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eastern_state_capitals</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="getting-a-value-from-a-dictionary">
+<h2><span class="section-number">2.2. </span>Getting a value from a dictionary<a class="headerlink" href="#getting-a-value-from-a-dictionary" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">Values in a dictionary are retrieved by using the key as an index.</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">value_1</span> <span class="pre">=</span> <span class="pre">dict_var[key1]</span></span></dt>
+<dd><p>Returns a value in a dictionary with the specified key, key1.</p>
+</dd></dl>
+
+<div class="line-block">
+<div class="line">In the dictionary below, the capital of Victoria can be found by indexing the dictionary: <code class="docutils literal notranslate"><span class="pre">eastern_state_capitals['Victoria']</span></code>.</div>
+<div class="line">THe key is ‘Victoria’. The value is ‘Melbourne’.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eastern_state_capitals</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;Victoria&#39;</span><span class="p">:</span> <span class="s1">&#39;Melbourne&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;New South Wales&#39;</span><span class="p">:</span> <span class="s1">&#39;Sydney&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Queensland&#39;</span><span class="p">:</span> <span class="s1">&#39;Brisbane&#39;</span>
+                <span class="p">}</span>
+<span class="n">capital</span> <span class="o">=</span> <span class="n">eastern_state_capitals</span><span class="p">[</span><span class="s1">&#39;Victoria&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capital</span><span class="p">)</span>
+<span class="c1"># Output is &#39;Melbourne&#39;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="case-sensitive-keys">
+<h2><span class="section-number">2.3. </span>Case sensitive keys<a class="headerlink" href="#case-sensitive-keys" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">Keys in a dictionary are case sensitive.</div>
+<div class="line">The keys ‘Vic’and ‘VIC’ are different keys.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eastern_state_capitals</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;Vic&#39;</span><span class="p">:</span> <span class="s1">&#39;Melbourne&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;VIC&#39;</span><span class="p">:</span> <span class="s1">&#39;MELB&#39;</span><span class="p">,</span>
+                <span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eastern_state_capitals</span><span class="p">[</span><span class="s1">&#39;Vic&#39;</span><span class="p">])</span>
+<span class="c1"># Output is &#39;Melbourne&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">eastern_state_capitals</span><span class="p">[</span><span class="s1">&#39;VIC&#39;</span><span class="p">])</span>
+<span class="c1"># Output is &#39;MELB&#39;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="empty-dictionary">
+<h2><span class="section-number">2.4. </span>Empty dictionary<a class="headerlink" href="#empty-dictionary" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">An empty dictionary is needed as a starting point when a dictionary is built as the program runs.</div>
+</div>
+<div class="line-block">
+<div class="line">An empty dictionary can be made using <strong>curly brackets</strong>:</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">empty_dict</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">An empty dictionary can be made using the <strong>dict function</strong>:</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">empty_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="making-a-dictionary">
+<h2><span class="section-number">2.5. </span>Making a dictionary<a class="headerlink" href="#making-a-dictionary" title="Link to this heading"></a></h2>
+<section id="making-a-dictionary-curly-brackets">
+<h3><span class="section-number">2.5.1. </span>Making a dictionary: curly brackets<a class="headerlink" href="#making-a-dictionary-curly-brackets" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">Make a dictionary by enclosing a comma-separated sequence of key-value pairs in curly braces <code class="docutils literal notranslate"><span class="pre">{}</span></code>.</div>
+<div class="line">The dictionary below has 3 items, each separated by a comma.</div>
+<div class="line">Each item is a key: value pair separated by a colon.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">state_capitals</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;Victoria&#39;</span><span class="p">:</span> <span class="s2">&quot;Melbourne&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;Tasmania&#39;</span><span class="p">:</span> <span class="s2">&quot;Hobart&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;Queensland&#39;</span><span class="p">:</span> <span class="s2">&quot;Brisbane&quot;</span>
+                <span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">state_capitals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using curly brackets such that it maps the names of three countries, Japan, France and England, to their capitals: Tokyo, Paris and London. Print the dictionary.</p></li>
+<li><p>Create a dictionary using curly brackets such that it maps the names of three fruits, Apple, Banana, and Grapes, to their colors: Red, Yellow, and Purple. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using curly brackets such that it maps the names of three countries, Japan, France and England, to their capitals: Tokyo, Paris and London. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">country_capitals</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Japan&#39;</span><span class="p">:</span> <span class="s1">&#39;Tokyo&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;France&#39;</span><span class="p">:</span> <span class="s1">&#39;Paris&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;England&#39;</span><span class="p">:</span> <span class="s1">&#39;London&#39;</span>
+<span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">country_capitals</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Q2</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using curly brackets such that it maps the names of three fruits, Apple, Banana, and Grapes, to their colors: Red, Yellow, and Purple. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fruit_colors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Apple&#39;</span><span class="p">:</span> <span class="s1">&#39;Red&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Banana&#39;</span><span class="p">:</span> <span class="s1">&#39;Yellow&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Grapes&#39;</span><span class="p">:</span> <span class="s1">&#39;Purple&#39;</span>
+<span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fruit_colors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<hr class="docutils" />
+<section id="making-a-dictionary-from-a-list-of-lists">
+<h3><span class="section-number">2.5.2. </span>Making a dictionary from a list of lists<a class="headerlink" href="#making-a-dictionary-from-a-list-of-lists" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">Make a dictionary using the dict function.</div>
+<div class="line">Pass in a list of lists, with each list made up 2 elements, e.g <code class="docutils literal notranslate"><span class="pre">[&quot;New</span> <span class="pre">South</span> <span class="pre">Wales&quot;,</span> <span class="pre">&quot;Sydney&quot;]</span></code></div>
+<div class="line">The first element becomes the key and the second element becomes the value. e.g <code class="docutils literal notranslate"><span class="pre">&quot;New</span> <span class="pre">South</span> <span class="pre">Wales&quot;:</span> <span class="pre">&quot;Sydney&quot;</span></code></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">state_capitals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;New South Wales&quot;</span><span class="p">,</span> <span class="s2">&quot;Sydney&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Victoria&quot;</span><span class="p">,</span> <span class="s2">&quot;Melbourne&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Queensland&quot;</span><span class="p">,</span> <span class="s2">&quot;Brisbane&quot;</span><span class="p">]</span>
+<span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">state_capitals</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;New South Wales&#39;: &#39;Sydney&#39;, &#39;Victoria&#39;: &#39;Melbourne&#39;, &#39;Queensland&#39;: &#39;Brisbane&#39;}</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using the dict function and a list of lists such that it maps the names of three programming languages, Python, Java, and C++, to their creators: Guido van Rossum, James Gosling, and Bjarne Stroustrup. Print the dictionary.</p></li>
+<li><p>Create a dictionary using the dict function and a list of lists such that it maps the names of three countries, China, India, and USA, to their populations in billions: 1.4, 1.4, and 0.3. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the dict function and a list of lists such that it maps the names of three programming languages, Python, Java, and C++, to their creators: Guido van Rossum, James Gosling, and Bjarne Stroustrup. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">languages</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;Python&#39;</span><span class="p">,</span> <span class="s1">&#39;Guido van Rossum&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Java&#39;</span><span class="p">,</span> <span class="s1">&#39;James Gosling&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C++&#39;</span><span class="p">,</span> <span class="s1">&#39;Bjarne Stroustrup&#39;</span><span class="p">]</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">languages</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+Q2</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the dict function and a list of lists such that it maps the names of three countries, China, India, and USA, to their populations in billions: 1.44, 1.39, and 0.33. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">populations</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">&#39;China&#39;</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;India&#39;</span><span class="p">,</span> <span class="mf">1.39</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">]</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">populations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<hr class="docutils" />
+<section id="making-a-dictionary-from-a-list-of-tuples">
+<h3><span class="section-number">2.5.3. </span>Making a dictionary from a list of tuples<a class="headerlink" href="#making-a-dictionary-from-a-list-of-tuples" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">Make a dictionary using the dict function.</div>
+<div class="line">Pass in a list of tuples, with each tuple made up 2 elements, e.g <code class="docutils literal notranslate"><span class="pre">(&quot;New</span> <span class="pre">South</span> <span class="pre">Wales&quot;,</span> <span class="pre">&quot;Sydney&quot;)</span></code></div>
+<div class="line">The first element becomes the key and the second element becomes the value. e.g <code class="docutils literal notranslate"><span class="pre">&quot;New</span> <span class="pre">South</span> <span class="pre">Wales&quot;:</span> <span class="pre">&quot;Sydney&quot;</span></code></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">capitals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;South Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Adelaide&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Western Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Perth&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Australian Capital Territory&quot;</span><span class="p">,</span> <span class="s2">&quot;Canberra&quot;</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capitals</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;South Australia&#39;: &#39;Adelaide&#39;, &#39;Western Australia&#39;: &#39;Perth&#39;, &#39;Australian Capital Territory&#39;: &#39;Canberra&#39;}</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using the dict function and a list of tuples such that it maps the names of three car brands, Toyota, BMW, and Ford, to their countries of origin: Japan, Germany, and USA. Print the dictionary.</p></li>
+<li><p>Create a dictionary using the dict function and a list of tuples such that it maps the names of three planets, Mercury, Venus, and Earth, to their average distances from the sun in million kilometers: 57.9, 108.2, and 149.6. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the dict function and a list of tuples such that it maps the names of three car brands, Toyota, BMW, and Ford, to their countries of origin: Japan, Germany, and USA. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">car_brand_countries</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;Toyota&#39;</span><span class="p">,</span> <span class="s1">&#39;Japan&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BMW&#39;</span><span class="p">,</span> <span class="s1">&#39;Germany&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Ford&#39;</span><span class="p">,</span> <span class="s1">&#39;USA&#39;</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">car_brand_countries</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-5">
+Q2</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the dict function and a list of tuples such that it maps the names of three planets, Mercury, Venus, and Earth, to their average distances from the sun in million kilometers: 57.9, 108.2, and 149.6. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">planet_distances_to_sun</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;Mercury&#39;</span><span class="p">,</span> <span class="mf">57.9</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Venus&#39;</span><span class="p">,</span> <span class="mf">108.2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;Earth&#39;</span><span class="p">,</span> <span class="mf">149.6</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">planet_distances_to_sun</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<hr class="docutils" />
+<section id="making-a-dictionary-from-2-lists">
+<h3><span class="section-number">2.5.4. </span>Making a dictionary from 2 lists<a class="headerlink" href="#making-a-dictionary-from-2-lists" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">2 lists of keys and values can be combined and converted into a dictionary using several methods.</div>
+</div>
+<section id="making-a-dictionary-from-2-lists-update">
+<h4><span class="section-number">2.5.4.1. </span>Making a dictionary from 2 lists –update<a class="headerlink" href="#making-a-dictionary-from-2-lists-update" title="Link to this heading"></a></h4>
+<div class="line-block">
+<div class="line">The update method is used to add each state key and city value.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Queensland&quot;</span><span class="p">,</span> <span class="s2">&quot;South Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Western Australia&quot;</span><span class="p">]</span>
+<span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Brisbane&quot;</span><span class="p">,</span> <span class="s2">&quot;Adelaide&quot;</span><span class="p">,</span> <span class="s2">&quot;Perth&quot;</span><span class="p">]</span>
+
+<span class="n">capitals</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)):</span>
+    <span class="n">capitals</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">]})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">capitals</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;Queensland&#39;: &#39;Brisbane&#39;, &#39;South Australia&#39;: &#39;Adelaide&#39;, &#39;Western Australia&#39;: &#39;Perth&#39;}</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using the update method and two lists such that it maps the names of ‘Lockett’, ‘Coventry’, and ‘Dunstall’, to their goals kicked: 1360, 1299, and 1254. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-6">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the update method and two lists such that it maps the names of ‘Lockett’, ‘Coventry’, and ‘Dunstall’, to their goals kicked: 1360, 1299, and 1254. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Lockett&#39;</span><span class="p">,</span> <span class="s1">&#39;Coventry&#39;</span><span class="p">,</span> <span class="s1">&#39;Dunstall&#39;</span><span class="p">]</span>
+<span class="n">goals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1360</span><span class="p">,</span> <span class="mi">1299</span><span class="p">,</span> <span class="mi">1254</span><span class="p">]</span>
+<span class="n">goal_kickers</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+    <span class="n">goal_kickers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">goals</span><span class="p">[</span><span class="n">i</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<section id="making-a-dictionary-from-2-lists-set-key-value">
+<h4><span class="section-number">2.5.4.2. </span>Making a dictionary from 2 lists –set key value<a class="headerlink" href="#making-a-dictionary-from-2-lists-set-key-value" title="Link to this heading"></a></h4>
+<div class="line-block">
+<div class="line">Each state key gets its city value each time through the for loop.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Queensland&quot;</span><span class="p">,</span> <span class="s2">&quot;South Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Western Australia&quot;</span><span class="p">]</span>
+<span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Brisbane&quot;</span><span class="p">,</span> <span class="s2">&quot;Adelaide&quot;</span><span class="p">,</span> <span class="s2">&quot;Perth&quot;</span><span class="p">]</span>
+
+<span class="n">capitals</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)):</span>
+    <span class="n">capitals</span><span class="p">[</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capitals</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;Queensland&#39;: &#39;Brisbane&#39;, &#39;South Australia&#39;: &#39;Adelaide&#39;, &#39;Western Australia&#39;: &#39;Perth&#39;}</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using the update method and two lists such that it maps the names of ‘Lockett’, ‘Coventry’, and ‘Dunstall’, to their goals kicked: 1360, 1299, and 1254. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-7" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-7">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the update method and two lists such that it maps the names of ‘Lockett’, ‘Coventry’, and ‘Dunstall’, to their goals kicked: 1360, 1299, and 1254. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Lockett&#39;</span><span class="p">,</span> <span class="s1">&#39;Coventry&#39;</span><span class="p">,</span> <span class="s1">&#39;Dunstall&#39;</span><span class="p">]</span>
+<span class="n">goals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1360</span><span class="p">,</span> <span class="mi">1299</span><span class="p">,</span> <span class="mi">1254</span><span class="p">]</span>
+<span class="n">goal_kickers</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+    <span class="n">goal_kickers</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">goals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">goal_kickers</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<section id="making-a-dictionary-from-2-lists-dict-and-zip">
+<h4><span class="section-number">2.5.4.3. </span>Making a dictionary from 2 lists –dict and zip<a class="headerlink" href="#making-a-dictionary-from-2-lists-dict-and-zip" title="Link to this heading"></a></h4>
+<div class="line-block">
+<div class="line">The zip() function pairs each element from the states list with the corresponding element from the cities list.</div>
+<div class="line">The result is an iterator containing these tuples: <code class="docutils literal notranslate"><span class="pre">('Queensland',</span> <span class="pre">'Brisbane'),</span> <span class="pre">('South</span> <span class="pre">Australia',</span> <span class="pre">'Adelaide'),</span> <span class="pre">('Western</span> <span class="pre">Australia',</span> <span class="pre">'Perth')</span></code></div>
+<div class="line">The dict function then converts the zip object into a dictionary.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Queensland&quot;</span><span class="p">,</span> <span class="s2">&quot;South Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Western Australia&quot;</span><span class="p">]</span>
+<span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Brisbane&quot;</span><span class="p">,</span> <span class="s2">&quot;Adelaide&quot;</span><span class="p">,</span> <span class="s2">&quot;Perth&quot;</span><span class="p">]</span>
+
+<span class="n">capitals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">cities</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capitals</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;Queensland&#39;: &#39;Brisbane&#39;, &#39;South Australia&#39;: &#39;Adelaide&#39;, &#39;Western Australia&#39;: &#39;Perth&#39;}</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using the zip function and two lists such that it maps the names of three animals, Elephant, Dog, and Cat, to their average lifespans in years: 70, 13, and 15. Print the dictionary.</p></li>
+<li><p>Create a dictionary using the zip function and two lists such that it maps the names of three cities, Tokyo, Delhi, and Shanghai, to their populations in millions: 37.4, 28.5, and 25.6. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-8">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the zip function and two lists such that it maps the names of three animals, Elephant, Dog, and Cat, to their average lifespans in years: 70, 13, and 15. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Elephant&#39;</span><span class="p">,</span> <span class="s1">&#39;Dog&#39;</span><span class="p">,</span> <span class="s1">&#39;Cat&#39;</span><span class="p">]</span>
+<span class="n">lifespans</span> <span class="o">=</span> <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+<span class="n">animal_lifespans</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">animals</span><span class="p">,</span> <span class="n">lifespans</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">animal_lifespans</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-9" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-9">
+Q2</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using the zip function and two lists such that it maps the names of three cities, Tokyo, Delhi, and Shanghai, to their populations in millions: 37.4, 28.5, and 25.6. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tokyo&#39;</span><span class="p">,</span> <span class="s1">&#39;Delhi&#39;</span><span class="p">,</span> <span class="s1">&#39;Shanghai&#39;</span><span class="p">]</span>
+<span class="n">populations</span> <span class="o">=</span> <span class="p">[</span><span class="mf">37.4</span><span class="p">,</span> <span class="mf">28.5</span><span class="p">,</span> <span class="mf">25.6</span><span class="p">]</span>
+<span class="n">city_populations</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cities</span><span class="p">,</span> <span class="n">populations</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">city_populations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="making-a-dictionary-by-dictionary-comprehension-from-2-lists">
+<h3><span class="section-number">2.5.5. </span>Making a dictionary by dictionary comprehension from 2 lists<a class="headerlink" href="#making-a-dictionary-by-dictionary-comprehension-from-2-lists" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">The dictionary comprehension below creates a dictionary by iterating over length of the states list and using the index, i, to set the state key and city value.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Western Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Tasmania&quot;</span><span class="p">,</span> <span class="s2">&quot;Northern Territory&quot;</span><span class="p">]</span>
+<span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Perth&quot;</span><span class="p">,</span> <span class="s2">&quot;Hobart&quot;</span><span class="p">,</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">]</span>
+
+<span class="n">capitals</span> <span class="o">=</span> <span class="p">{</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">))}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capitals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using a dictionary comprehension via the indexes of two lists such that it maps the names of ‘Lockett’, ‘Coventry’, and ‘Dunstall’, to their goals kicked: 1360, 1299, and 1254. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-10">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using a dictionary comprehension via the indexes of two lists such that it maps the names of ‘Lockett’, ‘Coventry’, and ‘Dunstall’, to their goals kicked: 1360, 1299, and 1254. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Lockett&#39;</span><span class="p">,</span> <span class="s1">&#39;Coventry&#39;</span><span class="p">,</span> <span class="s1">&#39;Dunstall&#39;</span><span class="p">]</span>
+<span class="n">goals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1360</span><span class="p">,</span> <span class="mi">1299</span><span class="p">,</span> <span class="mi">1254</span><span class="p">]</span>
+<span class="n">goal_kickers</span> <span class="o">=</span> <span class="p">{</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">goals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">))}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">goal_kickers</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+<div class="line-block">
+<div class="line">The dictionary comprehension below creates a dictionary by iterating over the tuples produced by zip().</div>
+<div class="line">For each tuple, the state becomes the key and city becomes the value.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Western Australia&quot;</span><span class="p">,</span> <span class="s2">&quot;Tasmania&quot;</span><span class="p">,</span> <span class="s2">&quot;Northern Territory&quot;</span><span class="p">]</span>
+<span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Perth&quot;</span><span class="p">,</span> <span class="s2">&quot;Hobart&quot;</span><span class="p">,</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">]</span>
+
+<span class="n">capitals</span> <span class="o">=</span> <span class="p">{</span><span class="n">state</span><span class="p">:</span> <span class="n">city</span> <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">city</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">cities</span><span class="p">)}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capitals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using dictionary comprehension and two lists such that it maps the names of three sports, Soccer, Basketball, and Baseball, to the number of players in each team: 11, 5, and 9. Print the dictionary.</p></li>
+<li><p>Create a dictionary using dictionary comprehension and two lists such that it maps the names of three countries, USA, China, and Japan, to their GDPs in trillion USD: 21.43, 14.34, and 5.08. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-11" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-11">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using dictionary comprehension and two lists such that it maps the names of three sports, Soccer, Basketball, and Baseball, to the number of players in each team: 11, 5, and 9. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sports</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Soccer&#39;</span><span class="p">,</span> <span class="s1">&#39;Basketball&#39;</span><span class="p">,</span> <span class="s1">&#39;Baseball&#39;</span><span class="p">]</span>
+<span class="n">players</span> <span class="o">=</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+<span class="n">sport_players</span> <span class="o">=</span> <span class="p">{</span><span class="n">sport</span><span class="p">:</span> <span class="n">player</span> <span class="k">for</span> <span class="n">sport</span><span class="p">,</span> <span class="n">player</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sports</span><span class="p">,</span> <span class="n">players</span><span class="p">)}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sport_players</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-12" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-12">
+Q2</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using dictionary comprehension and two lists such that it maps the names of three countries, USA, China, and Japan, to their GDPs in trillion USD: 21.43, 14.34, and 5.08. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">countries</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span> <span class="s1">&#39;China&#39;</span><span class="p">,</span> <span class="s1">&#39;Japan&#39;</span><span class="p">]</span>
+<span class="n">gdps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">21.43</span><span class="p">,</span> <span class="mf">14.34</span><span class="p">,</span> <span class="mf">5.08</span><span class="p">]</span>
+<span class="n">country_gdps</span> <span class="o">=</span> <span class="p">{</span><span class="n">country</span><span class="p">:</span> <span class="n">gdp</span> <span class="k">for</span> <span class="n">country</span><span class="p">,</span> <span class="n">gdp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">countries</span><span class="p">,</span> <span class="n">gdps</span><span class="p">)}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">country_gdps</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<hr class="docutils" />
+<section id="making-a-dictionary-from-key-word-arguments">
+<h3><span class="section-number">2.5.6. </span>Making a dictionary from key word arguments<a class="headerlink" href="#making-a-dictionary-from-key-word-arguments" title="Link to this heading"></a></h3>
+<div class="line-block">
+<div class="line">Make a dictionary using the dict function and key word arguments.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">a=1</span></code> will become the key value pair <code class="docutils literal notranslate"><span class="pre">'a':</span> <span class="pre">1</span></code></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simple_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">simple_dict</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4}</span>
+</pre></div>
+</div>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<ol class="arabic simple">
+<li><p>Create a dictionary using keyword arguments such that it maps the names of three programming languages, Python, Java, and JavaScript, to their release years: 1991, 1995, and 1995. Print the dictionary.</p></li>
+<li><p>Create a dictionary using keyword arguments such that it maps the names of three continents, Africa, Asia, and Europe, to their areas in million square kilometers: 30.37, 44.58, and 10.18. Print the dictionary.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-dropdown-container">
+<summary class="sd-summary-title sd-card-header sd-bg-primary sd-bg-text-primary">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-codescan" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.47 4.97a.75.75 0 0 0 0 1.06L9.94 7.5 8.47 8.97a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM6.53 6.03a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 1 0 1.06-1.06L5.06 7.5l1.47-1.47Z"></path><path d="M12.246 13.307a7.501 7.501 0 1 1 1.06-1.06l2.474 2.473a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM1.5 7.5a6.002 6.002 0 0 0 3.608 5.504 6.002 6.002 0 0 0 6.486-1.117.748.748 0 0 1 .292-.293A6 6 0 1 0 1.5 7.5Z"></path></svg></span><span class="sd-summary-text"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-kebab-horizontal no-title" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14a2 2 0 1 1-.001-3.999A2 2 0 0 1 20 14ZM6 12a2 2 0 1 1-3.999.001A2 2 0 0 1 6 12Zm8 0a2 2 0 1 1-3.999.001A2 2 0 0 1 14 12Z"></path></svg></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-13" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-13">
+Q1</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using keyword arguments such that it maps the names of three programming languages, Python, Java, and JavaScript, to their release years: 1991, 1995, and 1995. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">languages_release_years</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Python</span><span class="o">=</span><span class="mi">1991</span><span class="p">,</span> <span class="n">Java</span><span class="o">=</span><span class="mi">1995</span><span class="p">,</span> <span class="n">JavaScript</span><span class="o">=</span><span class="mi">1995</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">languages_release_years</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;Python&#39;: 1991, &#39;Java&#39;: 1995, &#39;JavaScript&#39;: 1995}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-14" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-14">
+Q2</label><div class="sd-tab-content docutils">
+<p class="sd-card-text">Create a dictionary using keyword arguments such that it maps the names of three continents, Africa, Asia, and Europe, to their areas in million square kilometers: 30.37, 44.58, and 10.18. Print the dictionary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">continents</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Africa</span><span class="o">=</span><span class="mf">30.37</span><span class="p">,</span> <span class="n">Asia</span><span class="o">=</span><span class="mf">44.58</span><span class="p">,</span> <span class="n">Europe</span><span class="o">=</span><span class="mf">10.18</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">continents</span><span class="p">)</span>
+<span class="c1"># Output is {&#39;Africa&#39;: 30.37, &#39;Asia&#39;: 44.58, &#39;Europe&#39;: 10.18}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+<hr class="docutils" />
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Intro.html" class="btn btn-neutral float-left" title="1. Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Parsons.html" class="btn btn-neutral float-right" title="3. Parsons Puzzles — Feature Showcase" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, GMC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>

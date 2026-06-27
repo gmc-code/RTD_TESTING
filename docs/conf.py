@@ -10,8 +10,9 @@ import os
 import sys
 import sphinx_rtd_theme
 
+
 project = "RTD_TESTING"
-copyright = "2025, GMC"
+copyright = "2025-6, GMC"
 author = "GMC"
 
 
@@ -30,7 +31,7 @@ extensions = [
     "sphinx_togglebutton",
     "sphinx_design",
     "parsons.directive",  # our custom directive
-    "mcq.mcq",  # custom directive
+    "mcqscore.mcqscore",  # custom directive
 ]
 
 # "sphinx.ext.doctest",
@@ -87,9 +88,10 @@ html_title = "RTD_TESTING_GMC"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
 
-html_static_path = ["_static"]  # , 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
+html_static_path = ["_static", "_ext/mcqscore/_static"]
+
+# ,'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
 # Use custom css  html_css_files = ["custom.css"]
 html_css_files = [
@@ -103,12 +105,18 @@ html_js_files = [
 ]
 
 # for rtd
+
+
 def setup(app):
     for css in ["css/custom.css", "parsons/parsons.css",]:
         app.add_css_file(css)
 
     for js in ["parsons/parsons.js","parsons/Sortable.min.js",]:
         app.add_js_file(js)
+
+    app.add_js_file("mcqscore.js")
+    app.add_css_file("mcqscore.css")
+
 
     # external library
     # app.add_js_file(
