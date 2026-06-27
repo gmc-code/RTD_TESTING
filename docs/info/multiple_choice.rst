@@ -63,11 +63,11 @@ code block letters
 .. mcqscore::
     :question: What is the output of the following code?
 
-    .. code-block:: python
+        .. code-block:: python
 
-        x = 5
-        y = 2
-        print(x ** y)
+            x = 5
+            y = 2
+            print(x ** y)
 
     [x] 25 | Correct: `**` is exponentiation, so output is 25
     [ ] 5^2
@@ -79,7 +79,6 @@ multiple correct
 
 .. mcqscore::
     :question: Which of the following are Python data types?
-    :multi:
 
     [x] int | Integer type
     [x] str | String type
