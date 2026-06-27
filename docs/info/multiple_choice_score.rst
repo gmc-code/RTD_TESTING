@@ -18,6 +18,8 @@ Single correct  unshuffled2
    [ ] echo "Hello, World"
    [ ] echo(Hello, World)
 
+----
+
 Single correct shuffled
 -----------------------------
 
@@ -30,6 +32,7 @@ Single correct shuffled
    [ ] @var | Incorrect. Cannot start with a symbol
    [ ] my-var | Incorrect. Hyphens are not allowed
 
+----
 
 Single correct shuffled letters
 ---------------------------------
@@ -42,13 +45,13 @@ Single correct shuffled letters
    [ ] !== | Incorrect. not equals to
    [ ] <= | Incorrect. less than or equals to
 
+----
 
 Multiple correct shuffled
 -----------------------------
 
 .. mcqscore::
    :question: Which of the following are Python data types?
-   :multi:
 
    [x] int | Integer type
    [x] str | String type
