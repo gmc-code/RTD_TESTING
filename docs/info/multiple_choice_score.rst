@@ -5,6 +5,21 @@ MCQ score
 
 .. mcqscore-start::
 
+.. mcqscore::
+
+    What is Sphinx?
+
+    [x] An open-source documentation generator
+        written in Python that makes it easy
+        to build technical layouts. | Correct! It is excellent
+        for Python projects and developer manuals.
+
+    [ ] A JavaScript framework | Incorrect!
+        Sphinx is built on top of
+        Python and Docutils.
+
+----
+
 Single correct  no letters no shuffled
 -------------------------------------------
 

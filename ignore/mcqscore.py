@@ -52,6 +52,7 @@ class MCQScoreDirective(SphinxDirective):
         # ─────────────────────────────────────
         choice_start_idx = None
 
+        # Find the exact line index where the choices start
         for idx, line in enumerate(self.content):
             stripped = line.strip()
             if stripped.startswith("[") and "]" in stripped:
@@ -61,77 +62,48 @@ class MCQScoreDirective(SphinxDirective):
         if choice_start_idx is None:
             raise DirectiveError(3, "MCQ error: Missing answer choices block.")
 
+        # Slice self.content natively (this preserves the StringList type!)
         question_lines = self.content[:choice_start_idx]
         choice_lines = self.content[choice_start_idx:]
 
         # ─────────────────────────────────────
-        # Parse the Question Natively
+        # Parse the Question Natively (Allows nested code blocks!)
         # ─────────────────────────────────────
         question_container = nodes.container(classes=["mcqscore-question"])
         self.state.nested_parse(question_lines, self.content_offset, question_container)
         node += question_container
 
         # ─────────────────────────────────────
-        # Robust Multi-line Choice Parser
+        # Parse choices
         # ─────────────────────────────────────
         choices = []
-        current_choice = None
-        in_explanation_mode = False
-
         for line in choice_lines:
-            # We preserve internal spaces but drop layout outer indents
             stripped = line.strip()
+            if not stripped:
+                continue
 
-            # Case 1: Detect a brand new choice starting block
             if stripped.startswith("[") and "]" in stripped:
                 marker = stripped[1].lower()
                 is_correct = marker == "x"
 
-                raw_text = stripped[stripped.index("]") + 1:].strip()
+                text = stripped[stripped.index("]") + 1:].strip()
 
-                # Check if an explanation starts on this very first line
-                if "|" in raw_text:
-                    text, explanation = raw_text.split("|", 1)
+                # Clean up your experimental tracking numbers (e.g., '1print' -> 'print')
+                # if text and text[0].isdigit():
+                #     text = text[1:].strip()
+
+                if "|" in text:
+                    text, explanation = text.split("|", 1)
                     text = text.strip()
                     explanation = explanation.strip()
-                    in_explanation_mode = True
                 else:
-                    text = raw_text
-                    explanation = ""
-                    in_explanation_mode = False
+                    explanation = None
 
-                current_choice = {
+                choices.append({
                     "text": text,
                     "correct": is_correct,
                     "explanation": explanation
-                }
-                choices.append(current_choice)
-
-            # Case 2: Continuation lines (Multi-line text or multi-line explanation)
-            elif current_choice is not None and stripped:
-                if "|" in stripped:
-                    # Switch dynamically from writing text over to explanation processing
-                    text_part, exp_part = stripped.split("|", 1)
-
-                    if text_part.strip():
-                        current_choice["text"] += " " + text_part.strip()
-
-                    current_choice["explanation"] = exp_part.strip()
-                    in_explanation_mode = True
-                else:
-                    if in_explanation_mode:
-                        # Append to existing explanation buffer
-                        if current_choice["explanation"]:
-                            current_choice["explanation"] += " " + stripped
-                        else:
-                            current_choice["explanation"] = stripped
-                    else:
-                        # Append to regular choice string text buffer
-                        current_choice["text"] += " " + stripped
-
-        # Clean up any trailing whitespace strings from empty explanation nodes
-        for ch in choices:
-            ch["explanation"] = ch["explanation"].strip() if ch["explanation"] else None
+                })
 
         # ─────────────────────────────────────
         # Validation & Auto-Mode Selection
@@ -146,6 +118,7 @@ class MCQScoreDirective(SphinxDirective):
         is_multi = correct_count > 1
         node["single_correct"] = not is_multi
 
+        # Create a unique group name using hash of choice texts combined
         seed_string = "".join(c["text"] for c in choices)
         group_name = hashlib.md5(seed_string.encode("utf-8")).hexdigest()
 

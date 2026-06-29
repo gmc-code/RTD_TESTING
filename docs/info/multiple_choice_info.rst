@@ -1,220 +1,159 @@
+============================================
+MCQ Score Plugin: Technical Implementation
+============================================
+
+This document provides a deep-dive breakdown of how the Python extension code for the ``mcqscore`` directive functions within the Sphinx ecosystem.
+
+Architecture Overview
 =====================
-MCQ Extension Guide
-=====================
 
-Purpose
--------
-The MCQ extension allows you to create **interactive multiple-choice questions** in your Sphinx documentation.
-It supports:
+The plugin is split into three main structural systems:
 
-- Single-click selection (click anywhere on the choice)
-- Radio-style single-selection questions
-- Multi-select checkbox questions
-- Automatic coloring for correct/incorrect choices
-- Toggleable explanations (“hint” text)
+1. **The Custom AST Node:** Inherits from Docutils classes to allow the quiz to sit within Sphinx's Abstract Syntax Tree.
+2. **The HTML Visitor Callbacks:** Handles compiling the opening and closing wrapper tags for the quiz block during rendering.
+3. **The Directive Parser Core:** Slices content text safely, hands formatting work back to Sphinx natively, validates author states, and outputs structured HTML choices.
 
-----
+---
 
-MCQ Directive in RST
-====================
+Detailed Code Breakdown
+=======================
 
-Purpose
--------
-The ``.. mcq::`` directive allows you to define multiple-choice questions directly in reStructuredText, without writing raw HTML.
-It supports **single-selection**, **multi-selection**, and **radio button** questions, with optional explanations.
-
-Basic Syntax
-------------
-
-.. code-block:: rest
-
-   .. mcq::
-      :question: What is the correct way to print "Hello, World" in Python?
-
-      [ ] echo "Hello, World"
-      [x] print("Hello, World") | Correct! print() is used to output text in Python.
-      [ ] printf("Hello, World")
-      [ ] echo(Hello, World)
-
-
-Directive Options
------------------
-+-----------+------------------------------------------------------+
-| Option    | Description                                          |
-+===========+======================================================+
-|`:shuffle:`| If present, shuffles the choices randomly each time  |
-+-----------+------------------------------------------------------+
-|`:letters:`| If present, adds letters (A, B, C, …) to each choice |
-+-----------+------------------------------------------------------+
-|`:radio:`  | If present , uses radio button behavior              |
-|           | (only one choice can be selected)                    |
-+-----------+------------------------------------------------------+
-
-
-Choices
--------
-- Each choice is defined using the `[ ]` or `[x]` syntax.
-  - `[x]` marks the correct choice.
-  - `[ ]` marks incorrect choices.
-- Use `|` followed by text to provide a hint or feedback explanation.
-- Works for single-selection and multi-selection questions.
-
-Example - Single-selection Question
+1. Custom Abstract Syntax Tree Node
 -----------------------------------
 
-.. code-block:: rest
+.. code-block:: python
 
-   .. mcq::
-      :question: Which of these are valid variable names in Python?
-      :shuffle:
-      :letters:
-      :radio:
+   class mcqscore_node(nodes.General, nodes.Element):
+       pass
 
-      [x] my_var | Valid variable name
-      [ ] 2var | Cannot start with a number
-      [ ] @var | Cannot start with a symbol
-      [ ] my-var | Hyphens are not allowed
-
-Example - Multi-selection Question
-----------------------------------
-
-.. code-block:: rest
-
-   .. mcq::
-      :question: Which of the following are Python data types?
-      :shuffle:
-      :letters:
-
-      [x] int | Integer type
-      [x] str | String type
-      [x] list | List type
-      [ ] integer | Not a Python type
-      [ ] character | Not a Python type
+Docutils processes documentation by building a tree structural graph. We declare an empty subclass ``mcqscore_node`` which serves as our anchor token in the graph. This allows us to hold the question states, parsed child components, and configuration attributes in a single container.
 
 
-----
+2. HTML Translators (Visitors)
+------------------------------
 
-Basic HTML Structure
----------------------
-When rendered by the MCQ extension, each question becomes a `.mcq-block` in the HTML:
+.. code-block:: python
 
-.. code-block:: html
+   def visit_mcqscore_html(self, node):
+       shuffle_attr = str(node.get("shuffle", False)).lower()
+       letters_attr = str(node.get("letters", False)).lower()
+       single_attr = str(node.get("single_correct", False)).lower()
 
-    <div class="mcq-block" data-mcq-radio="false" data-mcq-single="true">
-      <p class="mcq-question">What is the correct way to print "Hello, World" in Python?</p>
+       self.body.append(
+           f'<div class="mcqscore-block" '
+           f'data-mcqscore-single="{single_attr}" '
+           f'data-mcqscore-shuffle="{shuffle_attr}" '
+           f'data-mcqscore-letters="{letters_attr}">'
+       )
 
-      <div class="mcq-choice" data-correct="false">
-        <label>
-          <input type="checkbox" name="mcq1">
-          <span class="mcq-letter">A</span>
-          <span class="mcq-choice-label">echo "Hello, World"</span>
-        </label>
-        <div class="mcq-explanation">Incorrect: echo is not Python syntax</div>
-      </div>
+   def depart_mcqscore_html(self, node):
+       self.body.append("</div>")
 
-      <div class="mcq-choice" data-correct="true">
-        <label>
-          <input type="checkbox" name="mcq1">
-          <span class="mcq-letter">B</span>
-          <span class="mcq-choice-label">print("Hello, World")</span>
-        </label>
-        <div class="mcq-explanation">Correct! print() outputs text in Python.</div>
-      </div>
-    </div>
-
-Key Attributes
---------------
-+-------------------+-------------------------------------------------------------+
-| Attribute         | Purpose                                                     |
-+===================+=============================================================+
-| data-mcq-radio    | "true" for radio-style single-selection (`:radio:` option)  |
-|                   | "false" for normal checkbox/multi-select                    |
-+-------------------+-------------------------------------------------------------+
-| data-mcq-single   | "true" to allow single-click selection on the entire choice |
-|                   | (used for single-selection behavior)                        |
-+-------------------+-------------------------------------------------------------+
-| data-correct      | "true" for correct choices, "false" for incorrect           |
-+-------------------+-------------------------------------------------------------+
-| .mcq-letter       | Optional: letter label (A, B, C, …) added via `:letters:`   |
-+-------------------+-------------------------------------------------------------+
-| .mcq-explanation  | Hint or feedback text that appears when a choice is selected|
-+-------------------+-------------------------------------------------------------+
-
-JavaScript Behavior
--------------------
-- **Single-click mode (`data-mcq-single="true"`)**:
-  Click anywhere on a choice to select it. Only one choice is selected at a time. Explanation is shown immediately if present.
-
-- **Radio mode (`data-mcq-radio="true"`)**:
-  Behaves like standard radio buttons. Selecting one choice deselects others. Explanations appear on selection.
-
-- **Multi-select mode (`data-mcq-single="false"` and `data-mcq-radio="false"`)**:
-  Each choice can be selected independently. Correct/incorrect coloring applies immediately. Explanations toggle on click.
-
-CSS Styling
------------
-You can adjust styles for readability and alignment:
-
-.. code-block:: css
-
-    /* Container for the MCQ question */
-    .mcq-block {
-      border: 1px solid #e5e7eb;
-      padding: 1.2em;
-      margin-bottom: 1.5em;
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    /* Individual choice */
-    .mcq-choice {
-      cursor: pointer;
-      padding: 0.3em 0.5em;
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 0.2em;
-    }
-
-    .mcq-choice:hover {
-      background-color: #f0f0f0;
-    }
-
-    /* Letter labels (A, B, C, …) */
-    .mcq-letter {
-      font-weight: bold;
-      margin-right: 0.5em;
-    }
-
-    /* Choice text */
-    .mcq-choice-label {
-      flex: 1;
-    }
-
-    /* Explanation / hint text */
-    .mcq-explanation {
-      margin-left: 2.5em;  /* aligns under choice label */
-      margin-top: 0.2em;
-      font-size: 0.9em;
-      color: #555;
-    }
-
-    /* Selected correct/incorrect coloring */
-    .mcq-choice.selected.mcq-correct {
-      background-color: #d4edda;
-      border-left: 4px solid #28a745;
-    }
-
-    .mcq-choice.selected.mcq-incorrect {
-      background-color: #f8d7da;
-      border-left: 4px solid #dc3545;
-    }
+When Sphinx's HTML builder compiles the document tree, it invokes these translator endpoints:
+* **``visit_mcqscore_html``**: Prepends the global wrapping layout division and serializes configuration states natively into HTML ``data-*`` parameters. The client-side Javascript (``mcqscore.js``) targets these hooks to handle randomized option shuffling and letter rendering.
+* **``depart_mcqscore_html``**: Seamlessly appends the matching closing division tag.
 
 
-Summary of Workflow
--------------------
-1. Define the question using `.. mcq::` with `:question:`, `:shuffle:`, `:letters:`, or `:radio:` options as needed.
-2. Use `[ ]` for incorrect or `[x]` for correct choices.
-3. Add explanations after `|`.
-4. JS handles selection behavior, coloring, and toggling hints.
-5. CSS controls appearance, alignment, and spacing.
+3. Content Splitting & Structural Slicing
+-----------------------------------------
+
+.. code-block:: python
+
+   choice_start_idx = None
+   for idx, line in enumerate(self.content):
+       stripped = line.strip()
+       if stripped.startswith("[") and "]" in stripped:
+           choice_start_idx = idx
+           break
+
+   question_lines = self.content[:choice_start_idx]
+   choice_lines = self.content[choice_start_idx:]
+
+To allow complex syntax (like nested lists, code-blocks, or mathematical expressions) inside the question body, the content lines are divided:
+* The algorithm searches for the exact line index representing the first answer box option pattern (``[...]``).
+* Rather than mapping strings into a primitive list type, it creates a fast index slice directly against ``self.content``. This retains Docutils' native ``StringList`` instance metadata wrapper, preventing compilation crashes during layout validation.
+
+
+4. Nested Parsing Core
+----------------------
+
+.. code-block:: python
+
+   question_container = nodes.container(classes=["mcqscore-question"])
+   self.state.nested_parse(question_lines, self.content_offset, question_container)
+   node += question_container
+
+Instead of interpreting the question lines as dumb text strings, ``self.state.nested_parse()`` injects the ``StringList`` back into Sphinx's master compilation loop. This allows all standard reStructuredText elements, block highlights, or sub-directives inside your question text to render flawlessly. It encapsulates the outcome directly inside a ``<div class="mcqscore-question">`` element container.
+
+
+5. Choice Parsing & Dynamic UI Selection
+----------------------------------------
+
+.. code-block:: python
+
+   if stripped.startswith("[") and "]" in stripped:
+       marker = stripped[1].lower()
+       is_correct = marker == "x"
+       text = stripped[stripped.index("]") + 1:].strip()
+
+       if "|" in text:
+           text, explanation = text.split("|", 1)
+       ...
+
+The choice parser isolates selection configurations manually:
+* **Correctness**: Checks if an ``x`` or ``X`` character is populated inside the brackets.
+* **Explanations**: Scans for a pipe separator symbol (``|``). If matched, it slices the content line into an isolated answer block and an embedded explanation layout.
+
+
+6. Automated Selector Logic & Group Validation
+-----------------------------------------------
+
+.. code-block:: python
+
+   correct_count = sum(c["correct"] for c in choices)
+
+   is_multi = correct_count > 1
+   node["single_correct"] = not is_multi
+
+   seed_string = "".join(c["text"] for c in choices)
+   group_name = hashlib.md5(seed_string.encode("utf-8")).hexdigest()
+
+* **Type Inversion Automation**: Eliminates configuration overhead. If the program totals more than one correct target flagged with ``[x]``, it dynamically maps the underlying input engine properties to a multi-select interface (``checkbox``). If only one is marked, it creates a single-choice environment (``radio``).
+* **Cryptographic Form Grouping**: In order for browser radio elements to operate in groups, they must share matching unique names. The plugin generates an MD5 string hash derived from your answer content text. This ensures that independent question widgets deployed throughout the exact same documentation page do not collision-clash.
+
+
+7. HTML Construction Loop
+-------------------------
+
+.. code-block:: python
+
+   for ch in choices:
+       input_html = f'<input type="{input_type}" name="mcqscore-{group_name}">'
+       html_str = f'''
+   <div class="mcqscore-choice" data-correct="{str(ch["correct"]).lower()}">
+     <label>
+       {input_html}
+       <span class="mcqscore-letter"></span>
+       <span class="mcqscore-choice-label">{html.escape(ch["text"])}</span>
+     </label>
+   '''
+       ...
+       node += nodes.raw("", html_str, format="html")
+
+The data layout converts options directly into inline HTML entities. String expressions utilize ``html.escape()`` to completely protect the underlying DOM layout context from user markup formatting vulnerabilities. Every item logs its own correctness attribute via ``data-correct="..."`` to allow frontend JavaScript frameworks to safely run scoring matrices.
+
+
+8. Extension Registration Environment
+-------------------------------------
+
+.. code-block:: python
+
+   def setup(app):
+       app.add_node(mcqscore_node, html=(visit_mcqscore_html, depart_mcqscore_html))
+       app.add_directive("mcqscore", MCQScoreDirective)
+       ...
+       app.add_js_file("mcqscore.js")
+       app.add_css_file("mcqscore.css")
+
+The plugin hooks directly into Sphinx's backend platform using the framework's standard core API, mapping the custom directive identifiers and appending assets automatically to the generated HTML build assets directory output pipeline.
+

@@ -21,6 +21,6 @@ These docs provide a simple details for sphinx testing
     info/Parsons.rst
     info/Parsons_info.rst
 
+    info/multiple_choice_info.rst
     info/multiple_choice_directive_info.rst
     info/multiple_choice_score.rst
-    info/multiple_choice_info.rst
