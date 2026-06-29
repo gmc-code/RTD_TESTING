@@ -5,7 +5,7 @@ MCQ score
 
 .. mcqscore-start::
 
-Single correct  unshuffled2
+Single correct  no letters no shuffled
 -------------------------------------------
 
 .. mcqscore::
@@ -13,50 +13,50 @@ Single correct  unshuffled2
    :no-shuffle:
    :no-letters:
 
-   [x] print("Hello, World") | Correct. print requires brackets.
-   [ ] print "Hello, World"
-   [ ] echo "Hello, World"
-   [ ] echo(Hello, World)
+   [x] 1print("Hello, World") | Correct. print requires brackets.
+   [ ] 2print "Hello, World"
+   [ ] 3echo "Hello, World"
+   [ ] 4echo(Hello, World)
 
 ----
 
-Single correct shuffled
+Single correct unshuffled
 -----------------------------
 
 .. mcqscore::
    :question: Which of these are valid variable names in Python?
    :no-shuffle:
 
-   [x] my_var | Correct. Valid variable name
+   [x] 1my_var | Correct. Valid variable name
    [ ] 2var | Incorrect. Cannot start with a number
-   [ ] @var | Incorrect. Cannot start with a symbol
-   [ ] my-var | Incorrect. Hyphens are not allowed
+   [ ] 3@var | Incorrect. Cannot start with a symbol
+   [ ] 4my-var | Incorrect. Hyphens are not allowed
 
 ----
 
-Single correct shuffled letters
+Single correct
 ---------------------------------
 
 .. mcqscore::
    :question: Which of these does an equality check in Python?
 
-   [x] == | Correct.
-   [ ] = | Incorrect. that does assignment
-   [ ] !== | Incorrect. not equals to
-   [ ] <= | Incorrect. less than or equals to
+   [x] 1== | Correct.
+   [ ] 2= | Incorrect. that does assignment
+   [ ] 3!== | Incorrect. not equals to
+   [ ] 4<= | Incorrect. less than or equals to
 
 ----
 
-Multiple correct shuffled
+Multiple correct
 -----------------------------
 
 .. mcqscore::
    :question: Which of the following are Python data types?
 
-   [x] int | Integer type
-   [x] str | String type
-   [ ] html | Not a Python type
-   [x] float | Floating-point number
+   [x] 1int | Integer type
+   [x] 2str | String type
+   [ ] 3html | Not a Python type
+   [x] 4float | Floating-point number
 
 
 ----
