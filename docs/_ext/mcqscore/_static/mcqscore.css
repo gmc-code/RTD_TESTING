@@ -1,14 +1,13 @@
 /* ─────────────────────────────────────
    MCQ Container
 ────────────────────────────────────── */
-
 .mcqscore-block {
   border: 1px solid #e3e6ea;
   padding: 1.1em 1.2em;
   margin-bottom: 1.6em;
   border-radius: 10px;
   background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 /* Question text */
@@ -22,18 +21,24 @@
 /* ─────────────────────────────────────
    Choices
 ────────────────────────────────────── */
-
 .mcqscore-choice {
   margin: 0.45em 0;
-  padding: 0.6em 0.9em;
   border-radius: 7px;
   cursor: pointer;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.35em;
+  display: block; /* Fixed: allows explanation block to wrap underneath */
   transition: background 0.12s ease, transform 0.05s ease;
   border: 1px solid transparent;
   border-left: 4px solid transparent;
+}
+
+/* Make inner label catch full padding area */
+.mcqscore-choice label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  padding: 0.6em 0.9em;
+  width: 100%;
+  cursor: pointer;
 }
 
 /* subtle hover */
@@ -52,51 +57,39 @@
   border-left-color: #3a8bfd;
 }
 
-/* Input */
+/* Input alignments */
 .mcqscore-choice input {
-  margin-right: 0.5em;
-  margin-top: 0.2em;
+  margin-right: 0.3em;
+  margin-top: 0.22em;
   pointer-events: none;
 }
 
-/* Letter */
+/* Letter layout spacing */
 .mcqscore-letter {
   font-weight: 600;
-  min-width: 1.2em;
+  min-width: 1.4em;
   color: #333;
 }
 
-/* Label text */
+/* Label text container */
 .mcqscore-choice-label {
   line-height: 1.4;
+  flex: 1; /* Pushes the ::after icons cleanly to the far right side */
 }
 
-/* Explanation */
+/* Explanation block layout */
 .mcqscore-explanation {
-  margin-top: 0.35em;
+  margin-top: 0rem;
   font-size: 0.9em;
   color: #555;
-  padding-left: 1.9em;
+  padding: 0 0.9em 0.8em 2.8em; /* Aligns explanation text beautifully under label strings */
   line-height: 1.45;
   display: none;
 }
 
 /* ─────────────────────────────────────
-   Block type subtle tint
-────────────────────────────────────── */
-
-.mcqscore-block[data-mcqscore-single="true"] {
-  background-color: #fcfdff;
-}
-
-.mcqscore-block[data-mcqscore-single="false"] {
-  background-color: #f4faff;
-}
-
-/* ─────────────────────────────────────
    Feedback states
 ────────────────────────────────────── */
-
 .mcqscore-choice.mcqscore-answer {
   border: 1px solid #bbf7d0;
   background: #f6fff8;
@@ -114,77 +107,69 @@
   border-left: 6px solid #ef4444;
 }
 
-/* keep selected neutral pre-score */
+/* keep selected neutral pre-score overrides */
 .mcqscore-choice.selected:not(.mcqscore-correct):not(.mcqscore-incorrect) {
-    background-color: #eef4ff;
-    border-left-color: #4f8cff;
+  background-color: #eef4ff;
+  border-left-color: #4f8cff;
 }
 
-/* Disabled */
+/* Disabled cards state mapping */
 .mcqscore-choice.mcqscore-disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
-
 .mcqscore-choice.mcqscore-disabled:hover {
   background: none;
 }
 
-.mcqscore-choice.mcqscore-answer {
-  border: 1px solid #bbf7d0;
-  background: #f6fff8;
+/* Pseudo-elements icons alignment fix */
+.mcqscore-choice label::after {
+  font-weight: 600;
+  padding-left: 0.5em;
 }
 
-.mcqscore-choice.answer::after {
-  content: "-";
-  float: right;
+.mcqscore-choice.mcqscore-answer label::after {
+  content: "•";
   color: #22c55e;
 }
 
-.mcqscore-correct::after {
+.mcqscore-correct label::after {
   content: "✓";
-  float: right;
   color: #16a34a;
 }
 
-.mcqscore-incorrect::after {
+.mcqscore-incorrect label::after {
   content: "✕";
-  float: right;
   color: #dc2626;
 }
 
 /* ─────────────────────────────────────
-   Controls
+   Controls Global Panel
 ────────────────────────────────────── */
-
 .mcqscore-global-panel {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   margin-top: 1.2rem;
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
+  padding: 0.8rem 0;
   margin-bottom: 1.2rem;
   border-top: 1px solid #e3e6ea;
-  border-bottom: 1px solid #e3e6ea;  /* ← ADD THIS */
   border-bottom: 1px solid #e3e6ea;
-  box-shadow: 0 1px 0 #f5f5f5;
 }
 
-
-/* Buttons (shared) */
+/* Buttons (shared properties structural grid maps) */
 .mcqscore-global-panel button {
   font-size: 0.95em;
   padding: 0.5em 1em;
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-weight: 500;
   transition: background 0.12s ease, transform 0.05s ease;
 }
 
-/* hover + press */
 .mcqscore-global-panel button:hover {
-  filter: brightness(0.95);
+  filter: brightness(0.92);
 }
 .mcqscore-global-panel button:active {
   transform: scale(0.97);
@@ -196,8 +181,9 @@
 }
 
 .mcqscore-btn-reset {
-  background: #8b6464;
-  color: white;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb !important;
 }
 
 .mcqscore-btn-show {
@@ -205,13 +191,12 @@
   color: white;
 }
 
-/* Disabled buttons */
 .mcqscore-global-panel button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* Score badge */
+/* Score badge classes */
 .mcqscore-output {
   margin-left: auto;
   font-weight: 600;
