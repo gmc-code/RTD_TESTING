@@ -122,26 +122,33 @@
   background: none;
 }
 
-/* Pseudo-elements icons alignment fix */
+/* ─────────────────────────────────────
+   Pseudo-elements validation icons fix
+────────────────────────────────────── */
 .mcqscore-choice label::after {
   font-weight: 600;
   padding-left: 0.5em;
+  font-size: 1.1em;
 }
 
+/* Base correct answer mapping indicator (Neutral highlight) */
 .mcqscore-choice.mcqscore-answer label::after {
   content: "•";
   color: #22c55e;
 }
 
-.mcqscore-correct label::after {
+/* User selected a correct choice (Added dots to fix the class selector bug) */
+.mcqscore-choice.mcqscore-correct label::after {
   content: "✓";
   color: #16a34a;
 }
 
-.mcqscore-incorrect label::after {
+/* User selected an incorrect choice */
+.mcqscore-choice.mcqscore-incorrect label::after {
   content: "✕";
   color: #dc2626;
 }
+
 
 /* ─────────────────────────────────────
    Controls Global Panel
