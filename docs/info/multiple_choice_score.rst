@@ -59,6 +59,7 @@ Multiple correct shuffled
    [x] float | Floating-point number
 
 
+----
 
 .. mcqscore-end::
 
