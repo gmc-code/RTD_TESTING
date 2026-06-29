@@ -2,7 +2,7 @@
 MCQ Score Directive Reference
 =============================
 
-The ``.. mcqscore::`` directive creates interactive, auto-scoring multiple-choice questions natively within your documentation. It automatically switches between single-select (radio buttons) and multiple-select (checkboxes) depending on how many correct answers you flag.
+The ``.. mcqscore::`` directive creates interactive, auto-scoring multiple-choice questions natively within your documentation. It automatically detects single-select (radio buttons) or multiple-select (checkboxes) based on the number of correct answers provided.
 
 Directive Structure
 ===================
@@ -10,40 +10,34 @@ Directive Structure
 .. code-block:: rst
 
     .. mcqscore::
-        :no-shuffle:
-        :no-letters:
+       :no-shuffle:
+       :no-letters:
 
-        [Question block: supports text, lists, and nested directives like code-blocks]
+       Question text goes here. Supports **bold**, `code`, and blocks.
 
-        [x] Choice 1 | Optional inline explanation text
-        [ ] Choice 2 | Another explanation
-        [ ] Choice 3
+       [ ] Choice 1 | Optional inline explanation
+       [x] Choice 2 | Correct answer explanation
 
 Configuration Options
 =====================
 
-* **No options specified (Default):** Shuffles the choices at runtime and assigns option letters (A, B, C, D) dynamically via CSS/JS.
-* ``:no-shuffle:``: Forces the choices to remain exactly in the order written in the source file.
-* ``:no-letters:``: Suppresses option lettering (ideal for numeric or true/false options).
+* **Default:** Shuffles choices and assigns labels (A, B, C...) via CSS/JS.
+* ``:no-shuffle:``: Maintains the exact order defined in the source file.
+* ``:no-letters:``: Removes automatic lettering (best for numeric or True/False).
 
-Syntax Writing Rules
-====================
+Syntax Rules
+============
 
-1. **Question Block:**
-   The block starts immediately below the directive declaration. It supports any valid reStructuredText syntax, meaning you can include bold text, inline code literals, or nested code blocks.
+.. tip::
+   Always leave a blank line between the end of your question text and the start of your choices to ensure correct parsing.
 
-2. **Divider Gap:**
-   Always leave a blank newline between the end of your question body and the start of your answer choices.
+1.  **Question Body:** Supports standard reStructuredText, including headers, lists, and nested directives (e.g., ``.. code-block::``).
+2.  **Choice Markers:** * Use ``[ ]`` (empty space) for an **incorrect** choice.
+    * Use ``[x]`` or ``[X]`` for a **correct** choice.
+3.  **Explanations:** Add a pipe (``|``) after the choice text. Content following the pipe is treated as hidden feedback revealed upon submission.
 
-3. **Choices Marker Syntax:**
-   * Use ``[ ]`` (with a space inside) to mark an **incorrect** choice.
-   * Use ``[x]`` or ``[X]`` to mark a **correct** choice.
-
-4. **Explanations:**
-   You can provide inline answer feedback by appending a pipe character (``|``) right after the choice text. Everything following the pipe will be treated as an explanation string, wrapped in an HTML class container, and safely displayed to users upon submission.
-
-Syntax Examples
-===============
+Examples
+========
 
 Single-Choice with Code Block
 -----------------------------
@@ -52,18 +46,19 @@ Single-Choice with Code Block
 
     .. mcqscore::
 
-        What does the following Python expression output?
+        What does the following Python expression return?
 
         .. code-block:: python
 
             print(10 // 3)
 
-        [ ] 3.3333 | Incorrect: This would be the result of a single slash (/) operator.
-        [x] 3      | Correct: The double slash (//) executes floor division.
-        [ ] 1      | Incorrect: This would be the result of the modulo (%) operator.
+        [ ] 3.3333 | Incorrect: This is the result of ``/``.
+        [x] 3      | Correct: The ``//`` operator performs floor division.
+        [ ] 1      | Incorrect: This is the result of the ``%`` operator.
 
-Multiple-Choice Shuffled
-------------------------
+
+Multiple-Choice (Shuffled)
+--------------------------
 
 .. code-block:: rst
 
@@ -71,7 +66,8 @@ Multiple-Choice Shuffled
 
         Which of the following are valid Python data types?
 
-        [x] int   | Correct: Standard integer.
-        [x] dict  | Correct: Dictionary structure mapping keys to values.
-        [ ] html  | Incorrect: HTML is a markup language, not a Python data type.
-        [x] list  | Correct: Mutable sequence array type.
+        [x] int    | Correct: Standard integer type.
+        [x] dict   | Correct: Mapping type.
+        [ ] html   | Incorrect: This is a markup language.
+        [x] list   | Correct: Mutable sequence type.
+
