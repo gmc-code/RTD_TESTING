@@ -26,10 +26,6 @@ def visit_mcqscore_html(self, node):
         f'data-mcqscore-letters="{letters_attr}">'
     )
 
-    # Render the question safely inside the main wrapper block
-    question = html.escape(node.get("question", ""))
-    self.body.append(f'<p class="mcqscore-question">{question}</p>')
-
 def depart_mcqscore_html(self, node):
     self.body.append("</div>")
 
@@ -52,29 +48,50 @@ class MCQScoreDirective(SphinxDirective):
         node["letters"] = "no-letters" not in self.options
 
         # ─────────────────────────────────────
-        # Parse content (Question vs. Choices)
+        # Separate Question Block from Choice Block
         # ─────────────────────────────────────
         question_lines = []
-        choices = []
+        choice_lines = []
+        parsing_choices = False
 
         for line in self.content:
+            stripped = line.strip()
+
+            # Detect where choices begin
+            if stripped.startswith("[") and "]" in stripped:
+                parsing_choices = True
+
+            if parsing_choices:
+                choice_lines.append(line)
+            else:
+                question_lines.append(line)
+
+        # ─────────────────────────────────────
+        # Parse the Question Natively (Allows nested code blocks!)
+        # ─────────────────────────────────────
+        question_container = nodes.container(classes=["mcqscore-question"])
+        self.state.nested_parse(question_lines, self.content_offset, question_container)
+        node += question_container
+
+        # ─────────────────────────────────────
+        # Parse choices
+        # ─────────────────────────────────────
+        choices = []
+        for line in choice_lines:
             stripped = line.strip()
             if not stripped:
                 continue
 
-            # Check if this line is an answer choice block
             if stripped.startswith("[") and "]" in stripped:
                 marker = stripped[1].lower()
                 is_correct = marker == "x"
 
-                # Extract everything following the closing bracket
                 text = stripped[stripped.index("]") + 1:].strip()
 
                 # Clean up your experimental tracking numbers (e.g., '1print' -> 'print')
-                if text and text[0].isdigit():
-                    text = text[1:].strip()
+                # if text and text[0].isdigit():
+                #     text = text[1:].strip()
 
-                # Slice out explanation string if it uses the | separator
                 if "|" in text:
                     text, explanation = text.split("|", 1)
                     text = text.strip()
@@ -87,40 +104,28 @@ class MCQScoreDirective(SphinxDirective):
                     "correct": is_correct,
                     "explanation": explanation
                 })
-            else:
-                # If we haven't hit any choice syntax yet, it's part of the question body
-                if not choices:
-                    question_lines.append(line)
-
-        # Reconstruct full question text
-        question_text = " ".join(q.strip() for q in question_lines)
-        node["question"] = question_text
 
         # ─────────────────────────────────────
         # Validation & Auto-Mode Selection
         # ─────────────────────────────────────
         if not choices:
-            raise DirectiveError(
-                3, f"MCQ error: Question text '{question_text[:30]}...' contains no choices."
-            )
+            raise DirectiveError(3, "MCQ error: Missing answer choices block.")
 
-        # Count total correct answers to intelligently guess single vs multi select layout
         correct_count = sum(c["correct"] for c in choices)
-
         if correct_count == 0:
-            raise DirectiveError(
-                3, f"MCQ error: '{question_text[:30]}...' must feature at least one correct choice mark [x]."
-            )
+            raise DirectiveError(3, "MCQ error: Must mark at least one option correct [x].")
 
-        # Auto-detect mode: If more than 1 choice is true, toggle to multi-select
         is_multi = correct_count > 1
         node["single_correct"] = not is_multi
 
+        # Create a unique group name using hash of choice texts combined
+        seed_string = "".join(c["text"] for c in choices)
+        group_name = hashlib.md5(seed_string.encode("utf-8")).hexdigest()
+
         # ─────────────────────────────────────
-        # Input rendering structure
+        # Generate Choice Elements HTML
         # ─────────────────────────────────────
         input_type = "checkbox" if is_multi else "radio"
-        group_name = hashlib.md5(question_text.encode("utf-8")).hexdigest()
 
         for ch in choices:
             input_html = f'<input type="{input_type}" name="mcqscore-{group_name}">'
@@ -164,7 +169,8 @@ def setup(app):
     app.add_css_file("mcqscore.css")
 
     return {
-        "version": "4.1",
+        "version": "4.2",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
+
