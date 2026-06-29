@@ -50,21 +50,21 @@ class MCQScoreDirective(SphinxDirective):
         # ─────────────────────────────────────
         # Separate Question Block from Choice Block
         # ─────────────────────────────────────
-        question_lines = []
-        choice_lines = []
-        parsing_choices = False
+        choice_start_idx = None
 
-        for line in self.content:
+        # Find the exact line index where the choices start
+        for idx, line in enumerate(self.content):
             stripped = line.strip()
-
-            # Detect where choices begin
             if stripped.startswith("[") and "]" in stripped:
-                parsing_choices = True
+                choice_start_idx = idx
+                break
 
-            if parsing_choices:
-                choice_lines.append(line)
-            else:
-                question_lines.append(line)
+        if choice_start_idx is None:
+            raise DirectiveError(3, "MCQ error: Missing answer choices block.")
+
+        # Slice self.content natively (this preserves the StringList type!)
+        question_lines = self.content[:choice_start_idx]
+        choice_lines = self.content[choice_start_idx:]
 
         # ─────────────────────────────────────
         # Parse the Question Natively (Allows nested code blocks!)
