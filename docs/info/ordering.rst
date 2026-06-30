@@ -1,16 +1,50 @@
 
 
 ================================================
-Python Data Structures: Ordering
+Ordering Directive Documentation
 ================================================
 
-Test your understanding of Python by arranging the code snippets in the correct order to form a working function.
+The ordering directive creates an interactive code-reordering exercise. Users can drag and drop code lines into their correct sequence and adjust indentation levels.
 
-Exercise 1
+Syntax
+-------------------
+
+.. code-block:: rst
+
+    .. ordering::
+
+        code lines to be arranged in the correct order
+
+options for the ordering directive
+--------------------------------------
+
++------------------+--------+-----------------------------------------------------------+
+| Option           | Type   | Description                                               |
++==================+========+===========================================================+
+| ``:theme:``      | string | Set the visual theme. Options are ``light`` (default)     |
+|                  |        | or ``dark``.                                              |
++------------------+--------+-----------------------------------------------------------+
+| ``:no-solution:``| flag   | If present, hides the "Show Solution" button from the     |
+|                  |        | user.                                                     |
++------------------+--------+-----------------------------------------------------------+
+
+----
+
+Example 1
 =======================
 
 Reorder the following code snippets to create a function that finds the maximum value in a list of numbers.
 
+.. code-block:: rst
+
+    .. ordering::
+
+        def find_max(numbers):
+            max_val = numbers[0]
+            for num in numbers:
+                if num > max_val:
+                    max_val = num
+            return max_val
 
 .. ordering::
 
@@ -23,9 +57,10 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 ----
 
+Example 2
+=======================
 
 .. ordering::
-    :theme: light
     :no-solution:
 
     def add(num1, num2):
@@ -40,7 +75,6 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 
 .. ordering::
-    :theme: light
 
     def rect_perimeter(width, height):
         return 2 * (width + height)
@@ -59,14 +93,6 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 .. ordering::
     :theme: light
-
-    def say_hello():
-        msg = "Hi!"
-        print(msg)
-
-----
-
-.. ordering::
 
     def hello_world():
         print("Hello World")

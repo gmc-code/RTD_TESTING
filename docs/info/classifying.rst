@@ -11,3 +11,4 @@ Earth Science: Plate Tectonics Classifying
    East African Rift      | 0
    Marianas Trench        | 1
    Alpine Fault (NZ)      | 2
+

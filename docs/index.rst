@@ -17,7 +17,6 @@ These docs provide a simple details for sphinx testing
     :numbered:
 
     info/Intro.rst
-    info/Dictionaries.rst
 
     info/multiple_choice_info.rst
     info/multiple_choice_directive_info.rst
