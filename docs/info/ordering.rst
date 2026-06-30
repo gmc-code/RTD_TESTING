@@ -28,12 +28,88 @@ options for the ordering directive
 |                  |        | user.                                                     |
 +------------------+--------+-----------------------------------------------------------+
 
+| Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
+|
+| Empty Lines: You may include empty lines within the block; the directive will render them as placeholders that users can drag to maintain formatting structure.
+|
+| Structure: The directive creates an interactive <div> block with handle controls (☰) for reordering and buttons («, ») for adjusting indentation.
+
+
 ----
 
-Example 1
-=======================
+Example 1: light theme
+------------------------------------
 
-Reorder the following code snippets to create a function that finds the maximum value in a list of numbers.
+| The default theme is light. The following example demonstrates the ordering directive with the light theme. `:theme: light` is optional since it is the default.
+
+.. code-block:: rst
+
+    .. ordering::
+        :theme: light
+
+        def hello_world():
+            print("Hello World")
+
+.. ordering::
+    :theme: light
+
+    def hello_world():
+        print("Hello World")
+
+----
+
+Example 2: dark theme
+------------------------------------
+
+
+.. code-block:: rst
+
+    .. ordering::
+        :theme: dark
+
+        def hello_world():
+            print("Hello World")
+
+.. ordering::
+    :theme: dark
+
+    def hello_world():
+        print("Hello World")
+
+
+----
+
+Example 3: no solution button
+-------------------------------
+
+| The following example demonstrates the ordering directive with the "Show Solution" button hidden.
+| `:no-solution:` is used to hide the solution button.
+
+.. code-block:: rst
+
+    .. ordering::
+        :no-solution:
+
+        def add(num1, num2):
+            return num1 + num2
+
+        print(add(5, 3))
+
+
+.. ordering::
+    :no-solution:
+
+    def add(num1, num2):
+        return num1 + num2
+
+    print(add(5, 3))
+
+----
+
+Example 4: multiple indent levels
+-------------------------------------
+
+| The following example demonstrates the ordering directive with multiple indentation levels. The directive automatically calculates the indentation level based on groups of 4 spaces.
 
 .. code-block:: rst
 
@@ -46,6 +122,8 @@ Reorder the following code snippets to create a function that finds the maximum 
                     max_val = num
             return max_val
 
+Reorder the following code snippets to create a function that finds the maximum value in a list of numbers.
+
 .. ordering::
 
     def find_max(numbers):
@@ -57,22 +135,28 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 ----
 
-Example 2
-=======================
+Example 4: blanks lines
+-------------------------------------
 
-.. ordering::
-    :no-solution:
+| The following example demonstrates the ordering directive with blank lines included. The directive will render them as placeholders that users can drag to maintain formatting structure.
 
-    def add(num1, num2):
-        return num1 + num2
+.. code-block:: rst
 
-    print(add(5, 3))
+    .. ordering::
+
+        def rect_perimeter(width, height):
+            return 2 * (width + height)
+
+        def rect_area(width, height):
+            area = width * height
+            return area
+
+        print(f'Perimeter: {rect_perimeter(5, 3)}')
+        print(f'Area: {rect_area(5, 3)}')
 
 
-----
-
-| Calculate the total perimeter and area of a rectangle in that order. The perimeter is calculated first, followed by the area.
-
+| Write functions that returns the total perimeter and area of a rectangle in that order.
+| Print the perimeter and area of a rectangle with width 5 and height 3.
 
 .. ordering::
 
@@ -86,23 +170,5 @@ Example 2
     print(f'Perimeter: {rect_perimeter(5, 3)}')
     print(f'Area: {rect_area(5, 3)}')
 
-
-
-----
-
-
-.. ordering::
-    :theme: light
-
-    def hello_world():
-        print("Hello World")
-
-----
-
-.. ordering::
-    :theme: dark
-
-    def hello_world():
-        print("Hello World")
 
 
