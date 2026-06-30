@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const blocks = Array.from(document.querySelectorAll(".mcqscore-block"))
+  const blocks = Array.from(document.querySelectorAll(".multichoice-block"))
   if (blocks.length === 0) return
 
   // ─────────────────────────────────────
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function assignLetters(choices) {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     choices.forEach((c, i) => {
-      const span = c.querySelector(".mcqscore-letter")
+      const span = c.querySelector(".multichoice-letter")
       if (span) span.textContent = letters[i] || ""
     })
   }
@@ -26,40 +26,40 @@ document.addEventListener("DOMContentLoaded", () => {
   blocks.forEach((block) => {
     if (!block.dataset.originalChoicesHTML) {
       block.dataset.originalChoicesHTML = Array.from(
-        block.querySelectorAll(".mcqscore-choice")
+        block.querySelectorAll(".multichoice-choice")
       )
         .map(c => c.outerHTML)
         .join("")
     }
 
     // Keep actual string matches without forcing "true" conversions
-    block.dataset.mcqscoreShuffle = block.dataset.mcqscoreShuffle === "false" ? "false" : "true"
-    block.dataset.mcqscoreLetters = block.dataset.mcqscoreLetters === "false" ? "false" : "true"
-    block.dataset.mcqscoreSingle = block.dataset.mcqscoreSingle === "false" ? "false" : "true"
+    block.dataset.multichoiceShuffle = block.dataset.multichoiceShuffle === "false" ? "false" : "true"
+    block.dataset.multichoiceLetters = block.dataset.multichoiceLetters === "false" ? "false" : "true"
+    block.dataset.multichoiceSingle = block.dataset.multichoiceSingle === "false" ? "false" : "true"
   })
 
   // ─────────────────────────────────────
   // Build / reset a block
   // ─────────────────────────────────────
   function initBlock(block, blockIndex) {
-    block.querySelectorAll(".mcqscore-choice").forEach(n => n.remove())
+    block.querySelectorAll(".multichoice-choice").forEach(n => n.remove())
 
     const container = document.createElement("div")
     container.innerHTML = block.dataset.originalChoicesHTML
 
     let choices = Array.from(container.children)
 
-    if (block.dataset.mcqscoreShuffle === "true") {
+    if (block.dataset.multichoiceShuffle === "true") {
       shuffleArray(choices)
     }
 
     choices.forEach(c => block.appendChild(c))
 
-    if (block.dataset.mcqscoreLetters === "true") {
+    if (block.dataset.multichoiceLetters === "true") {
       assignLetters(choices)
     }
 
-    const isSingle = block.dataset.mcqscoreSingle === "true"
+    const isSingle = block.dataset.multichoiceSingle === "true"
 
     if (isSingle) {
       const name = "mcq_" + blockIndex + "_" + Date.now()
@@ -71,9 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     choices.forEach(choice => {
       choice.classList.remove(
-        "mcqscore-correct",
-        "mcqscore-incorrect",
-        "mcqscore-answer",
+        "multichoice-correct",
+        "multichoice-incorrect",
+        "multichoice-answer",
         "selected"
       )
 
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         input.disabled = false
       }
 
-      const exp = choice.querySelector(".mcqscore-explanation")
+      const exp = choice.querySelector(".multichoice-explanation")
       if (exp) exp.style.display = "none"
     })
 
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Control panel
   // ─────────────────────────────────────
   const panel = document.createElement("div")
-  panel.className = "mcqscore-global-panel"
+  panel.className = "multichoice-global-panel"
   panel.style.display = "flex"
   panel.style.gap = "0.6rem"
   panel.style.marginTop = "1rem"
@@ -142,25 +142,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const btnScore = document.createElement("button")
   btnScore.type = "button"
-  btnScore.className = "mcqscore-btn-score"
+  btnScore.className = "multichoice-btn-score"
   btnScore.textContent = "Score Page"
 
   const btnReset = document.createElement("button")
   btnReset.type = "button"
-  btnReset.className = "mcqscore-btn-reset"
+  btnReset.className = "multichoice-btn-reset"
   btnReset.textContent = "Reset Page"
-
-  const btnShow = document.createElement("button")
-  btnShow.type = "button"
-  btnShow.className = "mcqscore-btn-show"
-  btnShow.textContent = "Show Solution"
 
   const scoreBadge = document.createElement("span")
   scoreBadge.style.display = "none"
   scoreBadge.style.marginLeft = "auto"
   scoreBadge.style.fontWeight = "600"
 
-  panel.append(btnScore, btnReset, btnShow, scoreBadge)
+  panel.append(btnScore, btnReset, scoreBadge)
 
   const lastBlock = blocks[blocks.length - 1]
   lastBlock.parentNode.insertBefore(panel, lastBlock.nextSibling)
@@ -175,16 +170,16 @@ document.addEventListener("DOMContentLoaded", () => {
     blocks.forEach(block => {
       total++
 
-      const isSingle = block.dataset.mcqscoreSingle === "true"
-      const choices = Array.from(block.querySelectorAll(".mcqscore-choice"))
+      const isSingle = block.dataset.multichoiceSingle === "true"
+      const choices = Array.from(block.querySelectorAll(".multichoice-choice"))
 
       choices.forEach(c => {
-        c.classList.remove("mcqscore-correct", "mcqscore-incorrect", "mcqscore-answer")
+        c.classList.remove("multichoice-correct", "multichoice-incorrect", "multichoice-answer")
       })
 
       choices.forEach(c => {
         if (c.dataset.correct === "true") {
-          c.classList.add("mcqscore-answer")
+          c.classList.add("multichoice-answer")
         }
       })
 
@@ -193,10 +188,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (selected) {
           if (selected.dataset.correct === "true") {
-            selected.classList.add("mcqscore-correct")
+            selected.classList.add("multichoice-correct")
             correct++
           } else {
-            selected.classList.add("mcqscore-incorrect")
+            selected.classList.add("multichoice-incorrect")
           }
         }
       } else {
@@ -210,16 +205,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         selected.forEach(c => {
           if (c.dataset.correct === "true") {
-            c.classList.add("mcqscore-correct")
+            c.classList.add("multichoice-correct")
           } else {
-            c.classList.add("mcqscore-incorrect")
+            c.classList.add("multichoice-incorrect")
           }
         })
 
         if (isFullyCorrect) correct++
       }
 
-      block.querySelectorAll(".mcqscore-explanation").forEach(e => {
+      block.querySelectorAll(".multichoice-explanation").forEach(e => {
         e.style.display = "block"
       })
 
@@ -230,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     scoreBadge.textContent = `Score: ${correct} / ${total}`
     scoreBadge.style.display = "inline-block"
-    scoreBadge.classList.add("mcqscore-output")
+    scoreBadge.classList.add("multichoice-output")
 
     const percent = total === 0 ? 0 : correct / total
     scoreBadge.classList.remove("high", "medium", "low")
@@ -250,18 +245,6 @@ document.addEventListener("DOMContentLoaded", () => {
     blocks.forEach((b, i) => initBlock(b, i))
   }
 
-  let show = false
-  function toggleSolutions() {
-    show = !show
-    blocks.forEach(b => {
-      b.querySelectorAll(".mcqscore-explanation").forEach(e => {
-        e.style.display = show ? "block" : "none"
-      })
-    })
-    btnShow.textContent = show ? "Hide Solution" : "Show Solution"
-  }
-
   btnScore.onclick = doScore
   btnReset.onclick = doReset
-  btnShow.onclick = toggleSolutions
 })

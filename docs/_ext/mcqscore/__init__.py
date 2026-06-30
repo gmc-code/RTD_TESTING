@@ -1,4 +1,0 @@
-
-
-from .mcqscore import setup
-

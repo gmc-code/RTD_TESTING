@@ -4,14 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
   containers.forEach(container => {
     const block = container.closest(".ordering-block");
     const btnScore = block.querySelector(".ordering-btn-score");
+    const btnSolution = block.querySelector(".ordering-btn-solution");
     const btnReset = block.querySelector(".ordering-btn-reset");
     const feedbackBadge = block.querySelector(".ordering-feedback-badge");
     const initialHTML = container.innerHTML;
 
+    // Initializes dragging mechanics, click-to-indent listeners, and DOM listeners
     function initPuzzleEvents() {
       const lines = container.querySelectorAll(".ordering-line");
 
       lines.forEach(line => {
+        // Drag Handling Events
         line.addEventListener("dragstart", (e) => {
           line.classList.add("dragging");
           e.dataTransfer.effectAllowed = "move";
@@ -21,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
           line.classList.remove("dragging");
         });
 
+        // Indentation Control Events
         const btnIncrease = line.querySelector(".indent-btn.increase");
         const btnDecrease = line.querySelector(".indent-btn.decrease");
 
@@ -43,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
+      // Drag Sorting Over Container Area
       container.addEventListener("dragover", (e) => {
         e.preventDefault();
         const draggingItem = container.querySelector(".dragging");
@@ -62,9 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // 1. Scoring Engine Mechanics
     btnScore.addEventListener("click", () => {
       const currentLines = Array.from(container.querySelectorAll(".ordering-line"));
-      let allCorrect = true;
+      const totalLines = currentLines.length;
+      let correctCount = 0;
 
       currentLines.forEach((line, index) => {
         line.classList.add("disabled");
@@ -77,29 +84,73 @@ document.addEventListener("DOMContentLoaded", () => {
         line.classList.remove("correct-line", "incorrect-line");
         if (correctIdx === index && correctIndent === currentIndent) {
           line.classList.add("correct-line");
+          correctCount++;
         } else {
           line.classList.add("incorrect-line");
-          allCorrect = false;
         }
       });
 
+      const finalPercentage = Math.round((correctCount / totalLines) * 100);
       feedbackBadge.style.display = "inline-block";
-      if (allCorrect) {
-        feedbackBadge.textContent = "✓ Perfect Order & Indentation!";
-        feedbackBadge.className = "ordering-feedback-badge high";
+      feedbackBadge.className = "ordering-feedback-badge";
+
+      if (finalPercentage === 100) {
+        feedbackBadge.textContent = `✓ Perfect! ${correctCount}/${totalLines} (${finalPercentage}%)`;
+        feedbackBadge.classList.add("high");
+      } else if (finalPercentage >= 50) {
+        feedbackBadge.textContent = `⚠ Getting Close! ${correctCount}/${totalLines} (${finalPercentage}%)`;
+        feedbackBadge.classList.add("medium");
       } else {
-        feedbackBadge.textContent = "✕ Some lines are out of order or wrongly indented.";
-        feedbackBadge.className = "ordering-feedback-badge low";
+        feedbackBadge.textContent = `✕ Keep Trying! ${correctCount}/${totalLines} (${finalPercentage}%)`;
+        feedbackBadge.classList.add("low");
       }
     });
 
+    // 2. Solution Engine Mechanics (Locks scoring button)
+    btnSolution.addEventListener("click", () => {
+      const currentLines = Array.from(container.querySelectorAll(".ordering-line"));
+
+      // Sort lines based on their original compilation source index positions
+      currentLines.sort((a, b) => {
+        return parseInt(a.dataset.correctIdx, 10) - parseInt(b.dataset.correctIdx, 10);
+      });
+
+      // Render the sorted rows into the puzzle runway
+      currentLines.forEach(line => {
+        container.appendChild(line);
+
+        // Force reset items to correct structural code spaces
+        const targetIndent = line.dataset.correctIndent;
+        line.dataset.currentIndent = targetIndent;
+        line.style.setProperty("--indent-level", targetIndent);
+
+        // Disable blocks to prevent dragging or modifying layout rules
+        line.classList.add("disabled", "correct-line");
+        line.classList.remove("incorrect-line");
+        line.setAttribute("draggable", "false");
+      });
+
+      // Guardrail: Explicitly disable Scoring updates to prevent automated 100% submission
+      btnScore.disabled = true;
+
+      feedbackBadge.style.display = "inline-block";
+      feedbackBadge.textContent = "ℹ Solution Displayed";
+      feedbackBadge.className = "ordering-feedback-badge medium";
+    });
+
+    // 3. Reset Engine Mechanics (Restores scoring button)
     btnReset.addEventListener("click", () => {
       container.innerHTML = initialHTML;
       feedbackBadge.style.display = "none";
       feedbackBadge.textContent = "";
+
+      // Restore click capability back to score updates safely
+      btnScore.disabled = false;
+
       initPuzzleEvents();
     });
 
+    // First structural execution bind pass
     initPuzzleEvents();
   });
 });

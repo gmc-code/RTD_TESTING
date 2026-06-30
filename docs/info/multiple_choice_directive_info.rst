@@ -2,14 +2,14 @@
 MCQ Score Directive Reference
 =============================
 
-The ``.. mcqscore::`` directive creates interactive, auto-scoring multiple-choice questions natively within your documentation. It automatically detects single-select (radio buttons) or multiple-select (checkboxes) based on the number of correct answers provided.
+The ``.. multichoice::`` directive creates interactive, auto-scoring multiple-choice questions natively within your documentation. It automatically detects single-select (radio buttons) or multiple-select (checkboxes) based on the number of correct answers provided.
 
 Directive Structure
 ===================
 
 .. code-block:: rst
 
-    .. mcqscore::
+    .. multichoice::
        :no-shuffle:
        :no-letters:
 
@@ -44,7 +44,7 @@ Single-Choice with Code Block
 
 .. code-block:: rst
 
-    .. mcqscore::
+    .. multichoice::
 
         What does the following Python expression return?
 
@@ -62,7 +62,7 @@ Multiple-Choice (Shuffled)
 
 .. code-block:: rst
 
-    .. mcqscore::
+    .. multichoice::
 
         Which of the following are valid Python data types?
 

@@ -8,31 +8,31 @@ from sphinx.util.docutils import SphinxDirective
 # ─────────────────────────────────────
 # Node
 # ─────────────────────────────────────
-class mcqscore_node(nodes.General, nodes.Element):
+class multichoice_node(nodes.General, nodes.Element):
     pass
 
 # ─────────────────────────────────────
 # HTML Visitors
 # ─────────────────────────────────────
-def visit_mcqscore_html(self, node):
+def visit_multichoice_html(self, node):
     shuffle_attr = str(node.get("shuffle", False)).lower()
     letters_attr = str(node.get("letters", False)).lower()
     single_attr = str(node.get("single_correct", False)).lower()
 
     self.body.append(
-        f'<div class="mcqscore-block" '
-        f'data-mcqscore-single="{single_attr}" '
-        f'data-mcqscore-shuffle="{shuffle_attr}" '
-        f'data-mcqscore-letters="{letters_attr}">'
+        f'<div class="multichoice-block" '
+        f'data-multichoice-single="{single_attr}" '
+        f'data-multichoice-shuffle="{shuffle_attr}" '
+        f'data-multichoice-letters="{letters_attr}">'
     )
 
-def depart_mcqscore_html(self, node):
+def depart_multichoice_html(self, node):
     self.body.append("</div>")
 
 # ─────────────────────────────────────
 # Directive
 # ─────────────────────────────────────
-class MCQScoreDirective(SphinxDirective):
+class multichoiceDirective(SphinxDirective):
     has_content = True
 
     option_spec = {
@@ -41,7 +41,7 @@ class MCQScoreDirective(SphinxDirective):
     }
 
     def run(self):
-        node = mcqscore_node()
+        node = multichoice_node()
 
         # Core options
         node["shuffle"] = "no-shuffle" not in self.options
@@ -67,7 +67,7 @@ class MCQScoreDirective(SphinxDirective):
         # ─────────────────────────────────────
         # Parse the Question Natively
         # ─────────────────────────────────────
-        question_container = nodes.container(classes=["mcqscore-question"])
+        question_container = nodes.container(classes=["multichoice-question"])
         self.state.nested_parse(question_lines, self.content_offset, question_container)
         node += question_container
 
@@ -155,19 +155,19 @@ class MCQScoreDirective(SphinxDirective):
         input_type = "checkbox" if is_multi else "radio"
 
         for ch in choices:
-            input_html = f'<input type="{input_type}" name="mcqscore-{group_name}">'
+            input_html = f'<input type="{input_type}" name="multichoice-{group_name}">'
 
             html_str = f'''
-<div class="mcqscore-choice" data-correct="{str(ch["correct"]).lower()}">
+<div class="multichoice-choice" data-correct="{str(ch["correct"]).lower()}">
   <label>
     {input_html}
-    <span class="mcqscore-letter"></span>
-    <span class="mcqscore-choice-label">{html.escape(ch["text"])}</span>
+    <span class="multichoice-letter"></span>
+    <span class="multichoice-choice-label">{html.escape(ch["text"])}</span>
   </label>
 '''
             if ch["explanation"]:
                 html_str += (
-                    f'<div class="mcqscore-explanation">'
+                    f'<div class="multichoice-explanation">'
                     f'{html.escape(ch["explanation"])}'
                     f'</div>'
                 )
@@ -182,18 +182,18 @@ class MCQScoreDirective(SphinxDirective):
 # ─────────────────────────────────────
 def setup(app):
     app.add_node(
-        mcqscore_node,
-        html=(visit_mcqscore_html, depart_mcqscore_html)
+        multichoice_node,
+        html=(visit_multichoice_html, depart_multichoice_html)
     )
 
-    app.add_directive("mcqscore", MCQScoreDirective)
+    app.add_directive("multichoice", multichoiceDirective)
 
     static_path = Path(__file__).parent / "_static"
     if str(static_path) not in app.config.html_static_path:
         app.config.html_static_path.append(str(static_path))
 
-    app.add_js_file("mcqscore.js")
-    app.add_css_file("mcqscore.css")
+    app.add_js_file("multichoice.js")
+    app.add_css_file("multichoice.css")
 
     return {
         "version": "4.2",

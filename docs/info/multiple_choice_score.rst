@@ -2,10 +2,7 @@
 MCQ score
 ====================
 
-
-'''.. mcqscore-start::''''
-
-.. mcqscore::
+.. multichoice::
 
     What is Sphinx?
 
@@ -23,7 +20,7 @@ MCQ score
 Single correct  no letters no shuffled
 -------------------------------------------
 
-.. mcqscore::
+.. multichoice::
     :no-shuffle:
     :no-letters:
 
@@ -39,7 +36,7 @@ Single correct  no letters no shuffled
 Single correct unshuffled
 -----------------------------
 
-.. mcqscore::
+.. multichoice::
     :no-shuffle:
 
     Which of these are valid variable names in Python?
@@ -54,7 +51,7 @@ Single correct unshuffled
 Single correct
 ---------------------------------
 
-.. mcqscore::
+.. multichoice::
 
     Which of these does an equality check in Python?
 
@@ -68,7 +65,7 @@ Single correct
 code block letters
 --------------------
 
-.. mcqscore::
+.. multichoice::
 
     What is the output of the following code?
 
@@ -88,7 +85,7 @@ code block letters
 Multiple correct
 -----------------------------
 
-.. mcqscore::
+.. multichoice::
 
     Which of the following are Python data types?
 
@@ -96,9 +93,4 @@ Multiple correct
     [x] str | String type
     [ ] html | Not a Python type
     [x] float | Floating-point number
-
-
-----
-
-'''.. mcqscore-end::''''
 

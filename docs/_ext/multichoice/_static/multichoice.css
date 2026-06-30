@@ -1,7 +1,7 @@
 /* ─────────────────────────────────────
    MCQ Container
 ────────────────────────────────────── */
-.mcqscore-block {
+.multichoice-block {
   border: 1px solid #e3e6ea;
   padding: 1.1em 1.2em;
   margin-bottom: 1.6em;
@@ -11,7 +11,7 @@
 }
 
 /* Question text */
-.mcqscore-question {
+.multichoice-question {
   font-weight: 600;
   margin-bottom: 0.9em;
   font-size: 1.08em;
@@ -21,7 +21,7 @@
 /* ─────────────────────────────────────
    Choices
 ────────────────────────────────────── */
-.mcqscore-choice {
+.multichoice-choice {
   margin: 0.45em 0;
   border-radius: 7px;
   cursor: pointer;
@@ -32,7 +32,7 @@
 }
 
 /* Make inner label catch full padding area */
-.mcqscore-choice label {
+.multichoice-choice label {
   display: flex;
   align-items: flex-start;
   gap: 0.5em;
@@ -42,43 +42,43 @@
 }
 
 /* subtle hover */
-.mcqscore-choice:not(.mcqscore-disabled):hover {
+.multichoice-choice:not(.multichoice-disabled):hover {
   background: #f6f9ff;
 }
 
 /* slight press feedback */
-.mcqscore-choice:active {
+.multichoice-choice:active {
   transform: scale(0.995);
 }
 
 /* Selected */
-.mcqscore-choice.selected {
+.multichoice-choice.selected {
   background-color: #eaf2ff;
   border-left-color: #3a8bfd;
 }
 
 /* Input alignments */
-.mcqscore-choice input {
+.multichoice-choice input {
   margin-right: 0.3em;
   margin-top: 0.22em;
   pointer-events: none;
 }
 
 /* Letter layout spacing */
-.mcqscore-letter {
+.multichoice-letter {
   font-weight: 600;
   min-width: 1.4em;
   color: #333;
 }
 
 /* Label text container */
-.mcqscore-choice-label {
+.multichoice-choice-label {
   line-height: 1.4;
   flex: 1; /* Pushes the ::after icons cleanly to the far right side */
 }
 
 /* Explanation block layout */
-.mcqscore-explanation {
+.multichoice-explanation {
   margin-top: 0rem;
   font-size: 0.9em;
   color: #555;
@@ -90,61 +90,61 @@
 /* ─────────────────────────────────────
    Feedback states
 ────────────────────────────────────── */
-.mcqscore-choice.mcqscore-answer {
+.multichoice-choice.multichoice-answer {
   border: 1px solid #bbf7d0;
   background: #f6fff8;
 }
 
-.mcqscore-choice.mcqscore-correct {
+.multichoice-choice.multichoice-correct {
   background-color: #edfdf3 !important;
   border: 1px solid #bbf7d0;
   border-left: 6px solid #22c55e;
 }
 
-.mcqscore-choice.mcqscore-incorrect {
+.multichoice-choice.multichoice-incorrect {
   background-color: #fff1f1 !important;
   border: 1px solid #fecdd3;
   border-left: 6px solid #ef4444;
 }
 
 /* keep selected neutral pre-score overrides */
-.mcqscore-choice.selected:not(.mcqscore-correct):not(.mcqscore-incorrect) {
+.multichoice-choice.selected:not(.multichoice-correct):not(.multichoice-incorrect) {
   background-color: #eef4ff;
   border-left-color: #4f8cff;
 }
 
 /* Disabled cards state mapping */
-.mcqscore-choice.mcqscore-disabled {
+.multichoice-choice.multichoice-disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
-.mcqscore-choice.mcqscore-disabled:hover {
+.multichoice-choice.multichoice-disabled:hover {
   background: none;
 }
 
 /* ─────────────────────────────────────
    Pseudo-elements validation icons fix
 ────────────────────────────────────── */
-.mcqscore-choice label::after {
+.multichoice-choice label::after {
   font-weight: 600;
   padding-left: 0.5em;
   font-size: 1.1em;
 }
 
 /* Base correct answer mapping indicator (Neutral highlight) */
-.mcqscore-choice.mcqscore-answer label::after {
+.multichoice-choice.multichoice-answer label::after {
   content: "•";
   color: #22c55e;
 }
 
 /* User selected a correct choice (Added dots to fix the class selector bug) */
-.mcqscore-choice.mcqscore-correct label::after {
+.multichoice-choice.multichoice-correct label::after {
   content: "✓";
   color: #16a34a;
 }
 
 /* User selected an incorrect choice */
-.mcqscore-choice.mcqscore-incorrect label::after {
+.multichoice-choice.multichoice-incorrect label::after {
   content: "✕";
   color: #dc2626;
 }
@@ -153,7 +153,7 @@
 /* ─────────────────────────────────────
    Controls Global Panel
 ────────────────────────────────────── */
-.mcqscore-global-panel {
+.multichoice-global-panel {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -165,7 +165,7 @@
 }
 
 /* Buttons (shared properties structural grid maps) */
-.mcqscore-global-panel button {
+.multichoice-global-panel button {
   font-size: 0.95em;
   padding: 0.5em 1em;
   border-radius: 6px;
@@ -175,36 +175,31 @@
   transition: background 0.12s ease, transform 0.05s ease;
 }
 
-.mcqscore-global-panel button:hover {
+.multichoice-global-panel button:hover {
   filter: brightness(0.92);
 }
-.mcqscore-global-panel button:active {
+.multichoice-global-panel button:active {
   transform: scale(0.97);
 }
 
-.mcqscore-btn-score {
+.multichoice-btn-score {
   background: #2563eb;
   color: white;
 }
 
-.mcqscore-btn-reset {
+.multichoice-btn-reset {
   background: #f3f4f6;
   color: #4b5563;
   border: 1px solid #e5e7eb !important;
 }
 
-.mcqscore-btn-show {
-  background: #0ea5e9;
-  color: white;
-}
-
-.mcqscore-global-panel button:disabled {
+.multichoice-global-panel button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 /* Score badge classes */
-.mcqscore-output {
+.multichoice-output {
   margin-left: auto;
   font-weight: 600;
   padding: 0.4em 0.8em;
@@ -213,19 +208,19 @@
   border: 1px solid transparent;
 }
 
-.mcqscore-output.high {
+.multichoice-output.high {
   background: #edfdf3 !important;
   border-color: #22c55e !important;
   color: #166534 !important;
 }
 
-.mcqscore-output.medium {
+.multichoice-output.medium {
   background: #fff7ed !important;
   border-color: #f59e0b !important;
   color: #9a3412 !important;
 }
 
-.mcqscore-output.low {
+.multichoice-output.low {
   background: #fff1f2 !important;
   border-color: #ef4444 !important;
   color: #9f1239 !important;

@@ -2,7 +2,7 @@
 MCQ Score Plugin: Technical Implementation
 ============================================
 
-This document provides a deep-dive breakdown of how the Python extension code for the ``mcqscore`` directive functions within the Sphinx ecosystem.
+This document provides a deep-dive breakdown of how the Python extension code for the ``multichoice`` directive functions within the Sphinx ecosystem.
 
 Architecture Overview
 =====================
@@ -23,10 +23,10 @@ Detailed Code Breakdown
 
 .. code-block:: python
 
-   class mcqscore_node(nodes.General, nodes.Element):
+   class multichoice_node(nodes.General, nodes.Element):
        pass
 
-Docutils processes documentation by building a tree structural graph. We declare an empty subclass ``mcqscore_node`` which serves as our anchor token in the graph. This allows us to hold the question states, parsed child components, and configuration attributes in a single container.
+Docutils processes documentation by building a tree structural graph. We declare an empty subclass ``multichoice_node`` which serves as our anchor token in the graph. This allows us to hold the question states, parsed child components, and configuration attributes in a single container.
 
 
 2. HTML Translators (Visitors)
@@ -34,24 +34,24 @@ Docutils processes documentation by building a tree structural graph. We declare
 
 .. code-block:: python
 
-   def visit_mcqscore_html(self, node):
+   def visit_multichoice_html(self, node):
        shuffle_attr = str(node.get("shuffle", False)).lower()
        letters_attr = str(node.get("letters", False)).lower()
        single_attr = str(node.get("single_correct", False)).lower()
 
        self.body.append(
-           f'<div class="mcqscore-block" '
-           f'data-mcqscore-single="{single_attr}" '
-           f'data-mcqscore-shuffle="{shuffle_attr}" '
-           f'data-mcqscore-letters="{letters_attr}">'
+           f'<div class="multichoice-block" '
+           f'data-multichoice-single="{single_attr}" '
+           f'data-multichoice-shuffle="{shuffle_attr}" '
+           f'data-multichoice-letters="{letters_attr}">'
        )
 
-   def depart_mcqscore_html(self, node):
+   def depart_multichoice_html(self, node):
        self.body.append("</div>")
 
 When Sphinx's HTML builder compiles the document tree, it invokes these translator endpoints:
-* **``visit_mcqscore_html``**: Prepends the global wrapping layout division and serializes configuration states natively into HTML ``data-*`` parameters. The client-side Javascript (``mcqscore.js``) targets these hooks to handle randomized option shuffling and letter rendering.
-* **``depart_mcqscore_html``**: Seamlessly appends the matching closing division tag.
+* **``visit_multichoice_html``**: Prepends the global wrapping layout division and serializes configuration states natively into HTML ``data-*`` parameters. The client-side Javascript (``multichoice.js``) targets these hooks to handle randomized option shuffling and letter rendering.
+* **``depart_multichoice_html``**: Seamlessly appends the matching closing division tag.
 
 
 3. Content Splitting & Structural Slicing
@@ -79,11 +79,11 @@ To allow complex syntax (like nested lists, code-blocks, or mathematical express
 
 .. code-block:: python
 
-   question_container = nodes.container(classes=["mcqscore-question"])
+   question_container = nodes.container(classes=["multichoice-question"])
    self.state.nested_parse(question_lines, self.content_offset, question_container)
    node += question_container
 
-Instead of interpreting the question lines as dumb text strings, ``self.state.nested_parse()`` injects the ``StringList`` back into Sphinx's master compilation loop. This allows all standard reStructuredText elements, block highlights, or sub-directives inside your question text to render flawlessly. It encapsulates the outcome directly inside a ``<div class="mcqscore-question">`` element container.
+Instead of interpreting the question lines as dumb text strings, ``self.state.nested_parse()`` injects the ``StringList`` back into Sphinx's master compilation loop. This allows all standard reStructuredText elements, block highlights, or sub-directives inside your question text to render flawlessly. It encapsulates the outcome directly inside a ``<div class="multichoice-question">`` element container.
 
 
 5. Choice Parsing & Dynamic UI Selection
@@ -128,13 +128,13 @@ The choice parser isolates selection configurations manually:
 .. code-block:: python
 
    for ch in choices:
-       input_html = f'<input type="{input_type}" name="mcqscore-{group_name}">'
+       input_html = f'<input type="{input_type}" name="multichoice-{group_name}">'
        html_str = f'''
-   <div class="mcqscore-choice" data-correct="{str(ch["correct"]).lower()}">
+   <div class="multichoice-choice" data-correct="{str(ch["correct"]).lower()}">
      <label>
        {input_html}
-       <span class="mcqscore-letter"></span>
-       <span class="mcqscore-choice-label">{html.escape(ch["text"])}</span>
+       <span class="multichoice-letter"></span>
+       <span class="multichoice-choice-label">{html.escape(ch["text"])}</span>
      </label>
    '''
        ...
@@ -149,11 +149,11 @@ The data layout converts options directly into inline HTML entities. String expr
 .. code-block:: python
 
    def setup(app):
-       app.add_node(mcqscore_node, html=(visit_mcqscore_html, depart_mcqscore_html))
-       app.add_directive("mcqscore", MCQScoreDirective)
+       app.add_node(multichoice_node, html=(visit_multichoice_html, depart_multichoice_html))
+       app.add_directive("multichoice", multichoiceDirective)
        ...
-       app.add_js_file("mcqscore.js")
-       app.add_css_file("mcqscore.css")
+       app.add_js_file("multichoice.js")
+       app.add_css_file("multichoice.css")
 
 The plugin hooks directly into Sphinx's backend platform using the framework's standard core API, mapping the custom directive identifiers and appending assets automatically to the generated HTML build assets directory output pipeline.
 
