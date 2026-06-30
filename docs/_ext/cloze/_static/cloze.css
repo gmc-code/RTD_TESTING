@@ -12,7 +12,7 @@
 
 .cloze-content {
   font-size: 1.05em;
-  line-height: 2.6; /* Generous breathing room for the nested drop zones */
+  line-height: 2.6;
   color: #1e293b;
 }
 
@@ -22,7 +22,7 @@
 .cloze-wordbank-title {
   font-size: 0.85em;
   font-weight: 700;
-  color: #475569; /* Slate 600 */
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.6rem;
@@ -33,19 +33,18 @@
   flex-wrap: wrap;
   gap: 0.6rem;
   padding: 0.8rem;
-  background-color: #f0fdfa; /* Soft Mint/Teal background */
-  border: 2px dashed #0d9488; /* Sharp Teal dashed border */
+  background-color: #f0fdfa;
+  border: 2px dashed #0d9488;
   border-radius: 8px;
   min-height: 45px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
   align-items: center;
 }
 
-/* Draggable Words inside the Bank */
 .cloze-draggable {
   padding: 0.3rem 0.7rem;
   background: #ffffff;
-  border: 1px solid #0f766e; /* Dark teal accent line */
+  border: 1px solid #0f766e;
   color: #111827;
   border-radius: 6px;
   cursor: grab;
@@ -56,7 +55,7 @@
 }
 
 .cloze-draggable:hover {
-  background: #ccfbf1; /* Light teal accent highlight on hover */
+  background: #ccfbf1;
   transform: translateY(-1px);
 }
 
@@ -91,36 +90,33 @@
   margin: 0 0.3rem;
   font-size: 0.9em;
   font-weight: 600;
-  color: #4f46e5; /* Indigo text color */
-  background: #eef2ff; /* Soft Indigo background canvas box */
-  border: 2px dashed #818cf8; /* Light Indigo border */
+  color: #4f46e5;
+  background: #eef2ff;
+  border: 2px dashed #818cf8;
   border-radius: 6px;
   line-height: 2.0;
   transition: all 0.15s ease;
   box-shadow: inset 0 1px 2px rgba(79, 70, 229, 0.05);
 }
 
-/* State: Item being hovered directly over the target dropzone box */
 .cloze-dropzone.hovered {
   border-color: #4338ca;
-  background: #e0e7ff; /* Darker Indigo container frame */
+  background: #e0e7ff;
   color: #4338ca;
   transform: scale(1.03);
 }
 
-/* State: Target zone contains a dropped token item card */
 .cloze-dropzone.occupied {
   background: #ffffff;
-  border: 2px solid #4f46e5; /* Lock down with a solid line layout */
+  border: 2px solid #4f46e5;
   padding: 0;
 }
 
-/* The actual dropped card token capsule rendering components */
 .cloze-dropped-token {
   display: block;
   padding: 0 0.6rem;
-  background: #e0f2fe; /* Light sky blue card backing */
-  color: #0369a1; /* High contrast dark ocean blue text label */
+  background: #e0f2fe;
+  color: #0369a1;
   font-weight: 700;
   border-radius: 4px;
 }
@@ -128,7 +124,6 @@
 /* ==========================================================================
    4. Validation Feedback States (Scoring Engine Output)
    ========================================================================== */
-/* Correct Answer Intercept State Styles */
 .cloze-dropzone.correct {
   border-color: #22c55e !important;
   background-color: #f0fdf4 !important;
@@ -139,7 +134,6 @@
   opacity: 0.85;
 }
 
-/* Incorrect/Flawed Answer Intercept State Styles */
 .cloze-dropzone.incorrect {
   border-color: #ef4444 !important;
   background-color: #fef2f2 !important;
@@ -150,25 +144,24 @@
   text-decoration: line-through;
 }
 
-/* Text symbols inline alignment formatting (Ticks & Crosses) */
 .cloze-inline-feedback {
   font-weight: bold;
   font-size: 1em;
   margin-left: 8px;
   white-space: nowrap;
-  display: inline-block !important; /* Force layout activation */
-  visibility: visible !important;   /* Bypass any parent layout rules */
+  display: inline-block !important;
+  visibility: visible !important;
   vertical-align: middle;
 }
 .cloze-inline-feedback.text-correct {
-  color: #16a34a !important; /* Bold Emerald green check */
+  color: #16a34a !important;
 }
 .cloze-inline-feedback.text-incorrect {
-  color: #dc2626 !important; /* Bold Crimson red cross + answer string */
+  color: #dc2626 !important;
 }
 
 /* ==========================================================================
-   5. Page Control Panel & Performance Badges (Like MCQ Styles)
+   5. Page Control Panel & Performance Badges
    ========================================================================== */
 .cloze-global-panel {
   display: flex;
@@ -199,7 +192,7 @@
 }
 
 .cloze-btn-score {
-  background-color: #2563eb; /* Primary Royal Blue */
+  background-color: #2563eb;
   color: #ffffff;
 }
 
@@ -209,7 +202,6 @@
   border: 1px solid #e5e7eb !important;
 }
 
-/* Unified score results component box layout badge indicators */
 .cloze-output {
   margin-left: auto;
   font-weight: 700;

@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   })
 
-  // Page level controls panel
   const panel = document.createElement("div")
   panel.className = "cloze-global-panel"
 
