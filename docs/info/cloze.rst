@@ -9,10 +9,10 @@ Exercise 1: Earth's Layers and Plate Movement
 
 .. cloze::
 
-   The Earth's rigid outer shell is broken into massive segments called *[ tectonic plates / convective zones ]*.
-   This brittle outer layer is scientifically known as the *[ lithosphere / asthenosphere ]*, and it floats directly on top of a highly viscous, semi-fluid layer of the upper mantle.
+   The Earth's rigid outer shell is broken into massive segments called *[ tectonic plates ]*.
+   This brittle outer layer is scientifically known as the *[ lithosphere ]*, and it floats directly on top of a highly viscous, semi-fluid layer of the upper mantle.
 
-   The primary driving mechanism behind the movement of these massive plates is *[ convection currents / magnetic reversal ]* operating deep within the mantle, where heated material slowly rises, cools, and sinks back down.
+   The primary driving mechanism behind the movement of these massive plates is *[ convection currents ]* operating deep within the mantle, where heated material slowly rises, cools, and sinks back down.
 
 Exercise 2: Plate Boundaries (3 & 4 Choices)
 ============================================
