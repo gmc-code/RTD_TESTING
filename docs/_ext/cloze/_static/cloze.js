@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
             correctGaps++
           } else {
             zone.classList.add("incorrect")
-            feedback.textContent = ` ✕ (Correct: ${expected})`
+            feedback.textContent = ` ✕ (Ans: ${expected})`
             feedback.className = "cloze-inline-feedback text-incorrect"
           }
         }
