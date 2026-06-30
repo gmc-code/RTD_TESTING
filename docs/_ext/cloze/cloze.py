@@ -2,6 +2,7 @@ import html
 import random
 from docutils import nodes
 from docutils.parsers.rst import Directive
+from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
 class cloze_node(nodes.General, nodes.Element):
@@ -17,9 +18,17 @@ def depart_cloze_html(self, node):
 class ClozeDirective(SphinxDirective):
     has_content = True
 
+    # Define directive options flag configuration
+    option_spec = {
+        'auto-distract': directives.flag,
+    }
+
     def run(self):
         full_text = "\n".join(self.content)
         node = cloze_node()
+
+        # Check if user added the option flag to their directive stanza instance
+        auto_distract = 'auto-distract' in self.options
 
         remaining_text = full_text
         parsed_html_parts = []
@@ -35,7 +44,11 @@ class ClozeDirective(SphinxDirective):
             gap_content = remaining_text[start_idx + 2:end_idx].strip()
 
             if "/" not in gap_content:
-                options = [gap_content, "incorrect_option"]
+                # Conditionally insert alternative based on the directive toggle flag choice
+                if auto_distract:
+                    options = [gap_content, "incorrect_option"]
+                else:
+                    options = [gap_content]
             else:
                 options = [opt.strip() for opt in gap_content.split("/")]
 
@@ -75,5 +88,4 @@ def setup(app):
     app.add_js_file("cloze.js")
     app.add_css_file("cloze.css")
 
-    return {"version": "3.1", "parallel_read_safe": True, "parallel_write_safe": True}
-
+    return {"version": "3.2", "parallel_read_safe": True, "parallel_write_safe": True}

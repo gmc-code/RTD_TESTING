@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const val = token ? token.dataset.word : ""
         const expected = zone.dataset.correct
 
-        // SAFE TARGET FIX: Find the wrapper parent, then search inside it for the feedback node
         const wrapper = zone.closest(".cloze-wrapper")
         const feedback = wrapper ? wrapper.querySelector(".cloze-inline-feedback") : null
 
@@ -102,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
             correctGaps++
           } else {
             zone.classList.add("incorrect")
-            feedback.textContent = ` ✕ (Ans: ${expected})`
+            feedback.textContent = ` ✕ (Correct: ${expected})`
             feedback.className = "cloze-inline-feedback text-incorrect"
           }
         }

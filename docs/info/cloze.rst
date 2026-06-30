@@ -8,6 +8,13 @@ Exercise 1: Earth's Layers and Plate Movement
 =============================================
 
 .. cloze::
+   :auto-distract:
+
+   The Earth's rigid outer shell is broken into massive segments called *[ tectonic plates ]*.
+   This brittle outer layer is scientifically known as the *[ lithosphere ]*.
+
+
+.. cloze::
 
    The Earth's rigid outer shell is broken into massive segments called *[ tectonic plates ]*.
    This brittle outer layer is scientifically known as the *[ lithosphere ]*, and it floats directly on top of a highly viscous, semi-fluid layer of the upper mantle.
