@@ -1,6 +1,65 @@
+.gapfill-block {
+  border: 1px solid #e3e6ea;
+  padding: 1.2em;
+  margin-bottom: 1.5em;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.gapfill-content {
+  font-size: 1.05em;
+  line-height: 2.2; /* Extra breathing room for nested dropdown text wrappers */
+}
+
+/* Base Wrapper for Inline Alignment */
+.gapfill-wrapper {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.gapfill-input {
+  display: inline-block;
+  padding: 0.2em 0.4em;
+  font-size: 0.95em;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background-color: #f8fafc;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Selected Input Dropdowns Modifiers */
+.gapfill-input.correct {
+  border-color: #22c55e !important;
+  background-color: #f0fdf4 !important;
+}
+
+.gapfill-input.incorrect {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
 /* ─────────────────────────────────────
-   Global Control Panel Layout
+   New Inline Text Feedback Badges
 ────────────────────────────────────── */
+.gapfill-inline-feedback {
+  font-weight: 700;
+  font-size: 0.9em;
+  margin-right: 0.5em;
+  margin-left: 0.2em;
+}
+
+.gapfill-inline-feedback.text-correct {
+  color: #16a34a; /* Crisp Green Tick */
+}
+
+.gapfill-inline-feedback.text-incorrect {
+  color: #dc2626; /* Crimson Red Cross + Answer Hint */
+}
+
+/* Global Actions Toolbar */
 .gapfill-global-panel {
   display: flex;
   align-items: center;
@@ -22,25 +81,12 @@
   transition: background 0.12s ease, transform 0.05s ease;
 }
 
-.gapfill-global-panel button:hover {
-  filter: brightness(0.92);
-}
-.gapfill-global-panel button:active {
-  transform: scale(0.97);
-}
+.gapfill-global-panel button:hover { filter: brightness(0.92); }
+.gapfill-global-panel button:active { transform: scale(0.97); }
 
-.gapfill-btn-score {
-  background: #2563eb;
-  color: white;
-}
+.gapfill-btn-score { background: #2563eb; color: white; }
+.gapfill-btn-reset { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb !important; }
 
-.gapfill-btn-reset {
-  background: #f3f4f6;
-  color: #4b5563;
-  border: 1px solid #e5e7eb !important;
-}
-
-/* Page Score Output Badges */
 .gapfill-output {
   margin-left: auto;
   font-weight: 600;
@@ -49,21 +95,6 @@
   display: none;
   border: 1px solid transparent;
 }
-
-.gapfill-output.high {
-  background: #edfdf3 !important;
-  border-color: #22c55e !important;
-  color: #166534 !important;
-}
-
-.gapfill-output.medium {
-  background: #fff7ed !important;
-  border-color: #f59e0b !important;
-  color: #9a3412 !important;
-}
-
-.gapfill-output.low {
-  background: #fff1f2 !important;
-  border-color: #ef4444 !important;
-  color: #9f1239 !important;
-}
+.gapfill-output.high { background: #edfdf3 !important; border-color: #22c55e !important; color: #166534 !important; }
+.gapfill-output.medium { background: #fff7ed !important; border-color: #f59e0b !important; color: #9a3412 !important; }
+.gapfill-output.low { background: #fff1f2 !important; border-color: #ef4444 !important; color: #9f1239 !important; }
