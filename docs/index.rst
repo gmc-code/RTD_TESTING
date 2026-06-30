@@ -25,3 +25,4 @@ These docs provide a simple details for sphinx testing
 
     info/gapfill.rst
     info/cloze.rst
+    info/ordering.rst

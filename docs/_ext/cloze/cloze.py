@@ -19,38 +19,51 @@ def depart_cloze_html(self, node):
 class ClozeDirective(SphinxDirective):
     has_content = True
 
-    # Configure Sphinx option spec parser correctly
     option_spec = {
         'auto-distract': directives.flag,
     }
 
     def run(self):
-        # Join lines safely filtering out pure blank lines at the start
         full_text = "\n".join(self.content).strip()
         node = cloze_node()
 
-        # Check if the flag is present in user options
         auto_distract = 'auto-distract' in self.options
-
-        # Regex pattern to find all *[content]* components safely
         gap_pattern = re.compile(r'\*\[(.*?)\]\*')
 
-        # FIRST PASS: Cleanly extract ONLY the genuine correct answers for the distractor pool
-        all_real_words = []
+        # 1. FIRST PASS: Extract all actual answers inside *[...]* gaps
+        all_real_answers = []
         for match in gap_pattern.finditer(full_text):
             content = match.group(1).strip()
-            # Extract only the true target answer (the text before a '/')
             real_word = content.split("/")[0].strip()
-            if real_word and real_word not in all_real_words:
-                all_real_words.append(real_word)
+            if real_word and real_word not in all_real_answers:
+                all_real_answers.append(real_word)
 
-        # Emergency natural word list if there aren't enough sentences/gaps to borrow from
-        fallback_pool = ["entity", "element", "instance", "item", "object", "thing", "value"]
+        # 2. HARVEST POOL: Extract words from the actual text surrounding the gaps
+        # Remove markdown gap brackets so we can read the raw sentence words safely
+        clean_passage = gap_pattern.sub(r'\1', full_text)
+        # Find all alpha-numeric words (3+ letters long) to filter out commas, periods, short filler tokens
+        raw_words = re.findall(r'\b[a-zA-Z]{3,}\b', clean_passage)
+
+        # Filter out common stop words to ensure high-quality distractors
+        stop_words = {
+            "the", "and", "this", "that", "with", "from", "into", "called", "known",
+            "a", "an", "of", "to", "in", "is", "for", "on", "but", "by", "as",
+            "at", "are", "be", "it", "its", "or", "was", "not", "your", "my"
+        }
+
+        harvested_pool = []
+        for w in raw_words:
+            w_clean = w.strip()
+            w_lower = w_clean.lower()
+            if (w_lower not in stop_words and
+                w_lower not in [ans.lower() for ans in all_real_answers] and
+                w_clean not in harvested_pool):
+                harvested_pool.append(w_clean)
 
         word_bank_items = []
         gap_counter = 0
 
-        # SECOND PASS: Replace gaps with HTML structures cleanly using a callback handler
+        # 3. SECOND PASS: Construct individual gap elements
         def replace_gap(match):
             nonlocal gap_counter
             gap_counter += 1
@@ -58,16 +71,23 @@ class ClozeDirective(SphinxDirective):
 
             if "/" not in gap_content:
                 correct_answer = gap_content
-                if auto_distract:
-                    # Isolate words that do not match the current blank space
-                    pool = [w for w in all_real_words if w.lower() != correct_answer.lower()]
-                    if not pool:
-                        pool = [w for w in fallback_pool if w.lower() != correct_answer.lower()]
+                options = [correct_answer]
 
-                    random_distractor = random.choice(pool)
-                    options = [correct_answer, random_distractor]
-                else:
-                    options = [correct_answer]
+                if auto_distract:
+                    # Prefer answers from other gaps first as the primary distractors
+                    other_gap_answers = [w for w in all_real_answers if w.lower() != correct_answer.lower()]
+                    random.shuffle(other_gap_answers)
+                    options.extend(other_gap_answers)
+
+                    # Supplement with extra unique harvested text words until there are at least 3 options
+                    scrambled_harvest = harvested_pool.copy()
+                    random.shuffle(scrambled_harvest)
+
+                    for text_word in scrambled_harvest:
+                        if len(options) >= 3: # Sets a standard target option length per gap
+                            break
+                        if text_word.lower() not in [o.lower() for o in options]:
+                            options.append(text_word)
             else:
                 options = [opt.strip() for opt in gap_content.split("/")]
 
@@ -80,17 +100,13 @@ class ClozeDirective(SphinxDirective):
             </span>'''
             return drop_zone_html
 
-        # Escape standard HTML characters first, then insert our dropzone markup templates safely
         escaped_text = html.escape(full_text)
-
-        # We unescape the specific markup tokens back so regex matching finds them cleanly
         escaped_text = escaped_text.replace(html.escape("*["), "*[").replace(html.escape("]*"), "]*")
 
-        # Sub-process all matches safely without brittle slice indices breaking down
         combined_text_html = gap_pattern.sub(replace_gap, escaped_text)
         combined_text_html = combined_text_html.replace("\n", "<br>")
 
-        # Deduplicate final tray options and randomize display sorting order
+        # Deduplicate and mix final items together
         word_bank_items = list(set(word_bank_items))
         random.shuffle(word_bank_items)
 
@@ -111,4 +127,4 @@ def setup(app):
     app.add_js_file("cloze.js")
     app.add_css_file("cloze.css")
 
-    return {"version": "3.6", "parallel_read_safe": True, "parallel_write_safe": True}
+    return {"version": "3.8", "parallel_read_safe": True, "parallel_write_safe": True}

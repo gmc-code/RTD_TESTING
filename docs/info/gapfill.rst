@@ -6,6 +6,7 @@ Test your understanding of Python lists and dictionaries by filling in the blank
 
 Exercise 1: List Basics
 =======================
+
 This section covers initializing, modifying, and measuring Python lists.
 
 .. gapfill::
@@ -20,6 +21,7 @@ This section covers initializing, modifying, and measuring Python lists.
 
 Exercise 2: List Slicing & Indices (3 Choices)
 ==============================================
+
 Test your index knowledge. Remember that Python uses zero-based indexing!
 
 .. gapfill::

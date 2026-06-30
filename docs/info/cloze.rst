@@ -1,6 +1,6 @@
-============================================
+==============================================
 Earth Science: Plate Tectonics Cloze Activity
-============================================
+==============================================
 
 Drag the correct geological terminology from the word bank tray at the top of each block into its corresponding drop zone target inside the paragraphs below.
 
@@ -10,8 +10,8 @@ Exercise 1A: Earth's Layers and Plate Movement
 .. cloze::
     :auto-distract:
 
-    The Earth's rigid outer shell is broken into massive segments called *[ tectonic plates ]*.
-    This brittle outer layer is known as the *[ lithosphere ]*.
+    The Earth's rigid outer shell is broken into massive segments called *[ plates ]*.
+    This brittle outer layer is known as the *[ crust ]*.
 
 
 Exercise 1B: Earth's Layers and Plate Movement

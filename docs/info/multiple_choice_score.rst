@@ -3,7 +3,7 @@ MCQ score
 ====================
 
 
-.. mcqscore-start::
+'''.. mcqscore-start::''''
 
 .. mcqscore::
 
@@ -100,5 +100,5 @@ Multiple correct
 
 ----
 
-.. mcqscore-end::
+'''.. mcqscore-end::''''
 
