@@ -23,4 +23,5 @@ These docs provide a simple details for sphinx testing
     info/multiple_choice_directive_info.rst
     info/multiple_choice_score.rst
 
-    info/fill_in_the_gaps.rst
+    info/gapfill.rst
+    info/cloze.rst
