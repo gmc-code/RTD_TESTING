@@ -13,6 +13,15 @@ Exercise 1A: Earth's Layers and Plate Movement
     The Earth's rigid outer shell is broken into massive segments called *[ plates ]*.
     This brittle outer layer is known as the *[ crust ]*.
 
+Exercise 1A+ definitions
+===============================================
+
+.. cloze::
+
+   *[Divergent Boundary]*  Plates pull apart from each other, creating new crust (e.g., Mid-Atlantic Ridge).
+   *[Convergent Boundary]* Plates collide into one another, forming mountains or subduction zones (e.g., Marianas Trench).
+   *[Transform Boundary]*  Plates slide horizontally past each other, causing friction and earthquakes (e.g., San Andreas Fault).
+
 
 Exercise 1B: Earth's Layers and Plate Movement
 ===============================================

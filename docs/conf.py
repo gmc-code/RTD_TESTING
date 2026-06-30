@@ -10,7 +10,6 @@ import os
 import sys
 import sphinx_rtd_theme
 
-
 project = "RTD_TESTING"
 copyright = "2025-6, GMC"
 author = "GMC"
@@ -30,6 +29,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx_togglebutton",
     "sphinx_design",
+    "classifying.classifying",  # custom directive
     "ordering.ordering",  # custom directive
     "gapfill.gapfill",  # custom directive
     "cloze.cloze",  # custom directive
@@ -48,7 +48,6 @@ copybutton_exclude = ".no-copybutton"
 # copybutton_exclude = ".highlight.no-copybutton, .highlight-python.no-copybutton, .no-copybutton"
 # Only add copy buttons to code blocks that are NOT inside Parsons puzzles
 copybutton_selector = "div.highlight pre:not(.no-copybutton)"
-
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -91,7 +90,12 @@ html_title = "RTD_TESTING_GMC"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 
-html_static_path = ["_static", "_ext/multichoice/_static", "_ext/gapfill/_static", "_ext/cloze/_static", "_ext/ordering/_static"]
+html_static_path = ["_static",
+                    "_ext/multichoice/_static",
+                    "_ext/gapfill/_static",
+                    "_ext/cloze/_static",
+                    "_ext/ordering/_static",
+                    "_ext/classifying/_static"]
 
 # ,'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
@@ -101,8 +105,7 @@ html_css_files = [
 ]
 
 # Custom JS
-html_js_files = [
-]
+html_js_files = []
 
 # for rtd
 
@@ -126,10 +129,12 @@ def setup(app):
     app.add_js_file("ordering.js")
     app.add_css_file("ordering.css")
 
+    app.add_js_file("classifying.js")
+    app.add_css_file("classifying.css")
+
     # external library
     # app.add_js_file(
     #     "https://unpkg.com/sortablejs@1.15.0.js")
-
 
 
 # , "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]

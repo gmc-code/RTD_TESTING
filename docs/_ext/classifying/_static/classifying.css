@@ -1,0 +1,204 @@
+/* ==========================================================================
+   1. Base Component Layout
+   ========================================================================== */
+.classifying-block {
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  background-color: #d8f1ff; /* Pastel sky/ice blue canvas */
+}
+
+.classifying-instructions {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+  color: #0369a1; /* Deep ocean blue for contrast readability */
+}
+
+.classifying-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 6px;
+  min-height: 100px;
+  background-color: #e0f2fe; /* Runway background slightly darker sky hue */
+  border: 1px solid #bae6fd;
+}
+
+.classifying-line {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  padding: 0.85rem 0.95rem;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.classifying-line:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
+}
+
+.classifying-container .classifying-code {
+  font-size: 1.1rem;
+  flex-grow: 1;
+  color: #0f172a !important;
+}
+
+.classifying-indent-controls {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto; /* Pushes dropdown selectors cleanly to the right */
+}
+
+/* Dropdown styling nested within rows */
+.sorting-select {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0369a1;
+  background-color: #ffffff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sorting-select:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+/* ==========================================================================
+   2. Validation State Row Feedback
+   ========================================================================== */
+.classifying-line.correct-line {
+  border-color: #4ade80 !important;
+  background-color: #f0fdf4 !important;
+}
+.classifying-line.correct-line .classifying-code {
+  color: #166534 !important;
+}
+
+.classifying-line.incorrect-line {
+  border-color: #f87171 !important;
+  background-color: #fef2f2 !important;
+}
+.classifying-line.incorrect-line .classifying-code {
+  color: #991b1b !important;
+}
+
+/* ==========================================================================
+   3. Control Buttons Area
+   ========================================================================== */
+.classifying-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+.classifying-controls button {
+  padding: 0.55rem 1.2rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.1s ease, transform 0.05s ease;
+}
+
+.classifying-controls button:active {
+  transform: scale(0.98);
+}
+
+.classifying-btn-score {
+  background-color: #2563eb;
+  color: white;
+}
+.classifying-btn-score:hover {
+  background-color: #1d4ed8;
+}
+
+.classifying-btn-reset {
+  background-color: #ffffff;
+  color: #0369a1;
+  border: 1px solid #bae6fd !important;
+}
+.classifying-btn-reset:hover {
+  background-color: #f0f9ff;
+  color: #0369a1;
+}
+
+.classifying-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   4. Dynamic Score Tier Badges (RIGHT ALIGNED)
+   ========================================================================== */
+.classifying-feedback-badge {
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  display: none;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin-left: auto;
+  text-align: right;
+}
+
+.classifying-feedback-badge.high {
+  background-color: #bbf7d0;
+  border-color: #22c55e;
+  color: #14532d;
+}
+
+.classifying-feedback-badge.medium {
+  background-color: #fef08a;
+  border-color: #eab308;
+  color: #713f12;
+}
+
+.classifying-feedback-badge.low {
+  background-color: #fecaca;
+  border-color: #ef4444;
+  color: #7f1d1d;
+}
+
+/* ==========================================================================
+   Validation Checkmark and Cross Icons
+   ========================================================================== */
+.classifying-line .classifying-code::after {
+  font-weight: bold;
+  margin-left: 0.75rem;
+  font-size: 1.1rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+/* Inject Green Tick on Correct Choice */
+.classifying-line.correct-line .classifying-code::after {
+  content: "✔";
+  color: #166534;
+  transform: scale(1.2);
+}
+
+/* Inject Red Cross on Incorrect Choice */
+.classifying-line.incorrect-line .classifying-code::after {
+  content: "✘";
+  color: #991b1b;
+  transform: scale(1.2);
+}
