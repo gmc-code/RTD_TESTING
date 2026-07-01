@@ -1,37 +1,92 @@
-/* ─────────────────────────────────────
-   MCQ Container
-────────────────────────────────────── */
-.multichoice-block {
-  border: 1px solid #e3e6ea;
-  padding: 1.1em 1.2em;
-  margin-bottom: 1.6em;
-  border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+/* ==========================================================================
+   1. Design Token System & Global Variables
+   ========================================================================== */
+:root {
+  /* Common Core Structural Tokens */
+  --mcq-radius-lg: 10px;
+  --mcq-radius-md: 7px;
+  --mcq-radius-sm: 6px;
+  --mcq-transition: background 0.12s ease, transform 0.05s ease, border-color 0.12s ease;
+
+  /* Shared Core Core Typography & Interface Colors */
+  --mcq-light-bg: #ffffff;
+  --mcq-light-border: #e3e6ea;
+  --mcq-light-text: #1e293b;
+  --mcq-light-letter: #333333;
+  --mcq-light-explanation: #555555;
+  --mcq-light-hover-bg: #f6f9ff;
+  --mcq-light-selected-bg: #eaf2ff;
+  --mcq-light-selected-border: #3a8bfd;
+  --mcq-light-divider: #e3e6ea;
+
+  /* Dark Theme Structural Alterations (ONLY Canvas BG & Border Override) */
+  --mcq-dark-bg: #d8f1ff;        /* Soft light blue tint container background */
+  --mcq-dark-border: #334155;    /* Dark border framing layout line */
+  --mcq-dark-divider: #334155;   /* Aligned with dark border for panel division rules */
+
+  /* Validation Feedback States */
+  --mcq-answer-bg: #f6fff8;
+  --mcq-answer-border: #bbf7d0;
+  --mcq-answer-marker: #22c55e;
+
+  --mcq-correct-bg: #edfdf3;
+  --mcq-correct-border: #bbf7d0;
+  --mcq-correct-accent: #22c55e;
+  --mcq-correct-text: #16a34a;
+
+  --mcq-incorrect-bg: #fff1f1;
+  --mcq-incorrect-border: #fecdd3;
+  --mcq-incorrect-accent: #ef4444;
+  --mcq-incorrect-text: #dc2626;
+
+  /* Global Score Performance Badges */
+  --mcq-tier-high-bg: #edfdf3;
+  --mcq-tier-high-border: #22c55e;
+  --mcq-tier-high-text: #166534;
+
+  --mcq-tier-mid-bg: #fff7ed;
+  --mcq-tier-mid-border: #f59e0b;
+  --mcq-tier-mid-text: #9a3412;
+
+  --mcq-tier-low-bg: #fff1f2;
+  --mcq-tier-low-border: #ef4444;
+  --mcq-tier-low-text: #9f1239;
 }
 
-/* Question text */
+/* ==========================================================================
+   2. MCQ Block Core Containers
+   ========================================================================== */
+.multichoice-block {
+  background-color: var(--mcq-light-bg);
+  border: 1px solid var(--mcq-light-border);
+  border-radius: var(--mcq-radius-lg);
+  padding: 1.1em 1.2em;
+  margin-bottom: 1.6em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: var(--mcq-transition);
+}
+
 .multichoice-question {
   font-weight: 600;
   margin-bottom: 0.9em;
   font-size: 1.08em;
   line-height: 1.4;
+  color: var(--mcq-light-text);
 }
 
-/* ─────────────────────────────────────
-   Choices
-────────────────────────────────────── */
+/* ==========================================================================
+   3. MCQ Answer Card Choice Items
+   ========================================================================== */
 .multichoice-choice {
   margin: 0.45em 0;
-  border-radius: 7px;
+  border-radius: var(--mcq-radius-md);
   cursor: pointer;
-  display: block; /* Fixed: allows explanation block to wrap underneath */
-  transition: background 0.12s ease, transform 0.05s ease;
+  display: block;
+  transition: var(--mcq-transition);
   border: 1px solid transparent;
   border-left: 4px solid transparent;
 }
 
-/* Make inner label catch full padding area */
 .multichoice-choice label {
   display: flex;
   align-items: flex-start;
@@ -39,120 +94,105 @@
   padding: 0.6em 0.9em;
   width: 100%;
   cursor: pointer;
+  color: var(--mcq-light-text);
 }
 
-/* subtle hover */
+.multichoice-letter {
+  font-weight: 600;
+  min-width: 1.4em;
+  color: var(--mcq-light-letter);
+}
+
+.multichoice-choice-label {
+  line-height: 1.4;
+  flex: 1;
+}
+
+.multichoice-explanation {
+  margin-top: 0rem;
+  font-size: 0.9em;
+  color: var(--mcq-light-explanation);
+  padding: 0 0.9em 0.8em 2.8em;
+  line-height: 1.45;
+  display: none;
+}
+
+/* --- Choice Interactive Hover States --- */
 .multichoice-choice:not(.multichoice-disabled):hover {
-  background: #f6f9ff;
+  background-color: var(--mcq-light-hover-bg);
 }
 
-/* slight press feedback */
 .multichoice-choice:active {
   transform: scale(0.995);
 }
 
-/* Selected */
+/* --- Active/Selected Selection Intermediary States --- */
 .multichoice-choice.selected {
-  background-color: #eaf2ff;
-  border-left-color: #3a8bfd;
+  background-color: var(--mcq-light-selected-bg);
+  border-left-color: var(--mcq-light-selected-border);
 }
 
-/* Input alignments */
 .multichoice-choice input {
   margin-right: 0.3em;
   margin-top: 0.22em;
   pointer-events: none;
 }
 
-/* Letter layout spacing */
-.multichoice-letter {
-  font-weight: 600;
-  min-width: 1.4em;
-  color: #333;
-}
-
-/* Label text container */
-.multichoice-choice-label {
-  line-height: 1.4;
-  flex: 1; /* Pushes the ::after icons cleanly to the far right side */
-}
-
-/* Explanation block layout */
-.multichoice-explanation {
-  margin-top: 0rem;
-  font-size: 0.9em;
-  color: #555;
-  padding: 0 0.9em 0.8em 2.8em; /* Aligns explanation text beautifully under label strings */
-  line-height: 1.45;
-  display: none;
-}
-
-/* ─────────────────────────────────────
-   Feedback states
-────────────────────────────────────── */
-.multichoice-choice.multichoice-answer {
-  border: 1px solid #bbf7d0;
-  background: #f6fff8;
-}
-
-.multichoice-choice.multichoice-correct {
-  background-color: #edfdf3 !important;
-  border: 1px solid #bbf7d0;
-  border-left: 6px solid #22c55e;
-}
-
-.multichoice-choice.multichoice-incorrect {
-  background-color: #fff1f1 !important;
-  border: 1px solid #fecdd3;
-  border-left: 6px solid #ef4444;
-}
-
-/* keep selected neutral pre-score overrides */
-.multichoice-choice.selected:not(.multichoice-correct):not(.multichoice-incorrect) {
-  background-color: #eef4ff;
-  border-left-color: #4f8cff;
-}
-
-/* Disabled cards state mapping */
+/* --- Disabled Cards Layout --- */
 .multichoice-choice.multichoice-disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
+
 .multichoice-choice.multichoice-disabled:hover {
   background: none;
 }
 
-/* ─────────────────────────────────────
-   Pseudo-elements validation icons fix
-────────────────────────────────────── */
+/* ==========================================================================
+   4. Live Evaluation Feedback Engine Styling
+   ========================================================================== */
+.multichoice-choice.multichoice-answer {
+  border-color: var(--mcq-answer-border);
+  background-color: var(--mcq-answer-bg);
+}
+
+.multichoice-choice.multichoice-correct {
+  background-color: var(--mcq-correct-bg) !important;
+  border-color: var(--mcq-correct-border);
+  border-left: 6px solid var(--mcq-correct-accent) !important;
+}
+
+.multichoice-choice.multichoice-incorrect {
+  background-color: var(--mcq-incorrect-bg) !important;
+  border-color: var(--mcq-incorrect-border);
+  border-left: 6px solid var(--mcq-incorrect-accent);
+}
+
+/* --- Pseudo-elements Validation Icon Mappings --- */
 .multichoice-choice label::after {
   font-weight: 600;
   padding-left: 0.5em;
   font-size: 1.1em;
 }
 
-/* Base correct answer mapping indicator (Neutral highlight) */
 .multichoice-choice.multichoice-answer label::after {
   content: "•";
-  color: #22c55e;
+  color: var(--mcq-answer-marker);
 }
 
-/* User selected a correct choice (Added dots to fix the class selector bug) */
 .multichoice-choice.multichoice-correct label::after {
   content: "✓";
-  color: #16a34a;
+  color: var(--mcq-correct-text);
 }
 
-/* User selected an incorrect choice */
 .multichoice-choice.multichoice-incorrect label::after {
   content: "✕";
-  color: #dc2626;
+  color: var(--mcq-incorrect-text);
 }
 
-
-/* ─────────────────────────────────────
-   Controls Global Panel
-────────────────────────────────────── */
+/* ==========================================================================
+   5. Action Controls Global Panel & Scoring Output
+   ========================================================================== */
 .multichoice-global-panel {
   display: flex;
   align-items: center;
@@ -160,31 +200,32 @@
   margin-top: 1.2rem;
   padding: 0.8rem 0;
   margin-bottom: 1.2rem;
-  border-top: 1px solid #e3e6ea;
-  border-bottom: 1px solid #e3e6ea;
+  border-top: 1px solid var(--mcq-light-divider);
+  border-bottom: 1px solid var(--mcq-light-divider);
+  transition: border-color 0.12s ease;
 }
 
-/* Buttons (shared properties structural grid maps) */
 .multichoice-global-panel button {
   font-size: 0.95em;
   padding: 0.5em 1em;
-  border-radius: 6px;
+  border-radius: var(--mcq-radius-sm);
   border: none;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.12s ease, transform 0.05s ease;
+  transition: var(--mcq-transition);
 }
 
 .multichoice-global-panel button:hover {
   filter: brightness(0.92);
 }
+
 .multichoice-global-panel button:active {
   transform: scale(0.97);
 }
 
 .multichoice-btn-score {
   background: #2563eb;
-  color: white;
+  color: #ffffff;
 }
 
 .multichoice-btn-reset {
@@ -198,30 +239,43 @@
   cursor: not-allowed;
 }
 
-/* Score badge classes */
+/* --- Score Badge Metric Class Blocks --- */
 .multichoice-output {
   margin-left: auto;
   font-weight: 600;
   padding: 0.4em 0.8em;
-  border-radius: 6px;
+  border-radius: var(--mcq-radius-sm);
   display: none;
   border: 1px solid transparent;
 }
 
 .multichoice-output.high {
-  background: #edfdf3 !important;
-  border-color: #22c55e !important;
-  color: #166534 !important;
+  background-color: var(--mcq-tier-high-bg) !important;
+  border-color: var(--mcq-tier-high-border) !important;
+  color: var(--mcq-tier-high-text) !important;
 }
 
 .multichoice-output.medium {
-  background: #fff7ed !important;
-  border-color: #f59e0b !important;
-  color: #9a3412 !important;
+  background-color: var(--mcq-tier-mid-bg) !important;
+  border-color: var(--mcq-tier-mid-border) !important;
+  color: var(--mcq-tier-mid-text) !important;
 }
 
 .multichoice-output.low {
-  background: #fff1f2 !important;
-  border-color: #ef4444 !important;
-  color: #9f1239 !important;
+  background-color: var(--mcq-tier-low-bg) !important;
+  border-color: var(--mcq-tier-low-border) !important;
+  color: var(--mcq-tier-low-text) !important;
+}
+
+/* ==========================================================================
+   6. Explicit Dark Theme Target Variant Configuration
+   ========================================================================== */
+.multichoice-block.theme-dark {
+  background-color: var(--mcq-dark-bg);
+  border-color: var(--mcq-dark-border);
+}
+
+.multichoice-block.theme-dark .multichoice-global-panel {
+  border-top-color: var(--mcq-dark-divider);
+  border-bottom-color: var(--mcq-dark-divider);
 }

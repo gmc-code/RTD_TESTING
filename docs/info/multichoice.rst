@@ -28,12 +28,18 @@ Options for the multichoice directive
      - Description
    * - ``:no-letters:``
      - flag
-     - If present, hides the alphabetical choice indicators (A, B, C...) from the list items.
+     - If present, hides the alphabetical choice indicators (A, B, C...).
    * - ``:no-shuffle:``
      - flag
-     - If present, forces the multiple choice options to stay fixed in their declared order instead of being randomized.
+     - | If present, forces the multiple choice options to
+       | stay fixed in their declared order instead of being randomized.
+   * - ``:theme:``
+     - string
+     - | If present, set the visual theme.
+       | Options are ``light`` (default) or ``dark``.
 
-| Shuffling: Unless ``:no-shuffle:`` is declared, choices are automatically randomized on page render and on Reset button clicks to eliminate position-based pattern guessing.
+
+| Shuffling: Unless ``:no-shuffle:`` is declared, choices are automatically randomized on page render and on Reset button clicks to elimin  position-based pattern guessing.
 | Selection Engine: The directive automatically changes selection inputs from single-choice radio buttons to multi-choice checkboxes if more than one option is marked correct ``[x]``.
 | Visual Badges: Once the evaluation button is selected, clear inline indicator icons (✓, ✕) show up next to each answer option along with context explanations.
 
@@ -127,11 +133,13 @@ Example 3: Single Correct (Unshuffled)
 Example 4: Code Block Layout Inside Question
 --------------------------------------------
 
-| You can combine embedded code block nodes smoothly into your interactive question layout spaces.
+| The following example demonstrates how to include a code block inside the question text.
+| Dark theme is used here to better highlight the code snippet.
 
 .. code-block:: rst
 
     .. multichoice::
+        :theme: dark
 
         What is the output of the following code?
 
@@ -147,6 +155,7 @@ Example 4: Code Block Layout Inside Question
         [ ] 7
 
 .. multichoice::
+    :theme: dark
 
     What is the output of the following code?
 
@@ -166,7 +175,7 @@ Example 4: Code Block Layout Inside Question
 Example 5: Multiple Correct Answers
 -----------------------------------
 
-| Declaring more than one correct bracket item ``[x]`` automatically swaps the internal submission control input engine from a radio select pattern into checkbox choices.
+| Checking more than one correct bracket item ``[x]`` automatically swaps from a radio selections to checkboxes.
 
 .. code-block:: rst
 

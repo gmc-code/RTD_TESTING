@@ -18,9 +18,10 @@ def visit_multichoice_html(self, node):
     shuffle_attr = str(node.get("shuffle", False)).lower()
     letters_attr = str(node.get("letters", False)).lower()
     single_attr = str(node.get("single_correct", False)).lower()
+    theme_attr = node.get("theme", "light")
 
     self.body.append(
-        f'<div class="multichoice-block" '
+        f'<div class="multichoice-block theme-{theme_attr}" '
         f'data-multichoice-single="{single_attr}" '
         f'data-multichoice-shuffle="{shuffle_attr}" '
         f'data-multichoice-letters="{letters_attr}">'
@@ -38,6 +39,7 @@ class multichoiceDirective(SphinxDirective):
     option_spec = {
         "no-shuffle": directives.flag,
         "no-letters": directives.flag,
+        "theme": lambda argument: directives.choice(argument, ("light", "dark")),
     }
 
     def run(self):
@@ -46,6 +48,7 @@ class multichoiceDirective(SphinxDirective):
         # Core options
         node["shuffle"] = "no-shuffle" not in self.options
         node["letters"] = "no-letters" not in self.options
+        node["theme"] = self.options.get("theme", "light")
 
         # ─────────────────────────────────────
         # Separate Question Block from Choice Block
@@ -79,7 +82,6 @@ class multichoiceDirective(SphinxDirective):
         in_explanation_mode = False
 
         for line in choice_lines:
-            # We preserve internal spaces but drop layout outer indents
             stripped = line.strip()
 
             # Case 1: Detect a brand new choice starting block
@@ -110,7 +112,6 @@ class multichoiceDirective(SphinxDirective):
             # Case 2: Continuation lines (Multi-line text or multi-line explanation)
             elif current_choice is not None and stripped:
                 if "|" in stripped:
-                    # Switch dynamically from writing text over to explanation processing
                     text_part, exp_part = stripped.split("|", 1)
 
                     if text_part.strip():
@@ -120,13 +121,11 @@ class multichoiceDirective(SphinxDirective):
                     in_explanation_mode = True
                 else:
                     if in_explanation_mode:
-                        # Append to existing explanation buffer
                         if current_choice["explanation"]:
                             current_choice["explanation"] += " " + stripped
                         else:
                             current_choice["explanation"] = stripped
                     else:
-                        # Append to regular choice string text buffer
                         current_choice["text"] += " " + stripped
 
         # Clean up any trailing whitespace strings from empty explanation nodes
@@ -200,4 +199,3 @@ def setup(app):
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
-
