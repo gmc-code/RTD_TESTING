@@ -1,56 +1,127 @@
-==============================================
-Earth Science: Plate Tectonics Cloze Activity
-==============================================
+================================================
+Cloze Directive Documentation
+================================================
 
-Drag the correct geological terminology from the word bank tray at the top of each block into its corresponding drop zone target inside the paragraphs below.
+The cloze directive creates an interactive drag-and-drop fill-in-the-blanks puzzle.
+Users can drag keywords from a randomized word bank tray and drop them into target drop zones nested inline inside code snippets or descriptive text.
 
-Exercise 1A: Earth's Layers and Plate Movement
-===============================================
+Syntax
+-------------------
+
+.. code-block:: rst
+
+    .. cloze::
+
+        Code text containing *[ target_keyword ]* markup blocks.
+
+Options for the cloze directive
+--------------------------------------
+
+.. list-table::
+   :widths: 35 20 40
+   :header-rows: 1
+
+   * - Option
+     - Type
+     - Description
+   * - ``:auto-distract:``
+     - flag
+     - | If present, dynamically harvests distractors from
+       | the surrounding text or alternate gap parameters.
+   * - ``:theme:``
+     - string
+     - | Sets the visual styling theme for the block layout.
+       | Acceptable values are ``light`` (default) or ``dark``.
+
+
+| Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
+| Single Items: An implicit markup pattern like ``*[ yield ]*`` designates a target drop field.
+| Multiple Choice: You can explicitly supply choices by separating alternatives with slashes: ``*[ choices / alternatives ]*``.
+| Distractor Harvesting: Applying the ``:auto-distract:`` flag commands the backend to look ahead, read the code context, and feed vocabulary selections automatically as distractors.
+| Structure: The directive creates a word bank container layer holding randomized draggable buttons and embeds corresponding drop target fields within the code passage layout.
+
+----
+
+Example 1: Basic Alternative Choices
+-------------------------------------------
+
+The following example explicitly supplies alternative keyword targets separated by slashes.
+
+.. code-block:: rst
+
+    .. cloze::
+
+        When creating a function in Python, you define it using the *[ def / function ]* keyword.
+
+
+.. cloze::
+
+    When creating a function in Python, you define it using the *[ def / function ]* keyword.
+
+
+----
+
+Example 2: Dark theme
+-------------------------------------------
+
+| The following example demonstrates the cloze directive with the dark theme.
+| `:theme: dark` is optional since it is not the default.
+
+.. code-block:: rst
+
+    .. cloze::
+        :theme: dark
+
+        To send a result back to the caller, you use *[ return / print ]*.
+
+.. cloze::
+    :theme: dark
+
+    To send a result back to the caller, you use *[ return / print ]*.
+
+
+----
+
+Example 3: Auto-Distract Flag Implementation
+---------------------------------------------
+
+| The following example relies on the ``:auto-distract:`` flag option.
+| The word bank will automatically pull vocabulary terms out of the block to act as distractors.
+
+.. code-block:: rst
+
+    .. cloze::
+        :auto-distract:
+
+        An *[ array ]* is a sequential structure that stores data elements.
+        You can look up specific data instances via an integer *[ index ]*.
 
 .. cloze::
     :auto-distract:
 
-    The Earth's rigid outer shell is broken into massive segments called *[ plates ]*.
-    This brittle outer layer is known as the *[ crust ]*.
+    An *[ array ]* is a sequential structure that stores data elements.
+    You can look up specific data instances via an integer *[ index ]*.
 
-Exercise 1A+ definitions
-===============================================
+----
 
-.. cloze::
+Example 4: Indentation is retained in code blocks
+---------------------------------------------------
 
-   *[Divergent Boundary]*  Plates pull apart from each other, creating new crust (e.g., Mid-Atlantic Ridge).
-   *[Convergent Boundary]* Plates collide into one another, forming mountains or subduction zones (e.g., Marianas Trench).
-   *[Transform Boundary]*  Plates slide horizontally past each other, causing friction and earthquakes (e.g., San Andreas Fault).
+| Demonstrating retention of indentation and formatting within a code block, while still allowing for interactive selection of choices from a dropdown menu.
 
+.. code-block:: rst
 
-Exercise 1B: Earth's Layers and Plate Movement
-===============================================
+    .. cloze::
 
-.. cloze::
-
-    The Earth's rigid outer shell is broken into massive segments called *[ tectonic plates ]*.
-    This brittle outer layer is scientifically known as the *[ lithosphere ]*, and it floats directly on top of a highly viscous, semi-fluid layer of the upper mantle.
-
-    The primary driving mechanism behind the movement of these massive plates is *[ convection currents ]* operating deep within the mantle, where heated material slowly rises, cools, and sinks back down.
-
-Exercise 2: Plate Boundaries (3 & 4 Choices)
-============================================
+        for number *[ in/of ]* range(1, 10):
+            if number % 2 == 0:
+                *[ continue / break / pass ]*
+            print(number)
 
 .. cloze::
 
-    When two tectonic plates slam directly into each other, they form a *[ convergent / divergent / transform ]* boundary, which often creates massive mountain ranges like the Himalayas.
-
-    Conversely, when plates are pulling apart from one another, they form a *[ divergent / convergent / transform / strike-slip ]* boundary. A famous oceanic example of this separation process is the Mid-Atlantic Ridge, where new seafloor is actively being created.
-
-    When plates grind past each other horizontally without destroying or creating crust, it is classified as a *[ transform / fault line / subduction / divergent ]* boundary. The San Andreas Fault in California is a textbook example of this mechanism.
-
-Exercise 3: Subduction and Volcanism
-====================================
-
-.. cloze::
-
-    When an oceanic plate collides with a less dense continental plate, the heavier oceanic plate is forced downward into the mantle in a process called *[ subduction / rift valley formation / faulting ]*.
-
-    This downward dropping action occurs at deep structural depressions on the seafloor known as oceanic *[ trenches / ridges / plates / basins ]*.
-    As the sinking plate melts, magma forces its way to the surface, creating explosive chains of volcanoes like those found along the Pacific *[ Ring of Fire / Atlantic Trench / San Andreas Boundary ]*.
+    for number *[ in/of ]* range(1, 10):
+        if number % 2 == 0:
+            *[ continue / break / pass ]*
+        print(number)
 

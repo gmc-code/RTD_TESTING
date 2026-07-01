@@ -1,20 +1,71 @@
 /* ==========================================================================
-   1. Base Component Layout
+   1. Design Token System & Global Variables
+   ========================================================================== */
+:root {
+  /* Common Core Tokens */
+  --or-radius-lg: 8px;
+  --or-radius-md: 6px;
+  --or-radius-sm: 4px;
+  --or-transition: all 0.2s ease;
+
+  /* Light Theme Palette (Default Style Configuration) */
+  --or-light-bg: #ffffff;         /* Pure White Base Canvas */
+  --or-light-border: #e2e8f0;     /* Slate 200 Outer Rim */
+  --or-light-text: #334155;       /* Slate 700 Instructions Text */
+  --or-light-runway: #f8fafc;     /* Slate 50 Inner Runway Container */
+  --or-light-row-bg: #ffffff;     /* Active Draggable Items Background */
+  --or-light-row-border: #e2e8f0; /* Item Border Rim */
+  --or-light-code: #0f172a;       /* Slate 900 Code Typography Clarity */
+
+  /* Dark Theme Structural Palette (Premium Pastel Sky/Ice Blue Layout) */
+  --or-dark-bg: #d8f1ff;          /* Soft Calming Pastel Sky/Ice Blue */
+  --or-dark-border: #bae6fd;      /* Clean Outer Rim Accent Border */
+  --or-dark-text: #0369a1;        /* Deep Ocean Blue High Contrast Instructions */
+  --or-dark-runway: #e0f2fe;      /* Softer Pastel Sky Runway Background */
+  --or-dark-row-bg: #eef6ff;      /* Draggable Code Lines Base White/Blue Tint */
+  --or-dark-row-border: #cbd5e1;  /* Medium Light Grey Structural Row Seam */
+  --or-dark-code: #0f172a;        /* Crystal Clear Dark Text Vector Ink */
+
+  /* Validation Feedback System Tokens */
+  --or-correct-bg: #f0fdf4;
+  --or-correct-border: #22c55e;
+  --or-correct-border-dark: #4ade80;
+  --or-correct-text: #15803d;
+  --or-correct-text-dark: #166534;
+
+  --or-incorrect-bg: #fef2f2;
+  --or-incorrect-border: #ef4444;
+  --or-incorrect-border-dark: #f87171;
+  --or-incorrect-text: #b91c1c;
+  --or-incorrect-text-dark: #991b1b;
+
+  --or-tier-mid-bg: #fef3c7;
+  --or-tier-mid-border: #f59e0b;
+  --or-tier-mid-text: #78350f;
+  --or-tier-mid-bg-dark: #fef08a;
+  --or-tier-mid-border-dark: #eab308;
+  --or-tier-mid-text-dark: #713f12;
+}
+
+/* ==========================================================================
+   2. Component Base Structural Architecture (Standard Component Config)
    ========================================================================== */
 .ordering-block {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  background-color: var(--or-light-bg);
+  border: 1px solid var(--or-light-border);
+  border-radius: var(--or-radius-lg);
   padding: 1.5rem;
   margin-bottom: 2rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: var(--or-transition);
 }
 
 .ordering-instructions {
   font-weight: 600;
   margin-bottom: 1rem;
   font-size: 1rem;
-  transition: color 0.2s ease;
+  color: var(--or-light-text);
+  transition: var(--or-transition);
 }
 
 .ordering-container {
@@ -22,25 +73,34 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: var(--or-radius-md);
   min-height: 100px;
+  background-color: var(--or-light-runway);
+  border: 1px solid #cbd5e1;
+  transition: var(--or-transition);
 }
 
 .ordering-line {
   display: flex;
   align-items: center;
-  border-radius: 6px;
   padding: 0.85rem 0.95rem;
+  background-color: var(--or-light-row-bg);
+  border: 1px solid var(--or-light-row-border);
+  border-radius: var(--or-radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   cursor: grab;
   user-select: none;
   transition: all 0.15s ease;
-
-  /* Use CSS variable to dynamically adjust indentation padding shifts */
   padding-left: calc(0.95rem + (var(--indent-level) * 32px));
 }
 
 .ordering-line:active {
   cursor: grabbing;
+}
+
+.ordering-line:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .ordering-handle {
@@ -49,13 +109,13 @@
   font-weight: bold;
 }
 
-/* Target with higher specificity to override default Sphinx theme constraints */
 .rst-content .ordering-block .ordering-code,
 .ordering-container .ordering-code {
   font-family: "Consolas", "Courier New", Courier, monospace;
   font-size: 1.1rem;
   flex-grow: 1;
   white-space: pre;
+  color: var(--or-light-code);
 }
 
 .ordering-indent-controls {
@@ -65,7 +125,10 @@
 }
 
 .indent-btn {
-  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--or-radius-sm);
   padding: 0.25rem 0.6rem;
   font-size: 0.9rem;
   cursor: pointer;
@@ -73,100 +136,38 @@
   transition: all 0.1s ease;
 }
 
-/* ==========================================================================
-   2. Light Theme Configuration (Default Style)
-   ========================================================================== */
-.ordering-block:not(:has(.theme-dark)),
-.ordering-block:has(.theme-light) {
-  background-color: #ffffff;
-  border-color: #e2e8f0;
-}
-
-.ordering-block:not(:has(.theme-dark)) .ordering-instructions,
-.ordering-block:has(.theme-light) .ordering-instructions {
-  color: #334155;
-}
-
-.ordering-container.theme-light {
-  background-color: #f8fafc;
-  border: 1px solid #cbd5e1;
-}
-
-.ordering-container.theme-light .ordering-line {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.ordering-container.theme-light .ordering-line:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.ordering-container.theme-light .ordering-code {
-  color: #0f172a;
-}
-
-.ordering-container.theme-light .indent-btn {
-  background-color: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-}
-
-.ordering-container.theme-light .indent-btn:hover {
+.indent-btn:hover {
   background-color: #e2e8f0;
   color: #0f172a;
 }
 
-.ordering-container.theme-light .ordering-line.dragging {
+.ordering-line.dragging {
   opacity: 0.5;
   border: 2px dashed #3b82f6;
   background-color: #eff6ff;
   box-shadow: none;
 }
 
-/* Validation Feedback (Light Theme) */
-.ordering-container.theme-light .ordering-line.correct-line {
-  border-color: #22c55e !important;
-  background-color: #f0fdf4 !important;
-}
-.ordering-container.theme-light .ordering-line.correct-line .ordering-code {
-  color: #15803d !important;
-}
-
-.ordering-container.theme-light .ordering-line.incorrect-line {
-  border-color: #ef4444 !important;
-  background-color: #fef2f2 !important;
-}
-.ordering-container.theme-light .ordering-line.incorrect-line .ordering-code {
-  color: #b91c1c !important;
-}
-
 /* ==========================================================================
-   3. Pastel Colorful Theme Configuration (UPDATED)
+   3. Unified Dark Theme Layout Inversions
    ========================================================================== */
-
-/* Outer box container shifts to a soft, calming pastel sky/ice blue */
 .ordering-block:has(.theme-dark) {
-  background-color: #d8f1ff;
-  border-color: #bae6fd;
+  background-color: var(--or-dark-bg);
+  border-color: var(--or-dark-border);
 }
 
-/* Deep ocean blue for instructions—vibrant, yet perfectly accessible on light blue */
 .ordering-block:has(.theme-dark) .ordering-instructions {
-  color: #0369a1; /* Fixed for high text contrast visibility */
+  color: var(--or-dark-text);
 }
 
-/* Inner runway container shifts to a slightly softer pastel sky runway background */
 .ordering-container.theme-dark {
-  background-color: #e0f2fe;
-  border: 1px solid #bae6fd;
+  background-color: var(--or-dark-runway);
+  border-color: var(--or-dark-border);
 }
 
-/* Draggable code lines match the clean white block layout style */
 .ordering-container.theme-dark .ordering-line {
-  background-color: #eef6ff;
-  border: 1px solid #cbd5e1;
+  background-color: var(--or-dark-row-bg);
+  border-color: var(--or-dark-row-border);
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
@@ -175,12 +176,10 @@
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
 }
 
-/* Perfect high-contrast dark text sitting on top of white blocks */
 .ordering-container.theme-dark .ordering-code {
-  color: #0f172a !important;
+  color: var(--or-dark-code) !important;
 }
 
-/* Clean control buttons nested inside the white line items */
 .ordering-container.theme-dark .indent-btn {
   background-color: #f1f5f9;
   color: #475569;
@@ -192,7 +191,6 @@
   color: #0f172a;
 }
 
-/* Dragging state styled with a soft pastel blue tint */
 .ordering-container.theme-dark .ordering-line.dragging {
   opacity: 0.6;
   border: 2px dashed #38bdf8;
@@ -200,24 +198,8 @@
   box-shadow: none;
 }
 
-/* Validation Feedback (Clean, distinct pastel green/red feedback bounds) */
-.ordering-container.theme-dark .ordering-line.correct-line {
-  border-color: #4ade80 !important;
-  background-color: #f0fdf4 !important;
-}
-.ordering-container.theme-dark .ordering-line.correct-line .ordering-code {
-  color: #166534 !important;
-}
-
-.ordering-container.theme-dark .ordering-line.incorrect-line {
-  border-color: #f87171 !important;
-  background-color: #fef2f2 !important;
-}
-.ordering-container.theme-dark .ordering-line.incorrect-line .ordering-code {
-  color: #991b1b !important;
-}
 /* ==========================================================================
-   4. Control Buttons and Feedback State Badges (UPDATED)
+   4. Control Interface Action Triggers & Buttons
    ========================================================================== */
 .ordering-line.disabled {
   cursor: not-allowed;
@@ -238,7 +220,7 @@
 .ordering-controls button {
   padding: 0.55rem 1.2rem;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: var(--or-radius-md);
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
@@ -249,62 +231,103 @@
   transform: scale(0.98);
 }
 
-.ordering-btn-score {
-  background-color: #2563eb;
-  color: white;
-}
-.ordering-btn-score:hover { background-color: #1d4ed8; }
-
-.ordering-btn-reset {
-  background-color: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1 !important;
-}
-.ordering-btn-reset:hover { background-color: #e2e8f0; }
-
-/* Reset button adjustments when nested inside the pastel sky layout */
-.ordering-block:has(.theme-dark) .ordering-btn-reset {
-  background-color: #ffffff;
-  color: #0369a1; /* Matching the deep ocean blue */
-  border: 1px solid #bae6fd !important;
-}
-.ordering-block:has(.theme-dark) .ordering-btn-reset:hover {
-  background-color: #f0f9ff;
-  color: #0369a1;
-}
-
-/* Solution Button Base Styling */
-.ordering-btn-solution {
-  background-color: #0d9488;
-  color: white !important; /* Force text color to white */
-}
-.ordering-btn-solution:hover {
-  background-color: #0f766e;
-}
-
-/* FIXED: Solution button adjustments for your light pastel background environment */
-.ordering-block:has(.theme-dark) .ordering-btn-solution {
-  background-color: #0f766e; /* Slightly deeper teal to pop off the light blue background */
-  color: #ffffff !important;  /* Keeps the button text perfectly white */
-}
-.ordering-block:has(.theme-dark) .ordering-btn-solution:hover {
-  background-color: #115e59; /* Richer hover effect */
-}
-
-/* Button disabled appearance rules */
 .ordering-controls button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
+/* Primary Action: Check Button */
+.ordering-btn-score {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+.ordering-btn-score:hover {
+  background-color: #1d4ed8;
+}
+
+/* Secondary Action: Reset Button Layout Rules */
+.ordering-btn-reset {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1 !important;
+}
+.ordering-btn-reset:hover {
+  background-color: #e2e8f0;
+}
+
+/* Tertiary Action: Solution View Button Styling */
+.ordering-btn-solution {
+  background-color: #0d9488;
+  color: #ffffff !important;
+}
+.ordering-btn-solution:hover {
+  background-color: #0f766e;
+}
+
+/* ---- Dark Theme Control Custom Overrides ---- */
+.ordering-block:has(.theme-dark) .ordering-btn-reset {
+  background-color: #ffffff;
+  color: var(--or-dark-text);
+  border: 1px solid var(--or-dark-border) !important;
+}
+.ordering-block:has(.theme-dark) .ordering-btn-reset:hover {
+  background-color: #f0f9ff;
+  color: var(--or-dark-text);
+}
+
+.ordering-block:has(.theme-dark) .ordering-btn-solution {
+  background-color: #0f766e;
+  color: #ffffff !important;
+}
+.ordering-block:has(.theme-dark) .ordering-btn-solution:hover {
+  background-color: #115e59;
+}
+
 /* ==========================================================================
-   5. Dynamic Score Tier Layout Updates (RIGHT ALIGNED)
+   5. Interactive Evaluation Logic States (Inline & Full Container Verification)
+   ========================================================================== */
+/* Light Theme Feedback Evaluation States */
+.ordering-container.theme-light .ordering-line.correct-line {
+  border-color: var(--or-correct-border) !important;
+  background-color: var(--or-correct-bg) !important;
+}
+.ordering-container.theme-light .ordering-line.correct-line .ordering-code {
+  color: var(--or-correct-text) !important;
+}
+
+.ordering-container.theme-light .ordering-line.incorrect-line {
+  border-color: var(--or-incorrect-border) !important;
+  background-color: var(--or-incorrect-bg) !important;
+}
+.ordering-container.theme-light .ordering-line.incorrect-line .ordering-code {
+  color: var(--or-incorrect-text) !important;
+}
+
+/* Dark Theme Feedback Evaluation States */
+.ordering-container.theme-dark .ordering-line.correct-line {
+  border-color: var(--or-correct-border-dark) !important;
+  background-color: var(--or-correct-bg) !important;
+}
+.ordering-container.theme-dark .ordering-line.correct-line .ordering-code {
+  color: var(--or-correct-text-dark) !important;
+}
+
+.ordering-container.theme-dark .ordering-line.incorrect-line {
+  border-color: var(--or-incorrect-border-dark) !important;
+  background-color: var(--or-incorrect-bg) !important;
+}
+.ordering-container.theme-dark .ordering-line.incorrect-line .ordering-code {
+  color: var(--or-incorrect-text-dark) !important;
+}
+
+/* ==========================================================================
+   6. Dynamic Score Tier Badges (Right Aligned Container)
    ========================================================================== */
 .ordering-feedback-badge {
   font-weight: 700;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--or-radius-md);
   display: none;
   font-size: 0.95rem;
   border: 1px solid transparent;
@@ -315,45 +338,40 @@
 
 /* Light Theme Badges */
 .ordering-feedback-badge.high {
-  background-color: #dcfce7;
-  border-color: #22c55e;
-  color: #166534;
+  background-color: var(--or-correct-bg);
+  border-color: var(--or-correct-border);
+  color: var(--or-correct-text);
 }
-
 .ordering-feedback-badge.medium {
-  background-color: #fef3c7;
-  border-color: #f59e0b;
-  color: #78350f;
+  background-color: var(--or-tier-mid-bg);
+  border-color: var(--or-tier-mid-border);
+  color: var(--or-tier-mid-text);
 }
-
 .ordering-feedback-badge.low {
-  background-color: #fee2e2;
-  border-color: #ef4444;
-  color: #991b1b;
+  background-color: var(--or-incorrect-bg);
+  border-color: var(--or-incorrect-border);
+  color: var(--or-incorrect-text);
 }
 
-/* FIXED: Score Badges adjusted for a light pastel sky backdrop */
-/* Using rich background tints and deeper text colors for crystal clear accessibility */
+/* Dark Theme Badge Overrides */
 .ordering-block:has(.theme-dark) .ordering-feedback-badge.high {
-  background-color: #bbf7d0; /* Soft solid green */
-  border-color: #22c55e;
-  color: #14532d;            /* Deep dark green text */
+  background-color: #bbf7d0;
+  border-color: var(--or-correct-border);
+  color: #14532d;
 }
-
 .ordering-block:has(.theme-dark) .ordering-feedback-badge.medium {
-  background-color: #fef08a; /* Soft solid yellow/amber */
-  border-color: #eab308;
-  color: #713f12;            /* Deep dark amber text */
+  background-color: var(--or-tier-mid-bg-dark);
+  border-color: var(--or-tier-mid-border-dark);
+  color: var(--or-tier-mid-text-dark);
 }
-
 .ordering-block:has(.theme-dark) .ordering-feedback-badge.low {
-  background-color: #fecaca; /* Soft solid red */
-  border-color: #ef4444;
-  color: #7f1d1d;            /* Deep dark red text */
+  background-color: #fecaca;
+  border-color: var(--or-incorrect-border);
+  color: #7f1d1d;
 }
 
 /* ==========================================================================
-   6. Blank Lines
+   7. Blank Formatting Line Structural Placeholders
    ========================================================================== */
 .ordering-line.blank-line-placeholder {
   min-height: 2.8rem;
@@ -366,7 +384,6 @@
   opacity: 0.4;
 }
 
-/* FIXED: Changed to a softer grey to blend better with charcoal backgrounds */
 .theme-dark .ordering-line.blank-line-placeholder .ordering-code::before {
   color: #a3a3a3 !important;
 }

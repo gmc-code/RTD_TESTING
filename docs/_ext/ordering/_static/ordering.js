@@ -9,6 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedbackBadge = block.querySelector(".ordering-feedback-badge");
     const initialHTML = container.innerHTML;
 
+    // Helper to dynamically shuffle DOM lines on load and reset
+    function shuffleLines() {
+      const lines = Array.from(container.querySelectorAll(".ordering-line"));
+      for (let i = lines.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        container.appendChild(lines[j]);
+      }
+    }
+
     // Initializes dragging mechanics, click-to-indent listeners, and DOM listeners
     function initPuzzleEvents() {
       const lines = container.querySelectorAll(".ordering-line");
@@ -138,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
       feedbackBadge.className = "ordering-feedback-badge medium";
     });
 
-    // 3. Reset Engine Mechanics (Restores scoring button)
+    // 3. Reset Engine Mechanics (Restores scoring button and reshuffles blocks)
     btnReset.addEventListener("click", () => {
       container.innerHTML = initialHTML;
       feedbackBadge.style.display = "none";
@@ -147,10 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Restore click capability back to score updates safely
       btnScore.disabled = false;
 
-      initPuzzleEvents();
+      shuffleLines();     // Dynamically reshuffle positions on reset trigger
+      initPuzzleEvents(); // Re-attach event listeners to the newly cleaned DOM nodes
     });
 
-    // First structural execution bind pass
+    // First structural execution pass (shuffles on page load)
+    shuffleLines();
     initPuzzleEvents();
   });
 });

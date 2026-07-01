@@ -49,20 +49,20 @@ class classifyingDirective(SphinxDirective):
         # Shuffle the items so they don't appear in order
         random.shuffle(items)
 
-        # 3. Generate HTML Output inside your Pastel UI Container
-        html_output = '<div class="classifying-block">'
-        html_output += '<div class="classifying-instructions">Classify each feature into its correct plate boundary category:</div>'
-        html_output += f'<div class="classifying-container theme-{chosen_theme}">'
+        # 3. Generate HTML Output inside your Container (Theme class attached to outer block)
+        html_output = f'<div class="classifying-block {chosen_theme}">'
+        html_output += '<div class="classifying-instructions">Classify each item into its correct category:</div>'
+        html_output += '<div class="classifying-container">' # Removed theme-dark from here
 
-        # Loop through shuffled items
         for item in items:
             html_output += f'''
             <div class="classifying-line">
-                <span class="classifying-code" style="color: #0f172a; font-weight: 500;">{html.escape(item['text'])}</span>
+                <span class="classifying-code">{html.escape(item['text'])}</span>
                 <div class="classifying-indent-controls" style="margin-left: auto;">
-                    <select class="sorting-select" data-correct-bin="{item['correct_bin']}" style="padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid #bae6fd;">
+                    <select class="sorting-select" data-correct-bin="{item['correct_bin']}">
                         <option value="">-- Select Bin --</option>
             '''
+
             for idx, bin_name in enumerate(bin_names):
                 html_output += f'<option value="{idx}">{html.escape(bin_name)}</option>'
 

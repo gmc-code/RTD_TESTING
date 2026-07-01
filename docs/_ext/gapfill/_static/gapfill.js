@@ -2,19 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const blocks = Array.from(document.querySelectorAll(".gapfill-block"))
   if (blocks.length === 0) return
 
-  // Shuffles options and resets validation text spans
+  // Sorts options alphabetically (A to Z) and resets validation UI elements
   function initBlock(block) {
     block.querySelectorAll(".gapfill-dropdown").forEach(select => {
       const options = Array.from(select.options)
-      const placeholder = options.shift()
+      const placeholder = options.shift() // Save the "-- Choose --" element
 
-      for (let i = options.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [options[i], options[j]] = [options[j], options[i]]
-      }
+      // Sort remaining option elements alphabetically from A to Z
+      options.sort((a, b) => a.text.localeCompare(b.text, undefined, { sensitivity: 'base' }))
 
       select.innerHTML = ""
-      select.add(placeholder)
+      select.add(placeholder) // Restore placeholder at the top
       options.forEach(opt => select.add(opt))
     })
 
@@ -34,52 +32,56 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial Run
   blocks.forEach(b => initBlock(b))
 
-  // Build Unified Control Panel Toolbar
-  const panel = document.createElement("div")
-  panel.className = "gapfill-global-panel"
+  // Build Unified Control Panel Toolbar for each block instead of globally to prevent collisions
+  blocks.forEach(block => {
+    const panel = document.createElement("div")
+    panel.className = "gapfill-global-panel"
 
-  const btnScore = document.createElement("button")
-  btnScore.type = "button"
-  btnScore.className = "gapfill-btn-score"
-  btnScore.textContent = "Score Page"
+    const scoreBtn = document.createElement("button")
+    scoreBtn.className = "gapfill-btn-score"
+    scoreBtn.textContent = "Check Answers"
 
-  const btnReset = document.createElement("button")
-  btnReset.type = "button"
-  btnReset.className = "gapfill-btn-reset"
-  btnReset.textContent = "Reset Page"
+    const resetBtn = document.createElement("button")
+    resetBtn.className = "gapfill-btn-reset"
+    resetBtn.textContent = "Reset"
 
-  const scoreBadge = document.createElement("span")
-  scoreBadge.className = "gapfill-output"
+    const scoreBadge = document.createElement("div")
+    scoreBadge.className = "gapfill-output"
 
-  panel.append(btnScore, btnReset, scoreBadge)
-  const lastBlock = blocks[blocks.length - 1]
-  lastBlock.parentNode.insertBefore(panel, lastBlock.nextSibling)
+    panel.appendChild(scoreBtn)
+    panel.appendChild(resetBtn)
+    panel.appendChild(scoreBadge)
+    block.appendChild(panel)
 
-  // Evaluation Routine
-  function doScore() {
+    scoreBtn.addEventListener("click", () => doScore(block, scoreBadge))
+    resetBtn.addEventListener("click", () => doReset(block, scoreBadge))
+  })
+
+  function doScore(block, scoreBadge) {
     let totalGaps = 0
     let correctGaps = 0
 
-    blocks.forEach(block => {
-      block.querySelectorAll(".gapfill-input").forEach(input => {
+    block.querySelectorAll(".gapfill-wrapper").forEach(wrapper => {
+      const inputs = wrapper.querySelectorAll(".gapfill-input")
+      inputs.forEach(input => {
         totalGaps++
         const val = input.value.trim().toLowerCase()
         const expectedValue = input.dataset.correct
 
-        // Find the specific inline text span container companion sitting directly next to this dropdown box
+        // Find the specific inline text span companion sitting directly next to this dropdown box
         const feedbackBadge = input.nextElementSibling
         let isCorrect = (val && val === expectedValue)
 
         if (isCorrect) {
           input.classList.add("correct")
           feedbackBadge.textContent = " ✓"
-          feedbackBadge.classList.add("text-correct")
+          feedbackBadge.className = "gapfill-inline-feedback text-correct"
           correctGaps++
         } else {
           input.classList.add("incorrect")
           // Reveal both cross icon AND correct missing string solution text
           feedbackBadge.textContent = ` ✕ (Ans: ${expectedValue})`
-          feedbackBadge.classList.add("text-incorrect")
+          feedbackBadge.className = "gapfill-inline-feedback text-incorrect"
         }
         input.disabled = true
       })
@@ -88,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render Bottom Score Box
     scoreBadge.textContent = `Score: ${correctGaps} / ${totalGaps}`
     scoreBadge.style.display = "inline-block"
-    scoreBadge.classList.remove("high", "medium", "low")
+    scoreBadge.className = "gapfill-output"
 
     const percent = totalGaps === 0 ? 0 : correctGaps / totalGaps
     if (percent >= 0.8) scoreBadge.classList.add("high")
@@ -96,11 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
     else scoreBadge.classList.add("low")
   }
 
-  function doReset() {
+  function doReset(block, scoreBadge) {
+    initBlock(block)
     scoreBadge.style.display = "none"
-    blocks.forEach(b => initBlock(b))
+    scoreBadge.className = "gapfill-output"
+    scoreBadge.textContent = ""
   }
-
-  btnScore.onclick = doScore
-  btnReset.onclick = doReset
 })

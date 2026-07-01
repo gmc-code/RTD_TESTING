@@ -18,11 +18,10 @@ These docs provide a simple details for sphinx testing
 
     info/Intro.rst
 
-    info/multiple_choice_info.rst
-    info/multiple_choice_directive_info.rst
-    info/multiple_choice_score.rst
-
+    info/multichoice.rst
     info/gapfill.rst
     info/cloze.rst
     info/ordering.rst
     info/classifying.rst
+
+

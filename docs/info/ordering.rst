@@ -29,10 +29,11 @@ options for the ordering directive
 +------------------+--------+-----------------------------------------------------------+
 
 | Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
-|
+| Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
+| Visual Badges: When validated, inline symbols provide quick feedback right alongside choices.
 | Empty Lines: You may include empty lines within the block; the directive will render them as placeholders that users can drag to maintain formatting structure.
-|
 | Structure: The directive creates an interactive <div> block with handle controls (☰) for reordering and buttons («, ») for adjusting indentation.
+
 
 
 ----
@@ -135,7 +136,7 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 ----
 
-Example 4: blanks lines
+Example 5: blanks lines
 -------------------------------------
 
 | The following example demonstrates the ordering directive with blank lines included. The directive will render them as placeholders that users can drag to maintain formatting structure.

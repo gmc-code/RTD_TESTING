@@ -8,7 +8,6 @@ from sphinx.util.docutils import SphinxDirective
 class ordering_node(nodes.General, nodes.Element):
     pass
 
-# Simplified node visitor methods since classes are dynamically handled in run()
 def visit_ordering_html(self, node):
     pass
 
@@ -37,7 +36,9 @@ class OrderingDirective(SphinxDirective):
 
         # Check if the :no-solution: flag was provided in rST
         hide_solution = 'no-solution' in self.options
-        extra_block_class = " hide-solution" if hide_solution else ""
+
+        # FIXED: Safe inline style variable that keeps JS happy but hides the button visually
+        solution_btn_style = 'style="display: none !important;"' if hide_solution else ''
 
         line_items = []
         for index, line in enumerate(raw_lines):
@@ -57,15 +58,13 @@ class OrderingDirective(SphinxDirective):
         shuffled_items = line_items.copy()
         random.shuffle(shuffled_items)
 
-        # Main wrapper structure updated to conditionally attach the hide-solution class
-        html_output = f'<div class="ordering-block{extra_block_class}">'
+        html_output = '<div class="ordering-block">'
         html_output += '<div class="ordering-instructions">Drag and drop lines into the correct order and click to adjust indentation:</div>'
         html_output += f'<div class="ordering-container theme-{chosen_theme}">'
 
         for item in shuffled_items:
-            # If it's a blank line, show a visual placeholder so the user can see/drag it
             if item['is_blank']:
-                display_text = " "  # Use non-breaking space or an empty string
+                display_text = " "
                 extra_class = " blank-line-placeholder"
             else:
                 display_text = html.escape(item['text'])
@@ -88,10 +87,11 @@ class OrderingDirective(SphinxDirective):
             '''
         html_output += '</div>'
 
-        html_output += '''
+        # Control panel containing the safely hidden inline solution button
+        html_output += f'''
         <div class="ordering-controls">
             <button type="button" class="ordering-btn-score">Check Order</button>
-            <button type="button" class="ordering-btn-solution">Show Solution</button>
+            <button type="button" class="ordering-btn-solution" {solution_btn_style}>Show Solution</button>
             <button type="button" class="ordering-btn-reset">Reset</button>
             <span class="ordering-feedback-badge"></span>
         </div>
@@ -104,7 +104,6 @@ class OrderingDirective(SphinxDirective):
 
 def setup(app):
     app.add_node(ordering_node, html=(visit_ordering_html, depart_ordering_html))
-    # UPDATED REGISTERED DIRECTIVE NAME HERE
     app.add_directive("ordering", OrderingDirective)
     app.add_js_file("ordering.js")
     app.add_css_file("ordering.css")

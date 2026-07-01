@@ -1,80 +1,124 @@
 ================================================
-Python Data Structures: Gap-Fill Practice
+Gapfill Directive Documentation
 ================================================
 
-Test your understanding of Python lists and dictionaries by filling in the blanks or choosing the correct syntax options below.
+The gapfill directive creates an interactive "Fill-in-the-Blanks" text or code exercise.
+Users can select the correct terms from inline dropdown boxes embedded directly within the paragraph or code structure.
 
-Exercise 1: List Basics
-=======================
+Syntax
+-------------------
 
-This section covers initializing, modifying, and measuring Python lists.
+.. code-block:: rst
 
-.. gapfill::
+    .. gapfill::
 
-   To create an empty list named ``fruits``, you write:
-   fruits = []
+        Your text goes here with a *[correct_option/incorrect_1/incorrect_2]* placeholder.
 
-   If you want to add "apple" to the end of that list, use the method:
-   fruits.append("apple")
+Options for the gapfill directive
+--------------------------------------
 
-   To find out how many items are currently in your list, you wrap it in the *[len/length/count]* function.
 
-Exercise 2: List Slicing & Indices (3 Choices)
-==============================================
++------------------+--------+-----------------------------------------------------------+
+| Option           | Type   | Description                                               |
++==================+========+===========================================================+
+| ``:theme:``      | string | Set the visual theme. Options are ``light`` (default)     |
+|                  |        | or ``dark``.                                              |
++------------------+--------+-----------------------------------------------------------+
 
-Test your index knowledge. Remember that Python uses zero-based indexing!
 
-.. gapfill::
+| Syntax Rules: Inline dropdown segments are declared using the sequence format
+| ``*[correct/incorrect/incorrect_2]*``.
+| Correct Answer: The **first** element inside the bracketed option block represents the correct target validation key.
+| Shuffling: The directive automatically shuffles options alphabetically when rendering choices to prevent positioning giveaways.
+| Dual-Option Fallback: If you only specify a single word like ``*[answer]*``, the directive automatically generates a generic placeholder fallback choice.
 
-   Consider the list: ``numbers = [10, 20, 30, 40, 50]``
+----
 
-   To access the very first element (10), you use the index:
-   first_item = numbers[*[0/1/-1]*]
+Example 1: Single Sentences
+------------------------------------
 
-   To get the last element (50) dynamically without knowing the length, use a negative index:
-   last_item = numbers[*[-1/-2/-3]*]
+| The following example demonstrates a simple gap with 3 alternative choices.
+| The correct answer is the first option in the list.
 
-   To slice the list and get ``[20, 30, 40]``, your start and stop bounds must be:
-   sub_list = numbers[*[1:4/1:3/0:3]*]
+.. code-block:: rst
 
-Exercise 3: Dictionary Basics (2 Choices)
-=========================================
-Dictionaries store data in key-value pairs.
+    .. gapfill::
 
-.. gapfill::
-
-   Dictionaries are defined using *[curly braces / square brackets]*.
-
-   Let's create a profile dictionary:
-   user = {"name": "Alice", "age": 30}
-
-   In this dictionary, "name" and "age" are the *[keys/values]*, while "Alice" and 30 are the values.
-
-   If you try to access a key that doesn't exist using ``user["id"]``, Python throws a *[KeyError/ValueError]*.
-
-Exercise 4: Advanced Dictionary Methods (4 Choices)
-===================================================
-This exercise tests safety methods, removing items, and extraction loops using a 4-choice dropdown layout.
+        In Python, boolean values must be capitalized as *[True/true/TRUE]* or False.
 
 .. gapfill::
 
-   To safely fetch a value from a dictionary without risking a crash if the key is missing, you should use the *[get/fetch/retrieve/extract]* method.
+    In Python, boolean values must be capitalized as *[True/true/TRUE]* or False.
 
-   If you want to completely remove a key-value pair and capture its value at the same time, use the *[pop/remove/delete/discard]* method.
+----
 
-   To loop through both the keys and the values simultaneously in a ``for`` loop, you must chain the *[items()/keys()/values()/pairs()]* method onto your dictionary variable.
+Example 2: Dark theme
+------------------------------------
 
-Exercise 5: Mixed Syntax Challenge
-==================================
-A final rapid-fire mix of free-text entry inputs and dropdown choices.
+| The following example demonstrates the gapfill directive with the dark theme. `:theme: dark` is optional since it is not the default.
+
+.. code-block:: rst
+
+    .. gapfill::
+        :theme: dark
+
+        To execute code conditionally, use the *[if/None/else]* keyword followed by an expression.
+
+.. gapfill::
+    :theme: dark
+
+    To execute code conditionally, use the *[if/None/else]* keyword followed by an expression.
+
+----
+
+Example 3: Single Parameter
+-------------------------------------------------
+
+The following example shows what happens when omitting an alternative choice option. The directive creates an alternative fallback choice automatically.
+
+.. code-block:: rst
+
+    .. gapfill::
+
+        Python is an *[interpreted]* programming language.
+
 
 .. gapfill::
 
-   If you want to completely empty all elements from a list or dictionary, use the [clear] method.
+    Python is an *[interpreted]* programming language.
 
-   Lists are mutable, meaning they can be changed, while *[tuples/strings/sets]* are an example of an immutable sequence type.
 
-   To sort a list in-place permanently, use the [sort] method, but to return a new sorted copy without changing the original list, use the *[sorted/sort_new/arrange]* function.
+----
+
+Example 4: Multiple Options inside Code Snippets
+--------------------------------------------------
+
+| The example shows the preservation of indentation and formatting within the code block, while still allowing for interactive selection of choices from a dropdown menu.
+
+.. code-block:: rst
+
+    .. gapfill::
+
+        def find_max(numbers):
+            max_val = numbers[*[0/1]*]
+            for num in *[numbers/max_val]*:
+                if num *[>/==/<]* max_val:
+                    max_val = *[num/0]*
+            return max_val
+
+        *[print/return]*(find_max([1, 5, 9]))
+
+
+.. gapfill::
+
+    def find_max(numbers):
+        max_val = numbers[*[0/1]*]
+        for num in *[numbers/max_val]*:
+            if num *[>/==/<]* max_val:
+                max_val = *[num/0]*
+        return max_val
+
+    *[print/return]*(find_max([1, 5, 9]))
 
 
 

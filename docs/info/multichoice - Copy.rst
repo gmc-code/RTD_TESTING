@@ -2,26 +2,24 @@
 MCQ score
 ====================
 
+Single correct
+---------------------------------
+
 .. multichoice::
 
-    What is Sphinx?
+    Which of these does an equality check in Python?
 
-    [x] An open-source documentation generator
-        written in Python that makes it easy
-        to build technical layouts. | Correct! It is excellent
-        for Python projects and developer manuals.
-
-    [ ] A JavaScript framework | Incorrect!
-        Sphinx is built on top of
-        Python and Docutils.
+    [x] == | Correct.
+    [ ] = | Incorrect. That does assignment
+    [ ] !== | Incorrect. Not equals to
+    [ ] <= | Incorrect. Less than or equals to
 
 ----
 
-Single correct  no letters no shuffled
+Single correct  no letters
 -------------------------------------------
 
 .. multichoice::
-    :no-shuffle:
     :no-letters:
 
     What is the correct way to print "Hello, World" in Python?
@@ -45,20 +43,6 @@ Single correct unshuffled
     [ ] var | Incorrect. Cannot start with a number
     [ ] @var | Incorrect. Cannot start with a symbol
     [ ] my-var | Incorrect. Hyphens are not allowed
-
-----
-
-Single correct
----------------------------------
-
-.. multichoice::
-
-    Which of these does an equality check in Python?
-
-    [x] == | Correct.
-    [ ] = | Incorrect. that does assignment
-    [ ] !== | Incorrect. not equals to
-    [ ] <= | Incorrect. less than or equals to
 
 ----
 
