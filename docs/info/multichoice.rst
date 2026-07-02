@@ -172,6 +172,63 @@ Example 4: Code Block Layout Inside Question
 
 ----
 
+Example 5: Code Block Layout Inside Responses
+------------------------------------------------
+
+| The following example demonstrates how to include a code block inside the response text.
+
+.. code-block:: rst
+
+    .. multichoice::
+
+        A student wants to display the word "ABC" such that the final character 'C' is removed right away, followed by a brief half-second pause. Which option is correct?
+        [ ] .. code-block:: python
+
+                display.show("ABC")
+                sleep(500)
+            | Incorrect. This does not use clear parameters or clear commands, leaving 'C' stuck on screen.
+        [x] .. code-block:: python
+
+                display.show("ABC", clear=True)
+                sleep(500)
+            | Correct. It automatically removes the last character via clear=True and pauses for 500ms (half a second).
+        [ ] .. code-block:: python
+
+                display.show("ABC", clear=False)
+                sleep(50)
+            | Incorrect. This explicitly stops the character from being cleared, and pauses for only 50ms.
+        [ ] .. code-block:: python
+
+                display.show("ABC", delay=500)
+            | Incorrect. This merely slows the timing between characters to 500ms instead of creating a final blank screen pause.
+
+
+.. multichoice::
+
+    A student wants to display the word "ABC" such that the final character 'C' is removed right away, followed by a brief half-second pause. Which option is correct?
+    [ ] .. code-block:: python
+
+            display.show("ABC")
+            sleep(500)
+        | Incorrect. This does not use clear parameters or clear commands, leaving 'C' stuck on screen.
+    [x] .. code-block:: python
+
+            display.show("ABC", clear=True)
+            sleep(500)
+        | Correct. It automatically removes the last character via clear=True and pauses for 500ms (half a second).
+    [ ] .. code-block:: python
+
+            display.show("ABC", clear=False)
+            sleep(50)
+        | Incorrect. This explicitly stops the character from being cleared, and pauses for only 50ms.
+    [ ] .. code-block:: python
+
+            display.show("ABC", delay=500)
+        | Incorrect. This merely slows the timing between characters to 500ms instead of creating a final blank screen pause.
+
+
+----
+
 Example 5: Multiple Correct Answers
 -----------------------------------
 
