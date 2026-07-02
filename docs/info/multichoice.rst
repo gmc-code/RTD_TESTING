@@ -229,7 +229,7 @@ Example 5: Code Block Layout Inside Responses
 
 ----
 
-Example 5: Multiple Correct Answers
+Example 6: Multiple Correct Answers
 -----------------------------------
 
 | Checking more than one correct bracket item ``[x]`` automatically swaps from a radio selections to checkboxes.
