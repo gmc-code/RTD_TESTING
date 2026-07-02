@@ -35,8 +35,8 @@ Options for the cloze directive
 
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
-| Single Items: An implicit markup pattern like ``*[ yield ]*`` designates a target drop field.
-| Multiple Choice: You can explicitly supply choices by separating alternatives with slashes: ``*[ choices / alternatives ]*``.
+| Single Items: An implicit markup pattern like ``*[ return ]*`` designates a target drop field.
+| Multiple Choice: You can explicitly supply choices by separating alternatives with slashes (also: pipes and backslashes and commas): ``*[ choices / alternatives ]*``.
 | Distractor Harvesting: Applying the ``:auto-distract:`` flag commands the backend to look ahead, read the code context, and feed vocabulary selections automatically as distractors.
 | Structure: The directive creates a word bank container layer holding randomized draggable buttons and embeds corresponding drop target fields within the code passage layout.
 

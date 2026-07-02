@@ -89,13 +89,9 @@ html_title = "RTD_TESTING_GMC"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
+# Only mount your root global static paths. The extensions handle mounting their own folders cleanly.
 
-html_static_path = ["_static",
-                    "_ext/multichoice/_static",
-                    "_ext/gapfill/_static",
-                    "_ext/cloze/_static",
-                    "_ext/ordering/_static",
-                    "_ext/classifying/_static"]
+html_static_path = ["_static"]
 
 # ,'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css']
 
@@ -108,33 +104,6 @@ html_css_files = [
 html_js_files = []
 
 # for rtd
-
-
-def setup(app):
-    for css in ["css/custom.css"]:
-        app.add_css_file(css)
-
-    # for js in ["parsons/parsons.js","parsons/Sortable.min.js",]:
-    #     app.add_js_file(js)
-
-    app.add_js_file("multichoice.js")
-    app.add_css_file("multichoice.css")
-
-    app.add_js_file("gapfill.js")
-    app.add_css_file("gapfill.css")
-
-    app.add_js_file("cloze.js")
-    app.add_css_file("cloze.css")
-
-    app.add_js_file("ordering.js")
-    app.add_css_file("ordering.css")
-
-    app.add_js_file("classifying.js")
-    app.add_css_file("classifying.css")
-
-    # external library
-    # app.add_js_file(
-    #     "https://unpkg.com/sortablejs@1.15.0.js")
 
 
 # , "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
