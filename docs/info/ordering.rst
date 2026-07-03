@@ -15,7 +15,7 @@ Syntax
 
         code lines to be arranged in the correct order
 
-options for the ordering directive
+Options for the ordering directive
 --------------------------------------
 
 +------------------+--------+-----------------------------------------------------------+
