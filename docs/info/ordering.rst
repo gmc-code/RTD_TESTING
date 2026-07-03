@@ -27,6 +27,9 @@ options for the ordering directive
 | ``:no-solution:``| flag   | If present, hides the "Show Solution" button from the     |
 |                  |        | user.                                                     |
 +------------------+--------+-----------------------------------------------------------+
+| ``:no-padding:`` | flag   | If present, removes vertical padding from the lines to |
+|                  |        | drag.                                                     |
++------------------+--------+-----------------------------------------------------------+
 
 | Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
 | Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
@@ -94,7 +97,6 @@ Example 3: no solution button
         def add(num1, num2):
             return num1 + num2
 
-        print(add(5, 3))
 
 
 .. ordering::
@@ -103,11 +105,35 @@ Example 3: no solution button
     def add(num1, num2):
         return num1 + num2
 
-    print(add(5, 3))
-
 ----
 
-Example 4: multiple indent levels
+Example 4: no padding
+-------------------------------
+
+| The following example demonstrates the ordering directive with padding removed from the lines to drag.
+| `:no-padding:` is used to remove vertical padding.
+
+.. code-block:: rst
+
+    .. ordering::
+        :no-padding:
+
+        def add(num1, num2):
+            return num1 + num2
+
+        print(add(5, 3))
+
+
+.. ordering::
+    :no-padding:
+
+    def add(num1, num2):
+        return num1 + num2
+
+    print(add(5, 3))
+
+
+Example 5: multiple indent levels
 -------------------------------------
 
 | The following example demonstrates the ordering directive with multiple indentation levels. The directive automatically calculates the indentation level based on groups of 4 spaces.
@@ -136,7 +162,7 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 ----
 
-Example 5: blanks lines
+Example 6: blanks lines
 -------------------------------------
 
 | The following example demonstrates the ordering directive with blank lines included. The directive will render them as placeholders that users can drag to maintain formatting structure.

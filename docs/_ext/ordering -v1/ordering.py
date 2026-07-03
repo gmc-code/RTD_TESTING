@@ -22,7 +22,6 @@ class OrderingDirective(SphinxDirective):
     option_spec = {
         'theme': directives.unchanged,
         'no-solution': directives.flag,  # Registers the boolean flag option
-        'no-padding': directives.flag,   # New flag definition to toggle vertical padding
     }
 
     def run(self):
@@ -43,10 +42,6 @@ class OrderingDirective(SphinxDirective):
         # FIXED: Safe inline style variable that keeps JS happy but hides the button visually
         solution_btn_style = 'style="display: none !important;"' if hide_solution else ''
 
-        # Check if the :no-padding: flag was explicitly set in rST
-        use_no_padding = 'no-padding' in self.options
-        padding_class = ' ordering-no-padding' if use_no_padding else ''
-
         line_items = []
         for index, line in enumerate(raw_lines):
             # If the line is purely whitespace, treat it as a structural empty line
@@ -65,7 +60,7 @@ class OrderingDirective(SphinxDirective):
         shuffled_items = line_items.copy()
         random.shuffle(shuffled_items)
 
-        html_output = f'<div class="ordering-block{padding_class}">'
+        html_output = '<div class="ordering-block">'
         html_output += '<div class="ordering-instructions">Drag and drop lines into the correct order and click to adjust indentation:</div>'
         html_output += f'<div class="ordering-container theme-{chosen_theme}">'
 
@@ -122,7 +117,7 @@ def setup(app):
     app.add_js_file("ordering.js")
     app.add_css_file("ordering.css")
     return {
-        "version": "2.0",
+        "version": "1.4",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }
