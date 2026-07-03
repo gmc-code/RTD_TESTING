@@ -7,7 +7,7 @@ See the
 documentation for details.
 
 
-These docs provide a simple details for sphinx testing
+These docs provide details on sphinx extensions and how to use them. The extensions are used to create multiple choice, ordering, gap fill, cloze and classifying questions.
 
 
 
