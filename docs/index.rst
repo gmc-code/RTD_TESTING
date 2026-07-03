@@ -19,9 +19,9 @@ These docs provide a simple details for sphinx testing
     info/Intro.rst
 
     info/multichoice.rst
+    info/ordering.rst
     info/gapfill.rst
     info/cloze.rst
-    info/ordering.rst
     info/classifying.rst
 
 
