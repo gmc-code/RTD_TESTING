@@ -81,7 +81,6 @@
   color: var(--mcq-light-text);
 }
 
-
 /* ==========================================================================
    3. MCQ Answer Card Choice Items (Top Alignment with Text Nudge)
    ========================================================================== */
@@ -147,7 +146,6 @@
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-
 
 /* ==========================================================================
    4. Explanation Card Layouts & Dynamic Color Mappings
