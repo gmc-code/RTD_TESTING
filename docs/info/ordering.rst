@@ -27,7 +27,7 @@ Options for the ordering directive
 | ``:no-solution:``| flag   | If present, hides the "Show Solution" button from the     |
 |                  |        | user.                                                     |
 +------------------+--------+-----------------------------------------------------------+
-| ``:no-padding:`` | flag   | If present, removes vertical padding from the lines to |
+| ``:no-padding:`` | flag   | If present, removes vertical padding from the lines to    |
 |                  |        | drag.                                                     |
 +------------------+--------+-----------------------------------------------------------+
 
