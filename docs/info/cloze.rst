@@ -94,6 +94,20 @@ Example 3: Auto-Distract Flag Implementation
         :auto-distract:
 
         An *[ array ]* is a sequential structure that stores data elements.
+
+.. cloze::
+    :auto-distract:
+
+    An *[ array ]* is a sequential structure that stores data elements.
+
+
+
+.. code-block:: rst
+
+    .. cloze::
+        :auto-distract:
+
+        An *[ array ]* is a sequential structure that stores data elements.
         You can look up specific data instances via an integer *[ index ]*.
 
 .. cloze::

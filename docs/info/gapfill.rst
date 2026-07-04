@@ -37,7 +37,7 @@ Options for the gapfill directive
 Example 1: Single Sentences
 ------------------------------------
 
-| The following example demonstrates a simple gap with 3 alternative choices.
+| The following example demonstrates a simple gap with 2 alternative choices.
 | The correct answer is the first option in the list.
 
 .. code-block:: rst
