@@ -38,31 +38,27 @@ class GapFillDirective(SphinxDirective):
             chosen_theme = 'light'
         node['theme'] = chosen_theme
 
-        # Harvest potential distractors directly from the text block context (ignoring syntax)
-        all_words_in_text = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', full_text)
-        context_distractors = list(set([w for w in all_words_in_text if len(w) > 2]))
+        # Define default dummy filler items used ONLY when a single choice is given
+        default_alternatives = ["True", "False", "while", "for", "if", "else", "elif", "import", "from", "print", "pin0", "pin1", "pin2", "read_analog", "write_digital", "sleep"]
 
-        # Matches the exact cloze syntax: optional outer asterisks followed by *[ content ]*
-        gap_pattern = re.compile(r'\*?(\*?)\*\[([^\]]+)\]\*\1\*?')
+        # This pattern catches optional outside asterisks, the brackets, and optional inner asterisks
+        pattern = re.compile(r'\*?(\*?)\[([^\]]+)\]\1\*?')
         parsed_html_parts = []
         remaining_text = full_text
 
         while True:
-            match = pattern = gap_pattern.search(remaining_text)
+            match = pattern.search(remaining_text)
             if not match:
                 break
 
             start_idx, end_idx = match.span()
             parsed_html_parts.append(html.escape(remaining_text[:start_idx]))
 
-            # Isolate content within the brackets and clean internal spaces
-            raw_choices_str = match.group(2).strip()
+            # Isolate the choices string inside the brackets and strip inner decoration asterisks
+            raw_choices_str = match.group(2).strip('*')
 
-            # Split exclusively on vertical pipes '|'
-            if '|' in raw_choices_str:
-                raw_options = [opt.strip() for opt in raw_choices_str.split('|') if opt.strip()]
-            else:
-                raw_options = [raw_choices_str] if raw_choices_str else []
+            # Splits options cleanly on \, /, |, or , characters
+            raw_options = [opt.strip() for opt in re.split(r'[\\/|,]', raw_choices_str) if opt.strip()]
 
             if not raw_options:
                 parsed_html_parts.append(html.escape(match.group(0)))
@@ -72,14 +68,15 @@ class GapFillDirective(SphinxDirective):
             correct_answer = raw_options[0]
             options = set(raw_options)
 
-            # If exactly 1 option is provided, extract exactly 1 distractor from the question text
+            # Only inject dummy alternatives if exactly 1 answer option was specified
             if len(raw_options) == 1:
-                shuffled_pool = context_distractors.copy()
-                random.shuffle(shuffled_pool)
-                for alt in shuffled_pool:
-                    if alt != correct_answer and alt not in options:
-                        options.add(alt)
+                shuffled_defaults = default_alternatives.copy()
+                random.shuffle(shuffled_defaults)
+                for alt in shuffled_defaults:
+                    if len(options) >= 4:
                         break
+                    if alt not in options:
+                        options.add(alt)
 
             # Build dropdown markup container node
             dropdown_html = f'<span class="gapfill-wrapper">'
@@ -115,7 +112,7 @@ def setup(app):
     app.add_js_file("gapfill.js")
     app.add_css_file("gapfill.css")
     return {
-        "version": "2.8",
+        "version": "2.6",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }

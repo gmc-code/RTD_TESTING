@@ -36,7 +36,8 @@ Options for the cloze directive
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
 | Single Items: An implicit markup pattern like ``*[ return ]*`` designates a target drop field.
-| Multiple Choice: You can explicitly supply choices by separating alternatives with slashes (also: pipes and backslashes and commas): ``*[ choices / alternatives ]*``.
+| Multiple Choice: You can explicitly supply choices by
+| separating alternatives with pipes: ``*[ choices | alternatives ]*``.
 | Distractor Harvesting: Applying the ``:auto-distract:`` flag commands the backend to look ahead, read the code context, and feed vocabulary selections automatically as distractors.
 | Structure: The directive creates a word bank container layer holding randomized draggable buttons and embeds corresponding drop target fields within the code passage layout.
 
@@ -51,12 +52,12 @@ The following example explicitly supplies alternative keyword targets separated 
 
     .. cloze::
 
-        When creating a function in Python, you define it using the *[ def / function ]* keyword.
+        When creating a function in Python, you define it using the *[ def | function ]* keyword.
 
 
 .. cloze::
 
-    When creating a function in Python, you define it using the *[ def / function ]* keyword.
+    When creating a function in Python, you define it using the *[ def | function ]* keyword.
 
 
 ----
@@ -72,12 +73,12 @@ Example 2: Dark theme
     .. cloze::
         :theme: dark
 
-        To send a result back to the caller, you use *[ return / print ]*.
+        To send a result back to the caller, you use *[ return | print ]*.
 
 .. cloze::
     :theme: dark
 
-    To send a result back to the caller, you use *[ return / print ]*.
+    To send a result back to the caller, you use *[ return | print ]*.
 
 
 ----
@@ -127,15 +128,15 @@ Example 4: Indentation is retained in code blocks
 
     .. cloze::
 
-        for number *[ in/of ]* range(1, 10):
+        for number *[ in | of ]* range(1, 10):
             if number % 2 == 0:
-                *[ continue / break / pass ]*
+                *[ continue | break | pass ]*
             print(number)
 
 .. cloze::
 
-    for number *[ in/of ]* range(1, 10):
+    for number *[ in | of ]* range(1, 10):
         if number % 2 == 0:
-            *[ continue / break / pass ]*
+            *[ continue | break | pass ]*
         print(number)
 
