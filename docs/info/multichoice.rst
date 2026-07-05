@@ -20,7 +20,7 @@ Options for the multichoice directive
 --------------------------------------
 
 .. list-table::
-   :widths: 35 20 40
+   :widths: 25 10 65
    :header-rows: 1
 
    * - Option

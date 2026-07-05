@@ -20,7 +20,7 @@ Options for the classifying directive
 --------------------------------------
 
 .. list-table::
-   :widths: 20 15 65
+   :widths: 25 10 65
    :header-rows: 1
 
    * - Option

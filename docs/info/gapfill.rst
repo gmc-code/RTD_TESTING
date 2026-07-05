@@ -18,7 +18,7 @@ Options for the gapfill directive
 --------------------------------------
 
 .. list-table::
-   :widths: 20 10 70
+   :widths: 25 10 65
    :header-rows: 1
 
    * - Option
