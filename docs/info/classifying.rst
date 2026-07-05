@@ -19,7 +19,7 @@ Syntax
 Options for the classifying directive
 --------------------------------------
 
-.. list-table:: Options for the classifying directive
+.. list-table::
    :widths: 20 15 65
    :header-rows: 1
 

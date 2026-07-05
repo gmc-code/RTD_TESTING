@@ -17,14 +17,16 @@ Syntax
 Options for the gapfill directive
 --------------------------------------
 
+.. list-table::
+   :widths: 20 10 70
+   :header-rows: 1
 
-+------------------+--------+-----------------------------------------------------------+
-| Option           | Type   | Description                                               |
-+==================+========+===========================================================+
-| ``:theme:``      | string | Set the visual theme. Options are ``light`` (default)     |
-|                  |        | or ``dark``.                                              |
-+------------------+--------+-----------------------------------------------------------+
-
+   * - Option
+     - Type
+     - Description
+   * - ``:theme:``
+     - string
+     - Set the visual theme. Options are ``light`` (default) or ``dark``.
 
 | Syntax Rules: Inline dropdown segments are declared using the sequence format
 | ``*[correct | incorrect | incorrect_2]*``.

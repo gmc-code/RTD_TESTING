@@ -18,18 +18,25 @@ Syntax
 Options for the ordering directive
 --------------------------------------
 
-+------------------+--------+-----------------------------------------------------------+
-| Option           | Type   | Description                                               |
-+==================+========+===========================================================+
-| ``:theme:``      | string | Set the visual theme. Options are ``light`` (default)     |
-|                  |        | or ``dark``.                                              |
-+------------------+--------+-----------------------------------------------------------+
-| ``:no-solution:``| flag   | If present, hides the "Show Solution" button from the     |
-|                  |        | user.                                                     |
-+------------------+--------+-----------------------------------------------------------+
-| ``:no-padding:`` | flag   | If present, removes vertical padding from the lines to    |
-|                  |        | drag.                                                     |
-+------------------+--------+-----------------------------------------------------------+
+.. list-table:: Ordering Directive Options
+   :widths: 20 10 70
+   :header-rows: 1
+
+   * - Option
+     - Type
+     - Description
+   * - ``:theme:``
+     - string
+     - Set the visual theme. Options are ``light`` (default) or ``dark``.
+   * - ``:no-solution:``
+     - flag
+     - If present, hides the "Show Solution" button from the user.
+   * - ``:no-reorder:``
+     - flag
+     - If present, keeps answer order without indenting.
+   * - ``:no-padding:``
+     - flag
+     - If present, removes vertical padding from the lines to drag.
 
 | Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
 | Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
@@ -133,14 +140,16 @@ Example 4: no padding
     print(add(5, 3))
 
 
-Example 5: multiple indent levels
+Example 5: no reorder
 -------------------------------------
 
 | The following example demonstrates the ordering directive with multiple indentation levels. The directive automatically calculates the indentation level based on groups of 4 spaces.
+| `:no-reorder:` is used to keep answer order wihtout indenting.
 
 .. code-block:: rst
 
     .. ordering::
+        :no-reorder:
 
         def find_max(numbers):
             max_val = numbers[0]
@@ -152,6 +161,7 @@ Example 5: multiple indent levels
 Reorder the following code snippets to create a function that finds the maximum value in a list of numbers.
 
 .. ordering::
+    :no-reorder:
 
     def find_max(numbers):
         max_val = numbers[0]
