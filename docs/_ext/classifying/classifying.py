@@ -20,7 +20,7 @@ class classifyingDirective(SphinxDirective):
 
     option_spec = {
         'theme': directives.unchanged,
-        'bins': directives.unchanged, # Expects a comma-separated list of 2 to 4 bins
+        'bins': directives.unchanged, # Expects a comma-separated list of 2 to 6 bins
     }
 
     def run(self):

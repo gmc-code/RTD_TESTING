@@ -29,7 +29,7 @@ Options for the classifying directive
    * - ``:bins:``
      - string
      - | A comma-separated list of category names
-       | (supports 2 to 4 distinct classifications).
+       | (supports 2 to 6 distinct classifications).
    * - ``:theme:``
      - string
      - | Sets the visual theme workspace wrapper.
@@ -121,3 +121,33 @@ Demonstrating strict item mapping rules utilizing custom labels matching foundat
    Strings (e.g., "Hello") | 1
    Dictionaries (e.g., {"a": 1}) | 0
 
+----
+
+Example 4: 6 bins
+------------------------------------------------
+
+Demonstrating a 6-bin categorization activity.
+
+.. code-block:: rst
+
+    .. classifying::
+        :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
+        :theme: light
+
+        Basalt | 0
+        Sandstone | 1
+        Marble | 2
+        Quartz | 3
+        Trilobite | 4
+        Coal | 5
+
+.. classifying::
+   :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
+   :theme: light
+
+   Basalt | 0
+   Sandstone | 1
+   Marble | 2
+   Quartz | 3
+   Trilobite | 4
+   Coal | 5
