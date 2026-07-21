@@ -24,4 +24,7 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/cloze.rst
     info/classifying.rst
 
+    info/labels.rst
+
+
 

@@ -34,6 +34,7 @@ extensions = [
     "gapfill.gapfill",  # custom directive
     "cloze.cloze",  # custom directive
     "multichoice.multichoice",  # custom directive
+    "labels.labels",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

@@ -1,0 +1,44 @@
+eyepiece lens
+barrel
+objective lens
+stage
+mirror
+base
+fine focus
+coarse focus
+
+
+
+
+
+
+
+
+
+
+
+
+350,134,463,156,left
+360,258,423,280,left
+379,333,491,355,left
+393,377,453,399,left
+387,428,451,450,left
+413,478,470,500,left
+127,323,213,345,right
+130,264,238,286,right
+
+
+
+
+
+
+
+
+
+
+
+
+8
+B
+Microscope
+Heinemann Science Links CD's
