@@ -127,15 +127,15 @@ Example 4: Multiple Options inside Code Snippets
 
     .. gapfill::
 
-        for number @@in | of @@ [1, 2, 3, 4]:
+        for number @@in | of@@ [1, 2, 3, 4]:
             if number % 2 == 0:
-                @@continue | break | pass @@
+                @@continue | break | pass@@
             print(number)
 
 .. gapfill::
 
-    for number @@in | of @@  [1, 2, 3, 4]:
+    for number @@in | of@@  [1, 2, 3, 4]:
         if number % 2 == 0:
-            @@continue | break | pass @@
+            @@continue | break | pass@@
         print(number)
 
