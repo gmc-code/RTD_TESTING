@@ -1,4 +1,0 @@
-
-
-from .labels import setup
-

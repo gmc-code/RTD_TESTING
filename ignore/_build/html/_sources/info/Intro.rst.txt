@@ -1,5 +1,0 @@
-=========================
-Introduction
-=========================
-
-Sphinx projects testing.

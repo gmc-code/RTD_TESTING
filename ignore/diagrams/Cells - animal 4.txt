@@ -1,0 +1,44 @@
+nucleus
+endoplasmic reticulum
+golgi
+cell membrane
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+40,201,115,223,right
+396,208,556,230,left
+49,380,106,402,right
+355,463,462,483,left
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+8
+B
+Cells - animal 4
+puc.edu/Faculty/Gilbert_Muth/

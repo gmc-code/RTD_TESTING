@@ -1,125 +1,209 @@
 import html
+import random
+import os
+import shutil
+import logging
 from pathlib import Path
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
+logger = logging.getLogger(__name__)
+
 class label_node(nodes.General, nodes.Element):
     pass
 
 def visit_label_html(self, node):
-    self.body.append('<div class="label-block">')
+    self.body.append('<div class="label-interactive-block">')
 
 def depart_label_html(self, node):
     self.body.append('</div>')
 
+
 class LabelDirective(SphinxDirective):
-    has_content = False
-    required_arguments = 1
-    option_spec = {'image': directives.unchanged_required}
+    has_content = True
+    required_arguments = 0
+    optional_arguments = 1
+    final_argument_whitespace = True
+
+    option_spec = {
+        'image': directives.unchanged,
+        'width': directives.positive_int,
+        'height': directives.positive_int,
+        'font-size': directives.unchanged,  # Accepts values like "0.85rem", "14px", "1.2rem"
+    }
 
     def run(self):
-        data_path = self.env.relfn2path(self.arguments[0])[1]
+        env = self.env
 
-        # Detect encoding from the BOM rather than assuming UTF-8.
-        # Files exported from Excel ("Save As > Unicode Text") are UTF-16
-        # (LE or BE) and will raise UnicodeDecodeError if forced through
-        # utf-8-sig, since a UTF-16 BOM (FF FE / FE FF) is not valid UTF-8.
-        with open(data_path, 'rb') as f:
-            raw = f.read()
+        if not hasattr(env, "label_images"):
+            env.label_images = {}
 
-        if raw.startswith(b'\xff\xfe'):
-            encoding = 'utf-16-le'
-        elif raw.startswith(b'\xfe\xff'):
-            encoding = 'utf-16-be'
-        elif raw.startswith(b'\xef\xbb\xbf'):
-            encoding = 'utf-8-sig'
+        img_rel = self.options.get('image', '')
+        if not img_rel and self.arguments:
+            arg = self.arguments[0].strip()
+            if not arg.startswith(':') and not arg.startswith('*'):
+                img_rel = arg
+
+        rel_img_path = ""
+        if img_rel:
+            _, img_full_path = env.relfn2path(img_rel, env.docname)
+            img_path_obj = Path(img_full_path)
+
+            if img_path_obj.exists():
+                image_filename = img_path_obj.name
+                env.label_images[str(img_path_obj)] = image_filename
+
+                doc_path = Path(env.docname)
+                depth = len(doc_path.parents) - 1 if str(
+                    doc_path.parent) != '.' else 0
+                rel_prefix = "../" * depth if depth > 0 else ""
+                rel_img_path = f"{rel_prefix}_images/{image_filename}"
+            else:
+                rel_img_path = Path(img_rel).as_posix()
+
+        width = self.options.get('width', 560)
+        height = self.options.get('height', 500)
+
+        # Default font size if none specified in RST
+        font_size = self.options.get('font-size', '0.95rem')
+
+        labels_data = []
+        for line in self.content:
+            line_str = line.strip()
+            if not line_str:
+                continue
+
+            cleaned_line = line_str.lstrip('*- ').strip()
+
+            if 'label:' in cleaned_line:
+                lbl = cleaned_line.split('label:', 1)[1].strip()
+                labels_data.append({
+                    'label': lbl,
+                    'pos': [0, 0, 0, 0],
+                    'align': 'left'
+                })
+            elif 'pos:' in cleaned_line and labels_data:
+                coords_str = cleaned_line.split('pos:', 1)[1].strip()
+                coords = [
+                    int(c.strip()) for c in coords_str.split(',')
+                    if c.strip().lstrip('-').isdigit()
+                ]
+                if len(coords) >= 4:
+                    labels_data[-1]['pos'] = coords[:4]
+            elif 'align:' in cleaned_line and labels_data:
+                align_str = cleaned_line.split('align:', 1)[1].strip()
+                labels_data[-1]['align'] = align_str
+
+        if not labels_data:
+            logger.warning(
+                f"[label-diagram] No labels parsed in document: {env.docname}")
+
+        labels = [d['label'] for d in labels_data]
+
+        # Pass the font size as a CSS variable on the main container
+        html_out = f'<div class="label-activity-container" style="--label-font-size: {font_size};">'
+
+        # Sort labels A to Z
+        sorted_labels = sorted(labels, key=lambda s: s.lower())
+
+        # Determine line count variant class based on total number/length of labels
+        num_items = len(sorted_labels)
+        if num_items <= 6:
+            line_class = "lines-1"
+        elif num_items <= 12:
+            line_class = "lines-2"
+        elif num_items <= 16:
+            line_class = "lines-3"
         else:
-            encoding = 'utf-8'
+            line_class = "lines-4"
 
-        try:
-            text = raw.decode(encoding)
-        except UnicodeDecodeError as e:
-            raise self.error(
-                f"File {self.arguments[0]} could not be decoded as {encoding}: {e}"
-            )
+        # Word Bank Tray with dynamic line variant class
+        html_out += f'<div class="label-wordbank-tray {line_class}" data-role="bank">'
+        for idx, label in enumerate(sorted_labels):
+            clean_label = html.escape(label)
+            html_out += f'<div class="label-draggable" draggable="true" id="drag-{idx}" data-word="{clean_label}">{clean_label}</div>'
+        html_out += '</div>'
 
-        lines = text.replace('\r\n', '\n').replace('\r', '\n').split('\n')
+        # Canvas
+        canvas_style = f"position: relative; width: {width}px; height: {height}px; background-size: cover; background-position: center; background-repeat: no-repeat;"
+        if rel_img_path:
+            canvas_style += f" background-image: url('{rel_img_path}');"
 
-        # The file is structured as three blank-line-separated blocks:
-        #   1. labels (one per line)
-        #   2. positions (x1,y1,x2,y2,align  -- one per line, same order as labels)
-        #   3. metadata (year_level, strand, name, source -- exactly 4 lines)
-        # Blank-line runs of varying length separate the blocks, so split on
-        # them instead of assuming a fixed 20-label/20-position layout.
-        blocks = []
-        current = []
-        for line in lines:
-            if line.strip():
-                current.append(line)
-            elif current:
-                blocks.append(current)
-                current = []
-        if current:
-            blocks.append(current)
+        html_out += f'<div class="label-diagram-canvas" style="{canvas_style}">'
 
-        if len(blocks) < 3:
-            raise self.error(
-                f"File {self.arguments[0]} does not have the expected label/position/metadata "
-                f"sections (found {len(blocks)} non-blank block(s))."
-            )
+        # Drop Zones
+        for idx, item in enumerate(labels_data):
+            x1, y1, x2, y2 = item['pos']
+            correct_word = html.escape(item['label'])
+            align_val = html.escape(item['align'])
+            letter_prefix = chr(
+                65 + (idx % 26)
+            ) if idx < 26 else f"{chr(65 + (idx // 26) - 1)}{chr(65 + (idx % 26))}"
 
-        labels, position_lines, metadata_lines = blocks[0], blocks[1], blocks[-1]
+            w = max(abs(x2 - x1), 40)
+            h = max(abs(y2 - y1), 20)
 
-        if len(position_lines) != len(labels):
-            raise self.error(
-                f"File {self.arguments[0]} has {len(labels)} labels but "
-                f"{len(position_lines)} position rows; they must match 1-to-1."
-            )
-        if len(metadata_lines) < 4:
-            raise self.error(
-                f"File {self.arguments[0]} metadata block must have 4 lines "
-                f"(year_level, strand, name, source); found {len(metadata_lines)}."
-            )
+            # Alignment anchors
+            right_pos = width - x2
+            x_center = (x1 + x2) // 2  # True horizontal midpoint
 
-        positions = [l.split(',') for l in position_lines]
+            style = (f"position: absolute; "
+                     f"top: {y1}px; "
+                     f"height: {h}px; "
+                     f"--left-pos: {x1}px; "
+                     f"--right-pos: {right_pos}px; "
+                     f"--center-pos: {x_center}px; "
+                     f"--min-w: {w}px;")
 
-        # Metadata extraction
-        metadata = {
-            "year_level": metadata_lines[0],
-            "strand": metadata_lines[1],
-            "name": metadata_lines[2],
-            "source": metadata_lines[3]
-        }
+            html_out += (f'<div class="label-dropzone" style="{style}" '
+                         f'data-correct="{correct_word}" '
+                         f'data-prefix="{letter_prefix}." '
+                         f'data-align="{align_val}"></div>')
+        html_out += '</div>'
+
+        # Controls
+        html_out += '''
+        <div class="label-controls">
+            <button class="label-btn label-btn-check" type="button" onclick="scoreLabels(this)">Check Answers</button>
+            <button class="label-btn label-btn-reference" type="button" onclick="toggleReferenceMode(this)">A,B,C Mode</button>
+            <button class="label-btn label-btn-answers" type="button" onclick="showAnswers(this)">Show Answers</button>
+            <button class="label-btn label-btn-reset" type="button" onclick="resetLabels(this)">Reset</button>
+            <span class="label-score-display"></span>
+        </div>
+        </div>
+        '''
 
         node = label_node()
-        # Header displaying metadata
-        html_out = f'<div class="label-info"><strong>{metadata["name"]}</strong> | {metadata["year_level"]} - {metadata["strand"]}</div>'
-        html_out += f'<div class="label-container" style="position:relative; width:560px; height:500px; background-image:url({self.options["image"]});">'
-
-        # Word Bank
-        html_out += '<div class="label-wordbank-tray">'
-        for label in labels:
-            html_out += f'<div class="label-draggable" draggable="true" data-word="{label.lower()}">{label}</div>'
-        html_out += '</div>'
-
-        # Drop Zones (position row i corresponds to label i, in file order)
-        for label_idx, pos in enumerate(positions):
-            x1, y1, x2, y2, align = pos
-            style = f"position:absolute; left:{x1}px; top:{y1}px; width:{int(x2)-int(x1)}px; height:{int(y2)-int(y1)}px;"
-            correct = labels[label_idx].lower()
-            html_out += f'''<div class="label-wrapper"><div class="label-dropzone" style="{style}" data-correct="{correct}"></div><span class="label-inline-feedback"></span></div>'''
-
-        html_out += '</div>'
         node += nodes.raw("", html_out, format="html")
         return [node]
+
+def copy_label_images(app, exception):
+    if exception:
+        return
+
+    env = app.builder.env
+    if not hasattr(env, "label_images"):
+        return
+
+    outdir = Path(app.builder.outdir)
+    images_dir = outdir / "_images"
+    images_dir.mkdir(parents=True, exist_ok=True)
+
+    for src, name in env.label_images.items():
+        src = Path(src)
+        if not src.exists():
+            logger.warning(f"Label image not found: {src}")
+            continue
+        dst = images_dir / name
+        shutil.copy2(src, dst)
 
 def setup(app):
     app.add_node(label_node, html=(visit_label_html, depart_label_html))
     app.add_directive("label-diagram", LabelDirective)
+    app.connect("build-finished", copy_label_images)
 
     static_path = Path(__file__).parent / "_static"
-    # Ensure the path exists before adding to config
     if static_path.exists():
         if str(static_path) not in app.config.html_static_path:
             app.config.html_static_path.append(str(static_path))
@@ -128,7 +212,7 @@ def setup(app):
     app.add_css_file("labels.css")
 
     return {
-        "version": "1.0",
+        "version": "8.1",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }

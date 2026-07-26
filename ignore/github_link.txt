@@ -1,0 +1,10 @@
+echo "# RTD_TESTING" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/gmc-code/RTD_TESTING.git
+
+git pull origin main --allow-unrelated-histories
+
+git push -u origin main
