@@ -3,21 +3,19 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
 import os
 import sys
 import sphinx_rtd_theme
 
-project = "RTD_TESTING"
-copyright = "2025-6, GMC"
-author = "GMC"
-
-
 # Ensure custom extension path is available
 sys.path.append(os.path.abspath("./_ext"))
 
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+project = "RTD_TESTING"
+copyright = "2025-6, GMC"
+author = "GMC"
 
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
