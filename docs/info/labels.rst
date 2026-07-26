@@ -91,7 +91,7 @@ Cells - animal 4
 | **Source:** puc.edu/Faculty/Gilbert_Muth/
 
 .. label-diagram::
-   :image: diagrams/Cells - animal 4.jpg
+   :image: ../diagrams/Cells - animal 4.jpg
    :width: 560
    :height: 500
 
@@ -164,7 +164,7 @@ Microscope
 | **Source:** Heinemann Science Links CD's
 
 .. label-diagram::
-   :image: diagrams/microscope.jpg
+   :image: ../diagrams/microscope.jpg
    :width: 560
    :height: 500
 
@@ -259,7 +259,7 @@ Classification
 | **Source:** Heinemann Science Links CD's
 
 .. label-diagram::
-   :image: diagrams/Classification.jpg
+   :image: ../diagrams/Classification.jpg
    :width: 560
    :height: 500
    :font-size: 0.8rem
