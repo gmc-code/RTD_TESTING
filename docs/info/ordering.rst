@@ -63,9 +63,16 @@ Example 1: light theme
 
 .. ordering::
     :theme: light
+    show-code
 
     def hello_world():
         print("Hello World")
+
+.. code-block:: python
+
+    def hello_world():
+        print("Hello World")
+
 
 ----
 
@@ -90,7 +97,31 @@ Example 2: dark theme
 
 ----
 
-Example 3: no solution button
+
+Example 3: Show code
+------------------------------------
+
+| The following example demonstrates the ordering directive with the "Show Code" button shown.
+| `:show-code:` is used to show the code block.
+
+.. code-block:: rst
+
+    .. ordering::
+        :show-code:
+
+        def hello_world():
+            print("Hello World")
+
+.. ordering::
+    :show-code:
+
+    def hello_world():
+        print("Hello World")
+
+
+----
+
+Example 4: no solution button
 -------------------------------
 
 | The following example demonstrates the ordering directive with the "Show Solution" button hidden.
@@ -114,7 +145,7 @@ Example 3: no solution button
 
 ----
 
-Example 4: no padding
+Example 5: no padding
 -------------------------------
 
 | The following example demonstrates the ordering directive with padding removed from the lines to drag.
@@ -140,7 +171,7 @@ Example 4: no padding
     print(add(5, 3))
 
 
-Example 5: no reorder
+Example 6: no reorder
 -------------------------------------
 
 | The following example demonstrates the ordering directive with multiple indentation levels. The directive automatically calculates the indentation level based on groups of 4 spaces.
@@ -172,7 +203,7 @@ Reorder the following code snippets to create a function that finds the maximum 
 
 ----
 
-Example 6: blanks lines
+Example 7: blanks lines
 -------------------------------------
 
 | The following example demonstrates the ordering directive with blank lines included. The directive will render them as placeholders that users can drag to maintain formatting structure.
