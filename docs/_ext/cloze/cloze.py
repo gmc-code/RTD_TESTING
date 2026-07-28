@@ -131,6 +131,7 @@ class ClozeDirective(SphinxDirective):
         result_nodes = [wrapper_node]
 
         # 3. Generate hidden Sphinx CodeBlock node if :show-code: flag is set
+        # 3. Generate hidden Sphinx CodeBlock node if :show-code: flag is set
         if show_code:
             code_block_dir = CodeBlock(
                 name='code-block',
@@ -146,9 +147,9 @@ class ClozeDirective(SphinxDirective):
 
             code_nodes = code_block_dir.run()
 
-            # Container starts hidden
+            # Container starts hidden (using native style attribute assignment)
             completed_container = nodes.container(classes=['cloze-completed-code'])
-            completed_container['attributes'] = {'style': 'display: none;'}
+            completed_container['style'] = 'display: none;'
 
             # Heading
             heading = nodes.rubric(text="Complete code for copying", classes=['cloze-code-heading'])
