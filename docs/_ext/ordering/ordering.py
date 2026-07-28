@@ -123,7 +123,7 @@ class OrderingDirective(SphinxDirective):
         wrapper_node += nodes.raw("", html_output, format="html")
         result_nodes = [wrapper_node]
 
-        # Generate hidden native Sphinx CodeBlock node if :show-code: flag is set
+       # Generate hidden native Sphinx CodeBlock node if :show-code: flag is set
         if show_code:
             code_block_dir = CodeBlock(
                 name='code-block',
@@ -142,6 +142,12 @@ class OrderingDirective(SphinxDirective):
             # Container starts hidden
             completed_container = nodes.container(classes=['ordering-completed-code'])
             completed_container['attributes'] = {'style': 'display: none;'}
+
+            # Create and append the heading
+            heading = nodes.rubric(text="Complete code for copying", classes=['ordering-code-heading'])
+            completed_container += heading
+
+            # Append the actual code block nodes
             completed_container.extend(code_nodes)
 
             result_nodes.append(completed_container)
