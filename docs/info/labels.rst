@@ -3,7 +3,7 @@ Label Diagram Directive Documentation
 ================================================
 
 The label diagram directive creates an interactive image-labelling exercise with dual interaction support.
-Users can drag label tiles from a randomized word bank tray onto designated zones over an image canvas, or click/tap a label to select it and click/tap a zone to place it.
+Users can drag label tiles from a sorted word bank tray onto designated zones over an image canvas, or click/tap a label to select it and click/tap a zone to place it.
 
 Syntax
 -------------------

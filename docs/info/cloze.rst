@@ -32,6 +32,9 @@ Options for the cloze directive
      - string
      - | Sets the visual styling theme for the block layout.
        | Acceptable values are ``light`` (default) or ``dark``.
+   * - ``:show-code:``
+     - flag
+     - If present, displays the code block in the solution.
 
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
@@ -122,7 +125,7 @@ Example 3: Auto-Distract Flag Implementation
 Example 4: Indentation is retained in code blocks
 ---------------------------------------------------
 
-| Demonstrating retention of indentation and formatting within a code block, while still allowing for interactive selection of choices from a dropdown menu.
+| Demonstrating retention of indentation and formatting within a code block, while still allowing fo
 
 .. code-block:: rst
 
@@ -141,7 +144,7 @@ Example 4: Indentation is retained in code blocks
         print(number)
 
 
-
+| The following example shows the preservation of indentation and formatting within the code block, while still allowing for interactive selection of choices from a dropdown menu.
 
 .. code-block:: rst
 
@@ -159,6 +162,31 @@ Example 4: Indentation is retained in code blocks
             @@continue | break | pass@@
         print(number)
 
+----
 
+Example 5: Show code
+---------------------------------------------------
+
+|
+.. code-block:: rst
+
+    .. cloze:: python
+        :show-code:
+        :theme: light
+
+        for number @@in | of@@ range(1, 10):
+            if number % 2 == 0:
+                @@continue | break | pass@@
+            print(number)
+
+
+.. cloze:: python
+    :show-code:
+    :theme: light
+
+    for number @@in | of@@ range(1, 10):
+        if number % 2 == 0:
+            @@continue | break | pass@@
+        print(number)
 
 

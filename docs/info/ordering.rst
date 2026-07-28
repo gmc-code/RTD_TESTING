@@ -37,6 +37,10 @@ Options for the ordering directive
    * - ``:no-padding:``
      - flag
      - If present, removes vertical padding from the lines to drag.
+   * - ``:show-code:``
+     - flag
+     - If present, displays the code block in the solution.
+
 
 | Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
 | Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
