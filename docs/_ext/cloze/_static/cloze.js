@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let draggedElement = null
 
   blocks.forEach(block => {
-    const parentWrapper = block.parentElement || block;
-    const completedCodeBlock = parentWrapper.querySelector(".cloze-completed-code");
+    // Look directly inside the current cloze block for its dedicated code container
+    const completedCodeBlock = block.querySelector(".cloze-completed-code")
 
     const draggables = block.querySelectorAll(".cloze-draggable")
     const dropzones = block.querySelectorAll(".cloze-dropzone")
@@ -185,13 +185,9 @@ document.addEventListener("DOMContentLoaded", () => {
           else if (percent >= 0.5) scoreBadge.classList.add("medium")
           else scoreBadge.classList.add("low")
 
-          // Show code block only when 100% score is achieved
+          // Reveal code block ONLY if 100% score is achieved in THIS specific block
           if (completedCodeBlock) {
-            if (percent === 1) {
-              completedCodeBlock.style.display = "block"
-            } else {
-              completedCodeBlock.style.display = "none"
-            }
+            completedCodeBlock.style.display = (percent === 1) ? "block" : "none"
           }
         }
 
@@ -205,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearSelection()
         if (scoreBadge) scoreBadge.style.display = "none"
 
-        // Hide completed code block on reset
+        // Hide completed code block on reset for this specific block
         if (completedCodeBlock) {
           completedCodeBlock.style.display = "none"
         }

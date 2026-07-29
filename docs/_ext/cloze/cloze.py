@@ -40,10 +40,12 @@ class ClozeDirective(SphinxDirective):
         auto_distract = 'auto-distract' in self.options
         show_code = 'show-code' in self.options
 
-        # Updated regex to match @@ content @@ safely without breaking python lists [...]
+        # Track global gap counter on the Sphinx build environment across all directive calls
+        if not hasattr(self.env, 'cloze_gap_counter'):
+            self.env.cloze_gap_counter = 0
+
         gap_pattern = re.compile(r'@@([^@]+)@@')
 
-        # Extract all potential words from the sentence context to use as distractors
         all_words_in_text = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b',
                                        full_text)
         context_distractors = list(
@@ -51,13 +53,10 @@ class ClozeDirective(SphinxDirective):
 
         # 1. FIRST PASS: Extract answers and clean markup
         word_bank_items = []
-        raw_code_lines = [
-        ]  # Store original text without gap syntax for the complete code block
 
         def extract_words(match):
             raw_content = match.group(1).strip()
 
-            # SUPPORT MULTIPLE SEPARATORS: matches |, /, \, or ,
             if re.search(r'[|/\\,]', raw_content):
                 parts = [
                     p.strip() for p in re.split(r'[|/\\,]', raw_content)
@@ -68,13 +67,12 @@ class ClozeDirective(SphinxDirective):
                 return f"*[ {correct_answer} ]*"
             else:
                 word_bank_items.append(raw_content)
-
                 if auto_distract:
                     shuffled_pool = context_distractors.copy()
                     random.shuffle(shuffled_pool)
                     added_count = 0
                     for item in shuffled_pool:
-                        if added_count >= 1:  # Add up to 1 distractor
+                        if added_count >= 1:
                             break
                         if item != raw_content and item not in word_bank_items:
                             word_bank_items.append(item)
@@ -84,27 +82,22 @@ class ClozeDirective(SphinxDirective):
 
         cleaned_text = gap_pattern.sub(extract_words, full_text)
 
-        # Build clean raw lines without gap markers (@@ ... @@) for code block output
         clean_full_text = gap_pattern.sub(
             lambda m: re.split(r'[|/\\,]', m.group(1))[0].strip(), full_text)
         raw_code_lines = clean_full_text.splitlines()
 
         # 2. SECOND PASS: Construct HTML nodes layout
-        gap_counter = 0
         html_gap_pattern = re.compile(r'\*\[\s*(.*?)\s*\]\*')
 
         def replace_gap(match):
-            nonlocal gap_counter
-            gap_counter += 1
+            self.env.cloze_gap_counter += 1
             raw_content = match.group(1).strip()
-
             final_correct = raw_content
-            drop_zone_html = (
+            return (
                 f'<span class="cloze-wrapper">'
-                f'<span class="cloze-dropzone" data-gap-id="{gap_counter}" data-correct="{html.escape(final_correct)}">Drop here</span>'
+                f'<span class="cloze-dropzone" data-gap-id="{self.env.cloze_gap_counter}" data-correct="{html.escape(final_correct)}">Drop here</span>'
                 f'<span class="cloze-inline-feedback"></span>'
                 f'</span>')
-            return drop_zone_html
 
         escaped_text = html.escape(cleaned_text)
         escaped_text = escaped_text.replace(html.escape("*["), "*[").replace(
@@ -113,11 +106,13 @@ class ClozeDirective(SphinxDirective):
         combined_text_html = html_gap_pattern.sub(replace_gap, escaped_text)
         combined_text_html = combined_text_html.replace("\n", "<br>")
 
-        # word_bank_items = list(set(word_bank_items))
-        # random.shuffle(word_bank_items)
         word_bank_items.sort()
 
         bank_html = '<div class="cloze-wordbank-title">Word Bank (Drag items below):</div>'
+
+        if show_code:
+            bank_html = '<div class="cloze-wordbank-title">Word Bank (Drag items below). Get 100% to reveal the code for copying:</div>'
+
         bank_html += '<div class="cloze-wordbank-tray">'
         for word in word_bank_items:
             bank_html += f'<div class="cloze-draggable" draggable="true" data-word="{html.escape(word)}">{html.escape(word)}</div>'
@@ -137,9 +132,6 @@ class ClozeDirective(SphinxDirective):
         wrapper_node['theme'] = f"theme-{theme_val}"
         wrapper_node += nodes.raw("", final_html, format="html")
 
-        result_nodes = [wrapper_node]
-
-        # 3. Generate hidden Sphinx CodeBlock node if :show-code: flag is set
         # 3. Generate hidden Sphinx CodeBlock node if :show-code: flag is set
         if show_code:
             code_block_dir = CodeBlock(name='code-block',
@@ -154,20 +146,19 @@ class ClozeDirective(SphinxDirective):
 
             code_nodes = code_block_dir.run()
 
-            # Container starts hidden (using native style attribute assignment)
             completed_container = nodes.container(
                 classes=['cloze-completed-code'])
             completed_container['style'] = 'display: none;'
 
-            # Heading
             heading = nodes.rubric(text="Complete code for copying",
                                    classes=['cloze-code-heading'])
             completed_container += heading
             completed_container.extend(code_nodes)
 
-            result_nodes.append(completed_container)
+            # FIX: Append inside wrapper_node so the container stays scoped to this block instance
+            wrapper_node += completed_container
 
-        return result_nodes
+        return [wrapper_node]
 
 
 def setup(app):

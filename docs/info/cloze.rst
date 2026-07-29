@@ -3,7 +3,7 @@ Cloze Directive Documentation
 ================================================
 
 The cloze directive creates an interactive fill-in-the-blanks puzzle with dual interaction support.
-Users can drag keywords from a randomized word bank tray into target drop zones, or click/tap a keyword to select it and click/tap a target zone to place it.
+Users can drag keywords from a word bank tray into target drop zones, or click/tap a keyword to select it and click/tap a target zone to place it.
 
 Syntax
 -------------------
@@ -41,8 +41,8 @@ Options for the cloze directive
 | Single Items: An implicit markup pattern like ``@@return@@`` designates a target drop field.
 | Multiple Choice: You can explicitly supply choices by separating alternatives with pipes: ``@@choices | alternatives@@``.
 | Distractor Harvesting: Applying the ``:auto-distract:`` flag commands the backend to look ahead, read the code context, and feed vocabulary selections automatically as distractors.
-| Interaction Modes: Supports both desktop **Drag and Drop** and mobile/mouse **Click-to-Select / Click-to-Place** (click/tap a word to highlight it, then click/tap a gap to place it). Double-clicking a filled gap returns the word back to the tray.
-| Structure: The directive creates a word bank container layer holding randomized interactive buttons and embeds corresponding drop target fields within the passage layout.
+| Interaction Modes: Supports both desktop **Drag and Drop** and mobile/mouse **Click-to-Select / Click-to-Place** (click/tap a word to highlight it, then click/tap a gap to place it). **Double-clicking** a filled gap returns the word back to the tray.
+| Structure: The directive creates a word bank container layer holding interactive buttons and embeds corresponding drop target fields within the text layout.
 
 ----
 

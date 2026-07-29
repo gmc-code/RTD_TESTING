@@ -3,8 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   containers.forEach(container => {
     const block = container.closest(".ordering-block");
-    const parentWrapper = block.parentElement || block;
-    const completedCodeBlock = parentWrapper.querySelector(".ordering-completed-code");
+    const completedCodeBlock = block.querySelector(".ordering-completed-code");
 
     const btnScore = block.querySelector(".ordering-btn-score");
     const btnContinue = block.querySelector(".ordering-btn-continue");

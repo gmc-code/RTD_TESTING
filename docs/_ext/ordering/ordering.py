@@ -68,14 +68,21 @@ class OrderingDirective(SphinxDirective):
         if not no_reorder:
             random.shuffle(processed_items)
 
-        html_output = f'<div class="ordering-block{padding_class}">'
+        # Container wrapper holding everything for this directive instance
+        main_block_node = nodes.container(
+            classes=[f'ordering-block{padding_class}'.strip()])
 
         if no_reorder:
-            instructions = 'Click to adjust indentation into the correct structural hierarchy:'
+            base_instruction = 'Click to adjust indentation:'
         else:
-            instructions = 'Drag and drop lines into the correct order and click to adjust indentation:'
+            base_instruction = 'Drag and drop lines into the correct order and click to adjust indentation:'
 
-        html_output += f'<div class="ordering-instructions">{instructions}</div>'
+        if show_code:
+            instructions = f'{base_instruction} Get 100% to reveal the code for copying.'
+        else:
+            instructions = base_instruction
+
+        html_output = f'<div class="ordering-instructions">{instructions}</div>'
 
         no_reorder_attr = ' data-no-reorder="true"' if no_reorder else ''
         html_output += f'<div class="ordering-container theme-{chosen_theme}"{no_reorder_attr}>'
@@ -116,43 +123,38 @@ class OrderingDirective(SphinxDirective):
             <span class="ordering-feedback-badge"></span>
         </div>
         '''
-        html_output += '</div>'  # Closes .ordering-block
 
-        # Create primary wrapper node
-        wrapper_node = ordering_node()
-        wrapper_node += nodes.raw("", html_output, format="html")
-        result_nodes = [wrapper_node]
+        raw_interactive_node = nodes.raw("", html_output, format="html")
+        main_block_node += raw_interactive_node
 
         # Generate hidden native Sphinx CodeBlock node if :show-code: flag is set
         if show_code:
-            code_block_dir = CodeBlock(
-                name='code-block',
-                arguments=[language],
-                options={},
-                content=raw_lines,
-                lineno=self.lineno,
-                content_offset=self.content_offset,
-                block_text=self.block_text,
-                state=self.state,
-                state_machine=self.state_machine
-            )
+            code_block_dir = CodeBlock(name='code-block',
+                                       arguments=[language],
+                                       options={},
+                                       content=raw_lines,
+                                       lineno=self.lineno,
+                                       content_offset=self.content_offset,
+                                       block_text=self.block_text,
+                                       state=self.state,
+                                       state_machine=self.state_machine)
 
             code_nodes = code_block_dir.run()
 
-            # Container starts hidden (using direct style attribute assignment)
-            completed_container = nodes.container(classes=['ordering-completed-code'])
+            completed_container = nodes.container(
+                classes=['ordering-completed-code'])
             completed_container['style'] = 'display: none;'
 
-            # Create and append the heading
-            heading = nodes.rubric(text="Complete code for copying", classes=['ordering-code-heading'])
+            heading = nodes.rubric(text="Complete code for copying",
+                                   classes=['ordering-code-heading'])
             completed_container += heading
-
-            # Append the actual code block nodes
             completed_container.extend(code_nodes)
 
-            result_nodes.append(completed_container)
+            # Add directly inside main_block_node
+            main_block_node += completed_container
 
-        return result_nodes
+        return [main_block_node]
+
 
 
 def setup(app):
