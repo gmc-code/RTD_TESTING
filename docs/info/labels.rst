@@ -38,6 +38,9 @@ Options for the label-diagram directive
    * - ``:height:``
      - integer
      - | Pixel height of the interactive diagram canvas (default: ``500``).
+   * - ``:font-size:``
+     - string
+     - | Label font size (default: ``0.95rem``). Accepts values like "0.85rem", "14px", "1.2rem"
 
 
 | Image Path: Images are automatically detected, bundled, and copied to the Sphinx build output directory.
