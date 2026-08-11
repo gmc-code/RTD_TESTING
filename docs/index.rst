@@ -24,3 +24,14 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/cloze.rst
     info/classifying.rst
     info/labels.rst
+
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Diagrams:
+    :numbered:
+
+    diagrams/Cells - animal 4.rst
+    diagrams/Classification.rst
+    diagrams/microscope.rst
+
