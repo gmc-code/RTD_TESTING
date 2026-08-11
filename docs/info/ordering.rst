@@ -67,16 +67,9 @@ Example 1: light theme
 
 .. ordering::
     :theme: light
-    show-code
 
     def hello_world():
         print("Hello World")
-
-.. code-block:: python
-
-    def hello_world():
-        print("Hello World")
-
 
 ----
 

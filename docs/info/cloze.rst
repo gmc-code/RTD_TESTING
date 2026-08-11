@@ -167,7 +167,8 @@ Example 4: Indentation is retained in code blocks
 Example 5: Show code
 ---------------------------------------------------
 
-|
+| The following example demonstrates the use of the ``:show-code:`` option, which displays the code block in the solution.
+
 .. code-block:: rst
 
     .. cloze:: python
