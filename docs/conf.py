@@ -31,6 +31,7 @@ extensions = [
     "ordering.ordering",  # custom directive
     "gapfill.gapfill",  # custom directive
     "cloze.cloze",  # custom directive
+    "clickwords.clickwords",  # custom directive
     "multichoice.multichoice",  # custom directive
     "labels.labels",  # custom directive
 ]
