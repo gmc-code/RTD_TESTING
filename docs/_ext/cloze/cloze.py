@@ -22,6 +22,30 @@ def depart_cloze_html(self, node):
     self.body.append('</div>')
 
 
+import html
+import random
+import re
+from pathlib import Path
+
+from docutils import nodes
+from docutils.parsers.rst import directives
+from sphinx.directives.code import CodeBlock
+from sphinx.util.docutils import SphinxDirective
+
+
+class cloze_node(nodes.General, nodes.Element):
+    pass
+
+
+def visit_cloze_html(self, node):
+    theme_class = node.get("theme", "theme-light")
+    self.body.append(f'<div class="cloze-block {theme_class}">')
+
+
+def depart_cloze_html(self, node):
+    self.body.append('</div>')
+
+
 class ClozeDirective(SphinxDirective):
     has_content = True
     optional_arguments = 1  # Optional language argument (e.g., .. cloze:: python)
@@ -35,6 +59,23 @@ class ClozeDirective(SphinxDirective):
 
     def run(self):
         full_text = "\n".join(self.content).strip()
+
+        # --- AUTO-NUMBERING FIX FOR '#.' ---
+        line_counter = 1
+
+        def replace_auto_number(match):
+            nonlocal line_counter
+            indent = match.group(1)
+            formatted = f"{indent}{line_counter}."
+            line_counter += 1
+            return formatted
+
+        # Replaces '#.' at the beginning of any line (including indented lines) with sequential numbers
+        full_text = re.sub(
+            r'^(\s*)#\.', replace_auto_number, full_text, flags=re.MULTILINE
+        )
+        # -----------------------------------
+
         language = self.arguments[0] if self.arguments else "python"
         theme_val = self.options.get('theme', 'light')
         auto_distract = 'auto-distract' in self.options
@@ -46,10 +87,10 @@ class ClozeDirective(SphinxDirective):
 
         gap_pattern = re.compile(r'@@([^@]+)@@')
 
-        all_words_in_text = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b',
-                                       full_text)
+        all_words_in_text = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', full_text)
         context_distractors = list(
-            set([w for w in all_words_in_text if len(w) > 2]))
+            set([w for w in all_words_in_text if len(w) > 2])
+        )
 
         # 1. FIRST PASS: Extract answers and clean markup
         word_bank_items = []
@@ -59,7 +100,8 @@ class ClozeDirective(SphinxDirective):
 
             if re.search(r'[|/\\,]', raw_content):
                 parts = [
-                    p.strip() for p in re.split(r'[|/\\,]', raw_content)
+                    p.strip()
+                    for p in re.split(r'[|/\\,]', raw_content)
                     if p.strip()
                 ]
                 correct_answer = parts[0]
@@ -83,7 +125,8 @@ class ClozeDirective(SphinxDirective):
         cleaned_text = gap_pattern.sub(extract_words, full_text)
 
         clean_full_text = gap_pattern.sub(
-            lambda m: re.split(r'[|/\\,]', m.group(1))[0].strip(), full_text)
+            lambda m: re.split(r'[|/\\,]', m.group(1))[0].strip(), full_text
+        )
         raw_code_lines = clean_full_text.splitlines()
 
         # 2. SECOND PASS: Construct HTML nodes layout
@@ -97,34 +140,42 @@ class ClozeDirective(SphinxDirective):
                 f'<span class="cloze-wrapper">'
                 f'<span class="cloze-dropzone" data-gap-id="{self.env.cloze_gap_counter}" data-correct="{html.escape(final_correct)}">Drop here</span>'
                 f'<span class="cloze-inline-feedback"></span>'
-                f'</span>')
+                f'</span>'
+            )
 
         escaped_text = html.escape(cleaned_text)
         escaped_text = escaped_text.replace(html.escape("*["), "*[").replace(
-            html.escape("]*"), "]*")
+            html.escape("]*"), "]*"
+        )
 
         combined_text_html = html_gap_pattern.sub(replace_gap, escaped_text)
         combined_text_html = combined_text_html.replace("\n", "<br>")
 
         word_bank_items.sort()
 
-        bank_html = '<div class="cloze-wordbank-title">Word Bank (Drag items below):</div>'
+        bank_html = (
+            '<div class="cloze-wordbank-title">Word Bank (Drag items'
+            ' below):</div>'
+        )
 
         if show_code:
-            bank_html = '<div class="cloze-wordbank-title">Word Bank (Drag items below). Get 100% to reveal the code for copying:</div>'
+            bank_html = (
+                '<div class="cloze-wordbank-title">Word Bank (Drag items below).'
+                ' Get 100% to reveal the code for copying:</div>'
+            )
 
         bank_html += '<div class="cloze-wordbank-tray">'
         for word in word_bank_items:
             bank_html += f'<div class="cloze-draggable" draggable="true" data-word="{html.escape(word)}">{html.escape(word)}</div>'
         bank_html += '</div><hr class="cloze-divider">'
 
-        control_panel_html = '''
+        control_panel_html = """
         <div class="cloze-global-panel">
           <button type="button" class="cloze-btn-score">Score Section</button>
           <button type="button" class="cloze-btn-reset">Reset Section</button>
           <span class="cloze-output"></span>
         </div>
-        '''
+        """
 
         final_html = f'{bank_html}<pre class="cloze-content">{combined_text_html}</pre>{control_panel_html}'
 
@@ -134,28 +185,31 @@ class ClozeDirective(SphinxDirective):
 
         # 3. Generate hidden Sphinx CodeBlock node if :show-code: flag is set
         if show_code:
-            code_block_dir = CodeBlock(name='code-block',
-                                       arguments=[language],
-                                       options={},
-                                       content=raw_code_lines,
-                                       lineno=self.lineno,
-                                       content_offset=self.content_offset,
-                                       block_text=self.block_text,
-                                       state=self.state,
-                                       state_machine=self.state_machine)
+            code_block_dir = CodeBlock(
+                name='code-block',
+                arguments=[language],
+                options={},
+                content=raw_code_lines,
+                lineno=self.lineno,
+                content_offset=self.content_offset,
+                block_text=self.block_text,
+                state=self.state,
+                state_machine=self.state_machine,
+            )
 
             code_nodes = code_block_dir.run()
 
             completed_container = nodes.container(
-                classes=['cloze-completed-code'])
+                classes=['cloze-completed-code']
+            )
             completed_container['style'] = 'display: none;'
 
-            heading = nodes.rubric(text="Complete code for copying",
-                                   classes=['cloze-code-heading'])
+            heading = nodes.rubric(
+                text="Complete code for copying", classes=['cloze-code-heading']
+            )
             completed_container += heading
             completed_container.extend(code_nodes)
 
-            # FIX: Append inside wrapper_node so the container stays scoped to this block instance
             wrapper_node += completed_container
 
         return [wrapper_node]

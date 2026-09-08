@@ -2,7 +2,6 @@ import html
 import random
 import re
 from docutils import nodes
-from docutils.parsers.rst import Directive
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
@@ -10,7 +9,6 @@ class cloze_node(nodes.General, nodes.Element):
     pass
 
 def visit_cloze_html(self, node):
-    # Retrieve the theme parameter from the node attributes
     theme_class = node.get("theme", "theme-light")
     self.body.append(f'<div class="cloze-block {theme_class}">')
 
@@ -28,9 +26,28 @@ class ClozeDirective(SphinxDirective):
 
     def run(self):
         full_text = "\n".join(self.content).strip()
+
+        # --- AUTO-NUMBERING FOR '#.' LINES ---
+        line_counter = 1
+
+        def replace_auto_number(match):
+            nonlocal line_counter
+            indent = match.group(1)
+            formatted = f"{indent}{line_counter}."
+            line_counter += 1
+            return formatted
+
+        full_text = re.sub(
+            r'^(\s*)#\.', replace_auto_number, full_text, flags=re.MULTILINE
+        )
+        # -----------------------------------
+
+        # Initialize global gap counter on the Sphinx build environment across all blocks
+        if not hasattr(self.env, 'cloze_gap_counter'):
+            self.env.cloze_gap_counter = 0
+
         node = cloze_node()
 
-        # Capture theme value (defaulting to light if not specified)
         theme_val = self.options.get('theme', 'light')
         node['theme'] = f"theme-{theme_val}"
 
@@ -65,12 +82,10 @@ class ClozeDirective(SphinxDirective):
                 harvested_pool.append(w_clean)
 
         word_bank_items = []
-        gap_counter = 0
 
         # 3. SECOND PASS: Construct individual gap elements
         def replace_gap(match):
-            nonlocal gap_counter
-            gap_counter += 1
+            self.env.cloze_gap_counter += 1
             gap_content = match.group(1).strip()
 
             if "/" not in gap_content:
@@ -96,7 +111,12 @@ class ClozeDirective(SphinxDirective):
             final_correct = options[0]
             word_bank_items.extend(options)
 
-            drop_zone_html = f'<span class="cloze-wrapper"><span class="cloze-dropzone" data-gap-id="{gap_counter}" data-correct="{html.escape(final_correct.lower())}">Drop here</span><span class="cloze-inline-feedback"></span></span>'
+            drop_zone_html = (
+                f'<span class="cloze-wrapper">'
+                f'<span class="cloze-dropzone" data-gap-id="{self.env.cloze_gap_counter}" data-correct="{html.escape(final_correct.lower())}">Drop here</span>'
+                f'<span class="cloze-inline-feedback"></span>'
+                f'</span>'
+            )
             return drop_zone_html
 
         escaped_text = html.escape(full_text)
