@@ -4,6 +4,8 @@ from pathlib import Path
 from docutils import nodes
 from docutils.parsers.rst import directives, DirectiveError
 from sphinx.util.docutils import SphinxDirective
+from docutils.statemachine import StringList
+
 
 # ─────────────────────────────────────
 # Nodes
@@ -24,7 +26,7 @@ def visit_multichoice_html(self, node):
     shuffle_attr = str(node.get("shuffle", False)).lower()
     letters_attr = str(node.get("letters", False)).lower()
     single_attr = str(node.get("single_correct", False)).lower()
-    theme_attr = node.get("theme", "light")
+    theme_attr = node.get("theme", "white")
 
     self.body.append(
         f'<div class="multichoice-block theme-{theme_attr}" '
@@ -65,7 +67,8 @@ class multichoiceDirective(SphinxDirective):
     option_spec = {
         "no-shuffle": directives.flag,
         "no-letters": directives.flag,
-        "theme": lambda argument: directives.choice(argument, ("light", "dark")),
+        "theme": lambda argument: directives.choice(argument, ("white", "light")),
+        "delimiter": directives.unchanged,  # Support custom split markers like @@
     }
 
     def run(self):
@@ -74,7 +77,14 @@ class multichoiceDirective(SphinxDirective):
         # Core configuration options
         node["shuffle"] = "no-shuffle" not in self.options
         node["letters"] = "no-letters" not in self.options
-        node["theme"] = self.options.get("theme", "light")
+
+        chosen_theme = self.options.get("theme", "white").strip().lower()
+        if chosen_theme not in ["white", "light"]:
+            chosen_theme = "white"
+        node["theme"] = chosen_theme
+
+        # Configurable split marker (defaults to '|')
+        delimiter = self.options.get("delimiter", "|")
 
         # ─────────────────────────────────────
         # Separate Question Block from Choice Block
@@ -124,8 +134,8 @@ class multichoiceDirective(SphinxDirective):
                 }
                 raw_choices.append(current_choice)
 
-                if "|" in content_start:
-                    txt, exp = content_start.split("|", 1)
+                if delimiter in content_start:
+                    txt, exp = content_start.split(delimiter, 1)
                     if txt.strip():
                         current_choice["text_lines"].append(txt)
                     if exp.strip():
@@ -136,8 +146,8 @@ class multichoiceDirective(SphinxDirective):
                         current_choice["text_lines"].append(content_start)
 
             elif current_choice is not None:
-                if "|" in line:
-                    txt, exp = line.split("|", 1)
+                if delimiter in line:
+                    txt, exp = line.split(delimiter, 1)
                     if txt.strip():
                         current_choice["text_lines"].append(txt)
                     if exp.strip():
@@ -167,30 +177,43 @@ class multichoiceDirective(SphinxDirective):
         # ─────────────────────────────────────
         # Convert Choices into Natively Parsed Structural Trees
         # ─────────────────────────────────────
-        from docutils.statemachine import StringList
+
+        def normalize_line_blocks(lines):
+            """Ensures lines starting with '|' are uniformly formatted as valid rST Line Blocks."""
+            cleaned = []
+            for l in lines:
+                stripped = l.strip()
+                if stripped.startswith("|"):
+                    # Extract text after '|' and format with a clean, uniform line block syntax
+                    content = stripped[1:].strip()
+                    cleaned.append(f"| {content}")
+                else:
+                    cleaned.append(l)
+            return cleaned
 
         for ch in raw_choices:
-            # 1. Main Outer Choice Wrap Element (div.multichoice-choice)
             choice_wrap = choice_container_node(correct=ch["correct"])
-
-            # 2. Inside label wrapper element (<label> + div.multichoice-choice-label)
             label_element = choice_label_node(input_type=input_type, group_name=group_name)
 
-            # Sub-parse option text natively into a proxy block container
+            # 1. Parse Choice Text
+            text_lines = normalize_line_blocks(ch["text_lines"])
             text_proxy = nodes.container()
             text_proxy.document = self.state.document
-            choice_text_list = StringList(ch["text_lines"], source=self.content.source(0))
+            choice_text_list = StringList(text_lines, source=self.content.source(0))
             self.state.nested_parse(choice_text_list, self.content_offset, text_proxy)
 
             label_element.extend(text_proxy.children)
             choice_wrap += label_element
 
-            # 3. Independent Explanation Element (Sits below label, within choice_wrap)
+            # 2. Parse Explanation Lines
             if ch["explanation_lines"]:
                 exp_container = nodes.container(classes=["multichoice-explanation"])
                 exp_container.document = self.state.document
 
-                explanation_text_list = StringList(ch["explanation_lines"], source=self.content.source(0))
+                # Normalize pipes into clean line blocks
+                exp_lines = normalize_line_blocks(ch["explanation_lines"])
+
+                explanation_text_list = StringList(exp_lines, source=self.content.source(0))
                 self.state.nested_parse(explanation_text_list, self.content_offset, exp_container)
 
                 choice_wrap += exp_container
@@ -226,7 +249,7 @@ def setup(app):
     app.add_css_file("multichoice.css")
 
     return {
-        "version": "4.2",
+        "version": "4.3",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

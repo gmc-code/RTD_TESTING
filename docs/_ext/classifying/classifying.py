@@ -34,9 +34,9 @@ class classifyingDirective(SphinxDirective):
         bin_option = self.options.get('bins', 'Bin 1, Bin 2')
         bin_names = [b.strip() for b in bin_option.split(',')]
 
-        chosen_theme = self.options.get('theme', 'light').strip().lower()
-        if chosen_theme not in ['light', 'dark']:
-            chosen_theme = 'light'
+        chosen_theme = self.options.get('theme', 'white').strip().lower()
+        if chosen_theme not in ['light', 'white']:
+            chosen_theme = 'white'
 
         # 2. Parse Items and their correct bin assignments
         items = []

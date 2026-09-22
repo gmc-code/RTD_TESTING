@@ -1,0 +1,502 @@
+/* _static/sfg.css */
+
+/* ========================================== */
+/**  sfg colours using roles directive */
+/* ========================================== */
+
+/* ========================================== */
+/* plain -- just colour */
+/* ========================================== */
+
+span.participantp    { color: #d62728; }
+span.processp        { color: #2ca02c; }
+span.circp           { color: #4a3dff; }
+span.conjp           { color: #6b7280; }
+span.partp         { color: #6b7280; }
+span.themep          { color: #1f77b4; }
+span.rhemep          { color: #111827; }
+
+/* ========================================== */
+/* with border */
+/* ========================================== */
+
+span.participant,
+span.process,
+span.circ,
+span.conj,
+span.partp,
+span.theme,
+span.rheme {
+
+  padding: 0.18em .65em;
+  border-radius: .25em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  line-height: 1.6;
+  border-style: solid;
+  border-width: 1px;
+}
+
+span.participant { color: #d62728; border-color: #d62728; }
+span.process     { color: #2ca02c; border-color: #2ca02c; }
+span.circ        { color: #4a3dff; border-color: #4a3dff; }
+span.conj        { color: #6b7280; font-style: italic; }
+span.part        { color: #6b7280; font-style: italic; }
+span.theme       { color: #1f77b4; border-color: #1f77b4; }
+span.rheme       { color: #111827; border-color: #111827; }
+
+/* ========================================== */
+/* filled in colour */
+/* ========================================== */
+
+/* Shared chip-like styling for all *b roles */
+span.participantb,
+span.processb,
+span.circb,
+span.conjb,
+span.partb,
+span.themeb,
+span.rhemeb {
+  /* text color: off-white */
+  color: #f8fafc;
+
+  /* inline chip look */
+  padding: 0.2em .65em;
+  border-radius: .25em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  line-height: 1.6;
+}
+
+/* Individual backgrounds (using your current color palette) */
+span.participantb { background-color: #d62728; } /* red */
+span.processb     { background-color: #2ca02c; } /* green */
+span.circb        { background-color: #4a3dff; } /* indigo */
+span.conjb        { background-color: #6b7280; font-style: italic; } /* gray, italic */
+span.partb        { background-color: #6b7280; font-style: italic; } /* gray, italic */
+span.themeb       { background-color: #1f77b4; font-weight: 600; } /* blue, bold */
+span.rhemeb       { background-color: #111827; } /* near-black */
+
+/* Optional subtle inner highlight for contrast on some screens */
+span.participantb,
+span.processb,
+span.circb,
+span.partb,
+span.conjb,
+span.themeb,
+span.rhemeb {
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Print fallback: if printers drop background colors, keep a visual cue */
+@media print {
+  span.participantb,
+  span.processb,
+  span.circb,
+  span.partb,
+  span.conjb,
+  span.themeb,
+  span.rhemeb {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+
+    /* If backgrounds are stripped, ensure visibility */
+    background-color: transparent !important;
+    color: #000 !important;
+    border: 1px solid currentColor;
+  }
+}
+
+/* ========================================== */
+/* variable colours using roles directive */
+/* pro colours using roles directive */
+/* ========================================== */
+
+/* normal colours */
+span.p, .p,
+span.cv, .cv {
+    color: #1f77b4; /* blue */
+}
+
+span.r, .r,
+span.dv, .dv {
+    color: #d62728; /* red */
+}
+
+span.o, .o,
+span.iv, .iv {
+    color: #2ca02c; /* green */
+}
+
+/* bold colours */
+span.pb, .pb,
+span.cvb, .cvb {
+    color: #1f77b4; /* blue */
+    font-weight: bold;
+}
+
+span.rb, .rb,
+span.dvb, .dvb {
+    color: #d62728; /* red */
+    font-weight: bold;
+}
+
+span.ob, .ob,
+span.ivb, .ivb {
+    color: #2ca02c; /* green */
+    font-weight: bold;
+}
+
+
+
+/* ========================================== */
+/* admonitions via class */
+/* ========================================== */
+
+:root {
+
+    --admonition-text-color: #404040;
+    --admonition-text-white: #ffffff;
+
+    /* --- Premise (Blue) --- */
+    --premise-main: hsl(205, 100%, 46%);
+    --premise-bg: hsl(205, 100%, 97%);
+    --premise-title-bg: hsl(205, 100%, 75%);
+
+    /* --- Reasoning (Red) --- */
+    --reasoning-main: hsl(360, 100%, 46%);
+    --reasoning-bg: hsl(360, 100%, 97%);
+    --reasoning-title-bg: hsl(360, 100%, 75%);
+
+    /* --- Outcome (Green) --- */
+    --outcome-main: hsl(120, 100%, 46%);
+    --outcome-bg: hsl(120, 100%, 97%);
+    --outcome-title-bg: hsl(120, 100%, 75%);
+
+    /* --- PRO (Purple) --- */
+    --pro-main: hsl(280, 100%, 46%);
+    --pro-bg: hsl(280, 100%, 97%);
+    --pro-title-bg: hsl(280, 100%, 75%);
+
+    /* --- MCQ --- */
+    --mcq-main: hsl(60, 100%, 46%);
+    --mcq-bg: hsl(60, 100%, 97%);
+    --mcq-title-bg: hsl(60, 100%, 75%);
+
+    /* --- CLOZE --- */
+    --cloze-main: hsl(70, 100%, 46%);
+    --cloze-bg: hsl(70, 100%, 97%);
+    --cloze-title-bg: hsl(70, 100%, 75%);
+
+    /* --- SHORT ANSWER --- */
+    --shortanswer-main: hsl(45, 100%, 46%);
+    --shortanswer-bg: hsl(45, 100%, 97%);
+    --shortanswer-title-bg: hsl(45, 100%, 75%);
+
+    /* --- MATCH --- */
+    --match-main: hsl(210, 100%, 46%);
+    --match-bg: hsl(210, 100%, 97%);
+    --match-title-bg: hsl(210, 100%, 75%);
+}
+
+
+/* --- Premise --- */
+.admonition.premise {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--premise-main);
+    background-color: var(--premise-bg);
+}
+.admonition.premise .admonition-title {
+    background-color: var(--premise-title-bg);
+    color: var(--admonition-text-color);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+
+/* --- Reasoning --- */
+.admonition.reasoning {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--reasoning-main);
+    background-color: var(--reasoning-bg);
+}
+.admonition.reasoning .admonition-title {
+    background-color: var(--reasoning-title-bg);
+    color: var(--admonition-text-color);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+
+/* --- Outcome --- */
+.admonition.outcome {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--outcome-main);
+    background-color: var(--outcome-bg);
+}
+.admonition.outcome .admonition-title {
+    background-color: var(--outcome-title-bg);
+    color: var(--admonition-text-color);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+
+/* --- PRO --- */
+.admonition.pro {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--pro-main);
+    background-color: var(--pro-bg);
+}
+.admonition.pro .admonition-title {
+    background-color: var(--pro-title-bg);
+    color: var(--admonition-text-color);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+/* --- MCQ --- */
+div.admonition.mcq {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--mcq-main);
+    background-color: var(--mcq-bg);
+}
+
+div.admonition.mcq p.admonition-title {
+    color: var(--admonition-text-color);
+    background-color: var(--mcq-title-bg);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+
+/* --- CLOZE --- */
+div.admonition.cloze {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--cloze-main);
+    background-color: var(--cloze-bg);
+}
+
+div.admonition.cloze p.admonition-title {
+    color: var(--admonition-text-color);
+    background-color: var(--cloze-title-bg);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+
+/* --- SHORT ANSWER --- */
+div.admonition.shortanswer {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--shortanswer-main);
+    background-color: var(--shortanswer-bg);
+}
+
+div.admonition.shortanswer p.admonition-title {
+    color: var(--admonition-text-color);
+    background-color: var(--shortanswer-title-bg);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+
+/* --- MATCHING --- */
+div.admonition.match {
+    color: var(--admonition-text-color);
+    border-left: 6px solid var(--match-main);
+    background-color: var(--match-bg);
+}
+
+div.admonition.match p.admonition-title {
+    color: var(--admonition-text-color);
+    background-color: var(--match-title-bg);
+    font-weight: normal;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+/* ========================================== */
+/* custom admonition icons */
+/* ========================================== */
+
+.rst-content .admonition-title::before {
+    display: inline-block;
+    margin-right: 1.5em; /* increase or decrease as needed */
+}
+
+/* .admonition .admonition-title::before {
+    content: none !important;
+    font-family: inherit !important;
+    margin-right: 0.2em;
+}
+
+/* --- Premise --- */
+.admonition.premise .admonition-title::before {
+    content: "\f192"; /* circle-dot */
+    margin-right: 2em;
+}
+
+/* --- Reasoning --- */
+.admonition.reasoning .admonition-title::before {
+    content: "\f08b"; /* arrow-right-from-bracket */
+    margin-right: 2em;
+}
+
+/* --- Outcome --- */
+.admonition.outcome .admonition-title::before {
+    content: "\f11e"; /* flag-checkered */
+    margin-right: 2em;
+}
+
+/* --- Pro --- */
+.admonition.pro .admonition-title::before {
+    content: "\f0eb"; /* lightbulb */
+    margin-right: 2em;
+}
+
+/* --- MCQ --- */
+.admonition.mcq .admonition-title::before {
+    content: "\f14a  \f03a"; /* square-check */
+    margin-right: 2em;
+}
+
+/* --- CLOZE --- */
+.admonition.cloze .admonition-title::before {
+    content: "\f044"; /* pen-to-square */
+    margin-right: 2em;
+}
+
+/* --- SHORT ANSWER --- */
+.admonition.shortanswer .admonition-title::before {
+    content: "\f11c"; /* keyboard*/
+    margin-right: 2em;
+}
+
+/* --- MATCHING --- */
+.admonition.match .admonition-title::before {
+    content: "\f074"; /* shuffle */
+    margin-right: 2em;
+}
+
+/* --- question --- */
+.admonition.question .admonition-title::before {
+    content: "\f059"; /* circle-question */
+    margin-right: 2em;
+}
+
+/* ========================================== */
+/* dropdown styling */
+/* ========================================== */
+
+
+/* BASE */
+details.sd-dropdown {
+    border-left: 1px solid var(--dropdown-main);
+    background: var(--dropdown-bg);
+}
+
+/* HEADER */
+details.sd-dropdown > summary.sd-summary-title {
+    background: var(--dropdown-title-bg);
+    color: var(--admonition-text-color);
+}
+
+/* CONTENT */
+details.sd-dropdown .sd-summary-content {
+    background: var(--dropdown-bg);
+}
+
+
+/* ========================================== */
+
+/* MCQ */
+details.sd-dropdown.dropdown-mcq {
+    --dropdown-main: var(--mcq-main);
+    --dropdown-bg: var(--mcq-bg);
+    --dropdown-title-bg: var(--mcq-title-bg);
+}
+
+/* CLOZE */
+details.sd-dropdown.dropdown-cloze {
+    --dropdown-main: var(--cloze-main);
+    --dropdown-bg: var(--cloze-bg);
+    --dropdown-title-bg: var(--cloze-title-bg);
+}
+
+/* SHORT ANSWER */
+details.sd-dropdown.dropdown-shortanswer {
+    --dropdown-main: var(--shortanswer-main);
+    --dropdown-bg: var(--shortanswer-bg);
+    --dropdown-title-bg: var(--shortanswer-title-bg);
+}
+
+/* MATCH */
+details.sd-dropdown.dropdown-match {
+    --dropdown-main: var(--match-main);
+    --dropdown-bg: var(--match-bg);
+    --dropdown-title-bg: var(--match-title-bg);
+}
+
+
+
+/* --- Premise --- */
+details.sd-dropdown.dropdown-premise {
+    --dropdown-main: var(--premise-main);
+    --dropdown-bg: var(--premise-bg);
+    --dropdown-title-bg: var(--premise-title-bg);
+}
+
+/* --- Reasoning --- */
+details.sd-dropdown.dropdown-reasoning {
+    --dropdown-main: var(--reasoning-main);
+    --dropdown-bg: var(--reasoning-bg);
+    --dropdown-title-bg: var(--reasoning-title-bg);
+}
+
+/* --- Outcome --- */
+details.sd-dropdown.dropdown-outcome {
+    --dropdown-main: var(--outcome-main);
+    --dropdown-bg: var(--outcome-bg);
+    --dropdown-title-bg: var(--outcome-title-bg);
+}
+
+/* --- PRO --- */
+details.sd-dropdown.dropdown-outcome {
+    --dropdown-main: var(--pro-main);
+    --dropdown-bg: var(--pro-bg);
+    --dropdown-title-bg: var(--pro-title-bg);
+}
+
+/* ========================================== */
+
+
+.pro-answer {
+    background-color: #f5f5f5;
+    background-color: lightyellow!important;
+    padding: 1em;
+    border-radius: 6px;
+    font-family: monospace;
+}
+
+/* Scope to Sphinx content area to outrank base theme selectors */
+.rst-content p.rubric.rubricsmall {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 1.0em;
+    margin-bottom: 0.4em;
+    /* border-bottom: 1px dotted lightgray; */
+}
+
+/* Optional: default rubric style */
+.rst-content p.rubric {
+    font-size: 16pt;
+    font-weight: bold;
+    /* border-bottom: 1px dotted silver; */
+}

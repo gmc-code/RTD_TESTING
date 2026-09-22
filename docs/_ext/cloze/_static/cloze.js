@@ -191,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
+        // Visually disable the score button after scoring
         btnScore.disabled = true
       })
     }
@@ -223,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
           d.classList.remove("selected")
         })
 
+        // Re-enable the score button when resetting
         if (btnScore) btnScore.disabled = false
       })
     }

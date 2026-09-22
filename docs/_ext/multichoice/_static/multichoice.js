@@ -167,6 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ─────────────────────────────────────
   // Scoring Validation Engine
   // ─────────────────────────────────────
+
+
   function doScore() {
     let total = 0;
     let correct = 0;
@@ -219,6 +221,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // Disable the score button to prevent repeated clicks until reset
+    btnScore.disabled = true;
+
     // Disable the toggle once scored to lock page state representation
     chkShowFeedback.disabled = true;
     toggleWrapper.style.opacity = "0.5";
@@ -243,6 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function doReset() {
     scoreBadge.style.display = "none";
     scoreBadge.classList.remove("high", "medium", "low");
+
+    // Re-enable the score button
+    btnScore.disabled = false;
 
     // Re-enable the configuration toggle check element
     chkShowFeedback.disabled = false;

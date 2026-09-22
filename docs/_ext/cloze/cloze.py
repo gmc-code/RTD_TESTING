@@ -14,31 +14,7 @@ class cloze_node(nodes.General, nodes.Element):
 
 
 def visit_cloze_html(self, node):
-    theme_class = node.get("theme", "theme-light")
-    self.body.append(f'<div class="cloze-block {theme_class}">')
-
-
-def depart_cloze_html(self, node):
-    self.body.append('</div>')
-
-
-import html
-import random
-import re
-from pathlib import Path
-
-from docutils import nodes
-from docutils.parsers.rst import directives
-from sphinx.directives.code import CodeBlock
-from sphinx.util.docutils import SphinxDirective
-
-
-class cloze_node(nodes.General, nodes.Element):
-    pass
-
-
-def visit_cloze_html(self, node):
-    theme_class = node.get("theme", "theme-light")
+    theme_class = node.get("theme", "theme-white")
     self.body.append(f'<div class="cloze-block {theme_class}">')
 
 
@@ -52,8 +28,7 @@ class ClozeDirective(SphinxDirective):
 
     option_spec = {
         'auto-distract': directives.flag,
-        'theme': lambda argument: directives.choice(argument,
-                                                    ('light', 'dark')),
+        'theme': lambda argument: directives.choice(argument, ('white', 'light')),
         'show-code': directives.flag,
     }
 
@@ -70,18 +45,15 @@ class ClozeDirective(SphinxDirective):
             line_counter += 1
             return formatted
 
-        # Replaces '#.' at the beginning of any line (including indented lines) with sequential numbers
         full_text = re.sub(
             r'^(\s*)#\.', replace_auto_number, full_text, flags=re.MULTILINE
         )
-        # -----------------------------------
 
         language = self.arguments[0] if self.arguments else "python"
-        theme_val = self.options.get('theme', 'light')
+        theme_val = self.options.get('theme', 'white')
         auto_distract = 'auto-distract' in self.options
         show_code = 'show-code' in self.options
 
-        # Track global gap counter on the Sphinx build environment across all directive calls
         if not hasattr(self.env, 'cloze_gap_counter'):
             self.env.cloze_gap_counter = 0
 

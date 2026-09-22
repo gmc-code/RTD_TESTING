@@ -33,7 +33,7 @@ Options for the classifying directive
    * - ``:theme:``
      - string
      - | Sets the visual theme workspace wrapper.
-       | Options are ``light`` (default) or ``dark`` (orangue hue).
+       | Options are ``white`` (default) or ``light``.
 
 | Syntax Rules: Items inside the body are split using a pipe delimiter (``|``) followed by the zero-based index of its correct bin.
 | Index Mapping: The first bin declared in the ``:bins:`` option corresponds to index ``0``, the second to index ``1``, and so on.
@@ -42,10 +42,11 @@ Options for the classifying directive
 
 ----
 
-Example 1: Operators vs. Data Structures
+Example 1: Default white theme
 --------------------------------------------
 
-The following example demonstrates sorting core Python language features into either syntax operators or built-in data structures using the default light theme.
+| The following example demonstrates sorting core Python language features into either syntax operators or built-in data structures.
+| It uses the default white theme.
 
 .. code-block:: rst
 
@@ -69,16 +70,17 @@ The following example demonstrates sorting core Python language features into ei
 
 ----
 
-Example 2: Arithmetic vs. Logical Operators (Dark Theme)
+Example 2: Light theme
 -----------------------------------------------------------
 
-The following example uses the ``:theme: dark`` setting to demonstrate sorting arithmetic and logical operators into their respective categories.
+| The following example uses the ``:theme: light`` setting/
+| It demonstrates sorting arithmetic and logical operators into their respective categories.
 
 .. code-block:: rst
 
     .. classifying::
        :bins: Arithmetic, Logical
-       :theme: dark
+       :theme: light
 
        // (Floor division) | 0
        and (Short-circuit conjunction) | 1
@@ -88,7 +90,7 @@ The following example uses the ``:theme: dark`` setting to demonstrate sorting a
 
 .. classifying::
    :bins: Arithmetic, Logical
-   :theme: dark
+   :theme: light
 
    // (Floor division) | 0
    and (Short-circuit conjunction) | 1
@@ -98,10 +100,40 @@ The following example uses the ``:theme: dark`` setting to demonstrate sorting a
 
 ----
 
-Example 3: Mutable vs Immutable Object States
+Example 3: Maximum of 6 bins
 ------------------------------------------------
 
-Demonstrating strict item mapping rules utilizing custom labels matching foundational Python data structures.
+Demonstrating a 6-bin categorization activity.
+
+.. code-block:: rst
+
+    .. classifying::
+        :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
+
+        Basalt | 0
+        Sandstone | 1
+        Marble | 2
+        Quartz | 3
+        Trilobite | 4
+        Coal | 5
+
+.. classifying::
+   :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
+
+   Basalt | 0
+   Sandstone | 1
+   Marble | 2
+   Quartz | 3
+   Trilobite | 4
+   Coal | 5
+
+----
+
+Example 4: Items with various brackets
+------------------------------------------------
+
+| The following example demonstrates sorting Python data structures into either mutable or immutable categories.
+| It shows items with different types of brackets.
 
 .. code-block:: rst
 
@@ -121,33 +153,3 @@ Demonstrating strict item mapping rules utilizing custom labels matching foundat
    Strings (e.g., "Hello") | 1
    Dictionaries (e.g., {"a": 1}) | 0
 
-----
-
-Example 4: 6 bins
-------------------------------------------------
-
-Demonstrating a 6-bin categorization activity.
-
-.. code-block:: rst
-
-    .. classifying::
-        :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
-        :theme: light
-
-        Basalt | 0
-        Sandstone | 1
-        Marble | 2
-        Quartz | 3
-        Trilobite | 4
-        Coal | 5
-
-.. classifying::
-   :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
-   :theme: light
-
-   Basalt | 0
-   Sandstone | 1
-   Marble | 2
-   Quartz | 3
-   Trilobite | 4
-   Coal | 5

@@ -7,9 +7,11 @@ Introduction
 
 The directives covered in this documentation include:
 
-  -  multichoice
-  -  gapfill
-  -  cloze
-  -  ordering
-  -  classifying
-
+- multichoice
+- cloze
+- gapfill
+- classifying
+- fillin
+- ordering
+- textselect
+- labels

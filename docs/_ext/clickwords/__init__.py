@@ -1,4 +1,0 @@
-
-
-from .clickwords import setup
-

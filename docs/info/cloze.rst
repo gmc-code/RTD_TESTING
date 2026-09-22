@@ -14,6 +14,8 @@ Syntax
 
         Code text containing @@target_keyword@@ markup blocks.
 
+----
+
 Options for the cloze directive
 --------------------------------------
 
@@ -28,20 +30,27 @@ Options for the cloze directive
      - flag
      - | If present, dynamically harvests distractors from
        | the surrounding text or alternate gap parameters.
-   * - ``:theme:``
-     - string
-     - | Sets the visual styling theme for the block layout.
-       | Acceptable values are ``light`` (default) or ``dark``.
    * - ``:show-code:``
      - flag
      - If present, displays the code block in the solution.
+   * - ``:theme:``
+     - string
+     - | Sets the visual styling theme for the block layout.
+       | Acceptable values are ``white`` (default) or ``light``.
 
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
+|
 | Single Items: An implicit markup pattern like ``@@return@@`` designates a target drop field.
+|
 | Multiple Choice: You can explicitly supply choices by separating alternatives with pipes: ``@@choices | alternatives@@``.
+|
 | Distractor Harvesting: Applying the ``:auto-distract:`` flag commands the backend to look ahead, read the code context, and feed vocabulary selections automatically as distractors.
-| Interaction Modes: Supports both desktop **Drag and Drop** and mobile/mouse **Click-to-Select / Click-to-Place** (click/tap a word to highlight it, then click/tap a gap to place it). **Double-clicking** a filled gap returns the word back to the tray.
+|
+| Interaction Modes:
+| Supports both desktop **Drag and Drop** and mobile/mouse **Click-to-Select / Click-to-Place** (click/tap a word to highlight it, then click/tap a gap to place it).
+| **Double-clicking** a filled gap returns the word back to the tray.
+|
 | Structure: The directive creates a word bank container layer holding interactive buttons and embeds corresponding drop target fields within the text layout.
 
 ----
@@ -65,21 +74,21 @@ The following example explicitly supplies alternative keyword targets separated 
 
 ----
 
-Example 2: Dark theme
+Example 2: light theme
 -------------------------------------------
 
-| The following example demonstrates the cloze directive with the dark theme.
-| `:theme: dark` is optional since it is not the default.
+| The following example demonstrates the cloze directive with the light theme.
+| `:theme: light` is optional since it is not the default.
 
 .. code-block:: rst
 
     .. cloze::
-        :theme: dark
+        :theme: light
 
         To send a result back to the caller, you use @@return | print@@.
 
 .. cloze::
-    :theme: dark
+    :theme: light
 
     To send a result back to the caller, you use @@return | print@@.
 
@@ -173,7 +182,6 @@ Example 5: Show code
 
     .. cloze:: python
         :show-code:
-        :theme: light
 
         for number @@in | of@@ range(1, 10):
             if number % 2 == 0:
@@ -183,7 +191,6 @@ Example 5: Show code
 
 .. cloze:: python
     :show-code:
-    :theme: light
 
     for number @@in | of@@ range(1, 10):
         if number % 2 == 0:

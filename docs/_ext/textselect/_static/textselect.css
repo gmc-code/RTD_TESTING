@@ -1,0 +1,293 @@
+/* ==========================================================================
+   0. Buttons & Control Panel UI
+   ========================================================================== */
+
+.textselect-global-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.textselect-btn-score,
+.textselect-btn-reset {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.0rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid transparent;
+}
+
+.textselect-btn-score {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.textselect-btn-score:hover {
+  background-color: #1d4ed8;
+}
+
+.textselect-btn-score:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}
+
+.textselect-btn-reset {
+  background-color: #ffffff;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+
+.textselect-btn-reset:hover {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+.textselect-output {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  margin-left: auto;
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+/* Score Accuracy Badges */
+.textselect-output.high {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.textselect-output.medium {
+  background-color: #fef9c3;
+  color: #a16207;
+  border-color: #fef08a;
+}
+
+.textselect-output.low {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* ==========================================================================
+   1. Base Component Layout & Structure
+   ========================================================================== */
+.textselect-block {
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff; /* Default background */
+}
+
+.textselect-instructions {
+  font-weight: 600;
+  margin-bottom: 0.8em;
+  font-size: 0.95em;
+  color: #334155;
+}
+
+.textselect-content {
+  font-family: "Consolas", "Courier New", Courier, monospace;
+  font-size: 1.05em;
+  line-height: 1.8;
+  margin: 0.5em;
+  white-space: normal;
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   2. Instruction Text Colors (Driven by `color` option)
+   ========================================================================== */
+
+/* Standard Colors & Roles */
+.textselect-block.ts-color-red .textselect-instructions,
+.textselect-block.ts-color-participant .textselect-instructions { color: #d62728; }
+
+.textselect-block.ts-color-green .textselect-instructions,
+.textselect-block.ts-color-process .textselect-instructions { color: #2ca02c; }
+
+.textselect-block.ts-color-blue .textselect-instructions,
+.textselect-block.ts-color-circ .textselect-instructions { color: #4a3dff; }
+
+.textselect-block.ts-color-conj .textselect-instructions,
+.textselect-block.ts-color-part .textselect-instructions { color: #6b7280; }
+
+.textselect-block.ts-color-theme .textselect-instructions { color: #1f77b4; }
+.textselect-block.ts-color-rheme .textselect-instructions { color: #111827; }
+
+/* Clause Structure Roles */
+.textselect-block.ts-color-depclause .textselect-instructions { color: #9467bd; }
+.textselect-block.ts-color-embedded .textselect-instructions  { color: #e377c2; }
+.textselect-block.ts-color-relative .textselect-instructions  { color: #ff7f0e; }
+.textselect-block.ts-color-projected .textselect-instructions { color: #8c564b; }
+
+/* ==========================================================================
+   3. Themes: `white` (Default) & `light`
+   ========================================================================== */
+
+/* Theme: White */
+.textselect-block.theme-white {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Theme: light */
+.textselect-block.theme-light {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* ==========================================================================
+   4. Style Variants (filled, border, plain)
+   ========================================================================== */
+
+/* Filled (Default Card Style) */
+.textselect-block.ts-style-filled {
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Border (Forced White background with crisp outline) */
+.textselect-block.ts-style-border {
+  background-color: #ffffff !important;
+  border-width: 2px;
+  border-style: solid;
+  box-shadow: none;
+}
+
+/* Plain (Minimalist: transparent background, no border, no shadow) */
+.textselect-block.ts-style-plain {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ==========================================================================
+   5. Word & Space Base Styles
+   ========================================================================== */
+
+.ts-word {
+  cursor: pointer;
+  padding: 0.1em 0.2em;
+  margin: 0;
+  border-radius: 0.2em;
+  user-select: none;
+  display: inline;
+  vertical-align: baseline;
+  transition: background-color 0.15s ease;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.textselect-block:not([data-disabled="true"]) .ts-word:not(.selected):hover {
+  background-color: rgba(148, 163, 184, 0.25);
+}
+
+.ts-space {
+  display: inline-block;
+  width: 0.45em;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   6. Active Selection Highlights (Driven by `color`)
+   ========================================================================== */
+
+.ts-color-red .ts-word.selected,
+.ts-color-participant .ts-word.selected { background-color: rgba(214, 39, 40, 0.25) !important; color: #d62728 !important; }
+
+.ts-color-green .ts-word.selected,
+.ts-color-process .ts-word.selected { background-color: rgba(44, 160, 44, 0.25) !important; color: #2ca02c !important; }
+
+.ts-color-blue .ts-word.selected,
+.ts-color-circ .ts-word.selected { background-color: rgba(74, 61, 255, 0.25) !important; color: #4a3dff !important; }
+
+.ts-color-conj .ts-word.selected,
+.ts-color-part .ts-word.selected { background-color: rgba(107, 114, 128, 0.25) !important; color: #6b7280 !important; font-style: italic; }
+
+.ts-color-theme .ts-word.selected { background-color: rgba(31, 119, 180, 0.25) !important; color: #1f77b4 !important; font-weight: 600; }
+.ts-color-rheme .ts-word.selected { background-color: rgba(17, 24, 39, 0.25) !important; color: #111827 !important; }
+
+/* Clause Structure Selections */
+.ts-color-depclause .ts-word.selected { background-color: rgba(148, 103, 189, 0.25) !important; color: #9467bd !important; }
+.ts-color-embedded .ts-word.selected  { background-color: rgba(227, 119, 194, 0.25) !important; color: #e377c2 !important; }
+.ts-color-relative .ts-word.selected  { background-color: rgba(255, 127, 14, 0.25) !important; color: #ff7f0e !important; }
+.ts-color-projected .ts-word.selected { background-color: rgba(140, 86, 75, 0.25) !important; color: #8c564b !important; }
+
+/* ==========================================================================
+   7. Revealed Answer & Scoring Styles
+   ========================================================================== */
+
+.ts-correct-phrase,
+.ts-incorrect-phrase,
+.ts-missed-phrase {
+  display: inline-block;
+  vertical-align: baseline;
+  padding: 0.18em 0.3em;
+  border-radius: 0.25em;
+  line-height: 1.2;
+  box-sizing: border-box;
+  background-color: transparent !important;
+  background: none !important;
+}
+
+.ts-correct-phrase {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.ts-incorrect-phrase {
+  border: 1px dashed #a83c9f !important;
+  color: #a83c9f !important;
+  text-decoration: line-through;
+  text-decoration-color: #a83c9f;
+  text-decoration-thickness: 2px;
+}
+
+.ts-missed-phrase {
+  border: 1px dashed currentColor !important;
+}
+
+/* Border & text color assignments upon scoring reveal */
+.ts-keep-red, .ts-keep-participant { color: #d62728 !important; border-color: #d62728; }
+.ts-keep-green, .ts-keep-process    { color: #2ca02c !important; border-color: #2ca02c; }
+.ts-keep-blue, .ts-keep-circ        { color: #4a3dff !important; border-color: #4a3dff; }
+.ts-keep-conj, .ts-keep-part        { color: #6b7280 !important; border-color: #6b7280; font-style: italic; }
+.ts-keep-theme                       { color: #1f77b4 !important; border-color: #1f77b4; font-weight: 600; }
+.ts-keep-rheme                       { color: #111827 !important; border-color: #111827; }
+
+/* Clause Structure Keeps */
+.ts-keep-depclause { color: #9467bd !important; border-color: #9467bd; }
+.ts-keep-embedded  { color: #e377c2 !important; border-color: #e377c2; }
+.ts-keep-relative  { color: #ff7f0e !important; border-color: #ff7f0e; }
+.ts-keep-projected { color: #8c564b !important; border-color: #8c564b; }
+
+.ts-correct-phrase .ts-word,
+.ts-correct-phrase .ts-space,
+.ts-incorrect-phrase .ts-word,
+.ts-incorrect-phrase .ts-space,
+.ts-missed-phrase .ts-word,
+.ts-missed-phrase .ts-space {
+  border: none !important;
+  background-color: transparent !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: inherit !important;
+  text-decoration: inherit;
+}

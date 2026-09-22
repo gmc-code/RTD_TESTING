@@ -17,6 +17,30 @@ project = "RTD_TESTING"
 copyright = "2025-6, GMC"
 author = "GMC"
 
+# ------------------------------------------------------------
+
+from docutils import nodes
+from docutils.parsers.rst import roles
+
+def simple_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    node = nodes.inline(rawtext, text, classes=[name])
+    return [node], []
+
+
+def setup(app):
+    roles_to_register = [
+        "p", "r", "o", "pb", "rb", "ob", "iv", "dv", "cv", "ivb", "dvb", "cvb",
+        "theme", "rheme", "themeb", "rhemeb", "process", "participant", "circ",
+        "conj", "part","processb", "participantb", "circb", "conjb", "partb", "processp",
+        "participantp", "circp", "conjp", "rubricsmall"
+    ]
+
+    for rolename in roles_to_register:
+        app.add_role(rolename, simple_role)
+
+# ------------------------------------------------------------
+
+
 # -- General configuration ---------------------------------------------------
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -27,13 +51,15 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx_togglebutton",
     "sphinx_design",
-    "classifying.classifying",  # custom directive
-    "ordering.ordering",  # custom directive
-    "gapfill.gapfill",  # custom directive
-    "cloze.cloze",  # custom directive
-    "clickwords.clickwords",  # custom directive
     "multichoice.multichoice",  # custom directive
+    "cloze.cloze",  # custom directive
+    "gapfill.gapfill",  # custom directive
+    "classifying.classifying",  # custom directive
+    "fillin.fillin",  # custom directive
+    "ordering.ordering",  # custom directive
+    "textselect.textselect",  # custom directive
     "labels.labels",  # custom directive
+    "noisemonitor.noisemonitor",  # custom directive
 ]
 
 # "sphinx.ext.doctest",
@@ -98,6 +124,7 @@ html_static_path = ["_static"]
 # Use custom css  html_css_files = ["custom.css"]
 html_css_files = [
     "css/custom.css",
+    "css/sfg.css",
 ]
 
 # Custom JS
@@ -136,4 +163,4 @@ html_theme_options = {
 html_favicon = "_static/favicon.ico"
 html_logo = "_static/logo_navyblue.png"
 
-# ------------latex
+# ------------latex----------------

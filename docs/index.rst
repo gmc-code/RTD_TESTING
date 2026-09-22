@@ -19,12 +19,14 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/Intro.rst
 
     info/multichoice.rst
-    info/ordering.rst
-    info/gapfill.rst
     info/cloze.rst
-    info/clickwords.rst
+    info/gapfill.rst
     info/classifying.rst
+    info/fillin.rst
+    info/ordering.rst
+    info/textselect.rst
     info/labels.rst
+    info/noisemonitor.rst
 
 
 .. toctree::

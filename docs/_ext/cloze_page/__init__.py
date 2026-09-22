@@ -1,4 +1,0 @@
-
-
-from .cloze import setup
-

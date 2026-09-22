@@ -20,12 +20,16 @@ Options for the multichoice directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 35 10 55
    :header-rows: 1
 
    * - Option
      - Type
      - Description
+   * - ``:delimiter:``
+     - string
+     - | Sets the delimiter between the option text and the feedback message.
+       | e.g @@  The default is ``|`` (pipe).
    * - ``:no-letters:``
      - flag
      - If present, hides the alphabetical choice indicators (A, B, C...).
@@ -36,7 +40,7 @@ Options for the multichoice directive
    * - ``:theme:``
      - string
      - | If present, set the visual theme.
-       | Options are ``light`` (default) or ``dark``.
+       | Options are ``white`` (default) or ``light``.
 
 
 | Shuffling: Unless ``:no-shuffle:`` is declared, choices are automatically randomized on page render and on Reset button clicks to elimin  position-based pattern guessing.
@@ -134,12 +138,12 @@ Example 4: Code Block Layout Inside Question
 --------------------------------------------
 
 | The following example demonstrates how to include a code block inside the question text.
-| Dark theme is used here to better highlight the code snippet.
+| light theme is used here to better highwhite the code snippet.
 
 .. code-block:: rst
 
     .. multichoice::
-        :theme: dark
+        :theme: light
 
         What is the output of the following code?
 
@@ -155,7 +159,7 @@ Example 4: Code Block Layout Inside Question
         [ ] 7
 
 .. multichoice::
-    :theme: dark
+    :theme: light
 
     What is the output of the following code?
 
@@ -229,7 +233,65 @@ Example 5: Code Block Layout Inside Responses
 
 ----
 
-Example 6: Multiple Correct Answers
+Example 6: Multi-lines
+--------------------------------
+
+| The following example demonstrates how to structure multi-line text inside options and feedback for a science inquiry question.
+
+.. code-block:: rst
+
+    .. multichoice::
+        :delimiter: @@
+
+        A group of Year 7 students is measuring the mass of water during a chemistry experiment.
+        Before placing the beaker on the digital balance, they forget to press the **tare** (zero) button, so the scale displays `2.5 g` while empty.
+
+        Which of the following best describes the effect this mistake has on their measurements and how it should be categorized?
+
+        [ ] It is a random error because the readings will fluctuate unpredictably above and below the true mass. To fix this, the students should repeat the experiment three times and calculate an average.
+            @@ | Incorrect. Forgetting to zero the scale shifts all readings in the exact same direction (too high by 2.5 g).
+               | Random errors shift measurements in unpredictable directions, whereas this shift is predictable and constant.
+
+        [x] It is a systematic error because every single mass reading will be exactly 2.5 grams higher than the actual mass. To correct the data, the students must subtract 2.5 grams from each recorded reading.
+            @@ | Correct! Systematic errors consistently offset measurements in one direction.
+               | Because the scale reads 2.5 g when empty, every measurement taken will be over the true value by that precise amount.
+
+        [ ] It is a systematic error because the scale is broken and will give different random values every time a new beaker is placed on it. The students must throw away the balance and start the experiment again with a new one.
+            @@ | Incorrect. Systematic errors are consistent offset errors, not unpredictable variations.
+               | The balance is not broken; it simply needs to be zeroed or have the offset mathematically subtracted from the readings.
+
+        [ ] It is neither an error nor a mistake, because the mass of the glass beaker always needs to be added to the final result anyway. The recorded masses will be completely accurate without any adjustment.
+            @@ Incorrect. If you do not subtract the empty beaker's starting offset, you are measuring the beaker's mass alongside the liquid, which distorts the experimental results.
+
+
+.. multichoice::
+    :delimiter: @@
+
+    A group of Year 7 students is measuring the mass of water during a chemistry experiment.
+    Before placing the beaker on the digital balance, they forget to press the **tare** (zero) button, so the scale displays `2.5 g` while empty.
+
+    Which of the following best describes the effect this mistake has on their measurements and how it should be categorized?
+
+    [ ] It is a random error because the readings will fluctuate unpredictably above and below the true mass. To fix this, the students should repeat the experiment three times and calculate an average.
+        @@ | Incorrect. Forgetting to zero the scale shifts all readings in the exact same direction (too high by 2.5 g).
+           | Random errors shift measurements in unpredictable directions, whereas this shift is predictable and constant.
+
+    [x] It is a systematic error because every single mass reading will be exactly 2.5 grams higher than the actual mass. To correct the data, the students must subtract 2.5 grams from each recorded reading.
+        @@ | Correct! Systematic errors consistently offset measurements in one direction.
+           | Because the scale reads 2.5 g when empty, every measurement taken will be over the true value by that precise amount.
+
+    [ ] It is a systematic error because the scale is broken and will give different random values every time a new beaker is placed on it. The students must throw away the balance and start the experiment again with a new one.
+        @@ | Incorrect. Systematic errors are consistent offset errors, not unpredictable variations.
+           | The balance is not broken; it simply needs to be zeroed or have the offset mathematically subtracted from the readings.
+
+    [ ] It is neither an error nor a mistake, because the mass of the glass beaker always needs to be added to the final result anyway. The recorded masses will be completely accurate without any adjustment.
+        @@ Incorrect. If you do not subtract the empty beaker's starting offset, you are measuring the beaker's mass alongside the liquid, which distorts the experimental results.
+
+
+
+----
+
+Example 7: Multiple Correct Answers
 -----------------------------------
 
 | Checking more than one correct bracket item ``[x]`` automatically swaps from a radio selections to checkboxes.
@@ -254,3 +316,31 @@ Example 6: Multiple Correct Answers
     [ ] html | Not a Python type
     [x] float | Floating-point number
 
+----
+
+Example 8: Delimter
+------------------------------------
+
+| The delimiter by default is a pipe ``|``, It can be set to a string like ``@@``.
+
+.. code-block:: rst
+
+    .. multichoice::
+        :delimiter: @@
+
+        Which of these does an equality check in Python?
+
+        [x] == @@ Correct.
+        [ ] = @@ Incorrect. That does assignment
+        [ ] !== @@ Incorrect. Not equals to
+        [ ] <= @@ Incorrect. Less than or equals to
+
+.. multichoice::
+    :delimiter: @@
+
+    Which of these does an equality check in Python?
+
+    [x] == @@ Correct.
+    [ ] = @@ Incorrect. That does assignment
+    [ ] !== @@ Incorrect. Not equals to
+    [ ] <= @@ Incorrect. Less than or equals to

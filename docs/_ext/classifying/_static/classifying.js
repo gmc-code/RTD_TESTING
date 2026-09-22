@@ -23,11 +23,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!scoreBtn || !resetBtn || !container) return;
 
-        // FIXED: Run an initial shuffle right when the page finishes loading
+        // Run an initial shuffle right when the page finishes loading
         shuffleRows(container);
 
         // 1. Check Evaluation Logic
         scoreBtn.addEventListener("click", function () {
+            // Disable block dataset and Check button (Matching textselect)
+            block.dataset.disabled = "true";
+            scoreBtn.disabled = true;
+
             // Re-query select boxes and lines because their order changed during shuffling!
             const selects = block.querySelectorAll(".sorting-select");
             const rows = block.querySelectorAll(".classifying-line");
@@ -81,6 +85,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 2. Reset Layout Logic
         resetBtn.addEventListener("click", function () {
+            // Re-enable block dataset and Check button
+            block.dataset.disabled = "false";
+            scoreBtn.disabled = false;
+
             const selects = block.querySelectorAll(".sorting-select");
             const rows = block.querySelectorAll(".classifying-line");
 
@@ -97,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
             feedbackBadge.textContent = "";
             feedbackBadge.classList.remove("high", "medium", "low");
 
-            // FIXED: Automatically shuffle the lines again for a fresh attempt!
+            // Automatically shuffle the lines again for a fresh attempt
             shuffleRows(container);
         });
     });

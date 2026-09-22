@@ -26,7 +26,7 @@ Options for the gapfill directive
      - Description
    * - ``:theme:``
      - string
-     - Set the visual theme. Options are ``light`` (default) or ``dark``.
+     - Set the visual theme. Options are ``white`` (default) or ``light``.
 
 | Syntax Rules: Inline dropdown segments are declared using the sequence format
 | ``@@correct | incorrect | incorrect_2@@``.
@@ -39,7 +39,7 @@ Options for the gapfill directive
 Example 1: Single Sentences
 ------------------------------------
 
-| The following example demonstrates a simple gap with 2 alternative choices.
+| The following example demonstrates a simple gap with 3 choices.
 | The correct answer is the first option in the list.
 
 .. code-block:: rst
@@ -54,26 +54,46 @@ Example 1: Single Sentences
 
 ----
 
-Example 2: Dark theme
+Example 2: Multiple Sentences
 ------------------------------------
 
-| The following example demonstrates the gapfill directive with the dark theme. `:theme: dark` is optional since it is not the default.
+| The following example demonstrates a simple gap with 3 choices.
+| The correct answer is the first option in the list.
 
 .. code-block:: rst
 
     .. gapfill::
-        :theme: dark
+
+        In Python, boolean values must be capitalized as @@True | true | TRUE@@ or False.
+        In Python, variables are expected to use snake case, such as @@high_score | highscore | highScore@@.
+
+.. gapfill::
+
+    In Python, boolean values must be capitalized as @@True | true | TRUE@@ or False.
+    In Python, variables are expected to use snake case, such as @@high_score | highscore | highScore@@.
+
+----
+
+Example 3: light theme
+------------------------------------
+
+| The following example demonstrates the gapfill directive with the light theme. `:theme: light` is optional since it is not the default.
+
+.. code-block:: rst
+
+    .. gapfill::
+        :theme: light
 
         To execute code conditionally, use the @@if | None | else@@ keyword followed by an expression.
 
 .. gapfill::
-    :theme: dark
+    :theme: light
 
     To execute code conditionally, use the @@if | None | else@@ keyword followed by an expression.
 
 ----
 
-Example 3: Single Parameter
+Example 4: Single Parameter
 -------------------------------------------------
 
 The following example shows what happens when omitting an alternative choice option. The directive creates an alternative fallback choice automatically.
@@ -92,7 +112,7 @@ The following example shows what happens when omitting an alternative choice opt
 
 ----
 
-Example 4: Multiple Options inside Code Snippets
+Example 5: Multiple Options inside Code Snippets
 --------------------------------------------------
 
 | The example shows the preservation of indentation and formatting within the code block, while still allowing for interactive selection of choices from a dropdown menu.

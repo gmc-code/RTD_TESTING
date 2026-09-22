@@ -1,0 +1,81 @@
+.noise-monitor-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 1.25rem;
+  background-color: #ffffff;
+  max-width: 480px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  font-family: inherit;
+  margin: 1.5rem 0;
+}
+
+.noise-monitor-header h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.15rem;
+  color: #1e293b;
+}
+
+.noise-visualizer {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.noise-status-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.noise-status-text.text-safe { color: #16a34a; }
+.noise-status-text.text-danger { color: #dc2626; }
+
+.noise-meter-container {
+  width: 100%;
+  height: 20px;
+  background-color: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0.75rem 0;
+}
+
+.noise-meter-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #22c55e;
+  transition: width 0.1s linear, background-color 0.2s ease;
+}
+
+.noise-meter-bar.danger {
+  background-color: #ef4444;
+}
+
+.noise-readout {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.noise-btn-toggle {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+.noise-btn-toggle.active {
+  background-color: #dc2626;
+}
+
+.noise-image {
+    max-width: 120px;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+    margin: 0 auto 0.5rem;
+}

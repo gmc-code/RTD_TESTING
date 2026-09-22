@@ -25,9 +25,6 @@ Options for the ordering directive
    * - Option
      - Type
      - Description
-   * - ``:theme:``
-     - string
-     - Set the visual theme. Options are ``light`` (default) or ``dark``.
    * - ``:no-solution:``
      - flag
      - If present, hides the "Show Solution" button from the user.
@@ -40,14 +37,16 @@ Options for the ordering directive
    * - ``:show-code:``
      - flag
      - If present, displays the code block in the solution.
+   * - ``:theme:``
+     - string
+     - Set the visual theme. Options are ``white`` (default) or ``light``.
 
 
+| Structure: The directive creates an interactive <div> block with handle controls (☰) for reordering and buttons («, ») for adjusting indentation.
 | Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
 | Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
 | Visual Badges: When validated, inline symbols provide quick feedback right alongside choices.
 | Empty Lines: You may include empty lines within the block; the directive will render them as placeholders that users can drag to maintain formatting structure.
-| Structure: The directive creates an interactive <div> block with handle controls (☰) for reordering and buttons («, ») for adjusting indentation.
-
 
 
 ----
