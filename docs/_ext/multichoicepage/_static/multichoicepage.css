@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. Design Token System & control Variables
+   1. Design Token System & Global Variables
    ========================================================================== */
 :root {
   /* Common Core Structural Tokens */
@@ -48,7 +48,7 @@
   --mcq-missed-border: #ddd6fe;
   --mcq-missed-text: #7c3aed; /* Vivid Purple */
 
-  /* control Score Performance Badges */
+  /* Global Score Performance Badges */
   --mcq-tier-high-bg: #edfdf3;
   --mcq-tier-high-border: #22c55e;
   --mcq-tier-high-text: #166534;
@@ -65,7 +65,7 @@
 /* ==========================================================================
    2. MCQ Block Core Containers & Theme Variants
    ========================================================================== */
-.multichoice-block {
+.multichoicepage-block {
   border-radius: var(--mcq-radius-lg);
   padding: 0.8em;
   margin-bottom: 0.8em;
@@ -74,28 +74,28 @@
 }
 
 /* Theme: White */
-.multichoice-block.theme-white {
+.multichoicepage-block.theme-white {
   background-color: var(--mcq-white-bg);
   border: 1px solid var(--mcq-white-border);
 }
 
-.multichoice-block.theme-white .multichoice-control-panel {
+.multichoicepage-block.theme-white .multichoicepage-global-panel {
   border-top-color: var(--mcq-white-divider);
   border-bottom-color: var(--mcq-white-divider);
 }
 
 /* Theme: Light */
-.multichoice-block.theme-light {
+.multichoicepage-block.theme-light {
   background-color: var(--mcq-light-bg);
   border: 1px solid var(--mcq-light-border);
 }
 
-.multichoice-block.theme-light .multichoice-control-panel {
+.multichoicepage-block.theme-light .multichoicepage-global-panel {
   border-top-color: var(--mcq-light-divider);
   border-bottom-color: var(--mcq-light-divider);
 }
 
-.multichoice-question {
+.multichoicepage-question {
   font-weight: 600;
   margin-bottom: 0.2em;
   font-size: 1.08em;
@@ -103,14 +103,14 @@
   color: var(--mcq-text);
 }
 
-.multichoice-question p {
+.multichoicepage-question p {
   margin-bottom:  0.4em !important;
 }
 
 /* ==========================================================================
    3. MCQ Answer Card Choice Items
    ========================================================================== */
-.multichoice-choice {
+.multichoicepage-choice {
   margin: 0.1em 0;
   border-radius: var(--mcq-radius-md);
   cursor: pointer;
@@ -121,7 +121,7 @@
   padding: 0.1em 0.2em;
 }
 
-.multichoice-choice label {
+.multichoicepage-choice label {
   display: flex;
   align-items: flex-start;
   gap: 0.5em;
@@ -132,8 +132,8 @@
   color: var(--mcq-text);
 }
 
-.multichoice-choice input[type="radio"],
-.multichoice-choice input[type="checkbox"] {
+.multichoicepage-choice input[type="radio"],
+.multichoicepage-choice input[type="checkbox"] {
   margin: 0 !important;
   padding: 0 !important;
   align-self: flex-start;
@@ -142,7 +142,7 @@
   pointer-events: none;
 }
 
-.multichoice-letter {
+.multichoicepage-letter {
   font-weight: 600;
   min-width: 1.2em;
   color: var(--mcq-letter);
@@ -153,16 +153,16 @@
   top: 0px;
 }
 
-.multichoice-choice-label {
+.multichoicepage-choice-label {
   line-height: 1.4;
   flex: 1;
   min-width: 0;
   align-self: flex-start;
 }
 
-.multichoice-choice-label blockquote,
-.multichoice-choice-label div,
-.multichoice-choice-label p {
+.multichoicepage-choice-label blockquote,
+.multichoicepage-choice-label div,
+.multichoicepage-choice-label p {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding-top: 0 !important;
@@ -172,7 +172,7 @@
 /* ==========================================================================
    4. Explanation Card Layouts & Dynamic Color Mappings
    ========================================================================== */
-.multichoice-explanation {
+.multichoicepage-explanation {
   margin-top: 0.4em;
   padding-bottom: 0.4em;
   font-size: 0.9em;
@@ -180,114 +180,114 @@
   display: none;
 }
 
-.multichoice-explanation,
-.multichoice-explanation p,
-.multichoice-explanation blockquote,
-.multichoice-explanation div {
+.multichoicepage-explanation,
+.multichoicepage-explanation p,
+.multichoicepage-explanation blockquote,
+.multichoicepage-explanation div {
   color: var(--mcq-base-explanation-color) !important;
 }
 
-.multichoice-choice.multichoice-correct .multichoice-explanation,
-.multichoice-choice.multichoice-correct .multichoice-explanation p,
-.multichoice-choice.multichoice-correct .multichoice-explanation blockquote,
-.multichoice-choice.multichoice-correct .multichoice-explanation div {
+.multichoicepage-choice.multichoicepage-correct .multichoicepage-explanation,
+.multichoicepage-choice.multichoicepage-correct .multichoicepage-explanation p,
+.multichoicepage-choice.multichoicepage-correct .multichoicepage-explanation blockquote,
+.multichoicepage-choice.multichoicepage-correct .multichoicepage-explanation div {
   color: var(--mcq-correct-text) !important;
 }
 
-.multichoice-choice.multichoice-incorrect .multichoice-explanation,
-.multichoice-choice.multichoice-incorrect .multichoice-explanation p,
-.multichoice-choice.multichoice-incorrect .multichoice-explanation blockquote,
-.multichoice-choice.multichoice-incorrect .multichoice-explanation div {
+.multichoicepage-choice.multichoicepage-incorrect .multichoicepage-explanation,
+.multichoicepage-choice.multichoicepage-incorrect .multichoicepage-explanation p,
+.multichoicepage-choice.multichoicepage-incorrect .multichoicepage-explanation blockquote,
+.multichoicepage-choice.multichoicepage-incorrect .multichoicepage-explanation div {
   color: var(--mcq-incorrect-text) !important;
 }
 
-.multichoice-choice.multichoice-answer:not(.selected) .multichoice-explanation,
-.multichoice-choice.multichoice-answer:not(.selected) .multichoice-explanation p,
-.multichoice-choice.multichoice-answer:not(.selected) .multichoice-explanation blockquote,
-.multichoice-choice.multichoice-answer:not(.selected) .multichoice-explanation div {
+.multichoicepage-choice.multichoicepage-answer:not(.selected) .multichoicepage-explanation,
+.multichoicepage-choice.multichoicepage-answer:not(.selected) .multichoicepage-explanation p,
+.multichoicepage-choice.multichoicepage-answer:not(.selected) .multichoicepage-explanation blockquote,
+.multichoicepage-choice.multichoicepage-answer:not(.selected) .multichoicepage-explanation div {
   color: var(--mcq-missed-text) !important;
 }
 
 /* ==========================================================================
-   5. Clean control Structural Normalizations
+   5. Clean Global Structural Normalizations
    ========================================================================== */
-.multichoice-choice blockquote,
-.multichoice-explanation blockquote,
-.multichoice-choice blockquote > div,
-.multichoice-explanation blockquote > div {
+.multichoicepage-choice blockquote,
+.multichoicepage-explanation blockquote,
+.multichoicepage-choice blockquote > div,
+.multichoicepage-explanation blockquote > div {
   margin: 0 !important;
   padding: 0 !important;
 }
 
-.multichoice-choice-label p,
-.multichoice-explanation p {
+.multichoicepage-choice-label p,
+.multichoicepage-explanation p {
   margin: 0 !important;
   padding: 0 !important;
   line-height: 1.4;
 }
 
-.multichoice-choice-label pre,
-.multichoice-explanation pre {
+.multichoicepage-choice-label pre,
+.multichoicepage-explanation pre {
   margin-top: 0.3em !important;
   margin-bottom: 0.3em !important;
   padding: 0.3em !important;
 }
 
-.multichoice-choice-label div[class*="highlight"],
-.multichoice-choice-label .highlight,
-.multichoice-explanation div[class*="highlight"],
-.multichoice-explanation .highlight {
+.multichoicepage-choice-label div[class*="highlight"],
+.multichoicepage-choice-label .highlight,
+.multichoicepage-explanation div[class*="highlight"],
+.multichoicepage-explanation .highlight {
   margin-bottom: 0 !important;
 }
 
 /* ==========================================================================
    6. Interactive States & Evaluation Engine Layouts
    ========================================================================== */
-.multichoice-choice:not(.multichoice-disabled):hover {
+.multichoicepage-choice:not(.multichoicepage-disabled):hover {
   background-color: var(--mcq-hover-bg);
 }
 
-.multichoice-choice:active:not(.multichoice-disabled) {
+.multichoicepage-choice:active:not(.multichoicepage-disabled) {
   transform: scale(0.995);
 }
 
-.multichoice-choice.selected {
+.multichoicepage-choice.selected {
   background-color: var(--mcq-selected-bg);
   border-left-color: var(--mcq-selected-border);
 }
 
-.multichoice-choice.multichoice-disabled {
+.multichoicepage-choice.multichoicepage-disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.multichoice-choice.multichoice-disabled:hover {
+.multichoicepage-choice.multichoicepage-disabled:hover {
   background: none;
 }
 
-.multichoice-choice.multichoice-answer {
+.multichoicepage-choice.multichoicepage-answer {
   border-color: var(--mcq-answer-border);
   background-color: var(--mcq-answer-bg);
 }
 
-.multichoice-choice.multichoice-correct {
+.multichoicepage-choice.multichoicepage-correct {
   background-color: var(--mcq-correct-bg) !important;
   border-color: var(--mcq-correct-border);
   border-left: 6px solid var(--mcq-correct-accent) !important;
 }
 
-.multichoice-choice.multichoice-incorrect {
+.multichoicepage-choice.multichoicepage-incorrect {
   background-color: var(--mcq-incorrect-bg) !important;
   border-color: var(--mcq-incorrect-border);
   border-left: 6px solid var(--mcq-incorrect-accent) !important;
 }
 
-.multichoice-choice.multichoice-answer:not(.selected) {
+.multichoicepage-choice.multichoicepage-answer:not(.selected) {
   border-color: var(--mcq-missed-border) !important;
   background-color: var(--mcq-missed-bg) !important;
 }
 
-.multichoice-choice label::after {
+.multichoicepage-choice label::after {
   font-weight: 600;
   padding-left: 0.5em;
   font-size: 1.1em;
@@ -295,38 +295,39 @@
   line-height: 1.3;
 }
 
-.multichoice-choice.multichoice-answer label::after {
+.multichoicepage-choice.multichoicepage-answer label::after {
   content: "•";
   color: var(--mcq-answer-marker);
 }
 
-.multichoice-choice.multichoice-correct label::after {
+.multichoicepage-choice.multichoicepage-correct label::after {
   content: "✓";
   color: var(--mcq-correct-text);
 }
 
-.multichoice-choice.multichoice-incorrect label::after {
+.multichoicepage-choice.multichoicepage-incorrect label::after {
   content: "✕";
   color: var(--mcq-incorrect-text);
 }
 
 /* ==========================================================================
-   7. Action Controls Control Panel & Scoring Output
+   7. Action Controls Global Panel & Scoring Output
    ========================================================================== */
-
-.multichoice-control-panel {
+.multichoicepage-global-panel {
   display: flex;
   align-items: center;
   gap: 0.6em;
-  margin-top: 0.8em;
-  padding-top: 0.6em;
+  margin-top: 1.2em;
+  padding: 0.8em 0;
+  margin-bottom: 1.2em;
   border-top: 1px solid var(--mcq-white-divider);
+  border-bottom: 1px solid var(--mcq-white-divider);
   transition: border-color 0.12s ease;
 }
 
-.multichoice-control-panel button {
-  font-size: 0.9em;
-  padding: 0.3em 0.7em;
+.multichoicepage-global-panel button {
+  font-size: 1.0em;
+  padding: 0.4em 0.8em;
   border-radius: var(--mcq-radius-sm);
   border: none;
   cursor: pointer;
@@ -334,37 +335,31 @@
   transition: var(--mcq-transition);
 }
 
-.multichoice-control-panel button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-
-.multichoice-control-panel button:hover {
+.multichoicepage-global-panel button:hover {
   filter: brightness(0.92);
 }
 
-.multichoice-control-panel button:active {
+.multichoicepage-global-panel button:active {
   transform: scale(0.97);
 }
 
-.multichoice-btn-score {
+.multichoicepage-btn-score {
   background: #2563eb;
   color: #ffffff;
 }
 
-.multichoice-btn-reset {
+.multichoicepage-btn-reset {
   background: #f3f4f6;
   color: #4b5563;
   border: 1px solid #e5e7eb !important;
 }
 
-.multichoice-control-panel button:disabled {
+.multichoicepage-global-panel button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.multichoice-output {
+.multichoicepage-output {
   margin-left: auto;
   font-weight: 600;
   padding: 0.4em 0.8em;
@@ -373,19 +368,19 @@
   border: 1px solid transparent;
 }
 
-.multichoice-output.high {
+.multichoicepage-output.high {
   background-color: var(--mcq-tier-high-bg) !important;
   border-color: var(--mcq-tier-high-border) !important;
   color: var(--mcq-tier-high-text) !important;
 }
 
-.multichoice-output.medium {
+.multichoicepage-output.medium {
   background-color: var(--mcq-tier-mid-bg) !important;
   border-color: var(--mcq-tier-mid-border) !important;
   color: var(--mcq-tier-mid-text) !important;
 }
 
-.multichoice-output.low {
+.multichoicepage-output.low {
   background-color: var(--mcq-tier-low-bg) !important;
   border-color: var(--mcq-tier-low-border) !important;
   color: var(--mcq-tier-low-text) !important;
@@ -394,16 +389,16 @@
 /* ==========================================================================
    8. Overrides & Reset Safety Rules
    ========================================================================== */
-.multichoice-choice.multichoice-answer:not(.selected) .multichoice-explanation {
+.multichoicepage-choice.multichoicepage-answer:not(.selected) .multichoicepage-explanation {
   display: block;
   color: var(--mcq-missed-text) !important;
 }
 
-.multichoice-toggle-wrapper input[type="checkbox"] {
+.multichoicepage-toggle-wrapper input[type="checkbox"] {
   margin: 0 !important;
   cursor: pointer;
 }
 
-.multichoice-toggle-wrapper input[type="checkbox"]:disabled {
+.multichoicepage-toggle-wrapper input[type="checkbox"]:disabled {
   cursor: not-allowed;
 }

@@ -1,23 +1,23 @@
 ================================================
-Multi-Choice Directive Documentation
+Multi-Choice-Page Directive Documentation
 ================================================
 
-The multichoice directive creates an interactive multiple-choice question format. Users can select one or more choices, validate their answers, and receive instant feedback alongside custom written explanations.
+The multichoicepage directive creates an interactive multiple-choice question format. Users can select one or more choices, validate their answers, and receive instant feedback alongside custom written explanations.
 
 Syntax
 -------------------
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
 
         Question text goes here...
 
         [x] Correct option text | Feedback message for correct answer.
         [ ] Incorrect option text | Feedback message for incorrect answer.
 
-Options for the multichoice directive
---------------------------------------
+Options for the multichoicepage directive
+--------------------------------------------
 
 .. list-table::
    :widths: 35 10 55
@@ -56,7 +56,7 @@ Example 1: Single Correct (Default)
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
 
         Which of these does an equality check in Python?
 
@@ -65,7 +65,7 @@ Example 1: Single Correct (Default)
         [ ] !== | Incorrect. Not equals to
         [ ] <= | Incorrect. Less than or equals to
 
-.. multichoice::
+.. multichoicepage::
 
     Which of these does an equality check in Python?
 
@@ -83,7 +83,7 @@ Example 2: Single Correct (No Letters)
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :no-letters:
 
         What is the correct way to print "Hello, World" in Python?
@@ -93,7 +93,7 @@ Example 2: Single Correct (No Letters)
         [ ] echo "Hello, World"
         [ ] echo(Hello, World)
 
-.. multichoice::
+.. multichoicepage::
     :no-letters:
 
     What is the correct way to print "Hello, World" in Python?
@@ -112,7 +112,7 @@ Example 3: Single Correct (Unshuffled)
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :no-shuffle:
 
         Which of these are valid variable names in Python?
@@ -122,7 +122,7 @@ Example 3: Single Correct (Unshuffled)
         [ ] @var | Incorrect. Cannot start with a symbol
         [ ] my-var | Incorrect. Hyphens are not allowed
 
-.. multichoice::
+.. multichoicepage::
     :no-shuffle:
 
     Which of these are valid variable names in Python?
@@ -135,14 +135,14 @@ Example 3: Single Correct (Unshuffled)
 ----
 
 Example 4: Code Block Layout Inside Question
---------------------------------------------
+-----------------------------------------------
 
 | The following example demonstrates how to include a code block inside the question text.
 | light theme is used here to better highwhite the code snippet.
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :theme: light
 
         What is the output of the following code?
@@ -158,7 +158,7 @@ Example 4: Code Block Layout Inside Question
         [ ] 10
         [ ] 7
 
-.. multichoice::
+.. multichoicepage::
     :theme: light
 
     What is the output of the following code?
@@ -183,7 +183,7 @@ Example 5: Code Block Layout Inside Responses
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
 
         A student wants to display the word "ABC" such that the final character 'C' is removed right away, followed by a brief half-second pause. Which option is correct?
         [ ] .. code-block:: python
@@ -207,7 +207,7 @@ Example 5: Code Block Layout Inside Responses
             | Incorrect. This merely slows the timing between characters to 500ms instead of creating a final blank screen pause.
 
 
-.. multichoice::
+.. multichoicepage::
 
     A student wants to display the word "ABC" such that the final character 'C' is removed right away, followed by a brief half-second pause. Which option is correct?
     [ ] .. code-block:: python
@@ -240,7 +240,7 @@ Example 6: Multi-lines
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :delimiter: @@
 
         A group of Year 7 students is measuring the mass of water during a chemistry experiment.
@@ -264,7 +264,7 @@ Example 6: Multi-lines
             @@ Incorrect. If you do not subtract the empty beaker's starting offset, you are measuring the beaker's mass alongside the liquid, which distorts the experimental results.
 
 
-.. multichoice::
+.. multichoicepage::
     :delimiter: @@
 
     A group of Year 7 students is measuring the mass of water during a chemistry experiment.
@@ -287,18 +287,16 @@ Example 6: Multi-lines
     [ ] It is neither an error nor a mistake, because the mass of the glass beaker always needs to be added to the final result anyway. The recorded masses will be completely accurate without any adjustment.
         @@ Incorrect. If you do not subtract the empty beaker's starting offset, you are measuring the beaker's mass alongside the liquid, which distorts the experimental results.
 
-
-
 ----
 
 Example 7: Multiple Correct Answers
------------------------------------
+-------------------------------------
 
 | Checking more than one correct bracket item ``[x]`` automatically swaps from a radio selections to checkboxes.
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
 
         Which of the following are Python data types?
 
@@ -307,7 +305,7 @@ Example 7: Multiple Correct Answers
         [ ] html | Not a Python type
         [x] float | Floating-point number
 
-.. multichoice::
+.. multichoicepage::
 
     Which of the following are Python data types?
 
@@ -319,7 +317,7 @@ Example 7: Multiple Correct Answers
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
 
         Which of the following pieces of equipment are commonly used in a science laboratory?
 
@@ -335,7 +333,7 @@ Example 7: Multiple Correct Answers
         [x] Pipette | Used to transport a measured volume of liquid.
 
 
-.. multichoice::
+.. multichoicepage::
 
     Which of the following pieces of equipment are commonly used in a science laboratory?
 
@@ -360,7 +358,7 @@ Example 8: Delimter
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :delimiter: @@
 
         Which of these does an equality check in Python?
@@ -370,7 +368,7 @@ Example 8: Delimter
         [ ] !== @@ Incorrect. Not equals to
         [ ] <= @@ Incorrect. Less than or equals to
 
-.. multichoice::
+.. multichoicepage::
     :delimiter: @@
 
     Which of these does an equality check in Python?
@@ -384,13 +382,13 @@ Example 8: Delimter
 ----
 
 Example 9: Backticks, Pipes, and Custom Delimiters
---------------------------------------------------
+------------------------------------------------------------
 
 | When test choices contain pipe symbols `|` inside code snippets (such as bitwise OR or union operations), set a custom delimiter using `:delimiter: @@` so the parser does not split the option text prematurely.
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :delimiter: @@
 
         What is the result of using the pipe operator `|` on two Python sets: `{1, 2}` and `{2, 3}`?
@@ -400,7 +398,7 @@ Example 9: Backticks, Pipes, and Custom Delimiters
         [ ] `{1, 3}` @@ Incorrect. This is the symmetric difference, computed using `^`.
         [ ] `Error` @@ Incorrect. `|` is a valid set operation in Python.
 
-.. multichoice::
+.. multichoicepage::
     :delimiter: @@
 
     What is the result of using the pipe operator `|` on two Python sets: `{1, 2}` and `{2, 3}`?
@@ -413,13 +411,13 @@ Example 9: Backticks, Pipes, and Custom Delimiters
 ----
 
 Example 10: All Bracket Types (Parentheses, Square Brackets, Curly Braces)
---------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 | This test covers Python collections defined with round `()`, square `[]`, and curly `{}` brackets.
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
 
         Which Python code snippets correctly declare a list, a tuple, and a dictionary?
 
@@ -428,7 +426,7 @@ Example 10: All Bracket Types (Parentheses, Square Brackets, Curly Braces)
         [ ] `a = {1, 2}`, `b = [1, 2]`, `c = (1, 2)` | Incorrect. `{1, 2}` without key-value pairs creates a set, not a dictionary.
         [ ] `a = <1, 2>`, `b = [1, 2]`, `c = {a: 1}` | Incorrect. Angle brackets `<>` are not valid collection syntax in Python.
 
-.. multichoice::
+.. multichoicepage::
 
     Which Python code snippets correctly declare a list, a tuple, and a dictionary?
 
@@ -440,13 +438,13 @@ Example 10: All Bracket Types (Parentheses, Square Brackets, Curly Braces)
 ----
 
 Example 11: Complex Python Bracket Indexing & Slicing
------------------------------------------------------
+----------------------------------------------------------
 
 | This test exercises multiline block code containing nested bracket access (`dict[key][index]`) alongside inline backtick code snippets.
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :theme: light
 
         Given the following Python data structure:
@@ -467,7 +465,7 @@ Example 11: Complex Python Bracket Indexing & Slicing
         [ ] `data["users"][1]["scores"][0]` | Incorrect. Index `[1]` selects Bob, and `[0]` gets his first score (78).
         [ ] `data["users"].0.scores[1]` | Incorrect. Dot notation is not supported for Python `dict` key lookups.
 
-.. multichoice::
+.. multichoicepage::
     :theme: light
 
     Given the following Python data structure:

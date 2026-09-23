@@ -229,20 +229,47 @@ function updateNoiseUI(cardElement, dbValue) {
   }
 
   // 6. 10-Second Hold Timer Logic
+//   const now = Date.now();
+//   const HOLD_DURATION_MS = 10000;
+
+//   if (rawLevelIndex > cardElement._currentLevelIndex) {
+//     // Immediate step up on volume spike
+//     cardElement._currentLevelIndex = rawLevelIndex;
+//     cardElement._levelHoldTimestamp = now;
+//   } else if (rawLevelIndex < cardElement._currentLevelIndex) {
+//     // Hold level for 10s before stepping down
+//     if (now - cardElement._levelHoldTimestamp >= HOLD_DURATION_MS) {
+//       cardElement._currentLevelIndex = rawLevelIndex;
+//       cardElement._levelHoldTimestamp = now;
+//     }
+//   } else {
+//     cardElement._levelHoldTimestamp = now;
+//   }
+
+//   const activeLevel = cardElement._currentLevelIndex;
+
+
+// 6. Step-down Timer Logic (1 step down every 3 seconds)
   const now = Date.now();
-  const HOLD_DURATION_MS = 10000;
+  const DECAY_STEP_MS = 3000; // 3 seconds per step down
+
+  // Initialize timestamp if missing
+  if (!cardElement._levelHoldTimestamp) {
+    cardElement._levelHoldTimestamp = now;
+  }
 
   if (rawLevelIndex > cardElement._currentLevelIndex) {
     // Immediate step up on volume spike
     cardElement._currentLevelIndex = rawLevelIndex;
     cardElement._levelHoldTimestamp = now;
   } else if (rawLevelIndex < cardElement._currentLevelIndex) {
-    // Hold level for 10s before stepping down
-    if (now - cardElement._levelHoldTimestamp >= HOLD_DURATION_MS) {
-      cardElement._currentLevelIndex = rawLevelIndex;
+    // Step down 1 level every 3 seconds
+    if (now - cardElement._levelHoldTimestamp >= DECAY_STEP_MS) {
+      cardElement._currentLevelIndex -= 1;
       cardElement._levelHoldTimestamp = now;
     }
   } else {
+    // Level matches current, reset timer
     cardElement._levelHoldTimestamp = now;
   }
 

@@ -1,0 +1,4 @@
+
+
+from .multichoicepage import setup
+

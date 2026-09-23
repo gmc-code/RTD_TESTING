@@ -51,13 +51,16 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx_togglebutton",
     "sphinx_design",
+    "multichoicepage.multichoicepage",  # custom directive
     "multichoice.multichoice",  # custom directive
+    "trueorfalse.trueorfalse",  # custom directive
     "cloze.cloze",  # custom directive
     "gapfill.gapfill",  # custom directive
     "classifying.classifying",  # custom directive
     "fillin.fillin",  # custom directive
     "ordering.ordering",  # custom directive
     "textselect.textselect",  # custom directive
+    "wordjumble.wordjumble",  # custom directive
     "labels.labels",  # custom directive
     "noisemonitor.noisemonitor",  # custom directive
 ]

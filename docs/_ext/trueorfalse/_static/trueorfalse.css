@@ -1,0 +1,272 @@
+/* ==========================================================================
+   True/False Directive Stylesheet
+   ========================================================================== */
+
+:root {
+  --tf-radius-lg: 10px;
+  --tf-radius-md: 7px;
+  --tf-radius-sm: 6px;
+  --tf-transition: background 0.12s ease, transform 0.05s ease, border-color 0.12s ease;
+
+  --tf-white-bg: #ffffff;
+  --tf-white-border: #e2e8f0;
+  --tf-white-divider: #e2e8f0;
+
+  --tf-light-bg: #f8fafc;
+  --tf-light-border: #cbd5e1;
+  --tf-light-divider: #cbd5e1;
+
+  --tf-text: #1e293b;
+  --tf-hover-bg: #f1f5f9;
+  --tf-selected-bg: #e2e8f0;
+  --tf-selected-border: #3b82f6;
+
+  /* Feedback colors */
+  --tf-correct-bg: #edfdf3;
+  --tf-correct-border: #bbf7d0;
+  --tf-correct-accent: #22c55e;
+  --tf-correct-text: #16a34a;
+
+  --tf-incorrect-bg: #fff1f1;
+  --tf-incorrect-border: #fecdd3;
+  --tf-incorrect-accent: #ef4444;
+  --tf-incorrect-text: #dc2626;
+
+  --tf-base-explanation-color: #17181a;
+}
+
+/* ─────────────────────────────────────
+   Block Container
+   ───────────────────────────────────── */
+.tf-block {
+  border-radius: var(--tf-radius-lg);
+  padding: 1em;
+  margin-bottom: 1.2em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: var(--tf-transition);
+}
+
+.tf-block.theme-white {
+  background-color: var(--tf-white-bg);
+  border: 1px solid var(--tf-white-border);
+}
+
+.tf-block.theme-light {
+  background-color: var(--tf-light-bg);
+  border: 1px solid var(--tf-light-border);
+}
+
+/* ─────────────────────────────────────
+   Question Area & Sphinx Code Blocks
+   ───────────────────────────────────── */
+.tf-question {
+  font-weight: 600;
+  margin-bottom: 0.6em;
+  font-size: 1.05em;
+  color: var(--tf-text);
+}
+
+.tf-question p {
+  margin-top: 0 !important;
+  margin-bottom: 0.2em !important;
+}
+
+.tf-question .highlight-python,
+.tf-question .highlight {
+  margin-top: 0.2em !important;
+  margin-bottom: 0.2em !important;
+  background-color: transparent;
+}
+
+.tf-question pre {
+  margin: 0 !important;
+  padding: 0.3em 0.6em !important;
+  line-height: 1.25 !important;
+}
+
+/* ─────────────────────────────────────
+   Choices & Label Layout (24px Height)
+   ───────────────────────────────────── */
+.tf-choice {
+  margin: 0.2em 0;
+  border-radius: var(--tf-radius-md);
+  cursor: pointer;
+  display: block;
+  transition: var(--tf-transition);
+  border: 1px solid transparent;
+  border-left: 4px solid transparent;
+  padding: 0.3em 0.5em;
+}
+
+/* Strip default Sphinx margins/padding */
+.tf-choice blockquote {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.tf-choice p {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.tf-choice label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  width: 100%;
+  min-height: 24px;
+  cursor: pointer;
+  color: var(--tf-text);
+}
+
+.tf-choice input[type="radio"] {
+  margin: 0 !important;
+  align-self: center;
+  pointer-events: none;
+}
+
+.tf-choice-label {
+  flex: 1;
+  line-height: 1.2;
+}
+
+/* ─────────────────────────────────────
+   Interactive & Evaluation States
+   ───────────────────────────────────── */
+.tf-choice:not(.tf-disabled):hover {
+  background-color: var(--tf-hover-bg);
+}
+
+.tf-choice.selected {
+  background-color: var(--tf-selected-bg);
+  border-left-color: var(--tf-selected-border);
+}
+
+/* Target ONLY the label for disabled opacity so feedback remains 100% vibrant */
+.tf-choice.tf-disabled label {
+  opacity: 1.00;
+  cursor: not-allowed;
+}
+
+.tf-choice.tf-correct {
+  background-color: var(--tf-correct-bg) !important;
+  border-color: var(--tf-correct-border);
+  border-left: 6px solid var(--tf-correct-accent) !important;
+}
+
+.tf-choice.tf-incorrect {
+  background-color: var(--tf-incorrect-bg) !important;
+  border-color: var(--tf-incorrect-border);
+  border-left: 6px solid var(--tf-incorrect-accent) !important;
+}
+
+/* ─────────────────────────────────────
+   Feedback & Explanation Overrides
+   ───────────────────────────────────── */
+.tf-explanation {
+  margin-top: 0.4em;
+  padding-left: 1.5em;
+  font-size: 0.9em;
+  display: none;
+  color: var(--tf-base-explanation-color) !important;
+}
+
+/* Deep overrides to ensure nested Sphinx elements stay 100% visible */
+.tf-explanation,
+.tf-explanation blockquote,
+.tf-explanation p,
+.tf-explanation cite {
+  opacity: 1 !important;
+  font-weight: 500;
+  font-style: normal !important;
+}
+
+.tf-choice.tf-correct .tf-explanation,
+.tf-choice.tf-correct .tf-explanation blockquote,
+.tf-choice.tf-correct .tf-explanation p {
+  color: var(--tf-correct-text) !important;
+}
+
+.tf-choice.tf-incorrect .tf-explanation,
+.tf-choice.tf-incorrect .tf-explanation blockquote,
+.tf-choice.tf-incorrect .tf-explanation p {
+  color: var(--tf-incorrect-text) !important;
+}
+
+/* ─────────────────────────────────────
+   Control Panel & Checkbox Alignment
+   ───────────────────────────────────── */
+.tf-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: 0.8em;
+  padding-top: 0.6em;
+  border-top: 1px solid #e2e8f0;
+}
+
+.tf-controls button {
+  font-size: 0.9em;
+  padding: 0.3em 0.7em;
+  border-radius: var(--tf-radius-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--tf-transition);
+}
+
+.tf-btn-check {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.tf-btn-reset {
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb !important;
+}
+
+.tf-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tf-toggle-feedback-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-size: 0.88em;
+  color: #4b5563;
+  cursor: pointer;
+  user-select: none;
+  margin: 0;
+  line-height: 1.2;
+  transform: translateY(2px);
+}
+
+.tf-toggle-feedback-label input[type="checkbox"] {
+  margin: 0 !important;
+  cursor: pointer;
+  position: relative;
+  top: -2px;
+}
+
+.tf-feedback {
+  font-weight: 600;
+  font-size: 0.9em;
+  margin-left: 0.4em;
+  display: none;
+}
+
+.tf-feedback.correct {
+  display: inline-block;
+  color: var(--tf-correct-text);
+}
+
+.tf-feedback.incorrect {
+  display: inline-block;
+  color: var(--tf-incorrect-text);
+}
