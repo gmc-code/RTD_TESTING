@@ -30,6 +30,7 @@ class ClozeDirective(SphinxDirective):
         'auto-distract': directives.flag,
         'theme': lambda argument: directives.choice(argument, ('white', 'light')),
         'show-code': directives.flag,
+        'instructions': directives.unchanged,  # New instructions option added
     }
 
     def run(self):
@@ -53,6 +54,7 @@ class ClozeDirective(SphinxDirective):
         theme_val = self.options.get('theme', 'white')
         auto_distract = 'auto-distract' in self.options
         show_code = 'show-code' in self.options
+        instructions = self.options.get('instructions', '').strip()
 
         if not hasattr(self.env, 'cloze_gap_counter'):
             self.env.cloze_gap_counter = 0
@@ -125,16 +127,17 @@ class ClozeDirective(SphinxDirective):
 
         word_bank_items.sort()
 
-        bank_html = (
-            '<div class="cloze-wordbank-title">Word Bank (Drag items'
-            ' below):</div>'
-        )
+        # Render custom instructions if provided, otherwise default bank header
+        instructions_html = ""
+        if instructions:
+            instructions_html = f'<div class="cloze-instructions">{html.escape(instructions)}</div>'
 
         if show_code:
-            bank_html = (
-                '<div class="cloze-wordbank-title">Word Bank (Drag items below).'
-                ' Get 100% to reveal the code for copying:</div>'
-            )
+            bank_title_text = "Word Bank (Drag items below). Get 100% to reveal the code for copying:"
+        else:
+            bank_title_text = "Word Bank (Drag items below):"
+
+        bank_html = f'{instructions_html}<div class="cloze-wordbank-title">{bank_title_text}</div>'
 
         bank_html += '<div class="cloze-wordbank-tray">'
         for word in word_bank_items:

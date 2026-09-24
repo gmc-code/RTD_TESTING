@@ -98,6 +98,14 @@
 /* ==========================================================================
    3. Word Bank Tray & Draggable Items
    ========================================================================== */
+.cloze-instructions {
+  font-size: 0.95em;
+  font-weight: 500;
+  color: var(--cloze-text);
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
 .cloze-wordbank-title {
   font-size: 0.85em;
   font-weight: 700;

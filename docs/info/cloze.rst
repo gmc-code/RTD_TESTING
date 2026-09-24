@@ -37,6 +37,9 @@ Options for the cloze directive
      - string
      - | Sets the visual styling theme for the block layout.
        | Acceptable values are ``white`` (default) or ``light``.
+   * - ``:instructions:``
+     - string
+     - A brief instruction to guide the user on what to select.
 
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
@@ -197,4 +200,28 @@ Example 5: Show code
             @@continue | break | pass@@
         print(number)
 
+
+----
+
+Example 6: Instructions
+---------------------------------------------------
+
+| The following example demonstrates the use of the ``:instructions:`` option, which displays instructions in the solution.
+
+.. code-block:: rst
+
+    .. cloze::
+        :instructions: Complete the following sentences by dragging the correct verbs into the blanks.
+
+        1. Researchers must @@avoid@@ personal or medical data beyond what participants have consented to.
+        2. Scientists should @@respect@@ all required safety procedures to prevent harm during investigations.
+        3. When valid alternatives exist, researchers should @@use@@ simulations or models instead of live animals.
+
+
+.. cloze::
+    :instructions: Complete the following sentences by dragging the correct verbs into the blanks.
+
+    1. Researchers must @@avoid@@ personal or medical data beyond what participants have consented to.
+    2. Scientists should @@respect@@ all required safety procedures to prevent harm during investigations.
+    3. When valid alternatives exist, researchers should @@use@@ simulations or models instead of live animals.
 

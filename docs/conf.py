@@ -62,6 +62,7 @@ extensions = [
     "textselect.textselect",  # custom directive
     "wordjumble.wordjumble",  # custom directive
     "labels.labels",  # custom directive
+    "structuredquestion.structuredquestion",  # custom directive
     "noisemonitor.noisemonitor",  # custom directive
 ]
 

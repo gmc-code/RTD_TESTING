@@ -29,6 +29,8 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/textselect.rst
     info/wordjumble.rst
     info/labels.rst
+    info/structuredquestion.rst
+
     info/noisemonitor.rst
 
 
