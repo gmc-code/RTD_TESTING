@@ -127,12 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnScore = document.createElement("button");
   btnScore.type = "button";
   btnScore.className = "multichoicepage-btn-score";
-  btnScore.textContent = "Score Page";
+  btnScore.textContent = "Score";
 
   const btnReset = document.createElement("button");
   btnReset.type = "button";
   btnReset.className = "multichoicepage-btn-reset";
-  btnReset.textContent = "Reset Page";
+  btnReset.textContent = "Reset";
 
   // Create the feedback toggle container elements
   const toggleWrapper = document.createElement("label");

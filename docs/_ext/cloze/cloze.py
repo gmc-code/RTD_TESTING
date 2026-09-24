@@ -146,8 +146,8 @@ class ClozeDirective(SphinxDirective):
 
         control_panel_html = """
         <div class="cloze-global-panel">
-          <button type="button" class="cloze-btn-score">Score Section</button>
-          <button type="button" class="cloze-btn-reset">Reset Section</button>
+          <button type="button" class="cloze-btn-score">Score</button>
+          <button type="button" class="cloze-btn-reset">Reset</button>
           <span class="cloze-output"></span>
         </div>
         """

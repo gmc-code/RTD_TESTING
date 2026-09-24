@@ -116,7 +116,7 @@ class OrderingDirective(SphinxDirective):
 
         html_output += f'''
         <div class="ordering-controls">
-            <button type="button" class="ordering-btn-score">Check Order</button>
+            <button type="button" class="ordering-btn-score">Check</button>
             <button type="button" class="ordering-btn-continue" style="display: none;">Continue</button>
             <button type="button" class="ordering-btn-solution" {solution_btn_style}>Show Solution</button>
             <button type="button" class="ordering-btn-reset">Reset</button>
