@@ -75,7 +75,7 @@ Options for the wordjumble directive
 | Minimum Scramble Rule: A minimum of 2 letters will always be jumbled per word.
 | Anti-Identity Guarantee: If a shuffle, using specified options produces the original word, it automatically retries. If it fails repeatedly, it falls back to a shuffle to ensure the word is never displayed unshuffled.
 | Dynamic Input Box Sizing: Text boxes automatically size themselves based on the character length of the target word.
-| Answer Verification: Click the "Check Answers" button to validate entries. Incorrect entries reveal the correct spelling in green.
+| Answer Verification: Click the "Check" button to validate entries. Incorrect entries reveal the correct spelling in green.
 
 ----
 

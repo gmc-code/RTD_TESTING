@@ -46,7 +46,7 @@ Options for the label-diagram directive
 | Image Path: Images are automatically detected, bundled, and copied to the Sphinx build output directory.
 | Coordinates: The ``pos: x1,y1,x2,y2`` parameter specifies bounding box positions for drop zones.
 | Alignment: The ``align:`` key configures label alignment relative to target points (e.g., ``left``, ``right``).
-| Interactive Controls: Includes built-in action controls for **Check Answers**, **Show Answers**, and **Reset**.
+| Interactive Controls: Includes built-in action controls for **Check**, **Show Answers**, and **Reset**.
 | Interaction Modes: Supports desktop **Drag and Drop** and mobile/touch **Click-to-Select / Click-to-Place**. Double-clicking a placed label returns it to the word bank tray.
 
 ----

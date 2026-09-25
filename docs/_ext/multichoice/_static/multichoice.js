@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const btnScore = document.createElement("button");
       btnScore.type = "button";
       btnScore.className = "multichoice-btn-score";
-      btnScore.textContent = "Check Answer";
+      btnScore.textContent = "Check";
 
       const btnReset = document.createElement("button");
       btnReset.type = "button";

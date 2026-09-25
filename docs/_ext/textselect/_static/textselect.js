@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnScore = document.createElement("button");
     btnScore.type = "button";
     btnScore.className = "textselect-btn-score";
-    btnScore.textContent = "Check Selection";
+    btnScore.textContent = "Check";
 
     const btnReset = document.createElement("button");
     btnReset.type = "button";
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 3. Scoring Engine & Phrase Wrapper Construction
     btnScore.addEventListener("click", () => {
-      // Disable block and Check Selection button
+      // Disable block and Check button
       block.dataset.disabled = "true";
       btnScore.disabled = true;
 
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnReset.addEventListener("click", () => {
       block.dataset.disabled = "false";
 
-      // Re-enable the Check Selection button
+      // Re-enable the Check button
       btnScore.disabled = false;
 
       // Unwrap all phrase wrappers

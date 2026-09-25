@@ -78,6 +78,7 @@ Options for nested directives
 | Structure: A ``structuredquestion`` contains one or more ``subquestion`` directives, optionally grouped inside tab sets.
 | Self-Grading: Revealing the model answer displays interactive mark buttons matching the ``:marks:`` option.
 | Print Friendly: When printing, everything except the structured questions (navigation, other page content, answers, and buttons) is hidden, and all tabbed sub-questions are expanded sequentially. Every structuredquestion on the page is printed, in order.
+
 ----
 
 Example 1: Single Sub-Question

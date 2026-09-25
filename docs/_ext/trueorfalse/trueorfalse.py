@@ -69,7 +69,8 @@ class trueorfalseDirective(SphinxDirective):
     has_content = True
 
     option_spec = {
-        "theme": lambda argument: directives.choice(argument, ("white", "light")),
+        "theme": lambda argument: directives.choice(argument,
+                                                    ("white", "light")),
         "delimiter": directives.unchanged,
         "show-feedback": directives.flag,
     }
@@ -109,7 +110,8 @@ class trueorfalseDirective(SphinxDirective):
         # ─────────────────────────────────────
         question_container = nodes.container(classes=["tf-question"])
         question_container.document = self.state.document
-        self.state.nested_parse(question_lines, self.content_offset, question_container)
+        self.state.nested_parse(question_lines, self.content_offset,
+                                question_container)
         node += question_container
 
         # ─────────────────────────────────────
@@ -162,9 +164,16 @@ class trueorfalseDirective(SphinxDirective):
                         current_choice["text_lines"].append(line)
 
         if len(raw_choices) < 2:
-            raise DirectiveError(3, "True/False error: Must specify two options (True and False).")
+            raise DirectiveError(
+                3,
+                "True/False error: Must specify two options (True and False).")
 
-        seed_string = "".join("".join(c["text_lines"]) for c in raw_choices)
+        # In trueorfalse.py
+        doc_name = self.state.document.settings.env.docname
+        line_num = self.lineno
+
+        # Unique seed using page path, line number, and choice text
+        seed_string = f"{doc_name}_{line_num}_" + "".join("".join(c["text_lines"]) for c in raw_choices)
         group_name = hashlib.md5(seed_string.encode("utf-8")).hexdigest()
 
         def normalize_line_blocks(lines):
@@ -180,7 +189,8 @@ class trueorfalseDirective(SphinxDirective):
         # ─────────────────────────────────────
         # Convert Choices into Structural Node Trees
         # ─────────────────────────────────────
-        source_file = self.content.source(0) if len(self.content) > 0 else "trueorfalse"
+        source_file = self.content.source(0) if len(
+            self.content) > 0 else "trueorfalse"
 
         for ch in raw_choices:
             choice_wrap = tf_choice_container_node(correct=ch["correct"])
@@ -192,7 +202,8 @@ class trueorfalseDirective(SphinxDirective):
             text_container.document = self.state.document
 
             choice_text_sl = StringList(text_lines, source=source_file)
-            self.state.nested_parse(choice_text_sl, self.content_offset, text_container)
+            self.state.nested_parse(choice_text_sl, self.content_offset,
+                                    text_container)
             label_element.extend(text_container.children)
             choice_wrap += label_element
 
@@ -203,7 +214,8 @@ class trueorfalseDirective(SphinxDirective):
 
                 exp_lines = normalize_line_blocks(ch["explanation_lines"])
                 explanation_sl = StringList(exp_lines, source=source_file)
-                self.state.nested_parse(explanation_sl, self.content_offset, exp_container)
+                self.state.nested_parse(explanation_sl, self.content_offset,
+                                        exp_container)
                 choice_wrap += exp_container
 
             node += choice_wrap
@@ -215,22 +227,20 @@ class trueorfalseDirective(SphinxDirective):
 # Setup Hook
 # ─────────────────────────────────────
 def setup(app):
-    app.add_node(
-        trueorfalse_node,
-        html=(visit_trueorfalse_html, depart_trueorfalse_html)
-    )
-    app.add_node(
-        tf_choice_container_node,
-        html=(visit_tf_choice_container_html, depart_tf_choice_container_html)
-    )
-    app.add_node(
-        tf_choice_label_node,
-        html=(visit_tf_choice_label_html, depart_tf_choice_label_html)
-    )
+    app.add_node(trueorfalse_node,
+                 html=(visit_trueorfalse_html, depart_trueorfalse_html))
+    app.add_node(tf_choice_container_node,
+                 html=(visit_tf_choice_container_html,
+                       depart_tf_choice_container_html))
+    app.add_node(tf_choice_label_node,
+                 html=(visit_tf_choice_label_html,
+                       depart_tf_choice_label_html))
 
     app.add_directive("trueorfalse", trueorfalseDirective)
 
     static_path = str(Path(__file__).parent / "_static")
+    if not hasattr(app.config, "html_static_path") or app.config.html_static_path is None:
+        app.config.html_static_path = []
     if static_path not in app.config.html_static_path:
         app.config.html_static_path.append(static_path)
 

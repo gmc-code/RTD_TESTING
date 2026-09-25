@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnScore = document.createElement("button");
     btnScore.type = "button";
     btnScore.className = "wordjumble-btn-score";
-    btnScore.textContent = "Check Answers";
+    btnScore.textContent = "Check";
 
     const btnReset = document.createElement("button");
     btnReset.type = "button";

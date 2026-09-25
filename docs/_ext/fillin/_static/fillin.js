@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnScore = document.createElement("button")
     btnScore.type = "button"
     btnScore.className = "fillin-btn-score"
-    btnScore.textContent = "Check Answers"
+    btnScore.textContent = "Check"
 
     const btnReset = document.createElement("button")
     btnReset.type = "button"
