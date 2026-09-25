@@ -31,13 +31,17 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/labels.rst
     info/structuredquestion.rst
 
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Classroom Tools:
+
     info/noisemonitor.rst
 
 
 .. toctree::
     :maxdepth: 3
     :caption: Diagrams:
-    :numbered:
 
     diagrams/Cells - animal 4.rst
     diagrams/Classification.rst
