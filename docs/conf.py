@@ -29,10 +29,24 @@ def simple_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
 
 def setup(app):
     roles_to_register = [
+        # Experimental / Variables
         "p", "r", "o", "pb", "rb", "ob", "iv", "dv", "cv", "ivb", "dvb", "cvb",
-        "theme", "rheme", "themeb", "rhemeb", "process", "participant", "circumstance",
-        "conjunction", "part","processb", "participantb", "circumstanceb", "conjunctionb", "partb", "processp",
-        "participantp", "circumstancep", "conjunctionp", "rubricsmall"
+        # Theme / Rheme
+        "theme", "rheme", "themep", "rhemep", "themeb", "rhemeb",
+        # SFL Functional Roles (Bordered)
+        "process", "participant", "circumstance", "conjunction", "text-connective", "part",
+        # SFL Functional Roles (Filled Chips)
+        "processb", "participantb", "circumstanceb", "conjunctionb", "text-connectiveb", "partb",
+        # SFL Functional Roles (Plain Text)
+        "processp", "participantp", "circumstancep", "conjunctionp", "text-connectivep", "partp",
+        # Clause Structure Roles (Bordered)
+        "independent", "dependent", "embedded", "relative", "projected",
+        # Clause Structure Roles (Filled Chips)
+        "independentb", "dependentb", "embeddedb", "relativeb", "projectedb",
+        # Clause Structure Roles (Plain Text)
+        "independentp", "dependentp", "embeddedp", "relativep", "projectedp",
+        # Formatting / Utility
+        "rubricsmall"
     ]
 
     for rolename in roles_to_register:

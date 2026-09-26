@@ -10,6 +10,7 @@
   --hsl-process: hsl(120, 57%, 40%);        /* Green */
   --hsl-circumstance: hsl(244, 100%, 62%);  /* Bright Blue / Violet */
   --hsl-conjunction: hsl(218, 11%, 49%);   /* Gray */
+  --hsl-text-connective: hsl(218, 11%, 49%);   /* Gray */
   --hsl-part: hsl(218, 11%, 49%);          /* Gray */
   --hsl-theme: hsl(204, 70%, 41%);         /* Muted Blue */
   --hsl-rheme: hsl(220, 43%, 11%);         /* Dark Charcoal / Black */
@@ -75,6 +76,7 @@ span.participantp   { color: var(--hsl-participant); }
 span.processp       { color: var(--hsl-process); }
 span.circumstancep  { color: var(--hsl-circumstance); }
 span.conjunctionp   { color: var(--hsl-conjunction); }
+span.text-connectivep   { color: var(--hsl-text-connective); }
 span.partp          { color: var(--hsl-part); }
 span.themep         { color: var(--hsl-theme); }
 span.rhemep         { color: var(--hsl-rheme); }
@@ -94,6 +96,7 @@ span.participant,
 span.process,
 span.circumstance,
 span.conjunction,
+span.text-connective,
 span.part,
 span.theme,
 span.rheme,
@@ -115,6 +118,7 @@ span.participant   { color: var(--hsl-participant); border-color: var(--hsl-part
 span.process       { color: var(--hsl-process); border-color: var(--hsl-process); }
 span.circumstance  { color: var(--hsl-circumstance); border-color: var(--hsl-circumstance); }
 span.conjunction   { color: var(--hsl-conjunction); border-color: var(--hsl-conjunction); font-style: italic; }
+span.text-connective   { color: var(--hsl-text-connective); border-color: var(--hsl-text-connective); font-style: italic; }
 span.part          { color: var(--hsl-part); border-color: var(--hsl-part); font-style: italic; }
 span.theme         { color: var(--hsl-theme); border-color: var(--hsl-theme); }
 span.rheme         { color: var(--hsl-rheme); border-color: var(--hsl-rheme); }
@@ -134,6 +138,7 @@ span.participantb,
 span.processb,
 span.circumstanceb,
 span.conjunctionb,
+span.text-connectiveb,
 span.partb,
 span.themeb,
 span.rhemeb,
@@ -155,6 +160,7 @@ span.participantb   { background-color: var(--hsl-participant); }
 span.processb       { background-color: var(--hsl-process); }
 span.circumstanceb  { background-color: var(--hsl-circumstance); }
 span.conjunctionb   { background-color: var(--hsl-conjunction); font-style: italic; }
+span.text-connectiveb   { background-color: var(--hsl-text-connective); font-style: italic; }
 span.partb          { background-color: var(--hsl-part); font-style: italic; }
 span.themeb         { background-color: var(--hsl-theme); font-weight: 600; }
 span.rhemeb         { background-color: var(--hsl-rheme); }
@@ -171,6 +177,7 @@ span.processb,
 span.circumstanceb,
 span.partb,
 span.conjunctionb,
+span.text-connectiveb,
 span.themeb,
 span.rhemeb,
 span.independentb,
@@ -188,6 +195,7 @@ span.projectedb {
   span.circumstanceb,
   span.partb,
   span.conjunctionb,
+  span.text-connectiveb,
   span.themeb,
   span.rhemeb,
   span.independentb,
