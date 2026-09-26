@@ -2,12 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const blocks = Array.from(document.querySelectorAll(".multichoicepage-block"));
   if (blocks.length === 0) return;
 
-  // Remove any pre-existing global panels to prevent duplicate button sets
   document.querySelectorAll(".multichoicepage-global-panel").forEach(p => p.remove());
 
-  // ─────────────────────────────────────
-  // Utilities
-  // ─────────────────────────────────────
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -23,9 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ─────────────────────────────────────
-  // Initialise block metadata
-  // ─────────────────────────────────────
   blocks.forEach((block) => {
     if (!block.dataset.originalChoicesHTML) {
       block.dataset.originalChoicesHTML = Array.from(
@@ -38,11 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
     block.dataset.multichoicepageShuffle = block.dataset.multichoicepageShuffle === "false" ? "false" : "true";
     block.dataset.multichoicepageLetters = block.dataset.multichoicepageLetters === "false" ? "false" : "true";
     block.dataset.multichoicepageSingle = block.dataset.multichoicepageSingle === "false" ? "false" : "true";
+    block.dataset.multichoicepageTorf = block.dataset.multichoicepageTorf === "true" ? "true" : "false";
   });
 
-  // ─────────────────────────────────────
-  // Build / reset an individual block
-  // ─────────────────────────────────────
   function initBlock(block, blockIndex) {
     block.querySelectorAll(".multichoicepage-choice").forEach(n => n.remove());
 
@@ -51,7 +42,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let choices = Array.from(container.children);
 
-    if (block.dataset.multichoicepageShuffle === "true") {
+    if (block.dataset.multichoicepageTorf === "true") {
+      choices.sort((a, b) => {
+        const textA = a.innerText.trim().toLowerCase();
+        const textB = b.innerText.trim().toLowerCase();
+        const isTrueA = textA.startsWith("true") || textA.startsWith("t");
+        const isTrueB = textB.startsWith("true") || textB.startsWith("t");
+        return isTrueB - isTrueA;
+      });
+    } else if (block.dataset.multichoicepageShuffle === "true") {
       shuffleArray(choices);
     }
 
@@ -76,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (input) {
         input.checked = false;
         input.disabled = false;
-        // Enforce shared group token for radio sets to preserve selection constraints
         if (isSingle) input.name = uniqueGroupToken;
       }
 
@@ -84,9 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (exp) exp.style.display = "none";
     });
 
-    // ─────────────────────────────────────
-    // Native Interaction Click Handling
-    // ─────────────────────────────────────
     choices.forEach(choice => {
       const input = choice.querySelector("input");
       if (!input) return;
@@ -112,12 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initialise all individual question markup
   blocks.forEach((b, i) => initBlock(b, i));
 
-// ─────────────────────────────────────
-  // Control Panel & Feedback Toggle Configuration
   // ─────────────────────────────────────
+  // Page-Wide Control Panel Assembly
+  // ─────────────────────────────────────
+  let globalFeedbackState = false;
+
   const panel = document.createElement("div");
   panel.className = "multichoicepage-global-panel";
   panel.style.display = "flex";
@@ -134,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
   btnReset.className = "multichoicepage-btn-reset";
   btnReset.textContent = "Reset";
 
-  // Create the feedback toggle container elements
   const toggleWrapper = document.createElement("label");
   toggleWrapper.className = "multichoicepage-toggle-wrapper";
   toggleWrapper.style.display = "flex";
@@ -147,7 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const chkShowFeedback = document.createElement("input");
   chkShowFeedback.type = "checkbox";
   chkShowFeedback.id = "mcq-toggle-feedback";
-  chkShowFeedback.checked = false; // Default to not showing feedback on score
+  chkShowFeedback.checked = globalFeedbackState;
+
+  chkShowFeedback.addEventListener("change", () => {
+    globalFeedbackState = chkShowFeedback.checked;
+  });
 
   const toggleLabel = document.createElement("span");
   toggleLabel.textContent = "Show detailed feedback";
@@ -157,17 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const scoreBadge = document.createElement("span");
   scoreBadge.className = "multichoicepage-output";
 
-  // Assemble the items cleanly in order
   panel.append(btnScore, btnReset, toggleWrapper, scoreBadge);
 
-  // Append directly after the final block element on the page layout
   const lastBlock = blocks[blocks.length - 1];
   lastBlock.parentNode.insertBefore(panel, lastBlock.nextSibling);
-
-  // ─────────────────────────────────────
-  // Scoring Validation Engine
-  // ─────────────────────────────────────
-
 
   function doScore() {
     let total = 0;
@@ -176,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     blocks.forEach(block => {
       total++;
-      const isSingle = block.dataset.multichoicepageSingle === "true";
       const choices = Array.from(block.querySelectorAll(".multichoicepage-choice"));
 
       choices.forEach(c => {
@@ -211,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
         correct++;
       }
 
-      // Respect the checkbox value state for showing/hiding explanations
       block.querySelectorAll(".multichoicepage-explanation").forEach(e => {
         e.style.display = displayFeedback ? "block" : "none";
       });
@@ -221,15 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Disable the score button to prevent repeated clicks until reset
     btnScore.disabled = true;
-
-    // Disable the toggle once scored to lock page state representation
     chkShowFeedback.disabled = true;
     toggleWrapper.style.opacity = "0.5";
     toggleWrapper.style.cursor = "not-allowed";
 
-    // Score layout badge mutations
     scoreBadge.textContent = `Score: ${correct} / ${total}`;
     scoreBadge.style.display = "inline-block";
 
@@ -249,12 +235,9 @@ document.addEventListener("DOMContentLoaded", () => {
     scoreBadge.style.display = "none";
     scoreBadge.classList.remove("high", "medium", "low");
 
-    // Re-enable the score button
     btnScore.disabled = false;
-
-    // Re-enable the configuration toggle check element
     chkShowFeedback.disabled = false;
-    chkShowFeedback.checked = true;
+    chkShowFeedback.checked = globalFeedbackState;
     toggleWrapper.style.opacity = "1";
     toggleWrapper.style.cursor = "pointer";
 

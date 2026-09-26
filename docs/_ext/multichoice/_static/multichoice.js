@@ -2,12 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const blocks = Array.from(document.querySelectorAll(".multichoice-block"));
   if (blocks.length === 0) return;
 
-  // Remove any pre-existing control panels to prevent duplicate button sets
   document.querySelectorAll(".multichoice-global-panel, .multichoice-control-panel").forEach(p => p.remove());
 
-  // ─────────────────────────────────────
-  // Utilities
-  // ─────────────────────────────────────
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -36,16 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
     block.dataset.multichoiceShuffle = block.dataset.multichoiceShuffle === "false" ? "false" : "true";
     block.dataset.multichoiceLetters = block.dataset.multichoiceLetters === "false" ? "false" : "true";
     block.dataset.multichoiceSingle = block.dataset.multichoiceSingle === "false" ? "false" : "true";
+    block.dataset.multichoiceTorf = block.dataset.multichoiceTorf === "true" ? "true" : "false";
   });
 
-  // ─────────────────────────────────────
-  // Build and score each question independently
-  // ─────────────────────────────────────
   blocks.forEach((block, blockIndex) => {
+    // Track feedback toggle preference across resets per block
+    let feedbackCheckedState = false;
 
-    // Function to re-initialize an individual question block
     function initBlock() {
-      // Remove choices and old panels inside this block
       block.querySelectorAll(".multichoice-choice, .multichoice-control-panel").forEach(n => n.remove());
 
       const container = document.createElement("div");
@@ -53,7 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let choices = Array.from(container.children);
 
-      if (block.dataset.multichoiceShuffle === "true") {
+      // Enforce True options first if True/False mode is active
+      if (block.dataset.multichoiceTorf === "true") {
+        choices.sort((a, b) => {
+          const textA = a.innerText.trim().toLowerCase();
+          const textB = b.innerText.trim().toLowerCase();
+          const isTrueA = textA.startsWith("true") || textA.startsWith("t");
+          const isTrueB = textB.startsWith("true") || textB.startsWith("t");
+          return isTrueB - isTrueA;
+        });
+      } else if (block.dataset.multichoiceShuffle === "true") {
         shuffleArray(choices);
       }
 
@@ -85,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (exp) exp.style.display = "none";
       });
 
-      // Selection Interaction Event Handlers
       choices.forEach(choice => {
         const input = choice.querySelector("input");
         if (!input) return;
@@ -110,11 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
 
-      // Build Per-Question Control Panel
       buildPanelForBlock();
     }
 
-    // Function to assemble the control panel for this block
     function buildPanelForBlock() {
       const panel = document.createElement("div");
       panel.className = "multichoice-control-panel";
@@ -143,7 +143,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const chkShowFeedback = document.createElement("input");
       chkShowFeedback.type = "checkbox";
-      chkShowFeedback.checked = false; // Default to not showing detailed feedback on check
+
+      // Preserve prior toggle setting on reset
+      chkShowFeedback.checked = feedbackCheckedState;
+
+      chkShowFeedback.addEventListener("change", () => {
+        feedbackCheckedState = chkShowFeedback.checked;
+      });
 
       const toggleLabel = document.createElement("span");
       toggleLabel.textContent = "Show feedback";
@@ -156,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
       panel.append(btnScore, btnReset, toggleWrapper, scoreBadge);
       block.appendChild(panel);
 
-      // Score Action for this specific question block
       btnScore.onclick = () => {
         const choices = Array.from(block.querySelectorAll(".multichoice-choice"));
         const displayFeedback = chkShowFeedback.checked;
@@ -185,23 +190,19 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
 
-        // Toggle explanations based on checkbox
         block.querySelectorAll(".multichoice-explanation").forEach(e => {
           e.style.display = displayFeedback ? "block" : "none";
         });
 
-        // Disable input selections
         block.querySelectorAll("input").forEach(i => {
           i.disabled = true;
         });
 
-        // Lock button controls for this card
         btnScore.disabled = true;
         chkShowFeedback.disabled = true;
         toggleWrapper.style.opacity = "0.5";
         toggleWrapper.style.cursor = "not-allowed";
 
-        // Display performance badge
         scoreBadge.style.display = "inline-block";
         scoreBadge.classList.remove("high", "medium", "low");
 
@@ -214,13 +215,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       };
 
-      // Reset Action for this specific question block
       btnReset.onclick = () => {
         initBlock();
       };
     }
 
-    // Initialize block on startup
     initBlock();
   });
 });

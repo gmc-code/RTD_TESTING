@@ -1,35 +1,109 @@
 /* _static/sfg.css */
 
 /* ========================================== */
-/**  sfg colours using roles directive */
+/* 0. Global Role HSL Variable Definitions    */
+/* ========================================== */
+
+:root {
+  /* Grammatical Role Base HSL Values */
+  --hsl-participant: hsl(360, 69%, 50%);    /* Red */
+  --hsl-process: hsl(120, 57%, 40%);        /* Green */
+  --hsl-circumstance: hsl(244, 100%, 62%);  /* Bright Blue / Violet */
+  --hsl-conjunction: hsl(218, 11%, 49%);   /* Gray */
+  --hsl-part: hsl(218, 11%, 49%);          /* Gray */
+  --hsl-theme: hsl(204, 70%, 41%);         /* Muted Blue */
+  --hsl-rheme: hsl(220, 43%, 11%);         /* Dark Charcoal / Black */
+
+  /* Clause Structure Base HSL Values */
+  --hsl-independent: hsl(231, 38%, 57%);   /* Slate Blue */
+  --hsl-dependent: hsl(271, 38%, 57%);     /* Purple */
+  --hsl-embedded: hsl(317, 65%, 67%);      /* Pink */
+  --hsl-relative: hsl(28, 100%, 53%);      /* Orange */
+  --hsl-projected: hsl(11, 29%, 42%);      /* Brown */
+
+  /* Legacy Generic Color Aliases */
+  --hsl-red: var(--hsl-participant);
+  --hsl-green: var(--hsl-process);
+  --hsl-blue: var(--hsl-circumstance);
+
+  /* Admonition Theme Variables */
+  --admonition-text-color: #404040;
+  --admonition-text-white: #ffffff;
+
+  --premise-main: hsl(205, 100%, 46%);
+  --premise-bg: hsl(205, 100%, 97%);
+  --premise-title-bg: hsl(205, 100%, 75%);
+
+  --reasoning-main: hsl(360, 100%, 46%);
+  --reasoning-bg: hsl(360, 100%, 97%);
+  --reasoning-title-bg: hsl(360, 100%, 75%);
+
+  --outcome-main: hsl(120, 100%, 46%);
+  --outcome-bg: hsl(120, 100%, 97%);
+  --outcome-title-bg: hsl(120, 100%, 75%);
+
+  --pro-main: hsl(280, 100%, 46%);
+  --pro-bg: hsl(280, 100%, 97%);
+  --pro-title-bg: hsl(280, 100%, 75%);
+
+  --mcq-main: hsl(60, 100%, 46%);
+  --mcq-bg: hsl(60, 100%, 97%);
+  --mcq-title-bg: hsl(60, 100%, 75%);
+
+  --cloze-main: hsl(70, 100%, 46%);
+  --cloze-bg: hsl(70, 100%, 97%);
+  --cloze-title-bg: hsl(70, 100%, 75%);
+
+  --shortanswer-main: hsl(45, 100%, 46%);
+  --shortanswer-bg: hsl(45, 100%, 97%);
+  --shortanswer-title-bg: hsl(45, 100%, 75%);
+
+  --match-main: hsl(210, 100%, 46%);
+  --match-bg: hsl(210, 100%, 97%);
+  --match-title-bg: hsl(210, 100%, 75%);
+}
+
+/* ========================================== */
+/**  sfg colours using roles directive       */
 /* ========================================== */
 
 /* ========================================== */
-/* plain -- just colour */
+/* 1. Plain Text Roles (*p)                  */
 /* ========================================== */
 
-span.participantp    { color: #d62728; }
-span.processp        { color: #2ca02c; }
-span.circp           { color: #4a3dff; }
-span.conjp           { color: #6b7280; }
-span.partp         { color: #6b7280; }
-span.themep          { color: #1f77b4; }
-span.rhemep          { color: #111827; }
+span.participantp   { color: var(--hsl-participant); }
+span.processp       { color: var(--hsl-process); }
+span.circumstancep  { color: var(--hsl-circumstance); }
+span.conjunctionp   { color: var(--hsl-conjunction); }
+span.partp          { color: var(--hsl-part); }
+span.themep         { color: var(--hsl-theme); }
+span.rhemep         { color: var(--hsl-rheme); }
+
+/* Clause Structure Extensions */
+span.independentp   { color: var(--hsl-independent); }
+span.dependentp     { color: var(--hsl-dependent); }
+span.embeddedp      { color: var(--hsl-embedded); }
+span.relativep      { color: var(--hsl-relative); }
+span.projectedp     { color: var(--hsl-projected); }
 
 /* ========================================== */
-/* with border */
+/* 2. Bordered Roles                         */
 /* ========================================== */
 
 span.participant,
 span.process,
-span.circ,
-span.conj,
-span.partp,
+span.circumstance,
+span.conjunction,
+span.part,
 span.theme,
-span.rheme {
-
-  padding: 0.18em .65em;
-  border-radius: .25em;
+span.rheme,
+span.independent,
+span.dependent,
+span.embedded,
+span.relative,
+span.projected {
+  padding: 0.18em 0.65em;
+  border-radius: 0.25em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   line-height: 1.6;
@@ -37,70 +111,92 @@ span.rheme {
   border-width: 1px;
 }
 
-span.participant { color: #d62728; border-color: #d62728; }
-span.process     { color: #2ca02c; border-color: #2ca02c; }
-span.circ        { color: #4a3dff; border-color: #4a3dff; }
-span.conj        { color: #6b7280; font-style: italic; }
-span.part        { color: #6b7280; font-style: italic; }
-span.theme       { color: #1f77b4; border-color: #1f77b4; }
-span.rheme       { color: #111827; border-color: #111827; }
+span.participant   { color: var(--hsl-participant); border-color: var(--hsl-participant); }
+span.process       { color: var(--hsl-process); border-color: var(--hsl-process); }
+span.circumstance  { color: var(--hsl-circumstance); border-color: var(--hsl-circumstance); }
+span.conjunction   { color: var(--hsl-conjunction); border-color: var(--hsl-conjunction); font-style: italic; }
+span.part          { color: var(--hsl-part); border-color: var(--hsl-part); font-style: italic; }
+span.theme         { color: var(--hsl-theme); border-color: var(--hsl-theme); }
+span.rheme         { color: var(--hsl-rheme); border-color: var(--hsl-rheme); }
+
+/* Clause Structure Additions */
+span.independent   { color: var(--hsl-independent); border-color: var(--hsl-independent); }
+span.dependent     { color: var(--hsl-dependent); border-color: var(--hsl-dependent); }
+span.embedded      { color: var(--hsl-embedded); border-color: var(--hsl-embedded); }
+span.relative      { color: var(--hsl-relative); border-color: var(--hsl-relative); }
+span.projected     { color: var(--hsl-projected); border-color: var(--hsl-projected); }
 
 /* ========================================== */
-/* filled in colour */
+/* 3. Filled Background Chip Roles (*b)      */
 /* ========================================== */
 
-/* Shared chip-like styling for all *b roles */
 span.participantb,
 span.processb,
-span.circb,
-span.conjb,
+span.circumstanceb,
+span.conjunctionb,
 span.partb,
 span.themeb,
-span.rhemeb {
-  /* text color: off-white */
+span.rhemeb,
+span.independentb,
+span.dependentb,
+span.embeddedb,
+span.relativeb,
+span.projectedb {
   color: #f8fafc;
-
-  /* inline chip look */
-  padding: 0.2em .65em;
-  border-radius: .25em;
+  padding: 0.2em 0.65em;
+  border-radius: 0.25em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   line-height: 1.6;
 }
 
-/* Individual backgrounds (using your current color palette) */
-span.participantb { background-color: #d62728; } /* red */
-span.processb     { background-color: #2ca02c; } /* green */
-span.circb        { background-color: #4a3dff; } /* indigo */
-span.conjb        { background-color: #6b7280; font-style: italic; } /* gray, italic */
-span.partb        { background-color: #6b7280; font-style: italic; } /* gray, italic */
-span.themeb       { background-color: #1f77b4; font-weight: 600; } /* blue, bold */
-span.rhemeb       { background-color: #111827; } /* near-black */
+/* Individual backgrounds */
+span.participantb   { background-color: var(--hsl-participant); }
+span.processb       { background-color: var(--hsl-process); }
+span.circumstanceb  { background-color: var(--hsl-circumstance); }
+span.conjunctionb   { background-color: var(--hsl-conjunction); font-style: italic; }
+span.partb          { background-color: var(--hsl-part); font-style: italic; }
+span.themeb         { background-color: var(--hsl-theme); font-weight: 600; }
+span.rhemeb         { background-color: var(--hsl-rheme); }
 
-/* Optional subtle inner highlight for contrast on some screens */
+/* Clause Structure Background Additions */
+span.independentb   { background-color: var(--hsl-independent); }
+span.dependentb     { background-color: var(--hsl-dependent); }
+span.embeddedb      { background-color: var(--hsl-embedded); }
+span.relativeb      { background-color: var(--hsl-relative); }
+span.projectedb     { background-color: var(--hsl-projected); }
+
 span.participantb,
 span.processb,
-span.circb,
+span.circumstanceb,
 span.partb,
-span.conjb,
+span.conjunctionb,
 span.themeb,
-span.rhemeb {
+span.rhemeb,
+span.independentb,
+span.dependentb,
+span.embeddedb,
+span.relativeb,
+span.projectedb {
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* Print fallback: if printers drop background colors, keep a visual cue */
+/* Print fallback */
 @media print {
   span.participantb,
   span.processb,
-  span.circb,
+  span.circumstanceb,
   span.partb,
-  span.conjb,
+  span.conjunctionb,
   span.themeb,
-  span.rhemeb {
+  span.rhemeb,
+  span.independentb,
+  span.dependentb,
+  span.embeddedb,
+  span.relativeb,
+  span.projectedb {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-
-    /* If backgrounds are stripped, ensure visibility */
     background-color: transparent !important;
     color: #000 !important;
     border: 1px solid currentColor;
@@ -108,395 +204,111 @@ span.rhemeb {
 }
 
 /* ========================================== */
-/* variable colours using roles directive */
-/* pro colours using roles directive */
+/* Variable & Pro Colors via Roles            */
 /* ========================================== */
 
-/* normal colours */
-span.p, .p,
-span.cv, .cv {
-    color: #1f77b4; /* blue */
-}
+span.p, .p, span.cv, .cv   { color: var(--hsl-theme); }
+span.r, .r, span.dv, .dv   { color: var(--hsl-participant); }
+span.o, .o, span.iv, .iv   { color: var(--hsl-process); }
 
-span.r, .r,
-span.dv, .dv {
-    color: #d62728; /* red */
-}
-
-span.o, .o,
-span.iv, .iv {
-    color: #2ca02c; /* green */
-}
-
-/* bold colours */
-span.pb, .pb,
-span.cvb, .cvb {
-    color: #1f77b4; /* blue */
-    font-weight: bold;
-}
-
-span.rb, .rb,
-span.dvb, .dvb {
-    color: #d62728; /* red */
-    font-weight: bold;
-}
-
-span.ob, .ob,
-span.ivb, .ivb {
-    color: #2ca02c; /* green */
-    font-weight: bold;
-}
-
-
+span.pb, .pb, span.cvb, .cvb { color: var(--hsl-theme); font-weight: bold; }
+span.rb, .rb, span.dvb, .dvb { color: var(--hsl-participant); font-weight: bold; }
+span.ob, .ob, span.ivb, .ivb { color: var(--hsl-process); font-weight: bold; }
 
 /* ========================================== */
-/* admonitions via class */
+/* Admonitions via Class                     */
 /* ========================================== */
 
-:root {
+.admonition.premise { color: var(--admonition-text-color); border-left: 6px solid var(--premise-main); background-color: var(--premise-bg); }
+.admonition.premise .admonition-title { background-color: var(--premise-title-bg); color: var(--admonition-text-color); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    --admonition-text-color: #404040;
-    --admonition-text-white: #ffffff;
+.admonition.reasoning { color: var(--admonition-text-color); border-left: 6px solid var(--reasoning-main); background-color: var(--reasoning-bg); }
+.admonition.reasoning .admonition-title { background-color: var(--reasoning-title-bg); color: var(--admonition-text-color); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    /* --- Premise (Blue) --- */
-    --premise-main: hsl(205, 100%, 46%);
-    --premise-bg: hsl(205, 100%, 97%);
-    --premise-title-bg: hsl(205, 100%, 75%);
+.admonition.outcome { color: var(--admonition-text-color); border-left: 6px solid var(--outcome-main); background-color: var(--outcome-bg); }
+.admonition.outcome .admonition-title { background-color: var(--outcome-title-bg); color: var(--admonition-text-color); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    /* --- Reasoning (Red) --- */
-    --reasoning-main: hsl(360, 100%, 46%);
-    --reasoning-bg: hsl(360, 100%, 97%);
-    --reasoning-title-bg: hsl(360, 100%, 75%);
+.admonition.pro { color: var(--admonition-text-color); border-left: 6px solid var(--pro-main); background-color: var(--pro-bg); }
+.admonition.pro .admonition-title { background-color: var(--pro-title-bg); color: var(--admonition-text-color); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    /* --- Outcome (Green) --- */
-    --outcome-main: hsl(120, 100%, 46%);
-    --outcome-bg: hsl(120, 100%, 97%);
-    --outcome-title-bg: hsl(120, 100%, 75%);
+div.admonition.mcq { color: var(--admonition-text-color); border-left: 6px solid var(--mcq-main); background-color: var(--mcq-bg); }
+div.admonition.mcq p.admonition-title { color: var(--admonition-text-color); background-color: var(--mcq-title-bg); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    /* --- PRO (Purple) --- */
-    --pro-main: hsl(280, 100%, 46%);
-    --pro-bg: hsl(280, 100%, 97%);
-    --pro-title-bg: hsl(280, 100%, 75%);
+div.admonition.cloze { color: var(--admonition-text-color); border-left: 6px solid var(--cloze-main); background-color: var(--cloze-bg); }
+div.admonition.cloze p.admonition-title { color: var(--admonition-text-color); background-color: var(--cloze-title-bg); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    /* --- MCQ --- */
-    --mcq-main: hsl(60, 100%, 46%);
-    --mcq-bg: hsl(60, 100%, 97%);
-    --mcq-title-bg: hsl(60, 100%, 75%);
+div.admonition.shortanswer { color: var(--admonition-text-color); border-left: 6px solid var(--shortanswer-main); background-color: var(--shortanswer-bg); }
+div.admonition.shortanswer p.admonition-title { color: var(--admonition-text-color); background-color: var(--shortanswer-title-bg); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
-    /* --- CLOZE --- */
-    --cloze-main: hsl(70, 100%, 46%);
-    --cloze-bg: hsl(70, 100%, 97%);
-    --cloze-title-bg: hsl(70, 100%, 75%);
-
-    /* --- SHORT ANSWER --- */
-    --shortanswer-main: hsl(45, 100%, 46%);
-    --shortanswer-bg: hsl(45, 100%, 97%);
-    --shortanswer-title-bg: hsl(45, 100%, 75%);
-
-    /* --- MATCH --- */
-    --match-main: hsl(210, 100%, 46%);
-    --match-bg: hsl(210, 100%, 97%);
-    --match-title-bg: hsl(210, 100%, 75%);
-}
-
-
-/* --- Premise --- */
-.admonition.premise {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--premise-main);
-    background-color: var(--premise-bg);
-}
-.admonition.premise .admonition-title {
-    background-color: var(--premise-title-bg);
-    color: var(--admonition-text-color);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-
-/* --- Reasoning --- */
-.admonition.reasoning {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--reasoning-main);
-    background-color: var(--reasoning-bg);
-}
-.admonition.reasoning .admonition-title {
-    background-color: var(--reasoning-title-bg);
-    color: var(--admonition-text-color);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-
-/* --- Outcome --- */
-.admonition.outcome {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--outcome-main);
-    background-color: var(--outcome-bg);
-}
-.admonition.outcome .admonition-title {
-    background-color: var(--outcome-title-bg);
-    color: var(--admonition-text-color);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-
-/* --- PRO --- */
-.admonition.pro {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--pro-main);
-    background-color: var(--pro-bg);
-}
-.admonition.pro .admonition-title {
-    background-color: var(--pro-title-bg);
-    color: var(--admonition-text-color);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-/* --- MCQ --- */
-div.admonition.mcq {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--mcq-main);
-    background-color: var(--mcq-bg);
-}
-
-div.admonition.mcq p.admonition-title {
-    color: var(--admonition-text-color);
-    background-color: var(--mcq-title-bg);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-
-/* --- CLOZE --- */
-div.admonition.cloze {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--cloze-main);
-    background-color: var(--cloze-bg);
-}
-
-div.admonition.cloze p.admonition-title {
-    color: var(--admonition-text-color);
-    background-color: var(--cloze-title-bg);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-
-/* --- SHORT ANSWER --- */
-div.admonition.shortanswer {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--shortanswer-main);
-    background-color: var(--shortanswer-bg);
-}
-
-div.admonition.shortanswer p.admonition-title {
-    color: var(--admonition-text-color);
-    background-color: var(--shortanswer-title-bg);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
-
-
-/* --- MATCHING --- */
-div.admonition.match {
-    color: var(--admonition-text-color);
-    border-left: 6px solid var(--match-main);
-    background-color: var(--match-bg);
-}
-
-div.admonition.match p.admonition-title {
-    color: var(--admonition-text-color);
-    background-color: var(--match-title-bg);
-    font-weight: normal;
-    font-size: 20px;
-    text-transform: capitalize;
-}
+div.admonition.match { color: var(--admonition-text-color); border-left: 6px solid var(--match-main); background-color: var(--match-bg); }
+div.admonition.match p.admonition-title { color: var(--admonition-text-color); background-color: var(--match-title-bg); font-weight: normal; font-size: 20px; text-transform: capitalize; }
 
 /* ========================================== */
-/* custom admonition icons */
+/* Custom Admonition Icons                   */
 /* ========================================== */
 
 .rst-content .admonition-title::before {
     display: inline-block;
-    margin-right: 1.5em; /* increase or decrease as needed */
+    margin-right: 1.5em;
 }
 
-/* .admonition .admonition-title::before {
-    content: none !important;
-    font-family: inherit !important;
-    margin-right: 0.2em;
-}
-
-/* --- Premise --- */
-.admonition.premise .admonition-title::before {
-    content: "\f192"; /* circle-dot */
-    margin-right: 2em;
-}
-
-/* --- Reasoning --- */
-.admonition.reasoning .admonition-title::before {
-    content: "\f08b"; /* arrow-right-from-bracket */
-    margin-right: 2em;
-}
-
-/* --- Outcome --- */
-.admonition.outcome .admonition-title::before {
-    content: "\f11e"; /* flag-checkered */
-    margin-right: 2em;
-}
-
-/* --- Pro --- */
-.admonition.pro .admonition-title::before {
-    content: "\f0eb"; /* lightbulb */
-    margin-right: 2em;
-}
-
-/* --- MCQ --- */
-.admonition.mcq .admonition-title::before {
-    content: "\f14a  \f03a"; /* square-check */
-    margin-right: 2em;
-}
-
-/* --- CLOZE --- */
-.admonition.cloze .admonition-title::before {
-    content: "\f044"; /* pen-to-square */
-    margin-right: 2em;
-}
-
-/* --- SHORT ANSWER --- */
-.admonition.shortanswer .admonition-title::before {
-    content: "\f11c"; /* keyboard*/
-    margin-right: 2em;
-}
-
-/* --- MATCHING --- */
-.admonition.match .admonition-title::before {
-    content: "\f074"; /* shuffle */
-    margin-right: 2em;
-}
-
-/* --- question --- */
-.admonition.question .admonition-title::before {
-    content: "\f059"; /* circle-question */
-    margin-right: 2em;
-}
+.admonition.premise .admonition-title::before { content: "\f192"; margin-right: 2em; }
+.admonition.reasoning .admonition-title::before { content: "\f08b"; margin-right: 2em; }
+.admonition.outcome .admonition-title::before { content: "\f11e"; margin-right: 2em; }
+.admonition.pro .admonition-title::before { content: "\f0eb"; margin-right: 2em; }
+.admonition.mcq .admonition-title::before { content: "\f14a  \f03a"; margin-right: 2em; }
+.admonition.cloze .admonition-title::before { content: "\f044"; margin-right: 2em; }
+.admonition.shortanswer .admonition-title::before { content: "\f11c"; margin-right: 2em; }
+.admonition.match .admonition-title::before { content: "\f074"; margin-right: 2em; }
+.admonition.question .admonition-title::before { content: "\f059"; margin-right: 2em; }
 
 /* ========================================== */
-/* dropdown styling */
+/* Dropdown Styling                          */
 /* ========================================== */
 
-
-/* BASE */
 details.sd-dropdown {
     border-left: 1px solid var(--dropdown-main);
     background: var(--dropdown-bg);
 }
 
-/* HEADER */
 details.sd-dropdown > summary.sd-summary-title {
     background: var(--dropdown-title-bg);
     color: var(--admonition-text-color);
 }
 
-/* CONTENT */
 details.sd-dropdown .sd-summary-content {
     background: var(--dropdown-bg);
 }
 
+details.sd-dropdown.dropdown-mcq { --dropdown-main: var(--mcq-main); --dropdown-bg: var(--mcq-bg); --dropdown-title-bg: var(--mcq-title-bg); }
+details.sd-dropdown.dropdown-cloze { --dropdown-main: var(--cloze-main); --dropdown-bg: var(--cloze-bg); --dropdown-title-bg: var(--cloze-title-bg); }
+details.sd-dropdown.dropdown-shortanswer { --dropdown-main: var(--shortanswer-main); --dropdown-bg: var(--shortanswer-bg); --dropdown-title-bg: var(--shortanswer-title-bg); }
+details.sd-dropdown.dropdown-match { --dropdown-main: var(--match-main); --dropdown-bg: var(--match-bg); --dropdown-title-bg: var(--match-title-bg); }
+
+details.sd-dropdown.dropdown-premise { --dropdown-main: var(--premise-main); --dropdown-bg: var(--premise-bg); --dropdown-title-bg: var(--premise-title-bg); }
+details.sd-dropdown.dropdown-reasoning { --dropdown-main: var(--reasoning-main); --dropdown-bg: var(--reasoning-bg); --dropdown-title-bg: var(--reasoning-title-bg); }
+details.sd-dropdown.dropdown-outcome { --dropdown-main: var(--outcome-main); --dropdown-bg: var(--outcome-bg); --dropdown-title-bg: var(--outcome-title-bg); }
+details.sd-dropdown.dropdown-pro { --dropdown-main: var(--pro-main); --dropdown-bg: var(--pro-bg); --dropdown-title-bg: var(--pro-title-bg); }
 
 /* ========================================== */
-
-/* MCQ */
-details.sd-dropdown.dropdown-mcq {
-    --dropdown-main: var(--mcq-main);
-    --dropdown-bg: var(--mcq-bg);
-    --dropdown-title-bg: var(--mcq-title-bg);
-}
-
-/* CLOZE */
-details.sd-dropdown.dropdown-cloze {
-    --dropdown-main: var(--cloze-main);
-    --dropdown-bg: var(--cloze-bg);
-    --dropdown-title-bg: var(--cloze-title-bg);
-}
-
-/* SHORT ANSWER */
-details.sd-dropdown.dropdown-shortanswer {
-    --dropdown-main: var(--shortanswer-main);
-    --dropdown-bg: var(--shortanswer-bg);
-    --dropdown-title-bg: var(--shortanswer-title-bg);
-}
-
-/* MATCH */
-details.sd-dropdown.dropdown-match {
-    --dropdown-main: var(--match-main);
-    --dropdown-bg: var(--match-bg);
-    --dropdown-title-bg: var(--match-title-bg);
-}
-
-
-
-/* --- Premise --- */
-details.sd-dropdown.dropdown-premise {
-    --dropdown-main: var(--premise-main);
-    --dropdown-bg: var(--premise-bg);
-    --dropdown-title-bg: var(--premise-title-bg);
-}
-
-/* --- Reasoning --- */
-details.sd-dropdown.dropdown-reasoning {
-    --dropdown-main: var(--reasoning-main);
-    --dropdown-bg: var(--reasoning-bg);
-    --dropdown-title-bg: var(--reasoning-title-bg);
-}
-
-/* --- Outcome --- */
-details.sd-dropdown.dropdown-outcome {
-    --dropdown-main: var(--outcome-main);
-    --dropdown-bg: var(--outcome-bg);
-    --dropdown-title-bg: var(--outcome-title-bg);
-}
-
-/* --- PRO --- */
-details.sd-dropdown.dropdown-outcome {
-    --dropdown-main: var(--pro-main);
-    --dropdown-bg: var(--pro-bg);
-    --dropdown-title-bg: var(--pro-title-bg);
-}
-
+/* Sphinx Content Formatting                  */
 /* ========================================== */
-
 
 .pro-answer {
-    background-color: #f5f5f5;
-    background-color: lightyellow!important;
+    background-color: lightyellow !important;
     padding: 1em;
     border-radius: 6px;
     font-family: monospace;
 }
 
-/* Scope to Sphinx content area to outrank base theme selectors */
 .rst-content p.rubric.rubricsmall {
     font-size: 12pt;
     font-weight: bold;
     margin-top: 1.0em;
     margin-bottom: 0.4em;
-    /* border-bottom: 1px dotted lightgray; */
 }
 
-/* Optional: default rubric style */
 .rst-content p.rubric {
     font-size: 16pt;
     font-weight: bold;
-    /* border-bottom: 1px dotted silver; */
 }

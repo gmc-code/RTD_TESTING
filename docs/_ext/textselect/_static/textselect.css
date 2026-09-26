@@ -1,5 +1,5 @@
 /* ==========================================================================
-   0. Buttons & Control Panel UI
+   0. Control Panel, Score Output & High-Visibility Palette UI
    ========================================================================== */
 
 .textselect-global-panel {
@@ -60,34 +60,98 @@
 }
 
 /* Score Accuracy Badges */
-.textselect-output.high {
-  background-color: #dcfce7;
-  color: #15803d;
-  border-color: #bbf7d0;
+.textselect-output.high { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.textselect-output.medium { background-color: #fef9c3; color: #a16207; border-color: #fef08a; }
+.textselect-output.low { background-color: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+
+/* Color Palette Toolbar in Multi Mode */
+.textselect-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
 }
 
-.textselect-output.medium {
-  background-color: #fef9c3;
-  color: #a16207;
-  border-color: #fef08a;
+.ts-palette-btn {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 2px solid #cbd5e1;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #334155;
+  transition: all 0.15s ease;
+  opacity: 0.85;
 }
 
-.textselect-output.low {
-  background-color: #fee2e2;
-  color: #b91c1c;
-  border-color: #fca5a5;
+.ts-palette-btn:hover {
+  opacity: 1;
+  transform: translateY(-1px);
 }
+
+/* HIGH-VISIBILITY ACTIVE STATE */
+.ts-palette-btn.active {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0f172a, 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-color: transparent !important;
+}
+
+/* Explicit Button Colors (Driven by Global HSL Variables) */
+.ts-palette-btn.ts-color-red,
+.ts-palette-btn.ts-color-participant           { color: var(--hsl-participant); border-color: var(--hsl-participant); }
+.ts-palette-btn.ts-color-red.active,
+.ts-palette-btn.ts-color-participant.active    { background-color: var(--hsl-participant) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-green,
+.ts-palette-btn.ts-color-process               { color: var(--hsl-process); border-color: var(--hsl-process); }
+.ts-palette-btn.ts-color-green.active,
+.ts-palette-btn.ts-color-process.active        { background-color: var(--hsl-process) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-blue,
+.ts-palette-btn.ts-color-circumstance          { color: var(--hsl-circumstance); border-color: var(--hsl-circumstance); }
+.ts-palette-btn.ts-color-blue.active,
+.ts-palette-btn.ts-color-circumstance.active   { background-color: var(--hsl-circumstance) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-conjunction,
+.ts-palette-btn.ts-color-part                 { color: var(--hsl-conjunction); border-color: var(--hsl-conjunction); }
+.ts-palette-btn.ts-color-conjunction.active,
+.ts-palette-btn.ts-color-part.active          { background-color: var(--hsl-conjunction) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-theme                { color: var(--hsl-theme); border-color: var(--hsl-theme); }
+.ts-palette-btn.ts-color-theme.active         { background-color: var(--hsl-theme) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-rheme                { color: var(--hsl-rheme); border-color: var(--hsl-rheme); }
+.ts-palette-btn.ts-color-rheme.active         { background-color: var(--hsl-rheme) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-independent          { color: var(--hsl-independent); border-color: var(--hsl-independent); }
+.ts-palette-btn.ts-color-independent.active   { background-color: var(--hsl-independent) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-dependent            { color: var(--hsl-dependent); border-color: var(--hsl-dependent); }
+.ts-palette-btn.ts-color-dependent.active     { background-color: var(--hsl-dependent) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-embedded             { color: var(--hsl-embedded); border-color: var(--hsl-embedded); }
+.ts-palette-btn.ts-color-embedded.active      { background-color: var(--hsl-embedded) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-relative             { color: var(--hsl-relative); border-color: var(--hsl-relative); }
+.ts-palette-btn.ts-color-relative.active      { background-color: var(--hsl-relative) !important; color: #ffffff !important; }
+
+.ts-palette-btn.ts-color-projected            { color: var(--hsl-projected); border-color: var(--hsl-projected); }
+.ts-palette-btn.ts-color-projected.active     { background-color: var(--hsl-projected) !important; color: #ffffff !important; }
+
 
 /* ==========================================================================
    1. Base Component Layout & Structure
    ========================================================================== */
+
 .textselect-block {
   padding: 0.8rem;
   margin-bottom: 0.8rem;
   border-radius: 8px;
   transition: all 0.2s ease;
   border: 1px solid #cbd5e1;
-  background-color: #ffffff; /* Default background */
+  background-color: #ffffff;
 }
 
 .textselect-instructions {
@@ -106,68 +170,58 @@
   color: #0f172a;
 }
 
+
 /* ==========================================================================
-   2. Instruction Text Colors (Driven by `color` option)
+   2. Instruction Text Colors (Matching sfg.css Roles)
    ========================================================================== */
 
-/* Standard Colors & Roles */
 .textselect-block.ts-color-red .textselect-instructions,
-.textselect-block.ts-color-participant .textselect-instructions { color: #d62728; }
+.textselect-block.ts-color-participant .textselect-instructions     { color: var(--hsl-participant); }
 
 .textselect-block.ts-color-green .textselect-instructions,
-.textselect-block.ts-color-process .textselect-instructions { color: #2ca02c; }
+.textselect-block.ts-color-process .textselect-instructions         { color: var(--hsl-process); }
 
 .textselect-block.ts-color-blue .textselect-instructions,
-.textselect-block.ts-color-circ .textselect-instructions { color: #4a3dff; }
+.textselect-block.ts-color-circumstance .textselect-instructions    { color: var(--hsl-circumstance); }
 
-.textselect-block.ts-color-conj .textselect-instructions,
-.textselect-block.ts-color-part .textselect-instructions { color: #6b7280; }
+.textselect-block.ts-color-conjunction .textselect-instructions,
+.textselect-block.ts-color-part .textselect-instructions            { color: var(--hsl-conjunction); }
 
-.textselect-block.ts-color-theme .textselect-instructions { color: #1f77b4; }
-.textselect-block.ts-color-rheme .textselect-instructions { color: #111827; }
+.textselect-block.ts-color-theme .textselect-instructions           { color: var(--hsl-theme); }
+.textselect-block.ts-color-rheme .textselect-instructions           { color: var(--hsl-rheme); }
 
-/* Clause Structure Roles */
-.textselect-block.ts-color-depclause .textselect-instructions { color: #9467bd; }
-.textselect-block.ts-color-embedded .textselect-instructions  { color: #e377c2; }
-.textselect-block.ts-color-relative .textselect-instructions  { color: #ff7f0e; }
-.textselect-block.ts-color-projected .textselect-instructions { color: #8c564b; }
+.textselect-block.ts-color-independent .textselect-instructions     { color: var(--hsl-independent); }
+.textselect-block.ts-color-dependent .textselect-instructions       { color: var(--hsl-dependent); }
+.textselect-block.ts-color-embedded .textselect-instructions        { color: var(--hsl-embedded); }
+.textselect-block.ts-color-relative .textselect-instructions        { color: var(--hsl-relative); }
+.textselect-block.ts-color-projected .textselect-instructions       { color: var(--hsl-projected); }
+
 
 /* ==========================================================================
-   3. Themes: `white` (Default) & `light`
+   3. Themes & Style Options
    ========================================================================== */
 
-/* Theme: White */
 .textselect-block.theme-white {
   background-color: #ffffff !important;
   border-color: #cbd5e1 !important;
 }
 
-/* Theme: light */
 .textselect-block.theme-light {
   background-color: #f8fafc !important;
   border-color: #e2e8f0 !important;
 }
 
-/* ==========================================================================
-   4. Style Variants (filled, border, plain)
-   ========================================================================== */
-
-/* Filled (Default Card Style) */
 .textselect-block.ts-style-filled {
-  border-width: 1px;
-  border-style: solid;
+  border: 1px solid #cbd5e1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-/* Border (Forced White background with crisp outline) */
 .textselect-block.ts-style-border {
   background-color: #ffffff !important;
-  border-width: 2px;
-  border-style: solid;
+  border: 2px solid #cbd5e1;
   box-shadow: none;
 }
 
-/* Plain (Minimalist: transparent background, no border, no shadow) */
 .textselect-block.ts-style-plain {
   background-color: transparent !important;
   border: none !important;
@@ -176,8 +230,9 @@
   padding-right: 0;
 }
 
+
 /* ==========================================================================
-   5. Word & Space Base Styles
+   4. Word & Space Interactive Styles
    ========================================================================== */
 
 .ts-word {
@@ -204,33 +259,59 @@
   pointer-events: none;
 }
 
+
 /* ==========================================================================
-   6. Active Selection Highlights (Driven by `color`)
+   5. Active Selection Highlights (Single & Multi-Select Modes)
+   Uses color-mix() to apply 25% opacity over dynamic variable background
    ========================================================================== */
 
+/* Multi-Select Dynamic Highlights */
+.ts-word.ts-sel-red,
+.ts-word.ts-sel-participant          { background-color: color-mix(in srgb, var(--hsl-participant) 25%, transparent) !important; color: var(--hsl-participant) !important; }
+
+.ts-word.ts-sel-green,
+.ts-word.ts-sel-process              { background-color: color-mix(in srgb, var(--hsl-process) 25%, transparent) !important; color: var(--hsl-process) !important; }
+
+.ts-word.ts-sel-blue,
+.ts-word.ts-sel-circumstance         { background-color: color-mix(in srgb, var(--hsl-circumstance) 25%, transparent) !important; color: var(--hsl-circumstance) !important; }
+
+.ts-word.ts-sel-conjunction,
+.ts-word.ts-sel-part                 { background-color: color-mix(in srgb, var(--hsl-conjunction) 25%, transparent) !important; color: var(--hsl-conjunction) !important; font-style: italic; }
+
+.ts-word.ts-sel-theme                { background-color: color-mix(in srgb, var(--hsl-theme) 25%, transparent) !important; color: var(--hsl-theme) !important; font-weight: 600; }
+.ts-word.ts-sel-rheme                { background-color: color-mix(in srgb, var(--hsl-rheme) 25%, transparent) !important; color: var(--hsl-rheme) !important; }
+
+.ts-word.ts-sel-independent          { background-color: color-mix(in srgb, var(--hsl-independent) 25%, transparent) !important; color: var(--hsl-independent) !important; }
+.ts-word.ts-sel-dependent            { background-color: color-mix(in srgb, var(--hsl-dependent) 25%, transparent) !important; color: var(--hsl-dependent) !important; }
+.ts-word.ts-sel-embedded             { background-color: color-mix(in srgb, var(--hsl-embedded) 25%, transparent) !important; color: var(--hsl-embedded) !important; }
+.ts-word.ts-sel-relative             { background-color: color-mix(in srgb, var(--hsl-relative) 25%, transparent) !important; color: var(--hsl-relative) !important; }
+.ts-word.ts-sel-projected            { background-color: color-mix(in srgb, var(--hsl-projected) 25%, transparent) !important; color: var(--hsl-projected) !important; }
+
+/* Single Mode Active Highlights */
 .ts-color-red .ts-word.selected,
-.ts-color-participant .ts-word.selected { background-color: rgba(214, 39, 40, 0.25) !important; color: #d62728 !important; }
+.ts-color-participant .ts-word.selected  { background-color: color-mix(in srgb, var(--hsl-participant) 25%, transparent) !important; color: var(--hsl-participant) !important; }
 
 .ts-color-green .ts-word.selected,
-.ts-color-process .ts-word.selected { background-color: rgba(44, 160, 44, 0.25) !important; color: #2ca02c !important; }
+.ts-color-process .ts-word.selected      { background-color: color-mix(in srgb, var(--hsl-process) 25%, transparent) !important; color: var(--hsl-process) !important; }
 
 .ts-color-blue .ts-word.selected,
-.ts-color-circ .ts-word.selected { background-color: rgba(74, 61, 255, 0.25) !important; color: #4a3dff !important; }
+.ts-color-circumstance .ts-word.selected { background-color: color-mix(in srgb, var(--hsl-circumstance) 25%, transparent) !important; color: var(--hsl-circumstance) !important; }
 
-.ts-color-conj .ts-word.selected,
-.ts-color-part .ts-word.selected { background-color: rgba(107, 114, 128, 0.25) !important; color: #6b7280 !important; font-style: italic; }
+.ts-color-conjunction .ts-word.selected,
+.ts-color-part .ts-word.selected         { background-color: color-mix(in srgb, var(--hsl-conjunction) 25%, transparent) !important; color: var(--hsl-conjunction) !important; font-style: italic; }
 
-.ts-color-theme .ts-word.selected { background-color: rgba(31, 119, 180, 0.25) !important; color: #1f77b4 !important; font-weight: 600; }
-.ts-color-rheme .ts-word.selected { background-color: rgba(17, 24, 39, 0.25) !important; color: #111827 !important; }
+.ts-color-theme .ts-word.selected        { background-color: color-mix(in srgb, var(--hsl-theme) 25%, transparent) !important; color: var(--hsl-theme) !important; font-weight: 600; }
+.ts-color-rheme .ts-word.selected        { background-color: color-mix(in srgb, var(--hsl-rheme) 25%, transparent) !important; color: var(--hsl-rheme) !important; }
 
-/* Clause Structure Selections */
-.ts-color-depclause .ts-word.selected { background-color: rgba(148, 103, 189, 0.25) !important; color: #9467bd !important; }
-.ts-color-embedded .ts-word.selected  { background-color: rgba(227, 119, 194, 0.25) !important; color: #e377c2 !important; }
-.ts-color-relative .ts-word.selected  { background-color: rgba(255, 127, 14, 0.25) !important; color: #ff7f0e !important; }
-.ts-color-projected .ts-word.selected { background-color: rgba(140, 86, 75, 0.25) !important; color: #8c564b !important; }
+.ts-color-independent .ts-word.selected  { background-color: color-mix(in srgb, var(--hsl-independent) 25%, transparent) !important; color: var(--hsl-independent) !important; }
+.ts-color-dependent .ts-word.selected    { background-color: color-mix(in srgb, var(--hsl-dependent) 25%, transparent) !important; color: var(--hsl-dependent) !important; }
+.ts-color-embedded .ts-word.selected     { background-color: color-mix(in srgb, var(--hsl-embedded) 25%, transparent) !important; color: var(--hsl-embedded) !important; }
+.ts-color-relative .ts-word.selected     { background-color: color-mix(in srgb, var(--hsl-relative) 25%, transparent) !important; color: var(--hsl-relative) !important; }
+.ts-color-projected .ts-word.selected    { background-color: color-mix(in srgb, var(--hsl-projected) 25%, transparent) !important; color: var(--hsl-projected) !important; }
+
 
 /* ==========================================================================
-   7. Revealed Answer & Scoring Styles
+   6. Revealed Answer Bounding Wrappers (Aligned with sfg.css)
    ========================================================================== */
 
 .ts-correct-phrase,
@@ -263,20 +344,29 @@
   border: 1px dashed currentColor !important;
 }
 
-/* Border & text color assignments upon scoring reveal */
-.ts-keep-red, .ts-keep-participant { color: #d62728 !important; border-color: #d62728; }
-.ts-keep-green, .ts-keep-process    { color: #2ca02c !important; border-color: #2ca02c; }
-.ts-keep-blue, .ts-keep-circ        { color: #4a3dff !important; border-color: #4a3dff; }
-.ts-keep-conj, .ts-keep-part        { color: #6b7280 !important; border-color: #6b7280; font-style: italic; }
-.ts-keep-theme                       { color: #1f77b4 !important; border-color: #1f77b4; font-weight: 600; }
-.ts-keep-rheme                       { color: #111827 !important; border-color: #111827; }
+/* Border & Text Colors via sfg.css Role Colors */
+.ts-keep-red,
+.ts-keep-participant                 { color: var(--hsl-participant) !important; border-color: var(--hsl-participant) !important; }
 
-/* Clause Structure Keeps */
-.ts-keep-depclause { color: #9467bd !important; border-color: #9467bd; }
-.ts-keep-embedded  { color: #e377c2 !important; border-color: #e377c2; }
-.ts-keep-relative  { color: #ff7f0e !important; border-color: #ff7f0e; }
-.ts-keep-projected { color: #8c564b !important; border-color: #8c564b; }
+.ts-keep-green,
+.ts-keep-process                     { color: var(--hsl-process) !important; border-color: var(--hsl-process) !important; }
 
+.ts-keep-blue,
+.ts-keep-circumstance                { color: var(--hsl-circumstance) !important; border-color: var(--hsl-circumstance) !important; }
+
+.ts-keep-conjunction,
+.ts-keep-part                        { color: var(--hsl-conjunction) !important; border-color: var(--hsl-conjunction) !important; font-style: italic; }
+
+.ts-keep-theme                       { color: var(--hsl-theme) !important; border-color: var(--hsl-theme) !important; font-weight: 600; }
+.ts-keep-rheme                       { color: var(--hsl-rheme) !important; border-color: var(--hsl-rheme) !important; }
+
+.ts-keep-independent                 { color: var(--hsl-independent) !important; border-color: var(--hsl-independent) !important; }
+.ts-keep-dependent                   { color: var(--hsl-dependent) !important; border-color: var(--hsl-dependent) !important; }
+.ts-keep-embedded                    { color: var(--hsl-embedded) !important; border-color: var(--hsl-embedded) !important; }
+.ts-keep-relative                    { color: var(--hsl-relative) !important; border-color: var(--hsl-relative) !important; }
+.ts-keep-projected                   { color: var(--hsl-projected) !important; border-color: var(--hsl-projected) !important; }
+
+/* Token Overrides Inside Phrase Wrappers */
 .ts-correct-phrase .ts-word,
 .ts-correct-phrase .ts-space,
 .ts-incorrect-phrase .ts-word,

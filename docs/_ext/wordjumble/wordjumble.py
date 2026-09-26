@@ -186,8 +186,8 @@ class WordJumbleDirective(SphinxDirective):
         # 2. Colors
         chosen_color = self.options.get("color", "blue").strip().lower()
         valid_colors = [
-            "red", "participant", "green", "process", "blue", "circ",
-            "conj", "part", "theme", "rheme", "depclause", "embedded",
+            "red", "participant", "green", "process", "blue", "circumstance",
+            "conj", "part", "theme", "rheme", "dependent", "embedded",
             "relative", "projected",
         ]
         if chosen_color not in valid_colors:

@@ -26,12 +26,14 @@ def visit_multichoicepage_html(self, node):
     shuffle_attr = str(node.get("shuffle", False)).lower()
     letters_attr = str(node.get("letters", False)).lower()
     single_attr = str(node.get("single_correct", False)).lower()
+    torf_attr = str(node.get("torf", False)).lower()
     theme_attr = node.get("theme", "white")
 
     self.body.append(
         f'<div class="multichoicepage-block theme-{theme_attr}" '
         f'data-multichoicepage-single="{single_attr}" '
         f'data-multichoicepage-shuffle="{shuffle_attr}" '
+        f'data-multichoicepage-torf="{torf_attr}" '
         f'data-multichoicepage-letters="{letters_attr}">'
     )
 
@@ -67,15 +69,19 @@ class multichoicepageDirective(SphinxDirective):
     option_spec = {
         "no-shuffle": directives.flag,
         "no-letters": directives.flag,
+        "torf": directives.flag,  # True or False flag option
         "theme": lambda argument: directives.choice(argument, ("white", "light")),
-        "delimiter": directives.unchanged,  # Support custom split markers like @@
+        "delimiter": directives.unchanged,
     }
 
     def run(self):
         node = multichoicepage_node()
 
-        # Core configuration options
-        node["shuffle"] = "no-shuffle" not in self.options
+        is_torf = "torf" in self.options
+        node["torf"] = is_torf
+
+        # Core configuration options (True/False mode disables shuffling)
+        node["shuffle"] = False if is_torf else ("no-shuffle" not in self.options)
         node["letters"] = "no-letters" not in self.options
 
         chosen_theme = self.options.get("theme", "white").strip().lower()
@@ -83,7 +89,6 @@ class multichoicepageDirective(SphinxDirective):
             chosen_theme = "white"
         node["theme"] = chosen_theme
 
-        # Configurable split marker (defaults to '|')
         delimiter = self.options.get("delimiter", "|")
 
         # ─────────────────────────────────────
@@ -104,14 +109,14 @@ class multichoicepageDirective(SphinxDirective):
         choice_lines = self.content[choice_start_idx:]
 
         # ─────────────────────────────────────
-        # Parse the Question Natively
+        # Parse Question
         # ─────────────────────────────────────
         question_container = nodes.container(classes=["multichoicepage-question"])
         self.state.nested_parse(question_lines, self.content_offset, question_container)
         node += question_container
 
         # ─────────────────────────────────────
-        # Multi-line Choice Parser
+        # Parse Choices
         # ─────────────────────────────────────
         raw_choices = []
         current_choice = None
@@ -162,6 +167,18 @@ class multichoicepageDirective(SphinxDirective):
         if not raw_choices:
             raise DirectiveError(3, "MCQ error: Missing answer choices block.")
 
+        # ─────────────────────────────────────
+        # True/False Ordering Adjustment
+        # ─────────────────────────────────────
+        if is_torf:
+            def is_true_choice(c):
+                text = " ".join(c["text_lines"]).strip().lower()
+                return text.startswith("true") or text.startswith("t")
+
+            true_choices = [c for c in raw_choices if is_true_choice(c)]
+            other_choices = [c for c in raw_choices if not is_true_choice(c)]
+            raw_choices = true_choices + other_choices
+
         correct_count = sum(c["correct"] for c in raw_choices)
         if correct_count == 0:
             raise DirectiveError(3, "MCQ error: Must mark at least one option correct [x].")
@@ -170,21 +187,17 @@ class multichoicepageDirective(SphinxDirective):
         node["single_correct"] = not is_multi
         input_type = "checkbox" if is_multi else "radio"
 
-        # Create a stable unique name based on option texts
         seed_string = "".join("".join(c["text_lines"]) for c in raw_choices)
         group_name = hashlib.md5(seed_string.encode("utf-8")).hexdigest()
 
         # ─────────────────────────────────────
-        # Convert Choices into Natively Parsed Structural Trees
+        # Convert Choices into Natively Parsed Trees
         # ─────────────────────────────────────
-
         def normalize_line_blocks(lines):
-            """Ensures lines starting with '|' are uniformly formatted as valid rST Line Blocks."""
             cleaned = []
             for l in lines:
                 stripped = l.strip()
                 if stripped.startswith("|"):
-                    # Extract text after '|' and format with a clean, uniform line block syntax
                     content = stripped[1:].strip()
                     cleaned.append(f"| {content}")
                 else:
@@ -195,7 +208,6 @@ class multichoicepageDirective(SphinxDirective):
             choice_wrap = choicepage_container_node(correct=ch["correct"])
             label_element = choicepage_label_node(input_type=input_type, group_name=group_name)
 
-            # 1. Parse Choice Text
             text_lines = normalize_line_blocks(ch["text_lines"])
             text_proxy = nodes.container()
             text_proxy.document = self.state.document
@@ -205,14 +217,10 @@ class multichoicepageDirective(SphinxDirective):
             label_element.extend(text_proxy.children)
             choice_wrap += label_element
 
-            # 2. Parse Explanation Lines
             if ch["explanation_lines"]:
                 exp_container = nodes.container(classes=["multichoicepage-explanation"])
                 exp_container.document = self.state.document
-
-                # Normalize pipes into clean line blocks
                 exp_lines = normalize_line_blocks(ch["explanation_lines"])
-
                 explanation_text_list = StringList(exp_lines, source=self.content.source(0))
                 self.state.nested_parse(explanation_text_list, self.content_offset, exp_container)
 
@@ -249,7 +257,7 @@ def setup(app):
     app.add_css_file("multichoicepage.css")
 
     return {
-        "version": "4.3",
+        "version": "4.4",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

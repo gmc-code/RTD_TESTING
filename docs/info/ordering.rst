@@ -19,7 +19,7 @@ Options for the ordering directive
 --------------------------------------
 
 .. list-table:: Ordering Directive Options
-   :widths: 25 10 65
+   :widths: 20 10 70
    :header-rows: 1
 
    * - Option
@@ -30,23 +30,37 @@ Options for the ordering directive
      - If present, hides the "Show Solution" button from the user.
    * - ``:no-reorder:``
      - flag
-     - If present, keeps answer order without indenting.
+     - If present, keeps the initial line order while leaving indentation interactive.
    * - ``:no-padding:``
      - flag
      - If present, removes vertical padding from the lines to drag.
    * - ``:show-code:``
      - flag
-     - If present, displays the code block in the solution.
+     - If present, displays the final completed text/code block upon achieving a 100% score for easy copying.
+   * - ``:paragraph:``
+     - flag
+     - Splits paragraphs down into individual sentences and hides indentation controls («, »). Reorders sentences within each block while preserving general reading structure.
+   * - ``:paragraphblocks:``
+     - flag
+     - Groups content into full multi-line paragraph blocks (separated by double newlines) and hides indentation controls («, »). Ideal for reordering entire sections, prose, or report paragraphs.
+   * - ``:no-indent:``
+     - flag
+     - Alias for paragraph-style display. Disables indentation controls for non-code text ordering.
+   * - ``:keeprst:``
+     - flag
+     - Renders reStructuredText inline markup (e.g., **bold**, *italics*, links) inside cards. Leave off for raw code snippets to prevent syntax misinterpretation.
    * - ``:theme:``
      - string
      - Set the visual theme. Options are ``white`` (default) or ``light``.
 
 
-| Structure: The directive creates an interactive <div> block with handle controls (☰) for reordering and buttons («, ») for adjusting indentation.
-| Indentation: The directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input text uses consistent 4-space indentation for nested code blocks.
-| Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
-| Visual Badges: When validated, inline symbols provide quick feedback right alongside choices.
-| Empty Lines: You may include empty lines within the block; the directive will render them as placeholders that users can drag to maintain formatting structure.
+| **Structure**: The directive creates an interactive <div> block with handle controls (☰) for reordering elements and buttons («, ») for adjusting indentation.
+| **Indentation**: In standard code mode, the directive automatically calculates the indentation level based on groups of 4 spaces. Ensure your input code uses consistent 4-space indentation.
+| **Paragraph Modes**: Use ``:paragraphblocks:`` to reorder full multi-line blocks, or ``:paragraph:`` to split text into individual sentences for fine-grained reordering. Indentation controls are automatically hidden in both modes.
+| **RST Formatting**: Use ``:keeprst:`` if your cards contain prose with markup like bolding, italics, or headings. Omit it for code blocks so characters like ``*args`` or math operators are rendered safely as literal text.
+| **Guaranteed Shuffling**: Items are automatically randomized on page render and on Reset button click, with checks in place to guarantee the starting display order differs from the correct answer key.
+| **Visual Badges**: When validated, inline symbols provide quick feedback right alongside choices.
+| **Empty Lines**: In standard code mode, empty lines render as blank placeholders that users can drag to maintain formatting structure.
 
 
 ----
@@ -171,7 +185,7 @@ Example 6: no reorder
 -------------------------------------
 
 | The following example demonstrates the ordering directive with multiple indentation levels. The directive automatically calculates the indentation level based on groups of 4 spaces.
-| `:no-reorder:` is used to keep answer order wihtout indenting.
+| `:no-reorder:` is used to keep answer order without indenting.
 
 .. code-block:: rst
 
@@ -234,5 +248,56 @@ Example 7: blanks lines
     print(f'Perimeter: {rect_perimeter(5, 3)}')
     print(f'Area: {rect_area(5, 3)}')
 
+----
+
+Example 8: paragraph
+-------------------------------------
+
+| The following example demonstrates the ordering directive with a paragraph.
+| It also demonstrates the `:keeprst:` option to keep rst formatting, so headings and bold words are preserved.
+
+.. code-block:: rst
+
+    .. ordering::
+        :paragraph:
+        :keeprst:
+
+        The **platypus** is a very unusual animal from eastern Australia. It has a bill like a duck, a tail like a beaver, and webbed feet for swimming. Its thick fur keeps it warm and dry in cold river water.
+
+.. ordering::
+    :paragraph:
+    :keeprst:
+
+    The **platypus** is a very unusual animal from eastern Australia. It has a bill like a duck, a tail like a beaver, and webbed feet for swimming. Its thick fur keeps it warm and dry in cold river water.
+
+----
 
 
+Example 9: paragraphblocks
+-------------------------------------
+
+| The following example demonstrates the ordering directive with a paragraphblocks option.
+| It also demonstrates the `:keeprst:` option to keep rst formatting, so headings and bold words are preserved.
+
+
+.. code-block:: rst
+
+    .. ordering::
+        :paragraphblocks:
+        :keeprst:
+
+        The **platypus** is a very unusual animal from eastern Australia. It has a bill like a duck, a tail like a beaver, and webbed feet for swimming. Its thick fur keeps it warm and dry in cold river water.
+
+        This animal is special because it lays **eggs** instead of giving birth to live babies. It hunts underwater with its eyes and ears closed. Instead, its bill can feel tiny electrical signals from swimming bugs and shrimp. Male platypuses also have sharp, **venomous spurs** on their back legs for protection.
+
+        Today, platypuses face big problems in the wild. Building dams and cutting down trees ruins their river homes. Trash in the water can also hurt them. People are working hard to clean up rivers so the platypus stays safe.
+
+.. ordering::
+    :paragraphblocks:
+    :keeprst:
+
+    The **platypus** is a very unusual animal from eastern Australia. It has a bill like a duck, a tail like a beaver, and webbed feet for swimming. Its thick fur keeps it warm and dry in cold river water.
+
+    This animal is special because it lays **eggs** instead of giving birth to live babies. It hunts underwater with its eyes and ears closed. Instead, its bill can feel tiny electrical signals from swimming bugs and shrimp. Male platypuses also have sharp, **venomous spurs** on their back legs for protection.
+
+    Today, platypuses face big problems in the wild. Building dams and cutting down trees ruins their river homes. Trash in the water can also hurt them. People are working hard to clean up rivers so the platypus stays safe.

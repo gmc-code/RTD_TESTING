@@ -41,9 +41,13 @@ Options for the multichoicepage directive
      - string
      - | If present, set the visual theme.
        | Options are ``white`` (default) or ``light``.
+   * - ``:torf:``
+     - flag
+     - | Formats the block as a True/False question. Automatically enforces
+       | "True" as the first option and disables shuffling.
 
 
-| Shuffling: Unless ``:no-shuffle:`` is declared, choices are automatically randomized on page render and on Reset button clicks to elimin  position-based pattern guessing.
+| Shuffling: Unless ``:no-shuffle:`` or ``:torf:`` is declared, choices are automatically randomized on page render and on Reset button clicks to eliminate position-based pattern guessing.
 | Selection Engine: The directive automatically changes selection inputs from single-choice radio buttons to multi-choice checkboxes if more than one option is marked correct ``[x]``.
 | Visual Badges: Once the evaluation button is selected, clear inline indicator icons (✓, ✕) show up next to each answer option along with context explanations.
 

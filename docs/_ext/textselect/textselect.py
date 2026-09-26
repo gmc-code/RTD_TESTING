@@ -6,136 +6,158 @@ from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
-
 class textselect_node(nodes.General, nodes.Element):
     pass
-
 
 def visit_textselect_html(self, node):
     chosen_theme = node.get("theme", "")
     chosen_color = node.get("color", "blue")
     chosen_style = node.get("style", "filled")
+    mode = node.get("mode", "single")
 
     theme_class = f"theme-{chosen_theme}" if chosen_theme else ""
-    color_class = f"ts-color-{chosen_color}"
+    color_class = f"ts-color-{chosen_color}" if mode == "single" else ""
     style_class = f"ts-style-{chosen_style}"
+    mode_class = f"ts-mode-{mode}"
 
-    classes = " ".join(filter(None, ["textselect-block", theme_class, color_class, style_class]))
+    classes = " ".join(
+        filter(None, ["textselect-block", theme_class, color_class, style_class, mode_class])
+    )
 
-    self.body.append(f'<div class="{classes}">')
+    self.body.append(f'<div class="{classes}" data-mode="{mode}">')
     self.body.append(
         f'<div class="textselect-instructions">{node.get("instructions", "")}</div>'
     )
     self.body.append(
-        f'<pre class="textselect-content" data-targets=\'{node.get("target_json", "[]")}\'>'
+        f'<pre class="textselect-content" data-targets=\'{node.get("target_json", "{}")}\'>'
     )
     self.body.append(node.get("html_content", ""))
     self.body.append("</pre></div>")
     raise nodes.SkipNode
 
-
 def depart_textselect_html(self, node):
     pass
-
 
 class TextSelectDirective(SphinxDirective):
     has_content = True
 
     option_spec = {
+        "mode": directives.unchanged,
         "theme": directives.unchanged,
         "instructions": directives.unchanged,
         "color": directives.unchanged,
-        "style": directives.unchanged,  # Accepts: 'plain', 'border', or 'filled'
+        "style": directives.unchanged,
     }
 
     def run(self):
         full_text = "\n".join(self.content)
         node = textselect_node()
 
-        # 1. Themes: White (default) and Light
+        chosen_mode = self.options.get("mode", "single").strip().lower()
+        if chosen_mode not in ["single", "multi"]:
+            chosen_mode = "single"
+        node["mode"] = chosen_mode
+
         VALID_THEMES = ["white", "light"]
         chosen_theme = self.options.get("theme", "white").strip().lower()
         if chosen_theme not in VALID_THEMES:
             chosen_theme = "white"
         node["theme"] = chosen_theme
 
-        # 2. Expanded Color Options
         chosen_color = self.options.get("color", "blue").strip().lower()
-        valid_colors = [
-            "red", "participant",
-            "green", "process",
-            "blue", "circ",
-            "conj", "part",
-            "theme", "rheme",
-            "depclause", "embedded", "relative", "projected"
-        ]
-        if chosen_color not in valid_colors:
-            chosen_color = "blue"
         node["color"] = chosen_color
 
-        # 3. Style Option
         chosen_style = self.options.get("style", "filled").strip().lower()
         if chosen_style not in ["plain", "border", "filled"]:
             chosen_style = "filled"
         node["style"] = chosen_style
 
+        default_instructions = (
+            "Click or drag to highlight the target words."
+            if chosen_mode == "single"
+            else "Select a color and highlight the corresponding text."
+        )
         node["instructions"] = html.escape(
-            self.options.get(
-                "instructions", "Click or drag to highlight the target words."
-            )
+            self.options.get("instructions", default_instructions)
         )
 
-        target_pattern = re.compile(r"\{\{([^}]+)\}\}")
-        target_indices = set()
+        target_colors = {}
         word_token_index = 0
         html_tokens = []
 
-        raw_token_pattern = re.compile(r"\{\{([^}]+)\}\}|(\w+)|([^\w\s]+|\s+)")
+        # Recursive Nesting Parser
+        def parse_nested_text(text, active_colors):
+            nonlocal word_token_index
+            i = 0
+            n = len(text)
 
-        for match in raw_token_pattern.finditer(full_text):
-            target_group, word_group, symbol_group = match.groups()
+            while i < n:
+                if text[i:i+2] == '{{':
+                    end_pos = find_closing_brace(text, i + 2)
+                    if end_pos != -1:
+                        inner_content = text[i+2:end_pos]
 
-            if target_group:
-                words = re.finditer(r"\w+|[^\w\s]+|\s+", target_group)
-                for w in words:
-                    val = w.group(0)
-                    if re.match(r"^\w+$", val):
-                        target_indices.add(word_token_index)
+                        color_key = chosen_color
+                        if chosen_mode == "multi" and ":" in inner_content:
+                            possible_color, rest = inner_content.split(":", 1)
+                            if re.match(r"^[a-zA-Z0-9_-]+$", possible_color.strip()):
+                                color_key = possible_color.strip().lower()
+                                inner_content = rest
+
+                        parse_nested_text(inner_content, active_colors + [color_key])
+                        i = end_pos + 2
+                        continue
+
+                # Process plain word or symbol tokens
+                token_match = re.match(r"^(\w+)|([^\w\s]+|\s+)", text[i:])
+                if token_match:
+                    word_group, symbol_group = token_match.groups()
+                    if word_group:
+                        if active_colors:
+                            target_colors[str(word_token_index)] = list(set(active_colors))
                         html_tokens.append(
-                            f'<span class="ts-word" data-idx="{word_token_index}">{html.escape(val)}</span>'
+                            f'<span class="ts-word" data-idx="{word_token_index}">{html.escape(word_group)}</span>'
                         )
                         word_token_index += 1
-                    elif val.isspace():
-                        html_tokens.append(
-                            '<span class="ts-space"> </span>' * len(val)
-                        )
-                    else:
-                        html_tokens.append(html.escape(val))
-            elif word_group:
-                html_tokens.append(
-                    f'<span class="ts-word" data-idx="{word_token_index}">{html.escape(word_group)}</span>'
-                )
-                word_token_index += 1
-            elif symbol_group:
-                if symbol_group.isspace():
-                    html_tokens.append(
-                        symbol_group.replace("\n", "<br>").replace(
-                            " ", '<span class="ts-space"> </span>'
-                        )
-                    )
+                        i += len(word_group)
+                    elif symbol_group:
+                        if symbol_group.isspace():
+                            html_tokens.append(
+                                symbol_group.replace("\n", "<br>").replace(
+                                    " ", '<span class="ts-space"> </span>'
+                                )
+                            )
+                        else:
+                            html_tokens.append(html.escape(symbol_group))
+                        i += len(symbol_group)
                 else:
-                    html_tokens.append(html.escape(symbol_group))
+                    i += 1
+
+        def find_closing_brace(text, start_idx):
+            depth = 1
+            idx = start_idx
+            while idx < len(text) - 1:
+                if text[idx:idx+2] == '{{':
+                    depth += 1
+                    idx += 2
+                elif text[idx:idx+2] == '}}':
+                    depth -= 1
+                    if depth == 0:
+                        return idx
+                    idx += 2
+                else:
+                    idx += 1
+            return -1
+
+        parse_nested_text(full_text, [])
 
         node["html_content"] = "".join(html_tokens)
-        node["target_json"] = json.dumps(sorted(list(target_indices)))
+        node["target_json"] = json.dumps(target_colors)
 
         return [node]
 
-
 def setup(app):
-    app.add_node(
-        textselect_node, html=(visit_textselect_html, depart_textselect_html)
-    )
+    app.add_node(textselect_node, html=(visit_textselect_html, depart_textselect_html))
     app.add_directive("textselect", TextSelectDirective)
 
     static_path = Path(__file__).parent / "_static"
@@ -146,7 +168,7 @@ def setup(app):
     app.add_css_file("textselect.css")
 
     return {
-        "version": "1.1",
+        "version": "1.4",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

@@ -3,19 +3,88 @@ document.addEventListener("DOMContentLoaded", () => {
   if (blocks.length === 0) return;
 
   blocks.forEach((block) => {
+    const isMulti = block.dataset.mode === "multi";
     const contentPre = block.querySelector(".textselect-content");
-    const targetIndices = new Set(JSON.parse(contentPre.dataset.targets || "[]"));
+    const targetMap = JSON.parse(contentPre.dataset.targets || "{}");
     const words = Array.from(block.querySelectorAll(".ts-word"));
+
+    // Extract default single color from class list (e.g., ts-color-blue)
+    const colorClassMatch = Array.from(block.classList).find((c) =>
+      c.startsWith("ts-color-")
+    );
+    const singleDefaultColor = colorClassMatch
+      ? colorClassMatch.replace("ts-color-", "")
+      : "blue";
+
+    // Extract all unique target colors (flattening arrays for nested clauses)
+    const activeColorsSet = new Set();
+    Object.values(targetMap).forEach((val) => {
+      if (Array.isArray(val)) {
+        val.forEach((c) => activeColorsSet.add(c));
+      } else if (val) {
+        activeColorsSet.add(val);
+      }
+    });
+    const activeColors = Array.from(activeColorsSet);
+    let currentColor = isMulti ? activeColors[0] || "blue" : singleDefaultColor;
 
     let isMouseDown = false;
     let lastClickedIdx = null;
 
-    // Prevent native browser text selection while dragging over words
     contentPre.addEventListener("selectstart", (e) => {
       if (isMouseDown) e.preventDefault();
     });
 
-    // 1. Interactive Selection Listeners
+    // 1. Render Palette Control Toolbar (Only in Multi Mode)
+    if (isMulti && activeColors.length > 0) {
+      const paletteContainer = document.createElement("div");
+      paletteContainer.className = "textselect-palette";
+
+      const paletteButtons = {};
+      activeColors.forEach((color) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `ts-palette-btn ts-color-${color}`;
+        btn.textContent = color.toUpperCase();
+        if (color === currentColor) btn.classList.add("active");
+
+        btn.addEventListener("click", () => {
+          currentColor = color;
+          Object.values(paletteButtons).forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+
+        paletteButtons[color] = btn;
+        paletteContainer.appendChild(btn);
+      });
+
+      block.insertBefore(paletteContainer, contentPre);
+    }
+
+    function setWordColor(word, color) {
+      if (isMulti) {
+        Array.from(word.classList).forEach((cls) => {
+          if (cls.startsWith("ts-sel-")) word.classList.remove(cls);
+        });
+
+        if (word.dataset.selectedColor === color) {
+          delete word.dataset.selectedColor;
+          word.classList.remove("selected");
+        } else {
+          word.dataset.selectedColor = color;
+          word.classList.add("selected", `ts-sel-${color}`);
+        }
+      } else {
+        word.classList.toggle("selected");
+        if (word.classList.contains("selected")) {
+          word.dataset.selectedColor = singleDefaultColor;
+        } else {
+          delete word.dataset.selectedColor;
+        }
+      }
+    }
+
+    // 2. Interactive Selection Listeners
     words.forEach((word) => {
       const idx = parseInt(word.dataset.idx, 10);
 
@@ -27,17 +96,17 @@ document.addEventListener("DOMContentLoaded", () => {
           const start = Math.min(lastClickedIdx, idx);
           const end = Math.max(lastClickedIdx, idx);
           for (let i = start; i <= end; i++) {
-            words[i].classList.add("selected");
+            setWordColor(words[i], currentColor);
           }
         } else {
-          word.classList.toggle("selected");
+          setWordColor(word, currentColor);
           lastClickedIdx = idx;
         }
       });
 
       word.addEventListener("mouseenter", () => {
         if (isMouseDown && block.dataset.disabled !== "true") {
-          word.classList.add("selected");
+          setWordColor(word, currentColor);
         }
       });
     });
@@ -46,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       isMouseDown = false;
     });
 
-    // 2. Control Panel UI
+    // 3. Control Panel UI
     const panel = document.createElement("div");
     panel.className = "textselect-global-panel";
 
@@ -69,56 +138,65 @@ document.addEventListener("DOMContentLoaded", () => {
     panel.appendChild(scoreBadge);
     block.appendChild(panel);
 
-    // 3. Scoring Engine & Phrase Wrapper Construction
+    // 4. Scoring Engine & Phrase Wrapper Construction
     btnScore.addEventListener("click", () => {
-      // Disable block and Check button
       block.dataset.disabled = "true";
       btnScore.disabled = true;
 
       let correctCount = 0;
-      let totalTargets = targetIndices.size;
+      let totalTargets = Object.keys(targetMap).length;
       let falsePositives = 0;
 
-      const colorClassMatch = Array.from(block.classList).find((c) =>
-        c.startsWith("ts-color-")
-      );
-      const activeColor = colorClassMatch
-        ? colorClassMatch.replace("ts-color-", "")
-        : "blue";
-
       words.forEach((word) => {
-        const idx = parseInt(word.dataset.idx, 10);
-        const isSelected = word.classList.contains("selected");
-        const isTarget = targetIndices.has(idx);
+        const idx = word.dataset.idx;
+        const selectedColor = word.dataset.selectedColor;
 
-        // Remove active drag/click selection background highlight
+        // Retrieve targets as an array to handle nested target support
+        const rawTarget = targetMap[idx];
+        const targetColors = Array.isArray(rawTarget)
+          ? rawTarget
+          : rawTarget
+          ? [rawTarget]
+          : [];
+
+        // Clean up visual drag/click selection state
         word.classList.remove("selected");
+        Array.from(word.classList).forEach((cls) => {
+          if (cls.startsWith("ts-sel-")) word.classList.remove(cls);
+        });
 
-        if (isSelected && isTarget) {
-          word.classList.add("ts-correct-token");
+        if (selectedColor && targetColors.includes(selectedColor)) {
+          word.classList.add("ts-correct-token", `ts-keep-${selectedColor}`);
           correctCount++;
-        } else if (isSelected && !isTarget) {
+        } else if (selectedColor) {
           word.classList.add("ts-incorrect-token");
           falsePositives++;
-        } else if (!isSelected && isTarget) {
-          word.classList.add("ts-missed-token");
+        } else if (!selectedColor && targetColors.length > 0) {
+          // Use the first target color as the visual fallback for missed tokens
+          word.classList.add("ts-missed-token", `ts-keep-${targetColors[0]}`);
         }
       });
 
-      // Group adjacent tokens into phrase wrappers
-      groupTokens("ts-correct-token", `ts-correct-phrase ts-keep-${activeColor}`);
+      // Group adjacent matching tokens into phrase wrappers
+      groupTokens("ts-correct-token", "ts-correct-phrase");
       groupTokens("ts-incorrect-token", "ts-incorrect-phrase");
-      groupTokens("ts-missed-token", `ts-missed-phrase ts-keep-${activeColor}`);
+      groupTokens("ts-missed-token", "ts-missed-phrase");
 
-      function groupTokens(tokenClass, wrapperClass) {
+      function groupTokens(tokenClass, wrapperBaseClass) {
         const nodes = Array.from(contentPre.childNodes);
         let currentGroup = [];
+        let currentGroupColor = null;
 
         nodes.forEach((node, i) => {
-          const isTargetToken =
-            node.nodeType === 1 && node.classList.contains(tokenClass);
+          const isTargetToken = node.nodeType === 1 && node.classList.contains(tokenClass);
 
-          // Check if this space is followed by another target token of the SAME class
+          // Extract active token keep color class (e.g., ts-keep-participant or ts-keep-process)
+          let tokenColor = null;
+          if (isTargetToken) {
+            const foundClass = Array.from(node.classList).find((c) => c.startsWith("ts-keep-"));
+            tokenColor = foundClass || `ts-keep-${singleDefaultColor}`;
+          }
+
           let isInternalSpace = false;
           if (
             node.nodeType === 1 &&
@@ -131,14 +209,26 @@ document.addEventListener("DOMContentLoaded", () => {
               nextNode.nodeType === 1 &&
               nextNode.classList.contains(tokenClass)
             ) {
-              isInternalSpace = true;
+              const nextColor =
+                Array.from(nextNode.classList).find((c) => c.startsWith("ts-keep-")) ||
+                `ts-keep-${singleDefaultColor}`;
+              if (!isMulti || nextColor === currentGroupColor) {
+                isInternalSpace = true;
+              }
             }
           }
 
-          if (isTargetToken || isInternalSpace) {
+          if (isTargetToken && (!currentGroupColor || !isMulti || currentGroupColor === tokenColor)) {
+            currentGroupColor = tokenColor;
+            currentGroup.push(node);
+          } else if (isInternalSpace) {
             currentGroup.push(node);
           } else {
             finalizeGroup();
+            if (isTargetToken) {
+              currentGroupColor = tokenColor;
+              currentGroup.push(node);
+            }
           }
         });
 
@@ -147,19 +237,21 @@ document.addEventListener("DOMContentLoaded", () => {
         function finalizeGroup() {
           if (currentGroup.length > 0) {
             const wrapper = document.createElement("span");
-            wrapper.className = wrapperClass;
+            // Apply the specific target role color (ts-keep-<role>) directly to the wrapper
+            const appliedColorClass = currentGroupColor || `ts-keep-${singleDefaultColor}`;
+            wrapper.className = `${wrapperBaseClass} ${appliedColorClass}`.trim();
 
             currentGroup[0].parentNode.insertBefore(wrapper, currentGroup[0]);
             currentGroup.forEach((node) => wrapper.appendChild(node));
             currentGroup = [];
+            currentGroupColor = null;
           }
         }
       }
 
-      // Output Score Badge
-      scoreBadge.textContent = `Found: ${correctCount} / ${totalTargets} (Extra: ${falsePositives})`;
+      // Display Score Output Badge
+      scoreBadge.textContent = `Found: ${correctCount} / ${totalTargets} (Extra/Wrong: ${falsePositives})`;
       scoreBadge.style.display = "inline-block";
-      scoreBadge.className = "textselect-output";
 
       const accuracy = totalTargets === 0 ? 0 : correctCount / totalTargets;
       if (accuracy >= 0.8 && falsePositives === 0) scoreBadge.classList.add("high");
@@ -167,14 +259,11 @@ document.addEventListener("DOMContentLoaded", () => {
       else scoreBadge.classList.add("low");
     });
 
-    // 4. Reset Listener
+    // 5. Reset Listener
     btnReset.addEventListener("click", () => {
       block.dataset.disabled = "false";
-
-      // Re-enable the Check button
       btnScore.disabled = false;
 
-      // Unwrap all phrase wrappers
       const wrappers = Array.from(
         block.querySelectorAll(".ts-correct-phrase, .ts-incorrect-phrase, .ts-missed-phrase")
       );
@@ -187,6 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       words.forEach((word) => {
         word.className = "ts-word";
+        delete word.dataset.selectedColor;
       });
 
       scoreBadge.style.display = "none";

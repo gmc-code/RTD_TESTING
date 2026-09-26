@@ -158,6 +158,23 @@
 /* ==========================================================================
    4. Control Interface Action Triggers & Buttons
    ========================================================================== */
+/* Multi-line Paragraph Styling Adjustments */
+.ordering-line.ordering-paragraph {
+  align-items: flex-start;
+  padding: 0.8rem 1rem;
+}
+
+.ordering-line.ordering-paragraph .ordering-handle {
+  margin-top: 0.2rem;
+}
+
+.ordering-line.ordering-paragraph .ordering-code {
+  white-space: pre-wrap;
+  font-family: inherit; /* Uses textbook font for prose */
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .ordering-line.disabled {
   cursor: not-allowed;
   pointer-events: none;

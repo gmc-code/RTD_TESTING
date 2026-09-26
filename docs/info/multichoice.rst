@@ -16,6 +16,8 @@ Syntax
         [x] Correct option text | Feedback message for correct answer.
         [ ] Incorrect option text | Feedback message for incorrect answer.
 
+----
+
 Options for the multichoice directive
 --------------------------------------
 
@@ -29,7 +31,7 @@ Options for the multichoice directive
    * - ``:delimiter:``
      - string
      - | Sets the delimiter between the option text and the feedback message.
-       | e.g @@  The default is ``|`` (pipe).
+       | e.g. @@. The default is ``|`` (pipe).
    * - ``:no-letters:``
      - flag
      - If present, hides the alphabetical choice indicators (A, B, C...).
@@ -39,12 +41,17 @@ Options for the multichoice directive
        | stay fixed in their declared order instead of being randomized.
    * - ``:theme:``
      - string
-     - | If present, set the visual theme.
+     - | If present, sets the visual theme.
        | Options are ``white`` (default) or ``light``.
+   * - ``:torf:``
+     - flag
+     - | Formats the block as a True/False question. Automatically enforces
+       | "True" as the first option and disables shuffling.
 
 
-| Shuffling: Unless ``:no-shuffle:`` is declared, choices are automatically randomized on page render and on Reset button clicks to elimin  position-based pattern guessing.
+| Shuffling: Unless ``:no-shuffle:`` or ``:torf:`` is declared, choices are automatically randomized on page render and on Reset button clicks to eliminate position-based pattern guessing.
 | Selection Engine: The directive automatically changes selection inputs from single-choice radio buttons to multi-choice checkboxes if more than one option is marked correct ``[x]``.
+| State Retention: Clicking the **Reset** button preserves the user's "Show feedback" toggle preference while clearing selected choices.
 | Visual Badges: Once the evaluation button is selected, clear inline indicator icons (✓, ✕) show up next to each answer option along with context explanations.
 
 ----

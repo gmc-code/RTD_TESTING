@@ -30,9 +30,9 @@ def simple_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
 def setup(app):
     roles_to_register = [
         "p", "r", "o", "pb", "rb", "ob", "iv", "dv", "cv", "ivb", "dvb", "cvb",
-        "theme", "rheme", "themeb", "rhemeb", "process", "participant", "circ",
-        "conj", "part","processb", "participantb", "circb", "conjb", "partb", "processp",
-        "participantp", "circp", "conjp", "rubricsmall"
+        "theme", "rheme", "themeb", "rhemeb", "process", "participant", "circumstance",
+        "conjunction", "part","processb", "participantb", "circumstanceb", "conjunctionb", "partb", "processp",
+        "participantp", "circumstancep", "conjunctionp", "rubricsmall"
     ]
 
     for rolename in roles_to_register:
@@ -53,12 +53,12 @@ extensions = [
     "sphinx_design",
     "multichoicepage.multichoicepage",  # custom directive
     "multichoice.multichoice",  # custom directive
-    "trueorfalse.trueorfalse",  # custom directive
     "cloze.cloze",  # custom directive
     "gapfill.gapfill",  # custom directive
     "classifying.classifying",  # custom directive
     "fillin.fillin",  # custom directive
     "ordering.ordering",  # custom directive
+    "wordordering.wordordering",  # custom directive
     "textselect.textselect",  # custom directive
     "wordjumble.wordjumble",  # custom directive
     "labels.labels",  # custom directive

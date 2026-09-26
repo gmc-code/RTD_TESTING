@@ -8,12 +8,14 @@ Introduction
 The directives covered in this documentation include:
 
 - multichoice
-- trueorfalse
+- multichoice_page
 - cloze
 - gapfill
 - classifying
 - fillin
 - ordering
+- wordordering
 - textselect
 - wordjumble
+- structuredquestion
 - labels

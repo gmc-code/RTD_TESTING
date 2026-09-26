@@ -21,11 +21,14 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/multichoice.rst
     info/multichoice_page.rst
     info/trueorfalse.rst
+    info/trueorfalse_page.rst
+
     info/cloze.rst
     info/gapfill.rst
     info/classifying.rst
     info/fillin.rst
     info/ordering.rst
+    info/wordordering.rst
     info/textselect.rst
     info/wordjumble.rst
     info/labels.rst

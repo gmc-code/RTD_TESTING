@@ -1,15 +1,15 @@
-==========================================================
-True or False using MultiChoice  Directive Documentation
-==========================================================
+==============================================================
+True or False using Multi-Choice-Page Directive Documentation
+==============================================================
 
-The ``multichoice`` directive can create interactive True/False questions. Each question includes its own dedicated check control, reset button, and immediate feedback.
+The ``multichoicepage`` directive can create interactive True/False questions. Each question includes its own dedicated check control, reset button, and immediate feedback.
 
 Syntax
 -------------------
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
 
         Question text goes here...
@@ -30,7 +30,7 @@ Example 1: Basic True / False (Equality Check)
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
 
         In Python, the `==` operator is used to perform an equality check.
@@ -38,7 +38,7 @@ Example 1: Basic True / False (Equality Check)
         [x] True | Correct! `==` compares values for equality, whereas `=` is used for variable assignment.
         [ ] False | Incorrect. `==` is indeed the equality operator in Python.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
 
     In Python, the `==` operator is used to perform an equality check.
@@ -55,7 +55,7 @@ Example 2: String Output Syntax
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
 
         In Python 3, `print "Hello, World"` is valid syntax.
@@ -63,7 +63,7 @@ Example 2: String Output Syntax
         [ ] True | Incorrect. Python 3 requires parentheses for functions: `print("Hello, World")`.
         [x] False | Correct! Python 3 treats `print()` as a function requiring parentheses.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
 
     In Python 3, `print "Hello, World"` is valid syntax.
@@ -80,7 +80,7 @@ Example 4: Code Block Layout Inside Question (Exponentiation)
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
         :theme: light
 
@@ -95,7 +95,7 @@ Example 4: Code Block Layout Inside Question (Exponentiation)
         [x] True | Correct! `**` is the exponentiation operator in Python (5^2 = 25).
         [ ] False | Incorrect. `**` calculates powers, so 5 raised to 2 is 25.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
     :theme: light
 
@@ -119,7 +119,7 @@ Example 5: Memory Identity with Objects
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
         :theme: light
 
@@ -134,7 +134,7 @@ Example 5: Memory Identity with Objects
         [ ] True | Incorrect. `is` checks memory identity; `a` and `b` are two distinct list instances.
         [x] False | Correct! `a` and `b` contain identical elements, but occupy different memory locations.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
     :theme: light
 
@@ -158,7 +158,7 @@ Example 6: Display Parameters & Delays
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
 
         Does the following code correctly show "ABC", clear it immediately, and pause for half a second?
@@ -171,7 +171,7 @@ Example 6: Display Parameters & Delays
         [x] True | Correct! `clear=True` wipes the display after showing, and `sleep(500)` pauses for 500 ms.
         [ ] False | Incorrect. This code executes all required steps accurately.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
 
     Does the following code correctly show "ABC", clear it immediately, and pause for half a second?
@@ -193,7 +193,7 @@ Example 7: Multi-line Explanations (Scientific Data Analysis)
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
         :delimiter: @@
 
@@ -207,7 +207,7 @@ Example 7: Multi-line Explanations (Scientific Data Analysis)
             @@ | Incorrect. Random errors cause unpredictable fluctuations above and below the true value.
                | A non-zeroed scale causes a predictable, constant offset, which defines a systematic error.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
     :delimiter: @@
 
@@ -230,7 +230,7 @@ Example 8: Python Data Types
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
 
         In Python, `int`, `str`, and `float` are primitive data types, while `html` is a standard built-in type.
@@ -238,7 +238,7 @@ Example 8: Python Data Types
         [ ] True | Incorrect. `html` is not a built-in Python data type.
         [x] False | Correct! `int`, `str`, and `float` are native types, but `html` is not.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
 
     In Python, `int`, `str`, and `float` are primitive data types, while `html` is a standard built-in type.
@@ -255,7 +255,7 @@ Example 9: Custom Pipe Delimiters inside Code Statements
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
         :delimiter: @@
 
@@ -264,7 +264,7 @@ Example 9: Custom Pipe Delimiters inside Code Statements
         [x] True @@ Correct! The `|` operator computes set union in Python.
         [ ] False @@ Incorrect. `|` is indeed the set union operator.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
     :delimiter: @@
 
@@ -282,7 +282,7 @@ Example 10: Collection Bracket Enclosures
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
 
         In Python, `[1, 2]` declares a list, `(1, 2)` declares a tuple, and `{"a": 1}` declares a dictionary.
@@ -290,7 +290,7 @@ Example 10: Collection Bracket Enclosures
         [x] True | Correct! Square brackets denote lists, parentheses denote tuples, and curly braces with key-value pairs denote dictionaries.
         [ ] False | Incorrect. All three syntax forms correctly map to their respective collection types.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
 
     In Python, `[1, 2]` declares a list, `(1, 2)` declares a tuple, and `{"a": 1}` declares a dictionary.
@@ -307,7 +307,7 @@ Example 11: Complex Nested Bracket Indexing
 
 .. code-block:: rst
 
-    .. multichoice::
+    .. multichoicepage::
         :torf:
         :theme: light
 
@@ -325,7 +325,7 @@ Example 11: Complex Nested Bracket Indexing
         [x] True | Correct! `["users"]` gets the list, `[0]` gets Alice, `["scores"]` gets her tuple, and `[1]` gets `90`.
         [ ] False | Incorrect. Navigating dict keys and list/tuple indices in this sequence correctly reaches `90`.
 
-.. multichoice::
+.. multichoicepage::
     :torf:
     :theme: light
 

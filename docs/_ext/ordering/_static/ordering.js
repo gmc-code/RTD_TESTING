@@ -14,15 +14,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const noReorder = container.dataset.noReorder === "true";
 
-    // Helper to dynamically shuffle DOM lines on load and reset
+    // Helper to dynamically shuffle DOM lines and ensure it's not identical to correct order
     function shuffleLines() {
       if (noReorder) return;
 
       const lines = Array.from(container.querySelectorAll(".ordering-line"));
-      for (let i = lines.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        container.appendChild(lines[j]);
+      if (lines.length <= 1) return;
+
+      let isIdentical = true;
+      let attempts = 0;
+
+      while (isIdentical && attempts < 50) {
+        // Perform Fisher-Yates Shuffle
+        for (let i = lines.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = lines[i];
+          lines[i] = lines[j];
+          lines[j] = temp;
+        }
+
+        // Check if current DOM order matches correct_idx 0, 1, 2...
+        isIdentical = lines.every((line, index) => {
+          return parseInt(line.dataset.correctIdx, 10) === index;
+        });
+
+        attempts++;
       }
+
+      // Append items back to DOM in new shuffled order
+      lines.forEach(line => container.appendChild(line));
     }
 
     // Helper to clear evaluation styles and feedback
