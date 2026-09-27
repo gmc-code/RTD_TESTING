@@ -39,6 +39,14 @@ def setup(app):
         "processb", "participantb", "circumstanceb", "conjunctionb", "text-connectiveb", "partb",
         # SFL Functional Roles (Plain Text)
         "processp", "participantp", "circumstancep", "conjunctionp", "text-connectivep", "partp",
+
+        # SFL Nominal Group Roles (Outlined)
+        "premodifier", "pointer", "numerative", "describer", "classifier", "thing", "qualifier","postmodifier",
+        # SFL Nominal Group Roles (Filled Chips)
+        "premodifierb", "pointerb", "numerativeb", "describerb", "classifierb", "thingb", "qualifierb","postmodifierb",
+        # SFL Nominal Group Roles (Plain Text)
+        "premodifierp", "pointerp", "numerativep", "describerp", "classifierp", "thingp", "qualifierp","postmodifierp",
+
         # Clause Structure Roles (Bordered)
         "independent", "dependent", "embedded", "relative", "projected",
         # Clause Structure Roles (Filled Chips)

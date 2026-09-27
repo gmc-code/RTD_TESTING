@@ -59,8 +59,8 @@ class classifyingDirective(SphinxDirective):
             # Explicit :bins: option overrides everything
             bin_names = [b.strip() for b in bin_option.split(',')]
         else:
-            # Auto-sort categories alphabetically when :bins: is omitted
-            bin_names = sorted(collected_categories)
+            # Collect unique categories maintaining case-insensitive alphabetical order (A-Z)
+            bin_names = sorted(collected_categories, key=lambda s: s.lower())
 
         # Map categories to their bin indices
         items = []

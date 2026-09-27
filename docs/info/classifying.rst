@@ -30,7 +30,7 @@ Options for the classifying directive
    * - ``:bins:``
      - string
      - | Optional comma-separated list of category names (supports 2 to 6 distinct classifications).
-       | Overrides the default order of appearance in dropdown menus.
+       | Overrides the default order of appearance in dropdown menus. (sorts them alphabetically by default)
    * - ``:theme:``
      - string
      - | Sets the visual theme workspace wrapper.
@@ -52,7 +52,7 @@ Options for the classifying directive
 
 
 | Syntax Rules: Items inside the body are mapped using key-value syntax formatted as ``Item Text: Category Name``.
-| Category Resolution: If the ``:bins:`` option is omitted, categories are dynamically extracted and ordered based on their first appearance in the directive body.
+| Category Resolution: If the ``:bins:`` option is omitted, it auto-collects all unique categories from the items and sorts them alphabetically (aA to zZ)
 | Shuffling: Items are automatically shuffled on page render and on Reset button click unless ``:sort: false`` or ``:nosort:`` is specified.
 | Visual Badges: When validated, inline symbols provide quick feedback right alongside choices.
 

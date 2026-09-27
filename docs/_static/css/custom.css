@@ -285,3 +285,16 @@ button.copybtn svg {
 }
 
 
+/* ========================================== */
+/* Override theme zebra striping for tables with class "plain" */
+/* ========================================== */
+
+
+.rst-content table.docutils.plain tbody tr,
+table.docutils.plain tbody tr,
+table.docutils.plain tbody tr:nth-child(even),
+table.docutils.plain tbody tr:nth-child(odd),
+table.docutils.plain td {
+    background-color: transparent !important;
+    background: none !important;
+}

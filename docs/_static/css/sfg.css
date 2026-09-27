@@ -10,10 +10,19 @@
   --hsl-process: hsl(120, 57%, 40%);        /* Green */
   --hsl-circumstance: hsl(244, 100%, 62%);  /* Bright Blue / Violet */
   --hsl-conjunction: hsl(218, 11%, 49%);   /* Gray */
-  --hsl-text-connective: hsl(218, 11%, 49%);   /* Gray */
   --hsl-part: hsl(218, 11%, 49%);          /* Gray */
   --hsl-theme: hsl(204, 70%, 41%);         /* Muted Blue */
   --hsl-rheme: hsl(220, 43%, 11%);         /* Dark Charcoal / Black */
+
+  /* SFL Nominal Group Sub-Element Base HSL Values (Participant Palette) */
+  --hsl-premodifier: hsl(28, 90%, 52%);   /* Vibrant Coral/Orange[cite: 1] */
+  --hsl-pointer: hsl(38, 92%, 50%);       /* Amber/Gold[cite: 1] */
+  --hsl-numerative: hsl(25, 95%, 53%);    /* Warm Orange[cite: 1] */
+  --hsl-describer: hsl(14, 88%, 53%);     /* Burnt Orange / Terracotta[cite: 1] */
+  --hsl-classifier: hsl(350, 75%, 48%);    /* Crimson / Deep Red[cite: 1] */
+  --hsl-thing: var(--hsl-participant);     /* Primary Red (Core Participant)[cite: 1] */
+  --hsl-qualifier: hsl(282, 55%, 52%);    /* Purple (Bridges red participant to blue circumstance)[cite: 1] */
+  --hsl-postmodifier: hsl(295, 50%, 48%); /* Deep Violet[cite: 1] */
 
   /* Clause Structure Base HSL Values */
   --hsl-independent: hsl(231, 38%, 57%);   /* Slate Blue */
@@ -76,10 +85,19 @@ span.participantp   { color: var(--hsl-participant); }
 span.processp       { color: var(--hsl-process); }
 span.circumstancep  { color: var(--hsl-circumstance); }
 span.conjunctionp   { color: var(--hsl-conjunction); }
-span.text-connectivep   { color: var(--hsl-text-connective); }
 span.partp          { color: var(--hsl-part); }
 span.themep         { color: var(--hsl-theme); }
 span.rhemep         { color: var(--hsl-rheme); }
+
+/* Nominal Group Plain Text Additions */
+span.premodifierp  { color: var(--hsl-premodifier); }[cite: 1]
+span.pointerp      { color: var(--hsl-pointer); }[cite: 1]
+span.numerativep   { color: var(--hsl-numerative); }[cite: 1]
+span.describerp    { color: var(--hsl-describer); }[cite: 1]
+span.classifierp   { color: var(--hsl-classifier); }[cite: 1]
+span.thingp        { color: var(--hsl-thing); font-weight: bold; }[cite: 1]
+span.qualifierp    { color: var(--hsl-qualifier); }[cite: 1]
+span.postmodifierp { color: var(--hsl-postmodifier); }[cite: 1]
 
 /* Clause Structure Extensions */
 span.independentp   { color: var(--hsl-independent); }
@@ -96,10 +114,17 @@ span.participant,
 span.process,
 span.circumstance,
 span.conjunction,
-span.text-connective,
 span.part,
 span.theme,
 span.rheme,
+span.premodifier,
+span.pointer,
+span.numerative,
+span.describer,
+span.classifier,
+span.thing,
+span.qualifier,
+span.postmodifier,
 span.independent,
 span.dependent,
 span.embedded,
@@ -118,10 +143,19 @@ span.participant   { color: var(--hsl-participant); border-color: var(--hsl-part
 span.process       { color: var(--hsl-process); border-color: var(--hsl-process); }
 span.circumstance  { color: var(--hsl-circumstance); border-color: var(--hsl-circumstance); }
 span.conjunction   { color: var(--hsl-conjunction); border-color: var(--hsl-conjunction); font-style: italic; }
-span.text-connective   { color: var(--hsl-text-connective); border-color: var(--hsl-text-connective); font-style: italic; }
 span.part          { color: var(--hsl-part); border-color: var(--hsl-part); font-style: italic; }
 span.theme         { color: var(--hsl-theme); border-color: var(--hsl-theme); }
 span.rheme         { color: var(--hsl-rheme); border-color: var(--hsl-rheme); }
+
+/* Nominal Group Bordered Additions */
+span.premodifier  { color: var(--hsl-premodifier); border-color: var(--hsl-premodifier); }[cite: 1]
+span.pointer      { color: var(--hsl-pointer); border-color: var(--hsl-pointer); }[cite: 1]
+span.numerative   { color: var(--hsl-numerative); border-color: var(--hsl-numerative); }[cite: 1]
+span.describer    { color: var(--hsl-describer); border-color: var(--hsl-describer); }[cite: 1]
+span.classifier   { color: var(--hsl-classifier); border-color: var(--hsl-classifier); }[cite: 1]
+span.thing        { color: var(--hsl-thing); border-color: var(--hsl-thing); font-weight: bold; }[cite: 1]
+span.qualifier    { color: var(--hsl-qualifier); border-color: var(--hsl-qualifier); }[cite: 1]
+span.postmodifier { color: var(--hsl-postmodifier); border-color: var(--hsl-postmodifier); }[cite: 1]
 
 /* Clause Structure Additions */
 span.independent   { color: var(--hsl-independent); border-color: var(--hsl-independent); }
@@ -138,10 +172,17 @@ span.participantb,
 span.processb,
 span.circumstanceb,
 span.conjunctionb,
-span.text-connectiveb,
 span.partb,
 span.themeb,
 span.rhemeb,
+span.premodifierb,
+span.pointerb,
+span.numerativeb,
+span.describerb,
+span.classifierb,
+span.thingb,
+span.qualifierb,
+span.postmodifierb,
 span.independentb,
 span.dependentb,
 span.embeddedb,
@@ -160,10 +201,19 @@ span.participantb   { background-color: var(--hsl-participant); }
 span.processb       { background-color: var(--hsl-process); }
 span.circumstanceb  { background-color: var(--hsl-circumstance); }
 span.conjunctionb   { background-color: var(--hsl-conjunction); font-style: italic; }
-span.text-connectiveb   { background-color: var(--hsl-text-connective); font-style: italic; }
 span.partb          { background-color: var(--hsl-part); font-style: italic; }
 span.themeb         { background-color: var(--hsl-theme); font-weight: 600; }
 span.rhemeb         { background-color: var(--hsl-rheme); }
+
+/* Nominal Group Background Additions */
+span.premodifierb  { background-color: var(--hsl-premodifier); }[cite: 1]
+span.pointerb      { background-color: var(--hsl-pointer); }[cite: 1]
+span.numerativeb   { background-color: var(--hsl-numerative); }[cite: 1]
+span.describerb    { background-color: var(--hsl-describer); }[cite: 1]
+span.classifierb   { background-color: var(--hsl-classifier); }[cite: 1]
+span.thingb        { background-color: var(--hsl-thing); font-weight: bold; }[cite: 1]
+span.qualifierb    { background-color: var(--hsl-qualifier); }[cite: 1]
+span.postmodifierb { background-color: var(--hsl-postmodifier); }[cite: 1]
 
 /* Clause Structure Background Additions */
 span.independentb   { background-color: var(--hsl-independent); }
@@ -177,9 +227,16 @@ span.processb,
 span.circumstanceb,
 span.partb,
 span.conjunctionb,
-span.text-connectiveb,
 span.themeb,
 span.rhemeb,
+span.premodifierb,
+span.pointerb,
+span.numerativeb,
+span.describerb,
+span.classifierb,
+span.thingb,
+span.qualifierb,
+span.postmodifierb,
 span.independentb,
 span.dependentb,
 span.embeddedb,
@@ -195,9 +252,16 @@ span.projectedb {
   span.circumstanceb,
   span.partb,
   span.conjunctionb,
-  span.text-connectiveb,
   span.themeb,
   span.rhemeb,
+  span.premodifierb,
+  span.pointerb,
+  span.numerativeb,
+  span.describerb,
+  span.classifierb,
+  span.thingb,
+  span.qualifierb,
+  span.postmodifierb,
   span.independentb,
   span.dependentb,
   span.embeddedb,
