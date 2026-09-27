@@ -11,10 +11,11 @@ Syntax
 .. code-block:: rst
 
     .. classifying::
-       :bins: Category 1, Category 2
 
-       Item content text goes here | 0
-       Another item content statement | 1
+       Item content text goes here: Category 1
+       Another item content statement: Category 2
+
+----
 
 Options for the classifying directive
 --------------------------------------
@@ -28,17 +29,33 @@ Options for the classifying directive
      - Description
    * - ``:bins:``
      - string
-     - | A comma-separated list of category names
-       | (supports 2 to 6 distinct classifications).
+     - | Optional comma-separated list of category names (supports 2 to 6 distinct classifications).
+       | Overrides the default order of appearance in dropdown menus.
    * - ``:theme:``
      - string
      - | Sets the visual theme workspace wrapper.
        | Options are ``white`` (default) or ``light``.
+   * - ``:sort:``
+     - string / boolean
+     - | Controls item shuffling behavior.
+       | Accepts ``true``/``false`` or ``yes``/``no``. Default is ``true``.
+   * - ``:nosort:``
+     - flag
+     - | Optional flag to disable random item shuffling and
+       | preserve the exact list order specified in the directive content.
+   * - ``:shuffle:``
+     - flag
+     - | Optional flag to explicitly enable random item shuffling.
+   * - ``:instructions:``
+     - string
+     - A brief instruction to guide the user on what to select.
 
-| Syntax Rules: Items inside the body are split using a pipe delimiter (``|``) followed by the zero-based index of its correct bin.
-| Index Mapping: The first bin declared in the ``:bins:`` option corresponds to index ``0``, the second to index ``1``, and so on.
-| Shuffling: Items are automatically shuffled on page render and on Reset button click to eliminate pattern memorization giveaways.
+
+| Syntax Rules: Items inside the body are mapped using key-value syntax formatted as ``Item Text: Category Name``.
+| Category Resolution: If the ``:bins:`` option is omitted, categories are dynamically extracted and ordered based on their first appearance in the directive body.
+| Shuffling: Items are automatically shuffled on page render and on Reset button click unless ``:sort: false`` or ``:nosort:`` is specified.
 | Visual Badges: When validated, inline symbols provide quick feedback right alongside choices.
+
 
 ----
 
@@ -51,52 +68,48 @@ Example 1: Default white theme
 .. code-block:: rst
 
     .. classifying::
-       :bins: Operators, Data Structures
 
-       + (Addition / Concatenation) | 0
-       list (Sequential collection) | 1
-       == (Equality comparison) | 0
-       dict (Key-value mapping) | 1
-       tuple (Immutable sequence) | 1
+       + (Addition / Concatenation): Operators
+       list (Sequential collection): Data Structures
+       == (Equality comparison): Operators
+       dict (Key-value mapping): Data Structures
+       tuple (Immutable sequence): Data Structures
 
 .. classifying::
-   :bins: Operators, Data Structures
 
-   + (Addition / Concatenation) | 0
-   list (Sequential collection) | 1
-   == (Equality comparison) | 0
-   dict (Key-value mapping) | 1
-   tuple (Immutable sequence) | 1
+   + (Addition / Concatenation): Operators
+   list (Sequential collection): Data Structures
+   == (Equality comparison): Operators
+   dict (Key-value mapping): Data Structures
+   tuple (Immutable sequence): Data Structures
 
 ----
 
 Example 2: Light theme
 -----------------------------------------------------------
 
-| The following example uses the ``:theme: light`` setting/
+| The following example uses the ``:theme: light`` setting.
 | It demonstrates sorting arithmetic and logical operators into their respective categories.
 
 .. code-block:: rst
 
     .. classifying::
-       :bins: Arithmetic, Logical
        :theme: light
 
-       // (Floor division) | 0
-       and (Short-circuit conjunction) | 1
-       % (Modulo remainder) | 0
-       not (Boolean inversion) | 1
-       ** (Exponentiation power) | 0
+       // (Floor division): Arithmetic
+       and (Short-circuit conjunction): Logical
+       % (Modulo remainder): Arithmetic
+       not (Boolean inversion): Logical
+       ** (Exponentiation power): Arithmetic
 
 .. classifying::
-   :bins: Arithmetic, Logical
    :theme: light
 
-   // (Floor division) | 0
-   and (Short-circuit conjunction) | 1
-   % (Modulo remainder) | 0
-   not (Boolean inversion) | 1
-   ** (Exponentiation power) | 0
+   // (Floor division): Arithmetic
+   and (Short-circuit conjunction): Logical
+   % (Modulo remainder): Arithmetic
+   not (Boolean inversion): Logical
+   ** (Exponentiation power): Arithmetic
 
 ----
 
@@ -108,24 +121,22 @@ Demonstrating a 6-bin categorization activity.
 .. code-block:: rst
 
     .. classifying::
-        :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
 
-        Basalt | 0
-        Sandstone | 1
-        Marble | 2
-        Quartz | 3
-        Trilobite | 4
-        Coal | 5
+       Basalt: Igneous
+       Sandstone: Sedimentary
+       Marble: Metamorphic
+       Quartz: Mineral
+       Trilobite: Fossil
+       Coal: Organic
 
 .. classifying::
-   :bins: Igneous, Sedimentary, Metamorphic, Mineral, Fossil, Organic
 
-   Basalt | 0
-   Sandstone | 1
-   Marble | 2
-   Quartz | 3
-   Trilobite | 4
-   Coal | 5
+   Basalt: Igneous
+   Sandstone: Sedimentary
+   Marble: Metamorphic
+   Quartz: Mineral
+   Trilobite: Fossil
+   Coal: Organic
 
 ----
 
@@ -138,18 +149,101 @@ Example 4: Items with various brackets
 .. code-block:: rst
 
     .. classifying::
-       :bins: Mutable, Immutable
 
-       Lists (e.g., [1, 2, 3]) | 0
-       Tuples (e.g., (1, 2, 3)) | 1
-       Strings (e.g., "Hello") | 1
-       Dictionaries (e.g., {"a": 1}) | 0
+       Lists (e.g., [1, 2, 3]): Mutable
+       Tuples (e.g., (1, 2, 3)): Immutable
+       Strings (e.g., "Hello"): Immutable
+       Dictionaries (e.g., {"a": 1}): Mutable
 
 .. classifying::
-   :bins: Mutable, Immutable
 
-   Lists (e.g., [1, 2, 3]) | 0
-   Tuples (e.g., (1, 2, 3)) | 1
-   Strings (e.g., "Hello") | 1
-   Dictionaries (e.g., {"a": 1}) | 0
+   Lists (e.g., [1, 2, 3]): Mutable
+   Tuples (e.g., (1, 2, 3)): Immutable
+   Strings (e.g., "Hello"): Immutable
+   Dictionaries (e.g., {"a": 1}): Mutable
+
+----
+
+Example 5: Preserving Order and Custom Bin Order
+------------------------------------------------
+
+| Demonstrating how to preserve exact line order using ``:sort: false`` alongside explicit dropdown menu bin ordering via ``:bins:``.
+
+.. code-block:: rst
+
+    .. classifying::
+       :bins: Pointer, Describer, Classifier, Thing, Qualifier
+       :sort: false
+
+       The: Pointer
+       dense: Describer
+       oceanic: Classifier
+       crust: Thing
+       at the subduction zone: Qualifier
+
+.. classifying::
+   :bins: Pointer, Describer, Classifier, Thing, Qualifier
+   :sort: false
+
+   The: Pointer
+   dense: Describer
+   oceanic: Classifier
+   crust: Thing
+   at the subduction zone: Qualifier
+
+
+.. code-block:: rst
+
+    .. classifying::
+       :bins: Classifier, Describer, Pointer, Qualifier, Thing
+       :sort: false
+
+       The: Pointer
+       dense: Describer
+       oceanic: Classifier
+       crust: Thing
+       at the subduction zone: Qualifier
+
+.. classifying::
+   :bins: Classifier, Describer, Pointer, Qualifier, Thing
+   :sort: false
+
+   The: Pointer
+   dense: Describer
+   oceanic: Classifier
+   crust: Thing
+   at the subduction zone: Qualifier
+
+----
+
+Example 6: Solution and custom instructions
+------------------------------------------------
+
+| Demonstrating how to provide a solution to a categorization activity.
+
+.. code-block:: rst
+
+    .. classifying::
+        :instructions: Select the correct grammatical function for each nominal group element.
+        :bins: Pointer, Describer, Classifier, Thing, Qualifier
+        :solution:
+        :nosort:
+
+        The: Pointer
+        dense: Describer
+        oceanic: Classifier
+        crust: Thing
+        at the subduction zone: Qualifier
+
+.. classifying::
+    :instructions: Select the correct grammatical function for each nominal group element.
+    :bins: Pointer, Describer, Classifier, Thing, Qualifier
+    :solution:
+    :nosort:
+
+    The: Pointer
+    dense: Describer
+    oceanic: Classifier
+    crust: Thing
+    at the subduction zone: Qualifier
 

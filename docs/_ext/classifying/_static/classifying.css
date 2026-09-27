@@ -144,11 +144,14 @@
   margin-top: 1.25rem;
 }
 
+/* Shared control panel button layout */
 .classifying-btn-score,
+.classifying-btn-solution,
 .classifying-btn-reset {
-  padding: 0.4rem 0.8rem;
+  font-family: inherit;
   font-size: 1.0rem;
   font-weight: 500;
+  padding: 0.4rem 0.85rem;
   border-radius: var(--cf-radius-md);
   cursor: pointer;
   transition: var(--cf-transition);
@@ -166,14 +169,30 @@
   border-color: #1d4ed8;
 }
 
-/* Disabled state matching textselect_3.css */
 .classifying-btn-score:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   filter: grayscale(100%);
 }
 
-/* Secondary Action: Reset Button Layout Rules */
+/* Solution Button: Teal Palette */
+.classifying-btn-solution {
+  background-color: #0d9488;
+  color: #ffffff !important;
+  border: 1px solid #0d9488;
+}
+
+.classifying-btn-solution:hover {
+  background-color: #0f766e;
+  border-color: #0f766e;
+}
+
+.classifying-btn-solution:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Secondary Action: Reset Button */
 .classifying-btn-reset {
   background-color: #ffffff;
   color: #475569;
@@ -183,6 +202,7 @@
 .classifying-btn-reset:hover {
   background-color: #f8fafc;
   color: #0f172a;
+  border-color: #cbd5e1;
 }
 
 /* ==========================================================================
