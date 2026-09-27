@@ -27,6 +27,7 @@ class WordOrderingDirective(SphinxDirective):
 
     option_spec = {
         'theme': directives.unchanged,
+        'instructions': directives.unchanged,  # Added instructions option
         'no-solution': directives.flag,
         'no-padding': directives.flag,
         'no-reorder': directives.flag,
@@ -103,6 +104,10 @@ class WordOrderingDirective(SphinxDirective):
         no_reorder = 'no-reorder' in self.options
         delimiter = self.options.get('delimiter', None)
 
+        default_instruction = 'Drag and drop the word chips into the correct sentence order:'
+        custom_instruction = self.options.get('instructions', default_instruction)
+        instruction_text = html.escape(custom_instruction)
+
         padding_class = ' ordering-no-padding' if use_no_padding else ''
 
         raw_fragments = self._tokenize_sentence(full_sentence, delimiter=delimiter)
@@ -121,12 +126,10 @@ class WordOrderingDirective(SphinxDirective):
         else:
             processed_items = line_items.copy()
 
-        # FIXED: Contains both ordering-block and wordordering-block for CSS and JS targeting
         main_block_node = nodes.container(
             classes=[f'wordordering-block ordering-block{padding_class}'.strip()])
 
-        base_instruction = 'Drag and drop the word chips into the correct sentence order:'
-        html_output = f'<div class="ordering-instructions">{base_instruction}</div>'
+        html_output = f'<div class="ordering-instructions">{instruction_text}</div>'
 
         no_reorder_attr = ' data-no-reorder="true"' if no_reorder else ''
         html_output += f'<div class="ordering-container sentence-inline-container theme-{chosen_theme}"{no_reorder_attr}>'
@@ -177,7 +180,7 @@ def setup(app):
     app.add_js_file("wordordering.js")
     app.add_css_file("wordordering.css")
     return {
-        "version": "1.0",
+        "version": "1.1",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }

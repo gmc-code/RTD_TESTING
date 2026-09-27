@@ -17,15 +17,7 @@ Syntax
 
        {{Place}} the Bunsen burner on the heatproof mat.
 
-.. textselect::
-   :instructions: Select the Process (action verb).
-   :color: green
-
-   {{Place}} the Bunsen burner on the heatproof mat.
-
-
 ----
-
 
 Options for the textselect directive
 --------------------------------------

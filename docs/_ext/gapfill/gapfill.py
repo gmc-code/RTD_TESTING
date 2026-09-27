@@ -14,8 +14,8 @@ def visit_gapfill_html(self, node):
     theme_class = "gapfill-block theme-light" if chosen_theme == "light" else "gapfill-block theme-white"
 
     self.body.append(f'<div class="{theme_class}">')
-    # Built-in Instruction header matching classifyingDirective style
-    self.body.append('<div class="gapfill-instructions">Choose from the drop downs to fill in the missing gaps below:</div>')
+    # Render instruction header from node attribute
+    self.body.append(f'<div class="gapfill-instructions">{node.get("instructions", "")}</div>')
     self.body.append(f'<pre class="gapfill-content">{node.get("html_content", "")}</pre>')
     self.body.append('</div>')
     raise nodes.SkipNode
@@ -29,6 +29,7 @@ class GapFillDirective(SphinxDirective):
 
     option_spec = {
         'theme': directives.unchanged,
+        'instructions': directives.unchanged,  # Added instructions option
     }
 
     def run(self):
@@ -39,6 +40,10 @@ class GapFillDirective(SphinxDirective):
         if chosen_theme not in ['white', 'light']:
             chosen_theme = 'white'
         node['theme'] = chosen_theme
+
+        default_instructions = "Choose from the drop downs to fill in the missing gaps below:"
+        custom_instructions = self.options.get('instructions', default_instructions)
+        node['instructions'] = html.escape(custom_instructions)
 
         # Harvest potential distractors directly from the text block context
         all_words_in_text = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b', full_text)
@@ -111,7 +116,7 @@ def setup(app):
     app.add_js_file("gapfill.js")
     app.add_css_file("gapfill.css")
     return {
-        "version": "2.9",
+        "version": "3.0",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }

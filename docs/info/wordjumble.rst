@@ -53,7 +53,8 @@ Options for the wordjumble directive
      - Locks the last letter of each word in place.
    * - ``:instructions:``
      - string
-     - *Default text*
+     - | *Default text* is "Unjumble each word by typing the
+       |correct spelling in the box next to it."
      - | Custom instruction header displayed
        | above the exercise block.
    * - ``:theme:``

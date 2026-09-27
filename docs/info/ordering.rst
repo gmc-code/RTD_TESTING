@@ -18,7 +18,7 @@ Syntax
 Options for the ordering directive
 --------------------------------------
 
-.. list-table:: Ordering Directive Options
+.. list-table::
    :widths: 20 10 70
    :header-rows: 1
 
@@ -30,25 +30,34 @@ Options for the ordering directive
      - If present, hides the "Show Solution" button from the user.
    * - ``:no-reorder:``
      - flag
-     - If present, keeps the initial line order while leaving indentation interactive.
+     - | If present, keeps the initial line order while leaving
+       | indentation interactive.
    * - ``:no-padding:``
      - flag
      - If present, removes vertical padding from the lines to drag.
    * - ``:show-code:``
      - flag
-     - If present, displays the final completed text/code block upon achieving a 100% score for easy copying.
+     - | If present, displays the final completed text/code block
+       | upon achieving a 100% score for easy copying.
    * - ``:paragraph:``
      - flag
-     - Splits paragraphs down into individual sentences and hides indentation controls («, »). Reorders sentences within each block while preserving general reading structure.
+     - | Splits paragraphs down into individual sentences and hides
+       | indentation controls («, »). Reorders sentences within
+       | each block while preserving general reading structure.
    * - ``:paragraphblocks:``
      - flag
-     - Groups content into full multi-line paragraph blocks (separated by double newlines) and hides indentation controls («, »). Ideal for reordering entire sections, prose, or report paragraphs.
+     - | Groups content into full multi-line paragraph blocks
+       | (separated by double newlines) and hides indentation controls («, »).
+       | Ideal for reordering entire sections, prose, or report paragraphs.
    * - ``:no-indent:``
      - flag
-     - Alias for paragraph-style display. Disables indentation controls for non-code text ordering.
+     - | Alias for paragraph-style display. Disables indentation controls
+       | for non-code text ordering.
    * - ``:keeprst:``
      - flag
-     - Renders reStructuredText inline markup (e.g., **bold**, *italics*, links) inside cards. Leave off for raw code snippets to prevent syntax misinterpretation.
+     - | Renders reStructuredText inline markup
+       | (e.g., **bold**, *italics*, links) inside cards.
+       | Leave off for raw code snippets to prevent syntax misinterpretation.
    * - ``:theme:``
      - string
      - Set the visual theme. Options are ``white`` (default) or ``light``.

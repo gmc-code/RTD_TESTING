@@ -27,6 +27,11 @@ Options for the gapfill directive
    * - ``:theme:``
      - string
      - Set the visual theme. Options are ``white`` (default) or ``light``.
+   * - ``:instructions:``
+     - string
+     - | Custom instruction header
+       | Default: "Choose from the drop downs to fill in the missing gaps below:"
+
 
 | Syntax Rules: Inline dropdown segments are declared using the sequence format
 | ``@@correct | incorrect | incorrect_2@@``.

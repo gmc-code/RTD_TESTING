@@ -48,7 +48,8 @@ Options for the classifying directive
      - | Optional flag to explicitly enable random item shuffling.
    * - ``:instructions:``
      - string
-     - A brief instruction to guide the user on what to select.
+     - | A brief instruction to guide the user on what to select.
+       | defaults to "Classify each item into its correct category:".
 
 
 | Syntax Rules: Items inside the body are mapped using key-value syntax formatted as ``Item Text: Category Name``.

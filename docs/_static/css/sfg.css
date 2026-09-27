@@ -16,14 +16,14 @@
   --hsl-rheme: hsl(220, 43%, 11%);         /* Dark Charcoal / Black */
 
   /* SFL Nominal Group Sub-Element Base HSL Values (Participant Palette) */
-  --hsl-premodifier: hsl(350, 75%, 48%);    /* Crimson / Deep Red */
+  --hsl-premodifier: var(--hsl-describer);     /* Burnt Orange / Terracotta */
   --hsl-pointer: hsl(38, 92%, 50%);       /* Amber/Gold */
   --hsl-numerative: hsl(25, 95%, 53%);    /* Warm Orange */
   --hsl-describer: hsl(14, 88%, 53%);     /* Burnt Orange / Terracotta */
   --hsl-classifier: hsl(350, 75%, 48%);    /* Crimson / Deep Red */
   --hsl-thing: var(--hsl-participant);     /* Primary Red (Core Participant) */
   --hsl-qualifier: hsl(282, 55%, 52%);    /* Purple (Bridges red participant to blue circumstance) */
-  --hsl-postmodifier: hsl(282, 55%, 52%);  /* Purple (Bridges red participant to blue circumstance) */
+  --hsl-postmodifier: var(--hsl-qualifier);    /* Purple (Bridges red participant to blue circumstance) */
 
   /* Clause Structure Base HSL Values */
   --hsl-independent: hsl(231, 38%, 57%);   /* Slate Blue */
@@ -332,15 +332,33 @@ div.admonition.match p.admonition-title { color: var(--admonition-text-color); b
     margin-right: 1.5em;
 }
 
+/* Circle with Dot Inner / Radio Button Target */
 .admonition.premise .admonition-title::before { content: "\f192"; margin-right: 2em; }
+
+/* Sign-Out / Arrow pointing out of a door */
 .admonition.reasoning .admonition-title::before { content: "\f08b"; margin-right: 2em; }
+
+/* Checkered Flag (Finish/Outcome line) */
 .admonition.outcome .admonition-title::before { content: "\f11e"; margin-right: 2em; }
+
+/* Lightbulb (Idea / Innovation / Pro argument) */
 .admonition.pro .admonition-title::before { content: "\f0eb"; margin-right: 2em; }
+
+/* Check Box Checked + Bulleted List (Multiple Choice Question) */
 .admonition.mcq .admonition-title::before { content: "\f14a  \f03a"; margin-right: 2em; }
+
+/* Pencil Square / Edit Pen (Fill in the blank / Cloze) */
 .admonition.cloze .admonition-title::before { content: "\f044"; margin-right: 2em; }
+
+/* Keyboard (Short Text Input Answer) */
 .admonition.shortanswer .admonition-title::before { content: "\f11c"; margin-right: 2em; }
+
+/* Randomize / Crossing Shuffle Arrows (Matching / Swap) */
 .admonition.match .admonition-title::before { content: "\f074"; margin-right: 2em; }
+
+/* Question Circle / Help Circle Icon */
 .admonition.question .admonition-title::before { content: "\f059"; margin-right: 2em; }
+
 
 /* ========================================== */
 /* Dropdown Styling                          */
