@@ -34,11 +34,11 @@ def setup(app):
         # Theme / Rheme
         "theme", "rheme", "themep", "rhemep", "themeb", "rhemeb",
         # SFL Functional Roles (Bordered)
-        "process", "participant", "circumstance", "conjunction", "text-connective", "part",
+        "process", "participant", "circumstance", "conjunction", "text_connective", "part",
         # SFL Functional Roles (Filled Chips)
-        "processb", "participantb", "circumstanceb", "conjunctionb", "text-connectiveb", "partb",
+        "processb", "participantb", "circumstanceb", "conjunctionb", "text_connectiveb", "partb",
         # SFL Functional Roles (Plain Text)
-        "processp", "participantp", "circumstancep", "conjunctionp", "text-connectivep", "partp",
+        "processp", "participantp", "circumstancep", "conjunctionp", "text_connectivep", "partp",
 
         # SFL Nominal Group Roles (Outlined)
         "premodifier", "pointer", "numerative", "describer", "classifier", "thing", "qualifier","postmodifier",

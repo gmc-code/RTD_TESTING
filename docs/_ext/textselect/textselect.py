@@ -6,14 +6,17 @@ from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
+
 class textselect_node(nodes.General, nodes.Element):
     pass
+
 
 def visit_textselect_html(self, node):
     chosen_theme = node.get("theme", "")
     chosen_color = node.get("color", "blue")
     chosen_style = node.get("style", "filled")
     mode = node.get("mode", "single")
+    shuffle = "true" if node.get("shuffle", False) else "false"
 
     theme_class = f"theme-{chosen_theme}" if chosen_theme else ""
     color_class = f"ts-color-{chosen_color}" if mode == "single" else ""
@@ -21,10 +24,15 @@ def visit_textselect_html(self, node):
     mode_class = f"ts-mode-{mode}"
 
     classes = " ".join(
-        filter(None, ["textselect-block", theme_class, color_class, style_class, mode_class])
+        filter(
+            None,
+            ["textselect-block", theme_class, color_class, style_class, mode_class],
+        )
     )
 
-    self.body.append(f'<div class="{classes}" data-mode="{mode}">')
+    self.body.append(
+        f'<div class="{classes}" data-mode="{mode}" data-shuffle="{shuffle}">'
+    )
     self.body.append(
         f'<div class="textselect-instructions">{node.get("instructions", "")}</div>'
     )
@@ -35,8 +43,10 @@ def visit_textselect_html(self, node):
     self.body.append("</pre></div>")
     raise nodes.SkipNode
 
+
 def depart_textselect_html(self, node):
     pass
+
 
 class TextSelectDirective(SphinxDirective):
     has_content = True
@@ -47,11 +57,13 @@ class TextSelectDirective(SphinxDirective):
         "instructions": directives.unchanged,
         "color": directives.unchanged,
         "style": directives.unchanged,
+        "shuffle": directives.flag,
     }
 
     def run(self):
         full_text = "\n".join(self.content)
         node = textselect_node()
+        node["shuffle"] = "shuffle" in self.options
 
         chosen_mode = self.options.get("mode", "single").strip().lower()
         if chosen_mode not in ["single", "multi"]:
@@ -83,19 +95,21 @@ class TextSelectDirective(SphinxDirective):
 
         target_colors = {}
         word_token_index = 0
-        html_tokens = []
 
-        # Recursive Nesting Parser
-        def parse_nested_text(text, active_colors):
+        # Split text into lines so JavaScript can shuffle line blocks individually
+        lines = full_text.splitlines()
+        html_lines = []
+
+        def parse_nested_text(text, active_colors, html_tokens):
             nonlocal word_token_index
             i = 0
             n = len(text)
 
             while i < n:
-                if text[i:i+2] == '{{':
+                if text[i : i + 2] == "{{":
                     end_pos = find_closing_brace(text, i + 2)
                     if end_pos != -1:
-                        inner_content = text[i+2:end_pos]
+                        inner_content = text[i + 2 : end_pos]
 
                         color_key = chosen_color
                         if chosen_mode == "multi" and ":" in inner_content:
@@ -104,17 +118,20 @@ class TextSelectDirective(SphinxDirective):
                                 color_key = possible_color.strip().lower()
                                 inner_content = rest
 
-                        parse_nested_text(inner_content, active_colors + [color_key])
+                        parse_nested_text(
+                            inner_content, active_colors + [color_key], html_tokens
+                        )
                         i = end_pos + 2
                         continue
 
-                # Process plain word or symbol tokens
                 token_match = re.match(r"^(\w+)|([^\w\s]+|\s+)", text[i:])
                 if token_match:
                     word_group, symbol_group = token_match.groups()
                     if word_group:
                         if active_colors:
-                            target_colors[str(word_token_index)] = list(set(active_colors))
+                            target_colors[str(word_token_index)] = list(
+                                set(active_colors)
+                            )
                         html_tokens.append(
                             f'<span class="ts-word" data-idx="{word_token_index}">{html.escape(word_group)}</span>'
                         )
@@ -123,7 +140,7 @@ class TextSelectDirective(SphinxDirective):
                     elif symbol_group:
                         if symbol_group.isspace():
                             html_tokens.append(
-                                symbol_group.replace("\n", "<br>").replace(
+                                symbol_group.replace(
                                     " ", '<span class="ts-space"> </span>'
                                 )
                             )
@@ -137,10 +154,10 @@ class TextSelectDirective(SphinxDirective):
             depth = 1
             idx = start_idx
             while idx < len(text) - 1:
-                if text[idx:idx+2] == '{{':
+                if text[idx : idx + 2] == "{{":
                     depth += 1
                     idx += 2
-                elif text[idx:idx+2] == '}}':
+                elif text[idx : idx + 2] == "}}":
                     depth -= 1
                     if depth == 0:
                         return idx
@@ -149,12 +166,16 @@ class TextSelectDirective(SphinxDirective):
                     idx += 1
             return -1
 
-        parse_nested_text(full_text, [])
+        for line in lines:
+            line_tokens = []
+            parse_nested_text(line, [], line_tokens)
+            html_lines.append(f'<div class="ts-line">{"".join(line_tokens)}</div>')
 
-        node["html_content"] = "".join(html_tokens)
+        node["html_content"] = "".join(html_lines)
         node["target_json"] = json.dumps(target_colors)
 
         return [node]
+
 
 def setup(app):
     app.add_node(textselect_node, html=(visit_textselect_html, depart_textselect_html))
@@ -168,7 +189,7 @@ def setup(app):
     app.add_css_file("textselect.css")
 
     return {
-        "version": "1.4",
+        "version": "1.5",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

@@ -4,8 +4,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   blocks.forEach((block) => {
     const isMulti = block.dataset.mode === "multi";
+    const shouldShuffle = block.dataset.shuffle === "true";
     const contentPre = block.querySelector(".textselect-content");
     const targetMap = JSON.parse(contentPre.dataset.targets || "{}");
+
+    // Function to shuffle .ts-line elements in the DOM
+    function shuffleLines() {
+      if (!shouldShuffle) return;
+      const lineElements = Array.from(contentPre.querySelectorAll(".ts-line"));
+      for (let i = lineElements.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        contentPre.appendChild(lineElements[j]);
+        lineElements.splice(j, 1);
+      }
+      lineElements.forEach((line) => contentPre.appendChild(line));
+    }
+
+    // Initial shuffle on load
+    shuffleLines();
+
     const words = Array.from(block.querySelectorAll(".ts-word"));
 
     // Extract default single color from class list (e.g., ts-color-blue)
@@ -16,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? colorClassMatch.replace("ts-color-", "")
       : "blue";
 
-    // Extract all unique target colors (flattening arrays for nested clauses)
+    // Extract all unique target colors
     const activeColorsSet = new Set();
     Object.values(targetMap).forEach((val) => {
       if (Array.isArray(val)) {
@@ -151,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const idx = word.dataset.idx;
         const selectedColor = word.dataset.selectedColor;
 
-        // Retrieve targets as an array to handle nested target support
         const rawTarget = targetMap[idx];
         const targetColors = Array.isArray(rawTarget)
           ? rawTarget
@@ -159,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
           ? [rawTarget]
           : [];
 
-        // Clean up visual drag/click selection state
         word.classList.remove("selected");
         Array.from(word.classList).forEach((cls) => {
           if (cls.startsWith("ts-sel-")) word.classList.remove(cls);
@@ -172,25 +187,26 @@ document.addEventListener("DOMContentLoaded", () => {
           word.classList.add("ts-incorrect-token");
           falsePositives++;
         } else if (!selectedColor && targetColors.length > 0) {
-          // Use the first target color as the visual fallback for missed tokens
           word.classList.add("ts-missed-token", `ts-keep-${targetColors[0]}`);
         }
       });
 
-      // Group adjacent matching tokens into phrase wrappers
-      groupTokens("ts-correct-token", "ts-correct-phrase");
-      groupTokens("ts-incorrect-token", "ts-incorrect-phrase");
-      groupTokens("ts-missed-token", "ts-missed-phrase");
+      // Group adjacent matching tokens within lines
+      const lineNodes = Array.from(contentPre.querySelectorAll(".ts-line"));
+      lineNodes.forEach((lineNode) => {
+        groupTokensInContainer(lineNode, "ts-correct-token", "ts-correct-phrase");
+        groupTokensInContainer(lineNode, "ts-incorrect-token", "ts-incorrect-phrase");
+        groupTokensInContainer(lineNode, "ts-missed-token", "ts-missed-phrase");
+      });
 
-      function groupTokens(tokenClass, wrapperBaseClass) {
-        const nodes = Array.from(contentPre.childNodes);
+      function groupTokensInContainer(container, tokenClass, wrapperBaseClass) {
+        const nodes = Array.from(container.childNodes);
         let currentGroup = [];
         let currentGroupColor = null;
 
         nodes.forEach((node, i) => {
           const isTargetToken = node.nodeType === 1 && node.classList.contains(tokenClass);
 
-          // Extract active token keep color class (e.g., ts-keep-participant or ts-keep-process)
           let tokenColor = null;
           if (isTargetToken) {
             const foundClass = Array.from(node.classList).find((c) => c.startsWith("ts-keep-"));
@@ -237,7 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
         function finalizeGroup() {
           if (currentGroup.length > 0) {
             const wrapper = document.createElement("span");
-            // Apply the specific target role color (ts-keep-<role>) directly to the wrapper
             const appliedColorClass = currentGroupColor || `ts-keep-${singleDefaultColor}`;
             wrapper.className = `${wrapperBaseClass} ${appliedColorClass}`.trim();
 
@@ -281,6 +296,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       scoreBadge.style.display = "none";
       lastClickedIdx = null;
+
+      // Reshuffle the lines on reset
+      shuffleLines();
     });
   });
 });

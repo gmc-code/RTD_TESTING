@@ -55,7 +55,10 @@ Options for the textselect directive
       - string
       - | Sets the visual theme style.
         | Options are ``filled`` (default), ``plain``, ``border``.
-
+    * - ``:shuffle:``
+      - flag
+      - | Randomizes the order of lines on page load
+        | and whenever the reset button is clicked.
 
 ----
 
@@ -443,5 +446,29 @@ Multiple textselects
 
     {{independent:The report stated}} {{projected:that the pressure had exceeded normal limits}}.
 
+----
+
+Shuffle
+----------------------
+
+.. code-block:: rst
+
+    .. textselect::
+        :color: process
+        :shuffle:
+        :instructions: Highlight the main action verb in each line.
+
+        1. The boy {{ran}} fast.
+        2. She {{wrote}} a letter.
+        3. They {{built}} a house.
 
 
+
+.. textselect::
+   :color: process
+   :shuffle:
+   :instructions: Highlight the main action verb in each line.
+
+   1. The boy {{ran}} fast.
+   2. She {{wrote}} a letter.
+   3. They {{built}} a house.

@@ -44,6 +44,13 @@ These docs provide details on sphinx extensions and how to use them. The extensi
 
 .. toctree::
     :maxdepth: 3
+    :caption: css roles test:
+
+    info/role_tests.rst
+
+
+.. toctree::
+    :maxdepth: 3
     :caption: Diagrams:
 
     diagrams/Cells - animal 4.rst
