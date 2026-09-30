@@ -21,7 +21,7 @@ Options for the classifying directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 25 15 60
    :header-rows: 1
 
    * - Option
@@ -30,10 +30,22 @@ Options for the classifying directive
    * - ``:bins:``
      - string
      - | Optional comma-separated list of category names (supports 2 to 6 distinct classifications).
-       | Overrides the default order of appearance in dropdown menus. (sorts them alphabetically by default)
+       | Overrides category auto-detection. By default, unique categories are auto-collected and sorted alphabetically (A-Z).
+   * - ``:delimiter:`` / ``:sep:``
+     - string
+     - | Custom separator string used to split the item text from its target category (e.g., ``=>``, ``::``, ``|``).
+       | Useful when item text contains colons. Defaults to splitting on the last colon (``rsplit``) if omitted, allowing inline roles like ``:process:`word``` to work seamlessly.
+   * - ``:solution:``
+     - flag / string
+     - | Displays a **Solution** button alongside Check and Reset.
+       | Can be passed as a flag (``:solution:``) or as a string value (``:solution: true`` / ``:solution: yes``).
+   * - ``:instructions:``
+     - string
+     - | Custom instruction text displayed at the top of the block.
+       | Defaults to ``"Classify each item into its correct category:"``.
    * - ``:theme:``
      - string
-     - | Sets the visual theme workspace wrapper.
+     - | Sets the visual theme wrapper.
        | Options are ``white`` (default) or ``light``.
    * - ``:sort:``
      - string / boolean
@@ -46,10 +58,6 @@ Options for the classifying directive
    * - ``:shuffle:``
      - flag
      - | Optional flag to explicitly enable random item shuffling.
-   * - ``:instructions:``
-     - string
-     - | A brief instruction to guide the user on what to select.
-       | defaults to "Classify each item into its correct category:".
 
 
 | Syntax Rules: Items inside the body are mapped using key-value syntax formatted as ``Item Text: Category Name``.

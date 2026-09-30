@@ -73,7 +73,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx_togglebutton",
     "sphinx_design",
-    "multichoicepage.multichoicepage",  # custom directive
+    "mcqgroup.mcqgroup",  # custom directive
     "multichoice.multichoice",  # custom directive
     "cloze.cloze",  # custom directive
     "gapfill.gapfill",  # custom directive

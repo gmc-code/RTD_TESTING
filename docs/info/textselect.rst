@@ -91,6 +91,22 @@ Options for the textselect directive
 .. code-block:: rst
 
     .. textselect::
+        :instructions: Select the Qualifier of the noun group.
+        :color: qualifier
+
+        The test tube {{on the rack}} contains acid.
+
+.. textselect::
+    :instructions: Select the Qualifier of the noun group.
+    :color: qualifier
+
+    The test tube {{on the rack}} contains acid.
+
+----
+
+.. code-block:: rst
+
+    .. textselect::
         :instructions: Select the Circumstance of Place.
         :color: blue
 
@@ -140,13 +156,13 @@ Options for the textselect directive
 
     .. textselect::
         :instructions: Select the Conjunction (textual theme).
-        :color: conj
+        :color: conjunction
 
         {{However}}, the reaction may take longer at room temperature.
 
 .. textselect::
     :instructions: Select the Conjunction (textual theme).
-    :color: conj
+    :color: conjunction
 
     {{However}}, the reaction may take longer at room temperature.
 

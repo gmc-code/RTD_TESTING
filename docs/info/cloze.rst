@@ -20,27 +20,29 @@ Options for the cloze directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 25 15 60
    :header-rows: 1
 
    * - Option
      - Type
      - Description
-   * - ``:auto-distract:``
+   * - ``:shuffle-lines:`` / ``:shuffle:``
      - flag
-     - | If present, dynamically harvests distractors from
-       | the surrounding text or alternate gap parameters.
-   * - ``:show-code:``
-     - flag
-     - If present, displays the code block in the solution.
-   * - ``:theme:``
-     - string
-     - | Sets the visual styling theme for the block layout.
-       | Acceptable values are ``white`` (default) or ``light``.
+     - | Randomizes line order on each page render while preserving
+       | gap counters and dropzones attached to each individual line.
    * - ``:instructions:``
      - string
-     - A brief instruction to guide the user on what to select.
-
+     - | Custom instruction text rendered above the word bank tray.
+   * - ``:auto-distract:``
+     - flag
+     - | Automatically populates additional distractor tokens in the word bank
+       | using unused context words from the text block.
+   * - ``:show-code:``
+     - flag
+     - | Displays a syntax-highlighted code block container upon reaching a 100% score.
+   * - ``:theme:``
+     - string
+     - | Options are ``white`` (default) or ``light``.
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
 |

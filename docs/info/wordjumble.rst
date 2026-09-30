@@ -54,7 +54,7 @@ Options for the wordjumble directive
    * - ``:instructions:``
      - string
      - | *Default text* is "Unjumble each word by typing the
-       |correct spelling in the box next to it."
+       | correct spelling in the box next to it."
      - | Custom instruction header displayed
        | above the exercise block.
    * - ``:theme:``

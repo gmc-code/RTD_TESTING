@@ -278,3 +278,34 @@
   border-color: var(--cf-incorrect-border);
   color: var(--cf-incorrect-text);
 }
+
+/* ==========================================================================
+   7. * Custom rST Role Styling in Classifying Directive *
+   ========================================================================== */
+
+.classifying-code .rst-role {
+    display: inline; /* Keep inline flow with surrounding text */
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin: 0 1px;
+    background-color: #e6f4ea;
+    border: 1px solid #a8dab5;
+}
+
+/* Hide the literal ":process:" text prefix */
+.classifying-code .rst-role-name {
+    display: none;
+}
+
+/* Ensure font properties strictly inherit from parent .classifying-code */
+.classifying-code .rst-role-content {
+    font-family: inherit !important;
+    font-size: 1em !important;          /* Inherit parent text size */
+    line-height: inherit !important;      /* Match line spacing */
+    font-weight: 600;                     /* Keep bold highlight */
+    color: #137333;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: none;
+}

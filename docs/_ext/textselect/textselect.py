@@ -94,6 +94,7 @@ class TextSelectDirective(SphinxDirective):
         )
 
         target_colors = {}
+        # FIX: Reset word token index to 0 for EACH directive instance
         word_token_index = 0
 
         # Split text into lines so JavaScript can shuffle line blocks individually

@@ -19,9 +19,9 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/Intro.rst
 
     info/multichoice.rst
-    info/multichoice_page.rst
+    info/mcqgroup.rst
     info/trueorfalse.rst
-    info/trueorfalse_page.rst
+    info/trueorfalse_group.rst
 
     info/cloze.rst
     info/gapfill.rst

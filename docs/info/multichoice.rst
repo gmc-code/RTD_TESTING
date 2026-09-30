@@ -125,7 +125,7 @@ Example 3: Single Correct (Unshuffled)
         Which of these are valid variable names in Python?
 
         [x] my_var | Correct. Valid variable name
-        [ ] var | Incorrect. Cannot start with a number
+        [ ] 2var | Incorrect. Cannot start with a number
         [ ] @var | Incorrect. Cannot start with a symbol
         [ ] my-var | Incorrect. Hyphens are not allowed
 
@@ -135,7 +135,7 @@ Example 3: Single Correct (Unshuffled)
     Which of these are valid variable names in Python?
 
     [x] my_var | Correct. Valid variable name
-    [ ] var | Incorrect. Cannot start with a number
+    [ ] 2var | Incorrect. Cannot start with a number
     [ ] @var | Incorrect. Cannot start with a symbol
     [ ] my-var | Incorrect. Hyphens are not allowed
 

@@ -30,7 +30,9 @@ class ClozeDirective(SphinxDirective):
         'auto-distract': directives.flag,
         'theme': lambda argument: directives.choice(argument, ('white', 'light')),
         'show-code': directives.flag,
-        'instructions': directives.unchanged,  # New instructions option added
+        'instructions': directives.unchanged,
+        'shuffle-lines': directives.flag,     # Flag to enable line shuffling
+        'shuffle': directives.flag,           # Alias for shuffle-lines
     }
 
     def run(self):
@@ -55,6 +57,7 @@ class ClozeDirective(SphinxDirective):
         auto_distract = 'auto-distract' in self.options
         show_code = 'show-code' in self.options
         instructions = self.options.get('instructions', '').strip()
+        should_shuffle_lines = 'shuffle-lines' in self.options or 'shuffle' in self.options
 
         if not hasattr(self.env, 'cloze_gap_counter'):
             self.env.cloze_gap_counter = 0
@@ -117,13 +120,23 @@ class ClozeDirective(SphinxDirective):
                 f'</span>'
             )
 
-        escaped_text = html.escape(cleaned_text)
-        escaped_text = escaped_text.replace(html.escape("*["), "*[").replace(
-            html.escape("]*"), "]*"
-        )
+        # Process each line individually to preserve layout during line shuffling
+        lines = cleaned_text.splitlines()
+        processed_lines = []
 
-        combined_text_html = html_gap_pattern.sub(replace_gap, escaped_text)
-        combined_text_html = combined_text_html.replace("\n", "<br>")
+        for line in lines:
+            escaped_line = html.escape(line)
+            escaped_line = escaped_line.replace(html.escape("*["), "*[").replace(
+                html.escape("]*"), "]*"
+            )
+            line_html = html_gap_pattern.sub(replace_gap, escaped_line)
+            processed_lines.append(line_html)
+
+        # Shuffle lines if option is enabled
+        if should_shuffle_lines:
+            random.shuffle(processed_lines)
+
+        combined_text_html = "<br>".join(processed_lines)
 
         word_bank_items.sort()
 
@@ -202,7 +215,7 @@ def setup(app):
     app.add_css_file("cloze.css")
 
     return {
-        "version": "4.2",
+        "version": "4.3",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }
