@@ -33,34 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function shuffleQuestions(group) {
-    const container = group.querySelector(".mcqgroup-questions-container");
-    if (!container) return;
-
-    const blocks = Array.from(container.querySelectorAll(".multichoice-block"));
-    if (blocks.length <= 1) return;
-
-    shuffleArray(blocks);
-    blocks.forEach((b) => container.appendChild(b));
-
-    // Update auto-numbering headers to match new order
-    blocks.forEach((block, index) => {
-      let header = block.querySelector(".mcqgroup-question-header");
-      if (!header) {
-        header = document.createElement("div");
-        header.className = "mcqgroup-question-header";
-        block.prepend(header);
-      }
-      header.textContent = `Question ${index + 1}`;
-    });
-  }
-
   groupBlocks.forEach((group) => {
     // Remove individual question control panels inside the group block
     const individualControls = group.querySelectorAll(".multichoice-control-panel");
     individualControls.forEach((panel) => panel.remove());
 
-    let blocks = Array.from(group.querySelectorAll(".multichoice-block"));
+    const blocks = Array.from(group.querySelectorAll(".multichoice-block"));
     if (blocks.length === 0) return;
 
     // Dynamically insert compact "Question X" auto-numbering headers
@@ -101,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (totalValue) totalValue.textContent = blocks.length;
     if (totalIdxSpan) totalIdxSpan.textContent = blocks.length;
 
+    // Hard lock all option inputs until Start Quiz is clicked
     function lockAllInputs() {
       blocks.forEach((block) => {
         const inputs = Array.from(block.querySelectorAll("input[type='radio'], input[type='checkbox']"));
@@ -224,13 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function resetQuizState() {
       delete group.dataset.groupChecked;
-
-      // Reshuffle question order if option is set
-      if (group.dataset.shuffleQuestions === "true") {
-        shuffleQuestions(group);
-        // Refresh reference array after reshuffling DOM
-        blocks = Array.from(group.querySelectorAll(".multichoice-block"));
-      }
 
       blocks.forEach((block) => {
         delete block.dataset.checked;

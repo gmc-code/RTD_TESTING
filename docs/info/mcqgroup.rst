@@ -40,6 +40,10 @@ Options for the mcqgroup directive
      - Flag
      - Off
      - Displays the "Instant Feedback" checkbox control in the group action bar.
+   * - ``:shuffle_questions:`` / ``:shuffle-questions:``
+     - Flag
+     - Off
+     - Randomizes the order of questions in the group.
 
 
 Grouped Multiple Choice Examples
@@ -65,11 +69,12 @@ Grouped Multiple Choice Examples
 
 ----
 
-mcq 2
------------
+Grouped Multiple Choice with randomization
+-----------------------------------------------
 
 .. mcqgroup::
     :show_instant_feedback:
+    :shuffle_questions:
 
     .. multichoice::
         :torf:

@@ -10,14 +10,8 @@ class mcqgroup_node(nodes.General, nodes.Element):
 
 def visit_mcqgroup_html(self, node):
     show_instant = node.get("show_instant_feedback", False)
-    shuffle_q = node.get("shuffle_questions", False)
 
-    # Pass data attribute to HTML container
-    data_attrs = 'data-view-mode="wizard"'
-    if shuffle_q:
-        data_attrs += ' data-shuffle-questions="true"'
-
-    self.body.append(f'<div class="mcqgroup-block" {data_attrs}>')
+    self.body.append('<div class="mcqgroup-block" data-view-mode="wizard">')
     self.body.append('  <div class="mcqgroup-header">')
     self.body.append('    <div class="mcqgroup-top-row">')
     self.body.append('      <div class="mcqgroup-progress-container">')
@@ -70,17 +64,12 @@ class MCQGroupDirective(SphinxDirective):
     option_spec = {
         "show_instant_feedback": directives.flag,
         "show-instant-feedback": directives.flag,
-        "shuffle_questions": directives.flag,
-        "shuffle-questions": directives.flag,
     }
 
     def run(self):
         node = mcqgroup_node()
         show_instant = "show_instant_feedback" in self.options or "show-instant-feedback" in self.options
-        shuffle_q = "shuffle_questions" in self.options or "shuffle-questions" in self.options
-
         node["show_instant_feedback"] = show_instant
-        node["shuffle_questions"] = shuffle_q
 
         self.state.nested_parse(self.content, self.content_offset, node)
         return [node]
