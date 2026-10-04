@@ -1,5 +1,5 @@
 ================================================
-Structured Question Directive Documentation
+Structured Question Directive
 ================================================
 
 The structuredquestion directive creates interactive exam-style questions with sub-questions, model answers, marking guidance, and self-grading controls.
@@ -51,7 +51,7 @@ Options for nested directives
 -----------------------------
 
 .. list-table::
-   :widths: 40 20 10 20
+   :widths: 50 20 10 20
    :header-rows: 1
 
    * - Directive

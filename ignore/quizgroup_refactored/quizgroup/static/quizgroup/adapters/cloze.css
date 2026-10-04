@@ -1,0 +1,11 @@
+/* Cloze inside a quiz */
+.quizgroup-block .cloze-global-panel {
+  display: none !important;
+}
+
+.quizgroup-block .cloze-dropzone.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+  background-color: #f8f9fa;
+}

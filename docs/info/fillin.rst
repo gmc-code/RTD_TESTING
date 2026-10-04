@@ -1,5 +1,5 @@
 ================================================
-Fillin Directive Documentation
+Fillin Directive
 ================================================
 
 The fillin directive creates an interactive "Fill-in-the-Blanks" text or code exercise.

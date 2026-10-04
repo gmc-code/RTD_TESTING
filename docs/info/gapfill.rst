@@ -1,5 +1,5 @@
 ================================================
-Gapfill Directive Documentation
+Gapfill Directive
 ================================================
 
 The gapfill directive creates an interactive "Fill-in-the-Blanks" text or code exercise.
@@ -79,19 +79,21 @@ Example 2: Multiple Sentences
 
 ----
 
-Example 3: light theme
-------------------------------------
+Example 3: light theme and instructions
+---------------------------------------------
 
 | The following example demonstrates the gapfill directive with the light theme. `:theme: light` is optional since it is not the default.
 
 .. code-block:: rst
 
     .. gapfill::
+        :instructions: Choose the correct option from the dropdowns below.
         :theme: light
 
         To execute code conditionally, use the @@if | None | else@@ keyword followed by an expression.
 
 .. gapfill::
+    :instructions: Choose the correct option from the dropdowns below.
     :theme: light
 
     To execute code conditionally, use the @@if | None | else@@ keyword followed by an expression.

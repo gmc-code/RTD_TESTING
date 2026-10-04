@@ -1,0 +1,23 @@
+/* Classifying inside a quiz */
+.quizgroup-block .classifying-controls {
+  display: none !important;
+}
+
+.quizgroup-block .classifying-dropdown:disabled,
+.quizgroup-block .classifying-input:disabled,
+.quizgroup-block .sorting-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}
+
+.quizgroup-block .classifying-line.correct-line {
+  background-color: #d4edda !important;
+  border-left: 4px solid #28a745;
+}
+
+.quizgroup-block .classifying-line.incorrect-line {
+  background-color: #f8d7da !important;
+  border-left: 4px solid #dc3545;
+}

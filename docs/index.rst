@@ -12,17 +12,19 @@ These docs provide details on sphinx extensions and how to use them. The extensi
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 1
     :caption: Table of Contents:
     :numbered:
 
     info/Intro.rst
 
-    info/multichoice.rst
-    info/mcqgroup.rst
-    info/trueorfalse.rst
-    info/trueorfalse_group.rst
+.. toctree::
+    :maxdepth: 1
+    :caption: Directives:
+    :numbered:
 
+    info/multichoice.rst
+    info/trueorfalse.rst
     info/cloze.rst
     info/gapfill.rst
     info/classifying.rst
@@ -33,6 +35,18 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/wordjumble.rst
     info/labels.rst
     info/structuredquestion.rst
+
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Group Directives:
+    :numbered:
+
+    info/mcqgroup.rst
+
+    info/clozegroup.rst
+
+    info/quizgroup.rst
 
 
 .. toctree::

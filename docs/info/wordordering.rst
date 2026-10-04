@@ -1,5 +1,5 @@
 ================================================
-Word Ordering Directive Documentation
+Word Ordering Directive
 ================================================
 
 The wordordering directive creates an interactive word-reordering exercise. Users can drag and drop individual word chips or sentence fragments into their correct sequence to reconstruct a sentence.
@@ -117,7 +117,7 @@ Split sentence into custom phrases using a delimiter
 
 ----
 
-Split sentence into custom phrases using  roles
+Split sentence into custom phrases using roles
 ----------------------------------------------------------
 
 .. code-block:: rst

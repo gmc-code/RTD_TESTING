@@ -8,14 +8,24 @@ Introduction
 The directives covered in this documentation include:
 
 - multichoice
-- multichoice_page
+- trueorfalse
 - cloze
 - gapfill
 - classifying
 - fillin
-- ordering
-- wordordering
 - textselect
 - wordjumble
+- ordering
+- wordordering
 - structuredquestion
 - labels
+
+Group directives:
+
+- quizgroup
+- clozegroup
+- mcqgroup
+
+
+Other tools:
+- noisemonitor

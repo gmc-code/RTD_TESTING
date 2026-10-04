@@ -1,4 +1,0 @@
-
-
-from .mcqgroup import setup
-

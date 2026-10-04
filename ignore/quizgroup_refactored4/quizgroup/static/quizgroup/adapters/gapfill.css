@@ -1,0 +1,12 @@
+/* GapFill inside a quiz */
+.quizgroup-block .gapfill-global-panel {
+  display: none !important;
+}
+
+.quizgroup-block .gapfill-dropdown:disabled,
+.quizgroup-block .gapfill-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}

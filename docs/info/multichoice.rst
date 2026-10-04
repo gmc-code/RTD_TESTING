@@ -1,5 +1,5 @@
 ================================================
-Multi-Choice Directive Documentation
+Multi-Choice Directive
 ================================================
 
 The multichoice directive creates an interactive multiple-choice question format. Users can select one or more choices, validate their answers, and receive instant feedback alongside custom written explanations.
@@ -22,7 +22,7 @@ Options for the multichoice directive
 --------------------------------------
 
 .. list-table::
-   :widths: 35 10 55
+   :widths: 25 15 60
    :header-rows: 1
 
    * - Option
@@ -51,8 +51,8 @@ Options for the multichoice directive
 
 | Shuffling: Unless ``:no-shuffle:`` or ``:torf:`` is declared, choices are automatically randomized on page render and on Reset button clicks to eliminate position-based pattern guessing.
 | Selection Engine: The directive automatically changes selection inputs from single-choice radio buttons to multi-choice checkboxes if more than one option is marked correct ``[x]``.
-| State Retention: Clicking the **Reset** button preserves the user's "Show feedback" toggle preference while clearing selected choices.
-| Visual Badges: Once the evaluation button is selected, clear inline indicator icons (✓, ✕) show up next to each answer option along with context explanations.
+| State Retention: Clicking the **Reset** button preserves the user's **"Show feedback"** toggle preference while clearing selected choices.
+| Visual Badges and feedback: Once the evaluation button is selected, clear inline indicator icons (✓, ✕) show up next to each answer option along with context explanations for the selected choice.
 
 ----
 
@@ -72,6 +72,13 @@ Example 1: Single Correct (Default)
         [ ] !== | Incorrect. Not equals to
         [ ] <= | Incorrect. Less than or equals to
 
+    .. multichoice::
+
+    :speak:`Which of these does an equality check in Python?`
+
+    [x] == | Correct.
+    [ ] = | Incorrect. That does assignment
+
 .. multichoice::
 
     Which of these does an equality check in Python?
@@ -80,6 +87,14 @@ Example 1: Single Correct (Default)
     [ ] = | Incorrect. That does assignment
     [ ] !== | Incorrect. Not equals to
     [ ] <= | Incorrect. Less than or equals to
+
+
+.. multichoice::
+
+   :speak:`Which of these does an equality check in Python?`
+
+   [x] == | Correct.
+   [ ] = | Incorrect. That does assignment
 
 ----
 

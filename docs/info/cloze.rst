@@ -1,5 +1,5 @@
 ================================================
-Cloze Directive Documentation
+Cloze Directive
 ================================================
 
 The cloze directive creates an interactive fill-in-the-blanks puzzle with dual interaction support.
@@ -26,7 +26,8 @@ Options for the cloze directive
    * - Option
      - Type
      - Description
-   * - ``:shuffle-lines:`` / ``:shuffle:``
+   * - | ``:shuffle-lines:`` /
+       | ``:shuffle:``
      - flag
      - | Randomizes line order on each page render while preserving
        | gap counters and dropzones attached to each individual line.
@@ -45,17 +46,11 @@ Options for the cloze directive
      - | Options are ``white`` (default) or ``light``.
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.
-|
 | Single Items: An implicit markup pattern like ``@@return@@`` designates a target drop field.
-|
 | Multiple Choice: You can explicitly supply choices by separating alternatives with pipes: ``@@choices | alternatives@@``.
-|
 | Distractor Harvesting: Applying the ``:auto-distract:`` flag commands the backend to look ahead, read the code context, and feed vocabulary selections automatically as distractors.
-|
-| Interaction Modes:
-| Supports both desktop **Drag and Drop** and mobile/mouse **Click-to-Select / Click-to-Place** (click/tap a word to highlight it, then click/tap a gap to place it).
+| Interaction Modes: Supports both desktop **Drag and Drop** and mobile/mouse **Click-to-Select / Click-to-Place** (click/tap a word to highlight it, then click/tap a gap to place it).
 | **Double-clicking** a filled gap returns the word back to the tray.
-|
 | Structure: The directive creates a word bank container layer holding interactive buttons and embeds corresponding drop target fields within the text layout.
 
 ----

@@ -1,5 +1,5 @@
 ================================================
-Textselect Directive Documentation
+Textselect Directive
 ================================================
 
 The textselect directive creates an interactive text selection exercise with dual interaction support.

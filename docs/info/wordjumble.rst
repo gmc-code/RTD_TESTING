@@ -1,5 +1,5 @@
 ================================================
-WordJumble Directive Documentation
+WordJumble Directive
 ================================================
 
 The wordjumble directive creates an interactive text unscrambling exercise.
@@ -22,7 +22,7 @@ Options for the wordjumble directive
 --------------------------------------
 
 .. list-table::
-   :widths: 20 10 15 55
+   :widths: 20 10 35 35
    :header-rows: 1
 
    * - Option

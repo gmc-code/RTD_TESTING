@@ -1,7 +1,7 @@
 
 
 ================================================
-Ordering Directive Documentation
+Ordering Directive
 ================================================
 
 The ordering directive creates an interactive code-reordering exercise. Users can drag and drop code lines into their correct sequence and adjust indentation levels.
@@ -19,7 +19,7 @@ Options for the ordering directive
 --------------------------------------
 
 .. list-table::
-   :widths: 20 10 70
+   :widths: 25 10 65
    :header-rows: 1
 
    * - Option

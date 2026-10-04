@@ -1,5 +1,5 @@
 ================================================
-Label Diagram Directive Documentation
+Label Diagram Directive
 ================================================
 
 The label diagram directive creates an interactive image-labelling exercise with dual interaction support.

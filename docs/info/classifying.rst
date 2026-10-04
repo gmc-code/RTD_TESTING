@@ -1,5 +1,5 @@
 ================================================
-Classifying Directive Documentation
+Classifying Directive
 ================================================
 
 The classifying directive creates an interactive categorization activity.
