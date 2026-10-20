@@ -7,6 +7,41 @@ from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
 
+# Supported color/role keys matching textselect.css
+# SUPPORTED_ROLES = [
+#     "red", "participant", "green", "process", "blue", "circumstance",
+#     "conjunction", "part", "theme", "rheme", "independent", "dependent",
+#     "embedded", "relative", "projected", "premodifier", "postmodifier",
+#     "pointer", "numerative", "describer", "classifier", "thing", "qualifier"
+# ]
+SUPPORTED_ROLES = [
+        # Experimental / Variables
+        "p", "r", "o", "pb", "rb", "ob", "iv", "dv", "cv", "ivb", "dvb", "cvb",
+        # Theme / Rheme
+        "theme", "rheme", "themep", "rhemep", "themeb", "rhemeb",
+        # SFL Functional Roles (Bordered)
+        "process", "participant", "circumstance", "conjunction", "text_connective", "part",
+        # SFL Functional Roles (Filled Chips)
+        "processb", "participantb", "circumstanceb", "conjunctionb", "text_connectiveb", "partb",
+        # SFL Functional Roles (Plain Text)
+        "processp", "participantp", "circumstancep", "conjunctionp", "text_connectivep", "partp",
+
+        # SFL Nominal Group Roles (Outlined)
+        "premodifier", "pointer", "numerative", "describer", "classifier", "thing", "qualifier","postmodifier",
+        # SFL Nominal Group Roles (Filled Chips)
+        "premodifierb", "pointerb", "numerativeb", "describerb", "classifierb", "thingb", "qualifierb","postmodifierb",
+        # SFL Nominal Group Roles (Plain Text)
+        "premodifierp", "pointerp", "numerativep", "describerp", "classifierp", "thingp", "qualifierp","postmodifierp",
+
+
+        # Clause Structure Roles (Bordered)
+        "independent", "dependent", "embedded", "relative", "projected",
+        # Clause Structure Roles (Filled Chips)
+        "independentb", "dependentb", "embeddedb", "relativeb", "projectedb",
+        # Clause Structure Roles (Plain Text)
+        "independentp", "dependentp", "embeddedp", "relativep", "projectedp",
+]
+
 class textselect_node(nodes.General, nodes.Element):
     pass
 
@@ -26,21 +61,35 @@ def visit_textselect_html(self, node):
     classes = " ".join(
         filter(
             None,
-            ["textselect-block", theme_class, color_class, style_class, mode_class],
+            [
+                "textselect-block",
+                theme_class,
+                color_class,
+                style_class,
+                mode_class,
+            ],
         )
     )
 
     self.body.append(
         f'<div class="{classes}" data-mode="{mode}" data-shuffle="{shuffle}">'
     )
+
     self.body.append(
-        f'<div class="textselect-instructions">{node.get("instructions", "")}</div>'
+        f'<div class="textselect-instructions">'
+        f'{node.get("instructions", "")}'
+        f'</div>'
     )
+
+    # IMPORTANT:
+    # Use a normal div rather than <pre>, so text can wrap naturally.
     self.body.append(
-        f'<pre class="textselect-content" data-targets=\'{node.get("target_json", "{}")}\'>'
+        f'<div class="textselect-content" '
+        f'data-targets=\'{node.get("target_json", "{}")}\'>'
     )
+
     self.body.append(node.get("html_content", ""))
-    self.body.append("</pre></div>")
+    self.body.append("</div></div>")
     raise nodes.SkipNode
 
 
@@ -65,10 +114,8 @@ class TextSelectDirective(SphinxDirective):
         node = textselect_node()
         node["shuffle"] = "shuffle" in self.options
 
-        chosen_mode = self.options.get("mode", "single").strip().lower()
-        if chosen_mode not in ["single", "multi"]:
-            chosen_mode = "single"
-        node["mode"] = chosen_mode
+        raw_mode = self.options.get("mode", "single").strip().lower()
+        node["mode"] = raw_mode
 
         VALID_THEMES = ["white", "light"]
         chosen_theme = self.options.get("theme", "white").strip().lower()
@@ -76,7 +123,7 @@ class TextSelectDirective(SphinxDirective):
             chosen_theme = "white"
         node["theme"] = chosen_theme
 
-        chosen_color = self.options.get("color", "blue").strip().lower()
+        chosen_color = self.options.get("color", raw_mode if raw_mode in SUPPORTED_ROLES else "blue").strip().lower()
         node["color"] = chosen_color
 
         chosen_style = self.options.get("style", "filled").strip().lower()
@@ -86,7 +133,7 @@ class TextSelectDirective(SphinxDirective):
 
         default_instructions = (
             "Click or drag to highlight the target words."
-            if chosen_mode == "single"
+            if raw_mode != "multi"
             else "Select a color and highlight the corresponding text."
         )
         node["instructions"] = html.escape(
@@ -94,10 +141,26 @@ class TextSelectDirective(SphinxDirective):
         )
 
         target_colors = {}
-        # FIX: Reset word token index to 0 for EACH directive instance
         word_token_index = 0
 
-        # Split text into lines so JavaScript can shuffle line blocks individually
+        # Convert standard RST inline roles (e.g. :premodifier:`a power`)
+        # into static spans. Their contents are tokenised separately below so
+        # individual words can wrap normally without becoming selectable.
+        def replace_inline_role(match):
+            role_name = match.group(1).lower()
+            role_content = match.group(2)
+            return (
+                f'<span class="ts-static-role ts-role-{role_name}" '
+                f'data-static-role-content="{html.escape(role_content, quote=True)}">'
+                f'{html.escape(role_content)}</span>'
+            )
+
+        full_text = re.sub(
+            r':([a-zA-Z0-9_-]+):`([^`]+)`',
+            replace_inline_role,
+            full_text
+        )
+
         lines = full_text.splitlines()
         html_lines = []
 
@@ -107,21 +170,76 @@ class TextSelectDirective(SphinxDirective):
             n = len(text)
 
             while i < n:
+                # Tokenise static RST role content into non-interactive word
+                # spans. This keeps each word intact while still allowing the
+                # phrase to wrap naturally at spaces.
+                if text[i:].startswith('<span class="ts-static-role'):
+                    end_span = text.find('</span>', i)
+                    if end_span != -1:
+                        static_markup = text[i : end_span + 7]
+                        role_match = re.match(
+                            r'<span class="ts-static-role ts-role-([^" ]+)" '
+                            r'data-static-role-content="([^"]*)">',
+                            static_markup,
+                        )
+
+                        if role_match:
+                            role_name = role_match.group(1)
+                            role_content = html.unescape(role_match.group(2))
+                            static_tokens = []
+
+                            for token_match in re.finditer(r"(\w+|[^\w\s]+|\s+)", role_content):
+                                token = token_match.group(0)
+                                if token.isspace():
+                                    static_tokens.append(
+                                        token.replace(
+                                            " ", '<span class="ts-static-space"> </span>'
+                                        )
+                                    )
+                                elif re.match(r"^\w+$", token):
+                                    static_tokens.append(
+                                        f'<span class="ts-static-word">{html.escape(token)}</span>'
+                                    )
+                                else:
+                                    static_tokens.append(html.escape(token))
+
+                            html_tokens.append(
+                                f'<span class="ts-static-role ts-role-{role_name}">'
+                                f'{"".join(static_tokens)}</span>'
+                            )
+                            i = end_span + 7
+                            continue
+
                 if text[i : i + 2] == "{{":
                     end_pos = find_closing_brace(text, i + 2)
                     if end_pos != -1:
                         inner_content = text[i + 2 : end_pos]
 
                         color_key = chosen_color
-                        if chosen_mode == "multi" and ":" in inner_content:
+                        has_explicit_role = False
+
+                        if ":" in inner_content:
                             possible_color, rest = inner_content.split(":", 1)
                             if re.match(r"^[a-zA-Z0-9_-]+$", possible_color.strip()):
                                 color_key = possible_color.strip().lower()
                                 inner_content = rest
+                                has_explicit_role = True
 
-                        parse_nested_text(
-                            inner_content, active_colors + [color_key], html_tokens
-                        )
+                        # Filter out non-matching {{role:text}} markup when not in multi mode
+                        is_interactive = True
+                        if raw_mode != "multi" and has_explicit_role:
+                            if color_key != raw_mode and color_key != chosen_color:
+                                is_interactive = False
+
+                        if is_interactive:
+                            parse_nested_text(
+                                inner_content, active_colors + [color_key], html_tokens
+                            )
+                        else:
+                            parse_nested_text(
+                                inner_content, active_colors, html_tokens
+                            )
+
                         i = end_pos + 2
                         continue
 
@@ -179,7 +297,8 @@ class TextSelectDirective(SphinxDirective):
 
 
 def setup(app):
-    app.add_node(textselect_node, html=(visit_textselect_html, depart_textselect_html))
+    app.add_node(textselect_node,
+                 html=(visit_textselect_html, depart_textselect_html))
     app.add_directive("textselect", TextSelectDirective)
 
     static_path = Path(__file__).parent / "_static"
@@ -190,7 +309,7 @@ def setup(app):
     app.add_css_file("textselect.css")
 
     return {
-        "version": "1.5",
+        "version": "1.8",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

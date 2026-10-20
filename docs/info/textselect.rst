@@ -36,9 +36,13 @@ Options for the textselect directive
     * - ``:color:``
       - string
       - | Sets the highlight color and functional role styling for selected text.
-        | Options are ``red``, ``participant``, ``green``, ``process``,
-        | ``blue``, ``circumstance``, ``conj``, ``part``, ``theme``, ``rheme``,
-        | ``dependent``, ``embedded``, ``relative``, ``projected``.
+        | Core colors/roles: ``red`` (``participant``), ``green`` (``process``),
+        | ``blue`` (``circumstance``), ``conjunction`` (``part``), ``theme``,
+        | ``rheme``, ``independent``, ``dependent``, ``embedded``, ``relative``,
+        | ``projected``.
+        | Structural modifiers: ``premodifier``, ``postmodifier``.
+        | Noun group functions: ``pointer``, ``numerative``, ``describer``,
+        | ``classifier``, ``thing``, ``qualifier``.
     * - ``:theme:``
       - string
       - | Sets the visual theme workspace wrapper.

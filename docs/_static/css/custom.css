@@ -1,12 +1,12 @@
-/* remove read the docs fly out menu */
+/* to remove read the docs fly out menu */
+/* see Read the Docs dashboard under your project’s Settings → Addons → Flyout? */
 
-.your-floating-element-class {
-    display: none !important;
-}
+/* hide the top the version and language selectors */
 
 .switch-menus {
     display: none !important;
 }
+
 
 /* ========================================== */
 /* body background colour default #fcfcfc    #fffef2*/
@@ -55,24 +55,6 @@ div.admonition-my-admonition p.admonition-title {
     text-transform: capitalize;
     color: black!important;
     background-color: gold!important;
-}
-
-/* ========================================== */
-/* Hide "Search" section from versions menu */
-div.rst-versions > div.rst-other-versions > div.injected > dl:nth-child(5) {
-    display: none;
-}
-/* Hide "On GitHub" section from versions menu */
-div.rst-versions > div.rst-other-versions > div.injected > dl:nth-child(4) {
-    display: none;
-}
-/* Hide "On Read the Docs" section from versions menu */
-div.rst-versions > div.rst-other-versions > div.injected > dl:nth-child(3) {
-    display: none;
-}
-/* Hide "versions" section from versions menu */
-div.rst-versions > div.rst-other-versions > div.injected > dl:nth-child(1) {
-    display: none;
 }
 
 

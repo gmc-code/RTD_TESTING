@@ -54,6 +54,7 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     :caption: Classroom Tools:
 
     info/noisemonitor.rst
+    info/seatingplan.rst
 
 
 .. toctree::

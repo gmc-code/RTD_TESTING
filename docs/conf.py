@@ -89,7 +89,10 @@ extensions = [
     "labels.labels",  # custom directive
     "structuredquestion.structuredquestion",  # custom directive
     "noisemonitor.noisemonitor",  # custom directive
-]
+    "seatingplan.seatingplan",  # custom directive
+    "namepicker.namepicker",  # custom directive
+    "randomgroups.randomgroups",  # custom directive
+ ]
 
 # "sphinx.ext.doctest",
 #     "sphinx.ext.napoleon",
