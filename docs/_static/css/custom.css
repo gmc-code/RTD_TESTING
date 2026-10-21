@@ -301,6 +301,8 @@ table.docutils.plain td {
 /* ========================================== */
 /* left sidebar: visible scrollbar            */
 /* ========================================== */
+
+
 .wy-nav-side {
     overflow: hidden;            /* outer frame stays fixed */
 }
