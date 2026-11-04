@@ -8,6 +8,7 @@
 
   var PALETTE = ["#FFC93C", "#F26B38", "#E84A5F", "#7BC67E", "#3FA7D6", "#9B8AE6"];
   var IDLE_MS = 2500;
+  var LONG_PRESS_MS = 550;
 
   function esc(text) {
     var d = document.createElement("div");
@@ -44,12 +45,20 @@
     this.sTime = cfg.sectionTime;
     this.loop = !!cfg.loop;
     this.shuffle = !!cfg.shuffle;
+    this.showBar = cfg.timerBar !== false;
+    this.reviewNext = cfg.review !== false;  // next loop = tagged questions only
+    this.tags = {};           // question key -> true (see buildDeck)
+    this.reviewOnly = false;  // true while a review round is playing
 
     this.stage = root.querySelector(".fq-stage");
     this.bar = root.querySelector(".fq-timer-bar");
     this.progress = root.querySelector(".fq-progress");
+    this.jumpPanel = root.querySelector(".fq-jump");
+    this.jumpGrid = root.querySelector(".fq-jump-grid");
     this.playBtn = root.querySelector(".fq-play");
     this.settings = root.querySelector(".fq-settings");
+    this.tagBtn = root.querySelector(".fq-tag");
+    this.tagCountEl = root.querySelector(".fq-tag-count");
 
     this.deck = [];
     this.index = -1;          // -1 = start screen, deck.length = end screen
@@ -61,11 +70,17 @@
     this.raf = null;
     this.idleTimer = null;
 
+    this.storeKey = "flashquiz-tags:" + location.pathname + ":" +
+      (root.dataset.fqIndex || "0") + ":" + (cfg.title || "");
+    this.loadTags();
+
     this.buildDeck();
     this.buildSettings();
     this.buildPrintList();
     this.bindControls();
     this.updateProgress();
+    // Redraw the start screen so saved tags show a "Review … tagged" button.
+    if (this.tagCount()) this.render();
 
     if (cfg.autostart) this.start();
   }
@@ -76,11 +91,24 @@
     var self = this;
     var deck = [];
     var total = 0;
+    var origCount = 0;   // numbering of the full quiz, before review/shuffle
     this.sections.forEach(function (sec, si) {
       if (!self.enabled[si]) return;
+      var base = origCount;
+      origCount += sec.questions.length;
       var qs = sec.questions.map(function (qa, qi) {
-        return { type: "q", si: si, num: qi + 1, q: qa[0], a: qa[1] };
+        return {
+          type: "q", si: si, num: qi + 1, orig: base + qi + 1,
+          // Keyed by section title + question text, so saved tags still
+          // match if questions are added or reordered later.
+          key: (sec.title || "") + "\u241F" + qa[0],
+          q: qa[0], a: qa[1]
+        };
       });
+      if (self.reviewOnly) {
+        qs = qs.filter(function (item) { return self.tags[item.key]; });
+      }
+      if (!qs.length) return;
       if (self.shuffle) qs = shuffled(qs);
       if (self.sTime > 0 && sec.title) {
         deck.push({ type: "section", si: si, count: qs.length });
@@ -93,12 +121,82 @@
         deck.push(item);
       });
     });
+    if (this.reviewOnly && deck.length) {
+      // Opening "Review round" slide, coloured like the first section.
+      deck.unshift({ type: "section", banner: true, si: deck[0].si, count: total });
+    }
     this.deck = deck;
     this.totalQuestions = total;
+    if (this.jumpGrid) this.buildJumpGrid();
   };
 
   FlashQuiz.prototype.colour = function (si) {
     return PALETTE[si % PALETTE.length];
+  };
+
+  /* ---------- Tagging for review ---------- */
+
+  FlashQuiz.prototype.tagCount = function () {
+    var n = 0;
+    for (var k in this.tags) if (this.tags[k]) n++;
+    return n;
+  };
+
+  // T key, the toolbar flag or the flag on the slide: tag / untag the
+  // question on screen. Tagged questions make up the next review round.
+  FlashQuiz.prototype.toggleTag = function () {
+    var item = this.deck[this.index];
+    if (!item || item.type !== "q") return;
+    if (this.tags[item.key]) delete this.tags[item.key];
+    else this.tags[item.key] = true;
+    this.saveTags();
+    this.updateTagUI();
+  };
+
+  FlashQuiz.prototype.clearTags = function () {
+    this.tags = {};
+    this.saveTags();
+    this.updateTagUI();
+    if (this.phase === "start" || this.phase === "end") this.render();
+  };
+
+  // Tags are remembered in this browser (per page and per quiz), so you
+  // can tag in one lesson and review in the next. Storage can be blocked
+  // (private windows etc.), in which case tags just last until reload.
+  FlashQuiz.prototype.loadTags = function () {
+    try {
+      var raw = window.localStorage.getItem(this.storeKey);
+      var list = raw ? JSON.parse(raw) : [];
+      var self = this;
+      if (Array.isArray(list)) list.forEach(function (k) { self.tags[k] = true; });
+    } catch (e) { /* ignore */ }
+  };
+
+  FlashQuiz.prototype.saveTags = function () {
+    try {
+      var list = Object.keys(this.tags).filter(function (k) { return this.tags[k]; }, this);
+      if (list.length) window.localStorage.setItem(this.storeKey, JSON.stringify(list));
+      else window.localStorage.removeItem(this.storeKey);
+    } catch (e) { /* ignore */ }
+  };
+
+  FlashQuiz.prototype.updateTagUI = function () {
+    var self = this;
+    var item = this.deck[this.index];
+    var on = !!(item && item.type === "q" && this.tags[item.key]);
+    this.stage.classList.toggle("fq-tagged", on);
+    this.tagBtn.classList.toggle("fq-on", on);
+    this.tagBtn.setAttribute("aria-pressed", String(on));
+    this.tagBtn.disabled = !(item && item.type === "q");
+    var n = this.tagCount();
+    this.tagCountEl.textContent = n ? n + " tagged" : "None tagged";
+    var grid = this.jumpGrid;
+    if (grid) {
+      var btns = grid.querySelectorAll(".fq-jump-num");
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle("fq-jump-tagged", !!self.tags[btns[i].dataset.key]);
+      }
+    }
   };
 
   /* ---------- Rendering ---------- */
@@ -112,8 +210,10 @@
         '<div class="fq-start fq-slide">' +
         '<div class="fq-start-title">' + esc(this.cfg.title || "Flash Quiz") + "</div>" +
         '<div class="fq-start-sub">' + this.totalQuestions + " questions</div>" +
+        '<div class="fq-start-btns">' +
         '<button type="button" class="fq-btn fq-btn-big fq-start-btn">&#9654; Start</button>' +
-        "</div>";
+        this.reviewBtnHtml() +
+        "</div></div>";
       this.bindStartBtn();
       return;
     }
@@ -124,8 +224,10 @@
         '<div class="fq-start fq-slide">' +
         '<div class="fq-start-title">Well done!</div>' +
         '<div class="fq-start-sub">' + this.totalQuestions + " questions completed</div>" +
+        '<div class="fq-start-btns">' +
         '<button type="button" class="fq-btn fq-btn-big fq-start-btn">&#8635; Go again</button>' +
-        "</div>";
+        this.reviewBtnHtml() +
+        "</div></div>";
       this.bindStartBtn();
       return;
     }
@@ -135,6 +237,17 @@
     var col = this.colour(item.si);
     this.root.style.setProperty("--fq-accent", col);
 
+    if (item.type === "section" && item.banner) {
+      st.classList.add("fq-is-section");
+      st.innerHTML =
+        '<div class="fq-slide">' +
+        '<div class="fq-section-title">&#9873; Review round</div>' +
+        '<div class="fq-section-sub">' + item.count + " tagged question" + (item.count === 1 ? "" : "s") + "</div>" +
+        "</div>";
+      this.updateTagUI();
+      return;
+    }
+
     if (item.type === "section") {
       st.classList.add("fq-is-section");
       st.innerHTML =
@@ -142,6 +255,7 @@
         '<div class="fq-section-title">' + esc(sec.title) + "</div>" +
         '<div class="fq-section-sub">' + item.count + " question" + (item.count === 1 ? "" : "s") + "</div>" +
         "</div>";
+      this.updateTagUI();
       return;
     }
 
@@ -149,8 +263,9 @@
     // can fade in on the same slide.
     if (this.renderedIndex !== this.index || !st.querySelector(".fq-answer")) {
       st.innerHTML =
-        (sec.title ? '<div class="fq-unit">' + esc(sec.title) + "</div>" : "") +
-        '<div class="fq-num">' + item.pos + "</div>" +
+        '<div class="fq-unit">' + (this.reviewOnly ? "&#9873; Review" + (sec.title ? " &middot; " : "") : "") + esc(sec.title || "") + "</div>" +
+        '<button type="button" class="fq-tag-badge" title="Tag for review (T)" aria-label="Tag for review">&#9873;</button>' +
+        '<div class="fq-num">' + (this.reviewOnly ? item.orig : item.overall) + "</div>" +
         '<div class="fq-slide">' +
         '<div class="fq-question">' + esc(item.q) + "</div>" +
         '<div class="fq-answer" role="button" tabindex="-1" title="Show answer">' + esc(item.a) + "</div>" +
@@ -158,6 +273,9 @@
       var self = this;
       st.querySelector(".fq-answer").addEventListener("click", function () {
         if (self.phase === "question") self.showAnswer();
+      });
+      st.querySelector(".fq-tag-badge").addEventListener("click", function () {
+        self.toggleTag();
       });
     }
     var ans = st.querySelector(".fq-answer");
@@ -171,12 +289,22 @@
       ans.setAttribute("aria-hidden", "true");
     }
     this.renderedIndex = this.index;
+    this.updateTagUI();
+  };
+
+  FlashQuiz.prototype.reviewBtnHtml = function () {
+    var n = this.tagCount();
+    if (!n) return "";
+    return '<button type="button" class="fq-btn fq-btn-big fq-review-btn">&#9873; Review ' +
+      n + " tagged</button>";
   };
 
   FlashQuiz.prototype.bindStartBtn = function () {
     var self = this;
     var btn = this.stage.querySelector(".fq-start-btn");
     if (btn) btn.addEventListener("click", function () { self.start(); });
+    var rbtn = this.stage.querySelector(".fq-review-btn");
+    if (rbtn) rbtn.addEventListener("click", function () { self.start(true); });
     this.renderedIndex = null;
   };
 
@@ -189,13 +317,15 @@
         if (this.deck[i].type === "q") { done = this.deck[i].overall; break; }
       }
     }
-    this.progress.textContent = done + " / " + this.totalQuestions;
+    this.progress.textContent = done + " / " + this.totalQuestions + (this.reviewOnly ? " \u2691" : "");
+    this.markCurrent(done);
     this.playBtn.innerHTML = this.playing ? "&#10074;&#10074;" : "&#9654;";
     this.playBtn.setAttribute("aria-label", this.playing ? "Pause" : "Play");
   };
 
   FlashQuiz.prototype.setBar = function () {
-    var frac = this.phaseMs > 0 ? Math.max(0, 1 - this.elapsed / this.phaseMs) : 0;
+    // Bar fills up from left to right as the time runs out.
+    var frac = this.phaseMs > 0 ? Math.min(1, this.elapsed / this.phaseMs) : 0;
     if (this.phase === "start" || this.phase === "end") frac = 0;
     this.bar.style.width = (frac * 100).toFixed(2) + "%";
   };
@@ -217,12 +347,15 @@
     this.phaseMs = this.phaseLength();
     this.render();
     this.updateProgress();
+    this.updateTagUI();
     this.setBar();
   };
 
   FlashQuiz.prototype.phaseLength = function () {
     switch (this.phase) {
-      case "section":  return this.sTime * 1000;
+      case "section":
+        var it = this.deck[this.index];
+        return (it && it.banner ? Math.max(this.sTime, 3) : this.sTime) * 1000;
       case "question": return this.qTime * 1000;
       case "answer":   return this.aTime * 1000;
       default:         return 0;
@@ -242,10 +375,17 @@
       this.showAnswer();
       return;
     }
-    var nextIndex = this.index + 1;
+    this.goToIndex(this.index + 1);
+  };
+
+  // Go to deck position nextIndex, wrapping (loop) or ending past the end.
+  FlashQuiz.prototype.goToIndex = function (nextIndex) {
     if (nextIndex >= this.deck.length) {
       if (this.loop && this.deck.length) {
-        if (this.shuffle) this.buildDeck();
+        // Next round: only the tagged questions, if there are any
+        // (and the "Next loop: tagged only" setting is on).
+        this.reviewOnly = this.reviewNext && this.tagCount() > 0;
+        this.buildDeck();
         this.enterItem(0);
         return;
       }
@@ -293,7 +433,8 @@
     this.raf = null;
   };
 
-  FlashQuiz.prototype.start = function () {
+  FlashQuiz.prototype.start = function (review) {
+    this.reviewOnly = !!review && this.tagCount() > 0;
     this.buildDeck();
     if (!this.deck.length) {
       this.stage.innerHTML = '<div class="fq-start"><div class="fq-start-sub">Choose at least one section in Settings &#9881;</div></div>';
@@ -328,9 +469,176 @@
     if (this.playing) this.startLoop();
   };
 
+  /* ---------- Modifier actions on the arrow buttons ----------
+     Shift / long-press : whole section
+     Alt                : skip without the answer / replay this question
+     Ctrl               : first / last question                          */
+
+  FlashQuiz.prototype.curSection = function () {
+    var item = this.deck[this.index];
+    return item ? item.si : null;
+  };
+
+  // First deck position of section si (its title slide if it has one).
+  FlashQuiz.prototype.sectionStart = function (si, questionOnly) {
+    for (var i = 0; i < this.deck.length; i++) {
+      if (this.deck[i].si === si && (!questionOnly || this.deck[i].type === "q")) return i;
+    }
+    return -1;
+  };
+
+  // Shift + ▶▶ : jump to the next section (its title slide).
+  FlashQuiz.prototype.nextSection = function () {
+    if (this.phase === "start") { this.start(); return; }
+    if (this.phase === "end" || !this.deck.length) return;
+    var si = this.curSection();
+    var i = this.index + 1;
+    while (i < this.deck.length && this.deck[i].si === si) i++;
+    this.goToIndex(i);           // past the end -> loop or end screen
+    if (this.playing) this.startLoop();
+  };
+
+  // Shift + ◀◀ : back to the first question of this section; if already
+  // there (or on its title slide), go to the start of the previous section.
+  FlashQuiz.prototype.prevSection = function () {
+    if (this.phase === "start" || !this.deck.length) return;
+    if (this.phase === "end") {
+      var lastSi = this.deck[this.deck.length - 1].si;
+      this.enterItem(this.sectionStart(lastSi, true), "question");
+    } else {
+      var si = this.curSection();
+      var first = this.sectionStart(si, true);
+      var atStart = this.index <= first && this.phase !== "answer";
+      if (atStart) {
+        // Find the section before this one in deck order.
+        var j = this.sectionStart(si, false) - 1;
+        if (j >= 0) first = this.sectionStart(this.deck[j].si, true);
+      }
+      this.enterItem(first, "question");
+    }
+    if (this.playing) this.startLoop();
+  };
+
+  // Alt + ▶▶ : next question straight away, without showing this answer.
+  FlashQuiz.prototype.skipNoReveal = function () {
+    if (this.phase === "start") { this.start(); return; }
+    if (this.phase === "end") return;
+    this.goToIndex(this.index + 1);
+    if (this.playing) this.startLoop();
+  };
+
+  // Alt + ◀◀ : replay this question from the start of its timer.
+  FlashQuiz.prototype.replay = function () {
+    if (this.phase === "start" || this.phase === "end") return;
+    this.enterItem(this.index, this.phase === "section" ? undefined : "question");
+    if (this.playing) this.startLoop();
+  };
+
+  // Ctrl + ▶▶ / ◀◀ : last / first question.
+  FlashQuiz.prototype.goEnd = function (last) {
+    if (!this.deck.length) this.buildDeck();
+    this.goTo(last ? this.totalQuestions : 1);
+  };
+
+  // Work out which action a click or key press with modifiers means.
+  FlashQuiz.prototype.arrow = function (dir, e) {
+    var fwd = dir > 0;
+    if (e && e.shiftKey) { fwd ? this.nextSection() : this.prevSection(); }
+    else if (e && e.altKey) { fwd ? this.skipNoReveal() : this.replay(); }
+    else if (e && (e.ctrlKey || e.metaKey)) { this.goEnd(fwd); }
+    else { fwd ? this.next() : this.prev(); }
+  };
+
+  // Jump to question number n (as shown in the circle and the toolbar).
+  FlashQuiz.prototype.goTo = function (n) {
+    if (!this.deck.length) return;
+    n = Math.round(n);
+    if (isNaN(n)) { this.updateProgress(); return; }
+    n = Math.max(1, Math.min(this.totalQuestions, n));
+    var idx = -1;
+    for (var i = 0; i < this.deck.length; i++) {
+      if (this.deck[i].type === "q" && this.deck[i].overall === n) { idx = i; break; }
+    }
+    if (idx < 0) return;
+    if (this.phase === "start" || this.phase === "end") this.playing = true;
+    this.enterItem(idx, "question");
+    if (this.playing) this.startLoop();
+  };
+
+  /* ---------- Numbered-question grid ---------- */
+
+  // One button per question, grouped under its section title and
+  // coloured to match. Rebuilt whenever the deck changes.
+  FlashQuiz.prototype.buildJumpGrid = function () {
+    var self = this;
+    var grid = this.jumpGrid;
+    grid.innerHTML = "";
+    var group = null, lastSi = null;
+    this.deck.forEach(function (item) {
+      if (item.type !== "q") return;
+      if (item.si !== lastSi) {
+        lastSi = item.si;
+        var title = self.sections[item.si].title;
+        if (title) {
+          var h = document.createElement("div");
+          h.className = "fq-jump-sec";
+          h.textContent = title;
+          grid.appendChild(h);
+        }
+        group = document.createElement("div");
+        group.className = "fq-jump-nums";
+        grid.appendChild(group);
+      }
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "fq-jump-num";
+      b.textContent = self.reviewOnly ? item.orig : item.overall;
+      b.title = item.q;
+      b.style.setProperty("--fq-num-col", self.colour(item.si));
+      b.dataset.n = item.overall;
+      b.dataset.key = item.key;
+      b.addEventListener("click", function () {
+        self.goTo(item.overall);
+        self.toggleJump(false);
+        self.root.focus({ preventScroll: true });
+      });
+      group.appendChild(b);
+    });
+    this.markCurrent();
+    if (this.tagCountEl) this.updateTagUI();
+  };
+
+  FlashQuiz.prototype.markCurrent = function (n) {
+    if (!this.jumpGrid) return;
+    if (n === undefined) {
+      var t = this.progress.textContent.split("/")[0];
+      n = parseInt(t, 10) || 0;
+    }
+    var prev = this.jumpGrid.querySelector(".fq-jump-current");
+    if (prev) prev.classList.remove("fq-jump-current");
+    var cur = this.jumpGrid.querySelector('.fq-jump-num[data-n="' + n + '"]');
+    if (cur) cur.classList.add("fq-jump-current");
+  };
+
+  FlashQuiz.prototype.toggleJump = function (open) {
+    var panel = this.jumpPanel;
+    var btn = this.root.querySelector(".fq-jump-toggle");
+    if (open === undefined) open = panel.hidden;
+    panel.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+    if (open) {
+      // Close settings so only one panel shows at a time.
+      this.settings.hidden = true;
+      this.root.querySelector(".fq-settings-toggle").setAttribute("aria-expanded", "false");
+      var cur = this.jumpGrid.querySelector(".fq-jump-current");
+      if (cur) cur.scrollIntoView({ block: "nearest" });
+    }
+  };
+
   FlashQuiz.prototype.restart = function () {
     this.playing = false;
     this.stopLoop();
+    this.reviewOnly = false;
     this.buildDeck();
     this.enterItem(-1);
   };
@@ -361,6 +669,20 @@
     var loopIn = r.querySelector(".fq-in-loop");
     loopIn.checked = this.loop;
     loopIn.addEventListener("change", function () { self.loop = loopIn.checked; });
+
+    var barIn = r.querySelector(".fq-in-bar");
+    var timerEl = r.querySelector(".fq-timer");
+    barIn.checked = this.showBar;
+    timerEl.hidden = !this.showBar;
+    barIn.addEventListener("change", function () {
+      self.showBar = barIn.checked;
+      timerEl.hidden = !self.showBar;
+    });
+
+    var revIn = r.querySelector(".fq-in-review");
+    revIn.checked = this.reviewNext;
+    revIn.addEventListener("change", function () { self.reviewNext = revIn.checked; });
+    r.querySelector(".fq-tag-clear").addEventListener("click", function () { self.clearTags(); });
 
     var shufIn = r.querySelector(".fq-in-shuffle");
     shufIn.checked = this.shuffle;
@@ -407,6 +729,7 @@
     toggle.addEventListener("click", function () {
       var open = self.settings.hidden;
       self.settings.hidden = !open;
+      if (open) self.toggleJump(false);
       toggle.setAttribute("aria-expanded", String(open));
     });
   };
@@ -467,25 +790,68 @@
 
     this.bindStartBtn();
     r.querySelector(".fq-play").addEventListener("click", function () { self.togglePlay(); });
-    r.querySelector(".fq-next").addEventListener("click", function () { self.next(); });
-    r.querySelector(".fq-prev").addEventListener("click", function () { self.prev(); });
+    // ◀◀ / ▶▶ : plain click, Shift/Alt/Ctrl + click, or long-press
+    // (long-press = Shift, for touchscreens and whiteboards).
+    [[".fq-next", 1], [".fq-prev", -1]].forEach(function (pair) {
+      var btn = r.querySelector(pair[0]);
+      var dir = pair[1];
+      var pressTimer = null;
+      var longPressed = false;
+
+      btn.addEventListener("pointerdown", function (e) {
+        if (e.button !== 0) return;
+        longPressed = false;
+        clearTimeout(pressTimer);
+        pressTimer = setTimeout(function () {
+          longPressed = true;
+          btn.classList.add("fq-long");
+          setTimeout(function () { btn.classList.remove("fq-long"); }, 250);
+          self.arrow(dir, { shiftKey: true });
+        }, LONG_PRESS_MS);
+      });
+      ["pointerup", "pointerleave", "pointercancel"].forEach(function (ev) {
+        btn.addEventListener(ev, function () { clearTimeout(pressTimer); });
+      });
+      // No right-click/press-and-hold menu on touch screens.
+      btn.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+      btn.addEventListener("click", function (e) {
+        if (longPressed) { longPressed = false; return; }   // already acted
+        self.arrow(dir, e);
+      });
+    });
     r.querySelector(".fq-restart").addEventListener("click", function () { self.restart(); });
     r.querySelector(".fq-fullscreen").addEventListener("click", function () { self.toggleFullscreen(); });
+
+    // ⚑ button tags the question on screen for review.
+    this.tagBtn.addEventListener("click", function () {
+      self.toggleTag();
+      r.focus({ preventScroll: true });
+    });
+
+    // "#" button opens the numbered-question grid.
+    var jt = r.querySelector(".fq-jump-toggle");
+    jt.addEventListener("click", function () { self.toggleJump(); });
 
     r.addEventListener("keydown", function (e) {
       var tag = (e.target.tagName || "").toLowerCase();
       if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        // Shift / Alt / Ctrl + arrow keys match the button clicks.
+        e.preventDefault();
+        self.arrow(e.key === "ArrowRight" ? 1 : -1, e);
+        return;
+      }
       if (e.altKey || e.ctrlKey || e.metaKey) return;
+
       switch (e.key) {
         case " ":
         case "k":
         case "K":
           if (tag === "button" && e.key === " ") return; // let buttons click
           e.preventDefault(); self.togglePlay(); break;
-        case "ArrowRight":
         case "PageDown":
           e.preventDefault(); self.next(); break;
-        case "ArrowLeft":
         case "PageUp":
           e.preventDefault(); self.prev(); break;
         case "f":
@@ -494,12 +860,15 @@
         case "r":
         case "R":
           e.preventDefault(); self.restart(); break;
+        case "t":
+        case "T":
+          e.preventDefault(); self.toggleTag(); break;
       }
     });
 
     // Clicking the slide (not the answer) also moves on / reveals.
     this.stage.addEventListener("click", function (e) {
-      if (e.target.closest(".fq-start-btn, .fq-answer")) return;
+      if (e.target.closest(".fq-start-btn, .fq-review-btn, .fq-answer, .fq-tag-badge")) return;
       if (self.phase === "question" || self.phase === "answer" || self.phase === "section") {
         self.next();
       }
@@ -529,7 +898,7 @@
     clearTimeout(this.idleTimer);
     if (document.fullscreenElement === r) {
       this.idleTimer = setTimeout(function () {
-        if (!r.querySelector(".fq-settings:not([hidden])")) r.classList.add("fq-idle");
+        if (!r.querySelector(".fq-settings:not([hidden]), .fq-jump:not([hidden])")) r.classList.add("fq-idle");
       }, IDLE_MS);
     }
   };
@@ -549,6 +918,7 @@
   function init() {
     var quizzes = document.querySelectorAll(".flashquiz");
     for (var i = 0; i < quizzes.length; i++) {
+      quizzes[i].dataset.fqIndex = String(i);
       if (!quizzes[i].fqInstance) quizzes[i].fqInstance = new FlashQuiz(quizzes[i]);
     }
   }

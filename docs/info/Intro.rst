@@ -7,25 +7,22 @@ Introduction
 
 The directives covered in this documentation include:
 
-- multichoice
-- trueorfalse
-- cloze
-- gapfill
-- classifying
-- fillin
-- textselect
-- wordjumble
-- ordering
-- wordordering
-- structuredquestion
-- labels
+- :doc:`multichoice <multichoice>`
+- :doc:`trueorfalse <trueorfalse>`
+- :doc:`cloze <cloze>`
+- :doc:`gapfill <gapfill>`
+- :doc:`classifying <classifying>`
+- :doc:`fillin <fillin>`
+- :doc:`textselect <textselect>`
+- :doc:`wordjumble <wordjumble>`
+- :doc:`ordering <ordering>`
+- :doc:`wordordering <wordordering>`
+- :doc:`structuredquestion <structuredquestion>`
+- :doc:`labels <labels>`
+- :doc:`flashquiz <flashquiz>`
 
 Group directives:
 
-- quizgroup
-- clozegroup
-- mcqgroup
-
-
-Other tools:
-- noisemonitor
+- :doc:`quizgroup <quizgroup>`
+- :doc:`clozegroup <clozegroup>`
+- :doc:`mcqgroup <mcqgroup>`

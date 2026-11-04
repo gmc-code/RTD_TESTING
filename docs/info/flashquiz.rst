@@ -17,8 +17,8 @@ title slide and answer colour, and can be switched on or off in Settings.
 .. code-block:: rst
 
    .. flashquiz:: Living Things & Ecosystems
-      :question-time: 5
-      :answer-time: 3
+      :question-time: 8
+      :answer-time: 4
       :section-time: 3
       :loop:
 
@@ -33,10 +33,10 @@ Options
 -------
 
 ``:question-time:``
-   Seconds the question shows before the answer appears. Default ``5``.
+   Seconds the question shows before the answer appears. Default ``8``.
 
 ``:answer-time:``
-   Seconds the answer shows before the next question. Default ``3``.
+   Seconds the answer shows before the next question. Default ``4``.
 
 ``:section-time:``
    Seconds each section title slide shows. ``0`` skips them. Default ``3``.
@@ -50,6 +50,14 @@ Options
 ``:autostart:``
    Start playing as soon as the page loads.
 
+``:timer-bar:``
+   ``on`` or ``off``. Shows or hides the bar that fills up as the time runs out.
+   Default ``on``.
+
+``:review:``
+   ``on`` or ``off``. When ``on``, the round after a loop plays only the
+   questions tagged for review (see below). Default ``on``.
+
 All of these can also be changed on the page with the ⚙ Settings button.
 
 Controls
@@ -58,8 +66,47 @@ Controls
 * **Space** – play / pause
 * **Right arrow** or click the slide – show the answer, then the next question
 * **Left arrow** – back
+
+The ◀◀ and ▶▶ buttons (and the arrow keys) also take modifier keys:
+
+=====================  =========================================  ====================================================
+Modifier               ◀◀ / Left arrow                            ▶▶ / Right arrow
+=====================  =========================================  ====================================================
+**Shift** (or          Start of this section; press again for     Next section
+long-press)            the previous section
+**Alt**                Replay this question from the start        Next question, without showing this answer
+**Ctrl**               First question                             Last question
+=====================  =========================================  ====================================================
+
+Long-press works on touchscreens and interactive whiteboards. Hover over
+◀◀ or ▶▶ to see these as a tooltip.
+
 * **F** – full screen (the toolbar hides when the mouse is still)
 * **R** – restart
+* **#** button – opens a grid of numbered buttons; click a number to jump to that question
+
+Tagging questions for review
+----------------------------
+
+Tag any question the class found hard, and the next loop plays only those:
+
+* Press **T**, click the **⚑** button in the toolbar, or click the faint **⚑**
+  next to the question number. A tagged question shows a red flag.
+* When the quiz loops, a **Review round** slide appears and only the tagged
+  questions play. Untag any the class now knows; the rest carry on to the next
+  round. When nothing is left tagged, the full quiz plays again.
+* With ``:loop:`` off, the end screen has a **Review … tagged** button.
+* Tagged questions are marked with a flag in the **#** grid.
+* ⚙ Settings shows how many are tagged, has **Clear tags**, and a
+  **Next loop: only tagged questions** checkbox.
+
+Tags are remembered in the browser you tagged them in, so you can tag in one
+lesson and review in the next; use **Clear tags** to start fresh. Each quiz on
+a page keeps its own tags. (They don't carry over to another computer or
+browser, and a private window forgets them when it closes.)
+
+In a review round each question keeps its number from the full quiz, so
+question 40 still shows as 40.
 
 Printing the page lists every question with its answer.
 
@@ -67,8 +114,8 @@ Example: Living Things & Ecosystems
 -----------------------------------
 
 .. flashquiz:: Living Things & Ecosystems
-   :question-time: 5
-   :answer-time: 3
+   :question-time: 8
+   :answer-time: 4
    :section-time: 3
    :loop:
 
@@ -267,8 +314,8 @@ Example: Energy & Circuits
 --------------------------
 
 .. flashquiz:: Energy & Circuits
-   :question-time: 5
-   :answer-time: 5
+   :question-time: 6
+   :answer-time: 4
    :section-time: 3
    :loop:
 

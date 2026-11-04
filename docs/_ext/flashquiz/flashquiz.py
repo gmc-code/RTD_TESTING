@@ -9,11 +9,13 @@ revealed for ``answer-time`` seconds, then the next question appears.
 Usage::
 
     .. flashquiz:: Living Things & Ecosystems
-       :question-time: 5
-       :answer-time: 3
+       :question-time: 8
+       :answer-time: 4
        :section-time: 3
        :loop:
        :shuffle:
+       :timer-bar: off
+       :review: on
 
        # 2A Introduction to Classification
        Sorting organisms into groups is called what? | Classification
@@ -77,11 +79,14 @@ def visit_flashquiz_html(self, node):
         "loop": node["loop"],
         "shuffle": node["shuffle"],
         "autostart": node["autostart"],
+        "timerBar": node["timer_bar"],
+        "review": node["review"],
         "sections": node["sections"],
     }
     # </ is escaped so a question can never close the <script> tag early.
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     total = sum(len(s["questions"]) for s in node["sections"])
+    hidden_bar = "" if node["timer_bar"] else " hidden"
 
     self.body.append(f"""
 <div class="flashquiz" tabindex="0" aria-label="Flash quiz: {title}">
@@ -93,16 +98,24 @@ def visit_flashquiz_html(self, node):
       <button type="button" class="fq-btn fq-btn-big fq-start-btn">&#9654; Start</button>
     </div>
   </div>
-  <div class="fq-timer"><div class="fq-timer-bar"></div></div>
+  <div class="fq-timer"{hidden_bar}><div class="fq-timer-bar"></div></div>
   <div class="fq-toolbar">
-    <button type="button" class="fq-btn fq-prev" title="Previous (Left arrow)" aria-label="Previous">&#9664;&#9664;</button>
+    <button type="button" class="fq-btn fq-prev" aria-label="Previous"
+            title="Back (Left arrow)&#10;Shift+click or long-press: start of section / previous section&#10;Alt+click: replay this question&#10;Ctrl+click: first question">&#9664;&#9664;</button>
     <button type="button" class="fq-btn fq-play" title="Play / pause (Space)" aria-label="Play or pause">&#9654;</button>
-    <button type="button" class="fq-btn fq-next" title="Next (Right arrow)" aria-label="Next">&#9654;&#9654;</button>
+    <button type="button" class="fq-btn fq-next" aria-label="Next"
+            title="Next (Right arrow)&#10;Shift+click or long-press: next section&#10;Alt+click: next question without showing the answer&#10;Ctrl+click: last question">&#9654;&#9654;</button>
     <span class="fq-progress">0 / {total}</span>
     <span class="fq-spacer"></span>
+    <button type="button" class="fq-btn fq-tag" title="Tag this question for review (T)" aria-label="Tag for review" aria-pressed="false" disabled>&#9873;</button>
     <button type="button" class="fq-btn fq-restart" title="Restart (R)" aria-label="Restart">&#8635;</button>
+    <button type="button" class="fq-btn fq-jump-toggle" title="Go to a question" aria-label="Go to a question" aria-expanded="false">#</button>
     <button type="button" class="fq-btn fq-settings-toggle" title="Settings" aria-label="Settings" aria-expanded="false">&#9881;</button>
     <button type="button" class="fq-btn fq-fullscreen" title="Full screen (F)" aria-label="Full screen">&#x26F6;</button>
+  </div>
+  <div class="fq-jump" hidden>
+    <div class="fq-jump-head"><strong>Go to question</strong></div>
+    <div class="fq-jump-grid"></div>
   </div>
   <div class="fq-settings" hidden>
     <div class="fq-settings-grid">
@@ -118,6 +131,10 @@ def visit_flashquiz_html(self, node):
       <div class="fq-checks">
         <label><input type="checkbox" class="fq-in-loop"> Loop</label>
         <label><input type="checkbox" class="fq-in-shuffle"> Shuffle questions</label>
+        <label><input type="checkbox" class="fq-in-bar"> Show timer bar</label>
+        <label><input type="checkbox" class="fq-in-review"> Next loop: only tagged questions</label>
+        <div class="fq-tag-line">&#9873; <span class="fq-tag-count">None tagged</span>
+          <button type="button" class="fq-link fq-tag-clear">Clear tags</button></div>
       </div>
     </div>
     <div class="fq-sections-head">
@@ -152,6 +169,8 @@ class FlashQuizDirective(SphinxDirective):
         "loop": directives.flag,
         "shuffle": directives.flag,
         "autostart": directives.flag,
+        "timer-bar": lambda arg: directives.choice(arg, ("on", "off")),
+        "review": lambda arg: directives.choice(arg, ("on", "off")),
     }
 
     def run(self):
@@ -199,12 +218,14 @@ class FlashQuizDirective(SphinxDirective):
 
         node = flashquiz_node()
         node["title"] = self.arguments[0] if self.arguments else ""
-        node["question_time"] = self.options.get("question-time", 5)
-        node["answer_time"] = self.options.get("answer-time", 3)
+        node["question_time"] = self.options.get("question-time", 8)
+        node["answer_time"] = self.options.get("answer-time", 4)
         node["section_time"] = self.options.get("section-time", 3)
         node["loop"] = "loop" in self.options
         node["shuffle"] = "shuffle" in self.options
         node["autostart"] = "autostart" in self.options
+        node["timer_bar"] = self.options.get("timer-bar", "on") == "on"
+        node["review"] = self.options.get("review", "on") == "on"
         node["sections"] = sections
         return [node]
 

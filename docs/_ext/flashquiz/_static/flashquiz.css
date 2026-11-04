@@ -156,6 +156,88 @@
   font-weight: 600;
 }
 
+/* ---------- Tagging for review ---------- */
+
+.fq-start-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2cqi;
+}
+
+.fq-btn-big.fq-review-btn {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid var(--fq-accent);
+}
+
+.fq-btn-big.fq-review-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Flag on the slide, just left of the number circle.
+   Faint until the question is tagged; click it to tag. */
+.fq-tag-badge {
+  position: absolute;
+  top: 3.5%;
+  right: calc(3.5% + max(8cqi, 2rem) + 1.2cqi);
+  width: max(8cqi, 2rem);
+  height: max(8cqi, 2rem);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  font-size: clamp(0.9rem, 3.4cqi, 2rem);
+  line-height: 1;
+  opacity: 0.22;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.fq-tag-badge:hover,
+.fq-tag-badge:focus-visible {
+  opacity: 0.6;
+  outline: none;
+}
+
+.fq-tagged .fq-tag-badge {
+  opacity: 1;
+  color: #ff5a5f;
+  transform: scale(1.1);
+}
+
+.fq-btn.fq-tag.fq-on {
+  background: #ff5a5f;
+  border-color: #ff5a5f;
+  color: #ffffff;
+}
+
+.fq-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.fq-jump-num.fq-jump-tagged {
+  position: relative;
+}
+
+.fq-jump-num.fq-jump-tagged::after {
+  content: "\2691";
+  position: absolute;
+  top: -0.55em;
+  right: -0.35em;
+  font-size: 0.75rem;
+  color: #e5383b;
+}
+
+.fq-tag-line {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
 /* ---------- Countdown bar ---------- */
 
 .fq-timer {
@@ -163,10 +245,15 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
+.fq-timer[hidden] {
+  display: none;
+}
+
 .fq-timer-bar {
   height: 100%;
   width: 0;
   background: var(--fq-accent);
+  opacity: 0.5;  /* 50% transparent */
 }
 
 /* ---------- Toolbar ---------- */
@@ -210,6 +297,19 @@
   background: rgba(255, 255, 255, 0.16);
 }
 
+/* Brief flash when a long-press on ◀◀ / ▶▶ skips a section */
+.fq-btn.fq-long {
+  background: var(--fq-accent);
+  color: var(--fq-ink);
+}
+
+.fq-prev,
+.fq-next {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .fq-btn:focus-visible {
   outline: 2px solid #3fa7d6;
   outline-offset: 1px;
@@ -228,6 +328,74 @@
 
 .fq-btn-big:hover {
   background: #ffd866;
+}
+
+/* ---------- Numbered-question grid ---------- */
+
+.fq-jump {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 0.8rem 1rem 1rem;
+  background: #f8fafc;
+  color: #1e293b;
+  border-top: 1px solid #cbd5e1;
+  font-size: 0.92rem;
+}
+
+.fq-jump[hidden] {
+  display: none;
+}
+
+.fq-jump-head {
+  margin-bottom: 0.4rem;
+}
+
+.fq-jump-sec {
+  margin: 0.6rem 0 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.fq-jump-nums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.fq-jump-num {
+  min-width: 2.3rem;
+  height: 2.1rem;
+  padding: 0 0.35rem;
+  border: 2px solid var(--fq-num-col, #ffc93c);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f1b2d;
+  font: inherit;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.fq-jump-num:hover,
+.fq-jump-num:focus-visible {
+  background: var(--fq-num-col, #ffc93c);
+  outline: none;
+}
+
+.fq-jump-num.fq-jump-current {
+  background: var(--fq-num-col, #ffc93c);
+  box-shadow: 0 0 0 2px #0f1b2d;
+}
+
+.flashquiz:fullscreen .fq-jump {
+  max-height: 40vh;
+}
+
+.flashquiz:fullscreen.fq-idle .fq-jump {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- Settings panel ---------- */
@@ -363,6 +531,7 @@
   .fq-stage,
   .fq-timer,
   .fq-toolbar,
+  .fq-jump,
   .fq-settings {
     display: none !important;
   }
@@ -390,13 +559,23 @@
   .fq-toolbar {
     gap: 0.25rem;
     padding: 0.45rem 0.5rem;
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
   }
   .fq-btn {
-    min-width: 2rem;
-    padding: 0 0.4rem;
+    min-width: 1.85rem;
+    padding: 0 0.3rem;
+    font-size: 0.85rem;
   }
   .fq-progress {
     margin-left: 0.2rem;
     font-size: 0.8rem;
+  }
+}
+
+/* Very narrow: drop the restart button (R key and the end screen still restart) */
+@container (max-width: 340px) {
+  .fq-restart {
+    display: none;
   }
 }
