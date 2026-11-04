@@ -1,0 +1,246 @@
+"""
+flashquiz directive
+===================
+
+A timed, auto-advancing question-and-answer slideshow for the classroom.
+Each question shows for ``question-time`` seconds, then the answer is
+revealed for ``answer-time`` seconds, then the next question appears.
+
+Usage::
+
+    .. flashquiz:: Living Things & Ecosystems
+       :question-time: 5
+       :answer-time: 3
+       :section-time: 3
+       :loop:
+       :shuffle:
+
+       # 2A Introduction to Classification
+       Sorting organisms into groups is called what? | Classification
+       Groups are based on shared what? | Features
+
+       # 2B How Biologists Classify Organisms
+       What is the broadest classification level? | Kingdom
+
+Content rules:
+
+* ``# Heading`` starts a new section (shown as a title slide and used for
+  the section filter and the colour of the answer box).
+* ``Question | Answer`` is one question. Only the first ``|`` splits the
+  line, so answers can't contain ``|`` but questions can't either.
+* Blank lines and lines starting with ``..`` (RST comments) are ignored.
+"""
+
+import html
+import json
+from pathlib import Path
+
+from docutils import nodes
+from docutils.parsers.rst import directives
+from sphinx.util.docutils import SphinxDirective
+from sphinx.util.fileutil import copy_asset
+
+
+class flashquiz_node(nodes.General, nodes.Element):
+    pass
+
+
+def _seconds(argument):
+    """Accept a positive number of seconds, e.g. 5 or 2.5."""
+    try:
+        value = float(argument)
+    except (TypeError, ValueError):
+        raise ValueError("must be a number of seconds, e.g. 5 or 2.5")
+    if value <= 0:
+        raise ValueError("must be greater than 0")
+    return value
+
+
+def _section_seconds(argument):
+    """Like _seconds, but 0 is allowed (0 = skip section title slides)."""
+    try:
+        value = float(argument)
+    except (TypeError, ValueError):
+        raise ValueError("must be a number of seconds, e.g. 3")
+    if value < 0:
+        raise ValueError("must be 0 or more")
+    return value
+
+
+def visit_flashquiz_html(self, node):
+    title = html.escape(node.get("title", ""))
+    data = {
+        "title": node.get("title", ""),
+        "questionTime": node["question_time"],
+        "answerTime": node["answer_time"],
+        "sectionTime": node["section_time"],
+        "loop": node["loop"],
+        "shuffle": node["shuffle"],
+        "autostart": node["autostart"],
+        "sections": node["sections"],
+    }
+    # </ is escaped so a question can never close the <script> tag early.
+    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    total = sum(len(s["questions"]) for s in node["sections"])
+
+    self.body.append(f"""
+<div class="flashquiz" tabindex="0" aria-label="Flash quiz: {title}">
+  <script type="application/json" class="fq-data">{payload}</script>
+  <div class="fq-stage" aria-live="polite">
+    <div class="fq-start">
+      <div class="fq-start-title">{title or "Flash Quiz"}</div>
+      <div class="fq-start-sub">{total} questions</div>
+      <button type="button" class="fq-btn fq-btn-big fq-start-btn">&#9654; Start</button>
+    </div>
+  </div>
+  <div class="fq-timer"><div class="fq-timer-bar"></div></div>
+  <div class="fq-toolbar">
+    <button type="button" class="fq-btn fq-prev" title="Previous (Left arrow)" aria-label="Previous">&#9664;&#9664;</button>
+    <button type="button" class="fq-btn fq-play" title="Play / pause (Space)" aria-label="Play or pause">&#9654;</button>
+    <button type="button" class="fq-btn fq-next" title="Next (Right arrow)" aria-label="Next">&#9654;&#9654;</button>
+    <span class="fq-progress">0 / {total}</span>
+    <span class="fq-spacer"></span>
+    <button type="button" class="fq-btn fq-restart" title="Restart (R)" aria-label="Restart">&#8635;</button>
+    <button type="button" class="fq-btn fq-settings-toggle" title="Settings" aria-label="Settings" aria-expanded="false">&#9881;</button>
+    <button type="button" class="fq-btn fq-fullscreen" title="Full screen (F)" aria-label="Full screen">&#x26F6;</button>
+  </div>
+  <div class="fq-settings" hidden>
+    <div class="fq-settings-grid">
+      <label><span>Question time: <span class="fq-val-q"></span> s</span>
+        <input type="range" class="fq-in-q" min="1" max="30" step="0.5">
+      </label>
+      <label><span>Answer time: <span class="fq-val-a"></span> s</span>
+        <input type="range" class="fq-in-a" min="1" max="30" step="0.5">
+      </label>
+      <label><span>Section title time: <span class="fq-val-s"></span> s</span>
+        <input type="range" class="fq-in-s" min="0" max="10" step="0.5">
+      </label>
+      <div class="fq-checks">
+        <label><input type="checkbox" class="fq-in-loop"> Loop</label>
+        <label><input type="checkbox" class="fq-in-shuffle"> Shuffle questions</label>
+      </div>
+    </div>
+    <div class="fq-sections-head">
+      <strong>Sections</strong>
+      <button type="button" class="fq-link fq-all">All</button>
+      <button type="button" class="fq-link fq-none">None</button>
+    </div>
+    <div class="fq-sections"></div>
+  </div>
+</div>
+""")
+
+
+def depart_flashquiz_html(self, node):
+    pass
+
+
+def skip_node(self, node):
+    raise nodes.SkipNode
+
+
+class FlashQuizDirective(SphinxDirective):
+    has_content = True
+    required_arguments = 0
+    optional_arguments = 1
+    final_argument_whitespace = True
+
+    option_spec = {
+        "question-time": _seconds,
+        "answer-time": _seconds,
+        "section-time": _section_seconds,
+        "loop": directives.flag,
+        "shuffle": directives.flag,
+        "autostart": directives.flag,
+    }
+
+    def run(self):
+        sections = []
+        current = None
+
+        for offset, raw in enumerate(self.content):
+            line = raw.strip()
+            if not line or line.startswith(".."):
+                continue
+
+            if line.startswith("#"):
+                current = {"title": line.lstrip("#").strip(), "questions": []}
+                sections.append(current)
+                continue
+
+            if "|" not in line:
+                self.state_machine.reporter.warning(
+                    f"flashquiz: line has no '|' separating question and "
+                    f"answer, skipped: {line!r}",
+                    line=self.content_offset + offset + 1,
+                )
+                continue
+
+            question, answer = (part.strip() for part in line.split("|", 1))
+            if not question or not answer:
+                self.state_machine.reporter.warning(
+                    f"flashquiz: empty question or answer, skipped: {line!r}",
+                    line=self.content_offset + offset + 1,
+                )
+                continue
+
+            if current is None:
+                current = {"title": "", "questions": []}
+                sections.append(current)
+            current["questions"].append([question, answer])
+
+        sections = [s for s in sections if s["questions"]]
+        if not sections:
+            return [
+                self.state_machine.reporter.warning(
+                    "flashquiz: no questions found.", line=self.lineno
+                )
+            ]
+
+        node = flashquiz_node()
+        node["title"] = self.arguments[0] if self.arguments else ""
+        node["question_time"] = self.options.get("question-time", 5)
+        node["answer_time"] = self.options.get("answer-time", 3)
+        node["section_time"] = self.options.get("section-time", 3)
+        node["loop"] = "loop" in self.options
+        node["shuffle"] = "shuffle" in self.options
+        node["autostart"] = "autostart" in self.options
+        node["sections"] = sections
+        return [node]
+
+
+def copy_static_assets(app, exception):
+    """Copies static assets to the build output directory."""
+    if app.builder.name == "html" and exception is None:
+        ext_static = Path(__file__).parent / "_static"
+        out_static = Path(app.outdir) / "_static"
+
+        if ext_static.exists():
+            try:
+                # Sphinx 8.1+ won't overwrite existing files unless forced,
+                # so edited CSS/JS would otherwise not update on rebuild.
+                copy_asset(str(ext_static), str(out_static), force=True)
+            except TypeError:
+                # Older Sphinx: no 'force' argument, and it always overwrites.
+                copy_asset(str(ext_static), str(out_static))
+
+
+def setup(app):
+    app.add_node(
+        flashquiz_node,
+        html=(visit_flashquiz_html, depart_flashquiz_html),
+        latex=(skip_node, None),
+        text=(skip_node, None),
+    )
+    app.add_directive("flashquiz", FlashQuizDirective)
+
+    app.add_js_file("flashquiz.js")
+    app.add_css_file("flashquiz.css")
+
+    app.connect("build-finished", copy_static_assets)
+
+    return {
+        "version": "1.0",
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }

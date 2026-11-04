@@ -35,6 +35,7 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/wordjumble.rst
     info/labels.rst
     info/structuredquestion.rst
+    info/flashquiz.rst
 
 
 .. toctree::
@@ -49,23 +50,16 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/quizgroup.rst
 
 
-.. toctree::
-    :maxdepth: 3
-    :caption: Classroom Tools:
-
-    info/noisemonitor.rst
-    info/seatingplan.rst
-
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
     :caption: css roles test:
 
     info/role_tests.rst
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
     :caption: Diagrams:
 
     diagrams/Cells - animal 4.rst

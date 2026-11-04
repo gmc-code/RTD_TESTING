@@ -1,0 +1,4 @@
+
+
+from .flashquiz import setup
+

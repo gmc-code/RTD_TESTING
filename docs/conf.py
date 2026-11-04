@@ -88,10 +88,7 @@ extensions = [
     "wordjumble.wordjumble",  # custom directive
     "labels.labels",  # custom directive
     "structuredquestion.structuredquestion",  # custom directive
-    "noisemonitor.noisemonitor",  # custom directive
-    "seatingplan.seatingplan",  # custom directive
-    "namepicker.namepicker",  # custom directive
-    "randomgroups.randomgroups",  # custom directive
+    "flashquiz.flashquiz",  # custom directive
  ]
 
 # "sphinx.ext.doctest",
