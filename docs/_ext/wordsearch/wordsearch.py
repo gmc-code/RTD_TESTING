@@ -39,6 +39,10 @@ Options
               Omit for no timer.
 :clues:       Flag. Show the clues instead of the words; the word is revealed
               next to its clue when found.
+:no-letter-highlight:
+              Flag. Turns off letter highlighting. (Default: pressing a
+              letter key highlights every cell with that letter; the same
+              key again or Esc clears it.)
 :no-overlap:  Flag. Words never cross or share letters. (Default: words may
               cross where their letters match.) The grid grows if needed.
 :fill:        random (default) - random A-Z filler letters
@@ -259,6 +263,7 @@ class WordSearchDirective(SphinxDirective):
         "timer": directives.unchanged,
         "clues": directives.flag,
         "no-overlap": directives.flag,
+        "no-letter-highlight": directives.flag,
         "fill": choice(("random", "words")),
         "sort": sort_choice,
         "case": choice(("upper", "lower")),
@@ -392,6 +397,7 @@ class WordSearchDirective(SphinxDirective):
             "rows": rows,
             "cols": cols,
             "shuffleList": sort_mode == "random",
+            "keyHints": "no-letter-highlight" not in self.options,
             "words": [
                 {"id": i, "cells": placements[i]} for i in range(len(entries))
             ],

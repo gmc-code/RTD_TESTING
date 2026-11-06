@@ -33,6 +33,9 @@ Option reference
    * - ``:no-overlap:``
      - Words never cross or share a letter. By default, words can cross
        where their letters match. The grid grows if the words won't fit.
+   * - ``:no-letter-highlight:``
+     - Turns off letter highlighting. By default, pressing a letter key
+       highlights every cell with that letter.
    * - ``:fill:``
      - ``random`` (default) fills gaps with A–Z. ``words`` fills them with
        letters taken from the puzzle words, which makes it harder.
@@ -329,6 +332,40 @@ each word has its own letters.
    OXYGEN
    SUNLIGHT
    CARBON DIOXIDE
+
+Letter highlighting — ``:no-letter-highlight:``
+-----------------------------------------------
+
+Press a letter key to highlight every cell with that letter. The toolbar
+shows the letter and how many there are. Press the same key again, press
+**Esc** or click ✕ to clear it. It's a handy hint when students are stuck on
+a word.
+
+If a page has more than one puzzle, click the puzzle first so the keys go to
+it. Highlights never print.
+
+Try it on the puzzle above. To switch it off, for example when you want the
+puzzle harder, add ``:no-letter-highlight:``:
+
+.. code-block:: rst
+
+   .. wordsearch:: No letter highlighting
+      :no-letter-highlight:
+
+      ATOM
+      ELEMENT
+      COMPOUND
+      MIXTURE
+      MOLECULE
+
+.. wordsearch:: No letter highlighting
+   :no-letter-highlight:
+
+   ATOM
+   ELEMENT
+   COMPOUND
+   MIXTURE
+   MOLECULE
 
 Filler letters — ``:fill:``
 ---------------------------

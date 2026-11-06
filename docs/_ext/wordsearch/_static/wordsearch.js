@@ -6,6 +6,21 @@ document.addEventListener("DOMContentLoaded", () => {
     "#14b8a6", "#f97316", "#84cc16", "#06b6d4", "#d946ef", "#eab308",
   ];
 
+  // One keyboard listener for the whole page. Keys go to the puzzle that was
+  // last clicked/focused, or to the only puzzle if there is just one.
+  const registry = [];
+  let activeEntry = null;
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    const target =
+      registry.find((r) => r.el.contains(document.activeElement)) ||
+      activeEntry ||
+      (registry.length === 1 ? registry[0] : null);
+    if (target && target.onKey(e)) e.preventDefault();
+  });
+
   document.querySelectorAll(".wordsearch-block").forEach((block) => {
     let puzzle;
     try {
@@ -151,6 +166,15 @@ document.addEventListener("DOMContentLoaded", () => {
       answersMode === "hidden" ? null : mkBtn("Show answers", "ws-btn-reveal");
     const btnReset = mkBtn("Reset", "ws-btn-reset");
     const btnPrint = mkBtn("🖨 Print", "ws-btn-print");
+
+    // Letter highlight: press a letter key to light up every cell with it
+    const keyHints = puzzle.keyHints !== false;
+    let hintChip = null;
+    if (keyHints) {
+      hintChip = document.createElement("span");
+      hintChip.className = "ws-hint-chip";
+      toolbar.insertBefore(hintChip, btnPrint);
+    }
     btnPrint.title = "Print this word search";
 
     // Print just this puzzle (plus its answer key page, if it has one).
@@ -349,6 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const cell = cellFromPoint(e.clientX, e.clientY);
       if (!cell) return;
       e.preventDefault();
+      block.focus({ preventScroll: true });
       startTimer();
       anchor = tapAnchor || cell;
       dragging = true;
@@ -399,13 +424,61 @@ document.addEventListener("DOMContentLoaded", () => {
       anchor = null;
     });
 
-    // Escape cancels a pending tap
-    block.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        tapAnchor = null;
-        clearTemp();
+    // ---------------- Letter highlight ----------------
+    let hintLetter = null;
+    const applyHint = () => {
+      let count = 0;
+      grid.querySelectorAll(".ws-cell").forEach((c) => {
+        const on = !!hintLetter && c.textContent.toUpperCase() === hintLetter;
+        c.classList.toggle("ws-cell-hint", on);
+        if (on) count++;
+      });
+      if (!hintChip) return;
+      if (hintLetter) {
+        hintChip.classList.add("ws-hint-on");
+        hintChip.innerHTML = "";
+        const label = document.createElement("span");
+        label.textContent = `${hintLetter} × ${count}`;
+        const x = document.createElement("button");
+        x.type = "button";
+        x.className = "ws-hint-clear";
+        x.title = "Clear highlight (Esc)";
+        x.textContent = "✕";
+        x.addEventListener("click", () => setHint(null));
+        hintChip.append(label, x);
+      } else {
+        hintChip.classList.remove("ws-hint-on");
+        hintChip.textContent = "⌨ Press a letter to highlight it";
       }
-    });
+    };
+    const setHint = (letter) => {
+      hintLetter = letter;
+      applyHint();
+    };
+    if (keyHints) applyHint();
+
+    const entry = {
+      el: block,
+      onKey: (e) => {
+        if (e.key === "Escape") {
+          const had = tapAnchor || hintLetter;
+          tapAnchor = null;
+          clearTemp();
+          if (hintLetter) setHint(null);
+          return !!had;
+        }
+        if (keyHints && e.key.length === 1 && /[a-z0-9]/i.test(e.key)) {
+          const L = e.key.toUpperCase();
+          setHint(hintLetter === L ? null : L); // same key again clears
+          return true;
+        }
+        return false;
+      },
+    };
+    registry.push(entry);
+    block.setAttribute("tabindex", "0");
+    block.addEventListener("pointerdown", () => { activeEntry = entry; });
+    block.addEventListener("focusin", () => { activeEntry = entry; });
 
     // ---------------- Buttons ----------------
     const reveal = () => {
@@ -440,6 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
       drawTimer();
       newPuzzle();
       shuffleList();
+      if (keyHints) setHint(null);
       updateCount();
       setStatus(puzzle.regen ? "New puzzle!" : "");
     });
