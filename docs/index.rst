@@ -36,6 +36,8 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/labels.rst
     info/structuredquestion.rst
     info/flashquiz.rst
+    info/wordsearch.rst
+    info/guessword.rst
 
 
 .. toctree::

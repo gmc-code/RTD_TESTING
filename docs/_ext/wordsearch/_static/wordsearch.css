@@ -1,0 +1,306 @@
+/* ==========================================================================
+   wordsearch directive
+   ========================================================================== */
+
+.wordsearch-block {
+  padding: 0.9rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.wordsearch-block.theme-light { background-color: #f8fafc; border-color: #e2e8f0; }
+.wordsearch-block.ws-style-border { border-width: 2px; }
+.wordsearch-block.ws-style-plain { border: none; padding: 0.4rem 0; background: transparent; }
+
+.ws-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.ws-instructions {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  color: #334155;
+}
+
+/* Instruction colours — same palette as wordjumble */
+.wordsearch-block.ws-color-red .ws-instructions,
+.wordsearch-block.ws-color-participant .ws-instructions { color: #d62728; }
+.wordsearch-block.ws-color-green .ws-instructions,
+.wordsearch-block.ws-color-process .ws-instructions { color: #2ca02c; }
+.wordsearch-block.ws-color-blue .ws-instructions,
+.wordsearch-block.ws-color-circumstance .ws-instructions { color: #4a3dff; }
+.wordsearch-block.ws-color-conj .ws-instructions,
+.wordsearch-block.ws-color-part .ws-instructions { color: #6b7280; }
+.wordsearch-block.ws-color-theme .ws-instructions { color: #1f77b4; }
+.wordsearch-block.ws-color-rheme .ws-instructions { color: #111827; }
+.wordsearch-block.ws-color-dependent .ws-instructions { color: #b45309; }
+.wordsearch-block.ws-color-embedded .ws-instructions { color: #7c3aed; }
+.wordsearch-block.ws-color-relative .ws-instructions { color: #0f766e; }
+.wordsearch-block.ws-color-projected .ws-instructions { color: #be185d; }
+
+/* ---------------- Toolbar ---------------- */
+.ws-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ws-btn {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  transition: all 0.15s ease-in-out;
+}
+.ws-btn:hover { background: #f1f5f9; color: #1e293b; }
+.ws-btn-reveal { background: #2563eb; border-color: #2563eb; color: #fff; }
+.ws-btn-reveal:hover { background: #1d4ed8; color: #fff; }
+.ws-btn-print { margin-left: auto; }
+.ws-timer + .ws-btn ~ .ws-btn-print,
+.ws-timer ~ .ws-btn-print { margin-left: 0; }
+.ws-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); }
+
+.ws-timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #0f172a;
+  margin-right: auto;
+}
+.ws-timer-low { background: #fef9c3; color: #a16207; }
+.ws-timer-up { background: #fee2e2; color: #b91c1c; }
+
+/* ---------------- Layout ---------------- */
+.ws-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.ws-grid-wrap {
+  position: relative;
+  flex: 1 1 22rem;
+  max-width: min(100%, calc(var(--ws-cols, 12) * 2.6rem));
+  width: 100%;
+}
+
+.ws-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ws-cols), 1fr);
+  border: 2px solid #334155;
+  border-radius: 6px;
+  background: #ffffff;
+  container-type: inline-size;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  overflow: hidden;
+}
+
+.ws-cell {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  font-size: calc(100cqi / var(--ws-cols) * 0.55);
+  line-height: 1;
+  color: #0f172a;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+.ws-grid:not(.ws-grid-key) .ws-cell:hover { background: rgba(37, 99, 235, 0.08); }
+.ws-cell-anchor { background: rgba(37, 99, 235, 0.25) !important; border-radius: 50%; }
+
+.ws-shake { animation: ws-shake 0.3s; }
+@keyframes ws-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* SVG highlight overlay (viewBox units = cells) */
+.ws-overlay {
+  position: absolute;
+  inset: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+.ws-line {
+  stroke-width: 0.72;
+  stroke-linecap: round;
+  fill: none;
+}
+.ws-line-found { stroke-opacity: 0.45; }
+.ws-line-temp { stroke: #2563eb; stroke-opacity: 0.3; }
+.ws-line-revealed {
+  stroke: #94a3b8;
+  stroke-opacity: 0.35;
+}
+.ws-key-line {
+  stroke: #2563eb;
+  stroke-opacity: 0.35;
+  stroke-width: 0.72;
+  stroke-linecap: round;
+}
+
+/* ---------------- Word / clue list ---------------- */
+.ws-list-wrap { flex: 1 1 13rem; min-width: 12rem; }
+
+.ws-list-title {
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: #334155;
+}
+.ws-count { font-weight: 500; color: #64748b; font-size: 0.9em; }
+
+.wordsearch-block ul.ws-list,
+.wordsearch-block ol.ws-list {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.wordsearch-block ul.ws-list {
+  list-style: none !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.25rem 0.75rem;
+}
+.wordsearch-block ul.ws-list li { list-style: none !important; margin: 0 !important; }
+.wordsearch-block ol.ws-list { padding-left: 1.4rem !important; }
+.wordsearch-block ol.ws-list li { margin: 0 0 0.45rem 0 !important; }
+
+.ws-word {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.ws-item-found .ws-word {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  color: #64748b;
+  background: color-mix(in srgb, var(--ws-found, #10b981) 25%, transparent);
+}
+.ws-item-revealed .ws-word { color: #94a3b8; font-style: italic; }
+
+.ws-len { color: #64748b; font-size: 0.9em; }
+.wordsearch-block ol.ws-list li { line-height: 1.6; }
+.ws-reveal { display: none; }
+.ws-blank {
+  display: inline-block;
+  min-width: 6rem;
+  border-bottom: 1px solid #94a3b8;
+  margin-left: 0.4rem;
+}
+.ws-item-found .ws-reveal,
+.ws-item-revealed .ws-reveal {
+  display: inline;
+  margin-left: 0.4rem;
+  font-weight: 700;
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+}
+.ws-item-found .ws-reveal { background: color-mix(in srgb, var(--ws-found, #10b981) 30%, transparent); }
+.ws-item-revealed .ws-reveal { color: #64748b; font-style: italic; }
+.ws-item-found .ws-blank,
+.ws-item-revealed .ws-blank { display: none; }
+.ws-item-found .ws-clue { color: #64748b; }
+
+/* ---------------- Status ---------------- */
+.ws-status:empty { display: none; }
+.ws-status {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  display: inline-block;
+  background: #f1f5f9;
+  color: #334155;
+}
+.ws-status-high { background: #dcfce7; color: #15803d; }
+.ws-status-medium { background: #fef9c3; color: #a16207; }
+.ws-status-low { background: #fee2e2; color: #b91c1c; }
+
+.ws-complete .ws-grid { border-color: #16a34a; }
+
+/* Answer key: print only */
+.ws-key { display: none; }
+.ws-print-only { display: none; }
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+@media print {
+  .wordsearch-block {
+    border: none !important;
+    padding: 0 !important;
+    background: #fff !important;
+    break-inside: avoid;
+  }
+  .ws-toolbar,
+  .ws-status,
+  .ws-count,
+  .ws-overlay:not(.ws-overlay-key) { display: none !important; }
+
+  .ws-body { display: block; }
+  .ws-print-only { display: inline; }
+  .ws-screen-only { display: none; }
+  .ws-grid-wrap {
+    max-width: min(17cm, calc(var(--ws-cols, 12) * 1.15cm), calc(17cm * var(--ws-cols, 12) / var(--ws-rows, 12)));
+    margin: 0 0 0.6cm 0;
+  }
+  .ws-grid, .ws-complete .ws-grid {
+    border: 2px solid #000 !important;
+    border-radius: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .ws-cell { color: #000; background: none !important; }
+
+  /* Print the worksheet blank, even if the student had found words */
+  .ws-item-found .ws-word,
+  .ws-item-revealed .ws-word {
+    text-decoration: none; background: none; color: #000; font-style: normal;
+  }
+  .ws-item-found .ws-reveal,
+  .ws-item-revealed .ws-reveal { display: none; }
+  .ws-item-found .ws-blank,
+  .ws-item-revealed .ws-blank { display: inline-block; }
+  .ws-blank { min-width: 4.5cm; border-bottom: 1px solid #000; }
+  .wordsearch-block ul.ws-list { grid-template-columns: repeat(3, 1fr); }
+
+  .ws-key {
+    display: block;
+    break-before: page;
+    page-break-before: always;
+  }
+  .ws-key .ws-grid-wrap { max-width: min(14cm, calc(var(--ws-cols, 12) * 0.9cm), calc(14cm * var(--ws-cols, 12) / var(--ws-rows, 12))); }
+  .ws-key-line {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .ws-key-list { margin-top: 0.4cm; }
+}

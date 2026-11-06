@@ -1,0 +1,2 @@
+from .wordsearch import setup
+

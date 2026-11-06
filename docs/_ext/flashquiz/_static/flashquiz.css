@@ -3,12 +3,31 @@
    ============================================================ */
 
 .flashquiz {
+  --fq-accent: #ffc93c;
+  /* Dark theme (default) */
   --fq-bg: #0f1b2d;
   --fq-bg-2: #1b2e4a;
   --fq-text: #ffffff;
   --fq-muted: #9fb3c8;
-  --fq-accent: #ffc93c;
   --fq-ink: #0f1b2d;
+  --fq-unit: #3fa7d6;
+  --fq-frame: transparent;
+  --fq-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --fq-toolbar: #0a1422;
+  --fq-btn-bg: rgba(255, 255, 255, 0.06);
+  --fq-btn-border: rgba(255, 255, 255, 0.18);
+  --fq-btn-hover: rgba(255, 255, 255, 0.16);
+  --fq-btn-text: #ffffff;
+  --fq-track: rgba(255, 255, 255, 0.12);
+  --fq-accent-text: var(--fq-accent);
+  --fq-panel-bg: #13233a;
+  --fq-panel-text: #e2e8f0;
+  --fq-panel-muted: #b6c4d6;
+  --fq-panel-border: #2a3f5f;
+  --fq-link: #7cc4f0;
+  --fq-num-bg: #1b2e4a;
+  --fq-num-text: #ffffff;
+  --fq-current-ring: #ffffff;
 
   max-width: 900px;
   margin: 1.5rem 0;
@@ -16,14 +35,75 @@
   overflow: hidden;
   background: var(--fq-bg);
   color: var(--fq-text);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--fq-frame);
+  box-shadow: var(--fq-shadow);
   font-family: inherit;
   outline: none;
   container-type: inline-size;
 }
 
 .flashquiz:focus-visible {
-  box-shadow: 0 0 0 3px #3fa7d6, 0 4px 14px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 0 0 3px #3fa7d6, var(--fq-shadow);
+}
+
+/* ---------- Themes ----------
+   Dark is the default (above). Light is set with the fq-theme-light
+   class; fq-theme-auto follows the computer's light/dark setting. */
+
+.flashquiz.fq-theme-light {
+  --fq-bg: #ffffff;
+  --fq-bg-2: #eef3f9;
+  --fq-text: #0f1b2d;
+  --fq-muted: #475569;
+  --fq-ink: #0f1b2d;
+  --fq-unit: #1d6fa5;
+  --fq-frame: #d5dee9;
+  --fq-shadow: 0 2px 10px rgba(15, 27, 45, 0.10);
+  --fq-toolbar: #f1f5f9;
+  --fq-btn-bg: #ffffff;
+  --fq-btn-border: #cbd5e1;
+  --fq-btn-hover: #e2e8f0;
+  --fq-btn-text: #0f1b2d;
+  --fq-track: rgba(15, 27, 45, 0.10);
+  /* Bright unit colours are too pale as text on white, so darken them */
+  --fq-accent-text: color-mix(in srgb, var(--fq-accent) 45%, #0f1b2d);
+  --fq-panel-bg: #f8fafc;
+  --fq-panel-text: #1e293b;
+  --fq-panel-muted: #334155;
+  --fq-panel-border: #cbd5e1;
+  --fq-link: #2563eb;
+  --fq-num-bg: #ffffff;
+  --fq-num-text: #0f1b2d;
+  --fq-current-ring: #0f1b2d;
+}
+
+@media (prefers-color-scheme: light) {
+  .flashquiz.fq-theme-auto {
+    --fq-bg: #ffffff;
+    --fq-bg-2: #eef3f9;
+    --fq-text: #0f1b2d;
+    --fq-muted: #475569;
+    --fq-ink: #0f1b2d;
+    --fq-unit: #1d6fa5;
+    --fq-frame: #d5dee9;
+    --fq-shadow: 0 2px 10px rgba(15, 27, 45, 0.10);
+    --fq-toolbar: #f1f5f9;
+    --fq-btn-bg: #ffffff;
+    --fq-btn-border: #cbd5e1;
+    --fq-btn-hover: #e2e8f0;
+    --fq-btn-text: #0f1b2d;
+    --fq-track: rgba(15, 27, 45, 0.10);
+    /* Bright unit colours are too pale as text on white, so darken them */
+    --fq-accent-text: color-mix(in srgb, var(--fq-accent) 45%, #0f1b2d);
+    --fq-panel-bg: #f8fafc;
+    --fq-panel-text: #1e293b;
+    --fq-panel-muted: #334155;
+    --fq-panel-border: #cbd5e1;
+    --fq-link: #2563eb;
+    --fq-num-bg: #ffffff;
+    --fq-num-text: #0f1b2d;
+    --fq-current-ring: #0f1b2d;
+}
 }
 
 /* ---------- Stage (the "slide") ---------- */
@@ -54,7 +134,7 @@
   text-align: left;
   font-size: clamp(0.7rem, 2cqi, 1.1rem);
   font-weight: 700;
-  color: #3fa7d6;
+  color: var(--fq-unit);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -117,7 +197,7 @@
 .fq-section-sub {
   margin-top: 3%;
   font-size: clamp(0.9rem, 2.8cqi, 1.8rem);
-  color: var(--fq-accent);
+  color: var(--fq-accent-text);
   font-weight: 600;
 }
 
@@ -152,7 +232,7 @@
 
 .fq-start-sub {
   font-size: clamp(0.9rem, 2.8cqi, 1.8rem);
-  color: var(--fq-accent);
+  color: var(--fq-accent-text);
   font-weight: 600;
 }
 
@@ -167,12 +247,12 @@
 
 .fq-btn-big.fq-review-btn {
   background: transparent;
-  color: #ffffff;
+  color: var(--fq-text);
   border: 2px solid var(--fq-accent);
 }
 
 .fq-btn-big.fq-review-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--fq-btn-hover);
 }
 
 /* Flag on the slide, just left of the number circle.
@@ -187,7 +267,7 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #ffffff;
+  color: var(--fq-text);
   font-size: clamp(0.9rem, 3.4cqi, 2rem);
   line-height: 1;
   opacity: 0.22;
@@ -242,7 +322,7 @@
 
 .fq-timer {
   height: 6px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--fq-track);
 }
 
 .fq-timer[hidden] {
@@ -263,7 +343,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.5rem 0.75rem;
-  background: #0a1422;
+  background: var(--fq-toolbar);
 }
 
 .fq-spacer {
@@ -282,10 +362,10 @@
   min-width: 2.4rem;
   height: 2.2rem;
   padding: 0 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--fq-btn-border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background: var(--fq-btn-bg);
+  color: var(--fq-btn-text);
   font: inherit;
   font-size: 0.95rem;
   line-height: 1;
@@ -294,7 +374,7 @@
 }
 
 .fq-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--fq-btn-hover);
 }
 
 /* Brief flash when a long-press on ◀◀ / ▶▶ skips a section */
@@ -327,7 +407,8 @@
 }
 
 .fq-btn-big:hover {
-  background: #ffd866;
+  background: var(--fq-accent);
+  filter: brightness(1.08);
 }
 
 /* ---------- Numbered-question grid ---------- */
@@ -336,9 +417,9 @@
   max-height: 340px;
   overflow-y: auto;
   padding: 0.8rem 1rem 1rem;
-  background: #f8fafc;
-  color: #1e293b;
-  border-top: 1px solid #cbd5e1;
+  background: var(--fq-panel-bg);
+  color: var(--fq-panel-text);
+  border-top: 1px solid var(--fq-panel-border);
   font-size: 0.92rem;
 }
 
@@ -354,7 +435,7 @@
   margin: 0.6rem 0 0.3rem;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #334155;
+  color: var(--fq-panel-muted);
 }
 
 .fq-jump-nums {
@@ -369,8 +450,8 @@
   padding: 0 0.35rem;
   border: 2px solid var(--fq-num-col, #ffc93c);
   border-radius: 6px;
-  background: #ffffff;
-  color: #0f1b2d;
+  background: var(--fq-num-bg);
+  color: var(--fq-num-text);
   font: inherit;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -381,12 +462,14 @@
 .fq-jump-num:hover,
 .fq-jump-num:focus-visible {
   background: var(--fq-num-col, #ffc93c);
+  color: #0f1b2d;
   outline: none;
 }
 
 .fq-jump-num.fq-jump-current {
   background: var(--fq-num-col, #ffc93c);
-  box-shadow: 0 0 0 2px #0f1b2d;
+  color: #0f1b2d;
+  box-shadow: 0 0 0 2px var(--fq-current-ring);
 }
 
 .flashquiz:fullscreen .fq-jump {
@@ -402,9 +485,9 @@
 
 .fq-settings {
   padding: 0.9rem 1rem 1rem;
-  background: #f8fafc;
-  color: #1e293b;
-  border-top: 1px solid #cbd5e1;
+  background: var(--fq-panel-bg);
+  color: var(--fq-panel-text);
+  border-top: 1px solid var(--fq-panel-border);
   font-size: 0.92rem;
 }
 
@@ -454,7 +537,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: #2563eb;
+  color: var(--fq-link);
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
@@ -477,6 +560,24 @@
   height: 0.8rem;
   border-radius: 50%;
   flex: none;
+}
+
+/* The page theme (e.g. Read the Docs) colours <label> text itself;
+   use the quiz theme's colour instead so labels show in dark mode. */
+.fq-settings label,
+.fq-jump-head,
+.fq-sections-head strong {
+  color: var(--fq-panel-text);
+}
+
+.fq-in-theme {
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--fq-panel-border);
+  border-radius: 5px;
+  background: var(--fq-num-bg);
+  color: var(--fq-panel-text);
+  font: inherit;
+  font-weight: 400;
 }
 
 /* ---------- Full screen ---------- */

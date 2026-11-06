@@ -9,6 +9,8 @@
   var PALETTE = ["#FFC93C", "#F26B38", "#E84A5F", "#7BC67E", "#3FA7D6", "#9B8AE6"];
   var IDLE_MS = 2500;
   var LONG_PRESS_MS = 550;
+  var THEMES = ["dark", "light", "auto"];
+  var THEME_KEY = "flashquiz-theme";
 
   function esc(text) {
     var d = document.createElement("div");
@@ -46,6 +48,9 @@
     this.loop = !!cfg.loop;
     this.shuffle = !!cfg.shuffle;
     this.showBar = cfg.timerBar !== false;
+    var savedTheme = null;
+    try { savedTheme = window.localStorage.getItem(THEME_KEY); } catch (e) { /* ignore */ }
+    this.setTheme(THEMES.indexOf(savedTheme) >= 0 ? savedTheme : (cfg.theme || "dark"));
     this.reviewNext = cfg.review !== false;  // next loop = tagged questions only
     this.tags = {};           // question key -> true (see buildDeck)
     this.reviewOnly = false;  // true while a review round is playing
@@ -132,6 +137,15 @@
 
   FlashQuiz.prototype.colour = function (si) {
     return PALETTE[si % PALETTE.length];
+  };
+
+  /* ---------- Theme ---------- */
+
+  FlashQuiz.prototype.setTheme = function (theme) {
+    if (THEMES.indexOf(theme) < 0) theme = "dark";
+    this.theme = theme;
+    var root = this.root;
+    THEMES.forEach(function (t) { root.classList.toggle("fq-theme-" + t, t === theme); });
   };
 
   /* ---------- Tagging for review ---------- */
@@ -683,6 +697,15 @@
     revIn.checked = this.reviewNext;
     revIn.addEventListener("change", function () { self.reviewNext = revIn.checked; });
     r.querySelector(".fq-tag-clear").addEventListener("click", function () { self.clearTags(); });
+
+    // Theme: the directive's :theme: is the default; a viewer's own pick
+    // (remembered in this browser for every quiz) takes over from it.
+    var themeIn = r.querySelector(".fq-in-theme");
+    themeIn.value = this.theme;
+    themeIn.addEventListener("change", function () {
+      self.setTheme(themeIn.value);
+      try { window.localStorage.setItem(THEME_KEY, themeIn.value); } catch (e) { /* ignore */ }
+    });
 
     var shufIn = r.querySelector(".fq-in-shuffle");
     shufIn.checked = this.shuffle;

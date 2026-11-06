@@ -302,13 +302,18 @@
    structured question from layout with `display: none`, and flatten the
    ancestors of the questions so they flow like a plain document.
    Requires :has() (Chrome/Edge 105+, Safari 15.4+, Firefox 121+).
+
+   Scoped with body:has(.sq-container) so these rules only apply to pages
+   that contain a structured question. Without the scope, printing any
+   other page (or another directive's own print) came out blank.
    ============================================================ */
 @media print {
   @page {
     margin: 1cm;
   }
 
-  html, body {
+  html:has(.sq-container),
+  body:has(.sq-container) {
     height: auto !important;
     min-height: 0 !important;
     overflow: visible !important;
@@ -320,14 +325,14 @@
   /* 1. Remove from layout anything that neither contains nor is inside
         a structured question (sidebars, nav, headings, other prose,
         code blocks, footers...). */
-  body *:not(.sq-container):not(.sq-container *):not(:has(.sq-container)) {
+  body:has(.sq-container) *:not(.sq-container):not(.sq-container *):not(:has(.sq-container)) {
     display: none !important;
   }
 
   /* 2. Flatten the wrappers around the questions so theme layout
         (sidebar margins, flex/grid columns, fixed widths) can't push
         content sideways or leave gaps. */
-  body *:has(.sq-container) {
+  body:has(.sq-container) *:has(.sq-container) {
     display: block !important;
     position: static !important;
     float: none !important;
@@ -373,14 +378,14 @@
   /* 4. Expand all sphinx-design tabs so every subquestion prints.
         sphinx-design draws the tab panel's top/bottom lines with both
         `border` and `box-shadow`, so both are cleared here. */
-  .sd-tab-set,
-  .sd-tab-set .sd-tab-content {
+  body:has(.sq-container) .sd-tab-set,
+  body:has(.sq-container) .sd-tab-set .sd-tab-content {
     border: 0 !important;
     box-shadow: none !important;
     outline: 0 !important;
   }
 
-  .sd-tab-set .sd-tab-content {
+  body:has(.sq-container) .sd-tab-set .sd-tab-content {
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
@@ -388,8 +393,8 @@
     padding-top: 0 !important;
   }
 
-  .sd-tab-set > label.sd-tab-label,
-  .sd-tab-set > input[type="radio"] {
+  body:has(.sq-container) .sd-tab-set > label.sd-tab-label,
+  body:has(.sq-container) .sd-tab-set > input[type="radio"] {
     display: none !important;
   }
 

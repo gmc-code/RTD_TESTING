@@ -16,6 +16,7 @@ Usage::
        :shuffle:
        :timer-bar: off
        :review: on
+       :theme: dark
 
        # 2A Introduction to Classification
        Sorting organisms into groups is called what? | Classification
@@ -81,6 +82,7 @@ def visit_flashquiz_html(self, node):
         "autostart": node["autostart"],
         "timerBar": node["timer_bar"],
         "review": node["review"],
+        "theme": node["theme"],
         "sections": node["sections"],
     }
     # </ is escaped so a question can never close the <script> tag early.
@@ -89,7 +91,7 @@ def visit_flashquiz_html(self, node):
     hidden_bar = "" if node["timer_bar"] else " hidden"
 
     self.body.append(f"""
-<div class="flashquiz" tabindex="0" aria-label="Flash quiz: {title}">
+<div class="flashquiz fq-theme-{node["theme"]}" tabindex="0" aria-label="Flash quiz: {title}">
   <script type="application/json" class="fq-data">{payload}</script>
   <div class="fq-stage" aria-live="polite">
     <div class="fq-start">
@@ -133,6 +135,12 @@ def visit_flashquiz_html(self, node):
         <label><input type="checkbox" class="fq-in-shuffle"> Shuffle questions</label>
         <label><input type="checkbox" class="fq-in-bar"> Show timer bar</label>
         <label><input type="checkbox" class="fq-in-review"> Next loop: only tagged questions</label>
+        <label class="fq-theme-line">Theme:
+          <select class="fq-in-theme">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="auto">Auto (match computer)</option>
+          </select></label>
         <div class="fq-tag-line">&#9873; <span class="fq-tag-count">None tagged</span>
           <button type="button" class="fq-link fq-tag-clear">Clear tags</button></div>
       </div>
@@ -171,6 +179,7 @@ class FlashQuizDirective(SphinxDirective):
         "autostart": directives.flag,
         "timer-bar": lambda arg: directives.choice(arg, ("on", "off")),
         "review": lambda arg: directives.choice(arg, ("on", "off")),
+        "theme": lambda arg: directives.choice(arg, ("dark", "light", "auto")),
     }
 
     def run(self):
@@ -226,6 +235,7 @@ class FlashQuizDirective(SphinxDirective):
         node["autostart"] = "autostart" in self.options
         node["timer_bar"] = self.options.get("timer-bar", "on") == "on"
         node["review"] = self.options.get("review", "on") == "on"
+        node["theme"] = self.options.get("theme", "dark")
         node["sections"] = sections
         return [node]
 

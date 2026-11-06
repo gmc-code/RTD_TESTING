@@ -58,6 +58,11 @@ Options
    ``on`` or ``off``. When ``on``, the round after a loop plays only the
    questions tagged for review (see below). Default ``on``.
 
+``:theme:``
+   ``dark``, ``light`` or ``auto``. ``auto`` follows the computer's light or
+   dark setting. Default ``dark``. Viewers can also pick a theme in ⚙ Settings;
+   their choice is remembered in that browser and applies to every quiz.
+
 All of these can also be changed on the page with the ⚙ Settings button.
 
 Controls
@@ -120,19 +125,17 @@ Example: Living Things & Ecosystems
    :loop:
 
    # 2A Introduction to Classification
-   Sorting organisms into groups is called what? | Classification
-   Groups are based on shared what? | Features
+   Sorting organisms into groups by shared features is called what? | Classification
    Studying, grouping and naming organisms is called what? | Taxonomy
    Scientists who classify organisms are called what? | Taxonomists
-   New species are checked for unique what? | Traits
-   New species join existing groups or what? | New groups
+   Scientists check each new species for unique what? | Traits
+   A new species joins an existing group or a what? | New group
    Scientists first find similarities and what? | Differences
    Next, scientists look at potential what? | Categories
    Finally, scientists choose the best what? | Group
-   Grouping helps us understand survival what? | Needs
+   Grouping helps scientists understand each species' survival what? | Needs
    Grouping shows how closely organisms are what? | Related
-   Classification helps identify which species? | Endangered
-   Once identified, endangered species can be what? | Protected
+   Classification helps identify and protect which species? | Endangered
 
    # 2B How Biologists Classify Organisms
    How many life processes do living things carry out? | Seven
@@ -143,12 +146,13 @@ Example: Living Things & Ecosystems
    Increasing in size is called what? | Growth
    Creating offspring is called what? | Reproduction
    Removing waste from the body is called what? | Excretion
-   Food materials an organism takes in are called what? | Nutrients
+   Taking in food for energy and growth is called what? | Nutrition
    Objects that never meet all seven criteria are what? | Non-living
    Organisms that met the criteria in the past are what? | Dead
    Classification sorts living things into how many levels? | Seven
    What is the broadest classification level? | Kingdom
    What is the most specific classification level? | Species
+   Which level comes between kingdom and class? | Phylum
    A two-part scientific name is called a what? | Binomial name
    A binomial name uses the genus and the what? | Species
    Binomial names are always written in what? | Italics
@@ -162,22 +166,23 @@ Example: Living Things & Ecosystems
 
    # 2C Keys for Classification
    Scientists look closely at physical what? | Characteristics
-   Characteristics include size, shape, color and what? | Patterns
+   Characteristics include size, shape, colour and what? | Patterns
    Shared features can make identification what? | Difficult
    Keys highlight subtle what between species? | Differences
-   A key is a series of what? | Statements
+   A key is a series of statements or what? | Questions
    Can keys identify non-living things? | Yes
    Keys help us understand an organism's what? | Role
    Which key gives exactly two options each step? | Dichotomous
+   A leaf edge with teeth is described as what? | Serrated
    Which key gives more than two options each step? | Polytomous
    Polytomous keys suit which identification tasks? | Complex
    Which key uses a tree-like design? | Branching
-   Which key starts at the center and moves outwards? | Circular
+   Which key starts at the centre and moves outwards? | Circular
    Which key presents questions in a numbered table? | Tabular
 
    # 2D Discovering the Kingdoms
-   Who began early taxonomy long ago? | Aristotle
-   Who later expanded the classification system? | Linnaeus
+   Who began early taxonomy over 2000 years ago? | Aristotle
+   Who expanded the classification system in the 1700s? | Linnaeus
    Early taxonomy only included which organisms? | Visible
    In which century were microscopes invented? | 1600s
    Microscopes revealed microscopic life and what? | Cells
@@ -185,27 +190,28 @@ Example: Living Things & Ecosystems
    Animals without a backbone are called what? | Invertebrates
    Animals with a backbone are called what? | Vertebrates
    Vertebrates belong to which phylum? | Chordata
-   How many classes of vertebrates are there? | Five
+   Vertebrates are traditionally grouped into how many classes? | Five
    Mammals, reptiles, fish, amphibians and what? | Birds
    Which egg-laying mammal is tricky to classify? | Platypus
-   What reveals deeper cellular similarities? | Genetic material
+   Comparing which material reveals hidden similarities? | DNA
    Plants make their own food from what? | Sunlight
    Flowering plants with fruit-covered seeds are called what? | Angiosperms
    Plants that produce seeds on cones are called what? | Gymnosperms
+   Flowering plants rely on what to make seeds? | Pollination
    Ferns and mosses reproduce using what? | Spores
    Which kingdom was created for part-plant, part-animal microbes? | Protista
    Protists include algae, slime moulds and what? | Protozoa
-   Which protist uses sunlight but also moves and eats? | Euglena
+   Which protist makes food from sunlight but also moves and feeds? | Euglena
    Fungi were first classified as what? | Plants
    Do fungi use sunlight for energy? | No
    Fungi absorb nutrients from what kind of matter? | Decaying
    Tiny, single-celled fungi are called what? | Yeasts
    Name a multicellular fungus. | Mushroom
-   Mushrooms need identification to which level? | Genus
+   Mushrooms must be identified to which level before eating? | Species
    Microscopes showed that bacteria lack a what? | Nucleus
    Which kingdom were bacteria first placed in? | Monera
    Monera's two branches are Bacteria and what? | Archaea
-   Which organisms thrive in hot springs? | Archaea
+   Which organisms often thrive in hot springs? | Archaea
    How many domains of life are there? | Three
    Bacteria, Archaea and which other domain? | Eukarya
 
@@ -213,11 +219,11 @@ Example: Living Things & Ecosystems
    Every organism lives within a what? | Ecosystem
    Ecosystems contain living and what elements? | Non-living
    Freshwater and marine habitats are which ecosystem type? | Aquatic
-   Desert, jungle and tundra are which ecosystem type? | Terrestrial
+   Deserts, jungles and grasslands are which ecosystem type? | Terrestrial
    Living parts of an ecosystem are which factors? | Biotic
+   Are bacteria a biotic or abiotic factor? | Biotic
    Non-living parts of an ecosystem are which factors? | Abiotic
    Is sunlight a biotic or abiotic factor? | Abiotic
-   Are bacteria a biotic or abiotic factor? | Biotic
    Producers that make food using sunlight are called what? | Autotrophs
    Making food from sunlight is called what? | Photosynthesis
    Consumers that eat other organisms are called what? | Heterotrophs
@@ -240,17 +246,18 @@ Example: Living Things & Ecosystems
    Each step in a food chain is called a what? | Trophic level
    The animal at the top of a food chain is the what? | Apex predator
    Is energy gained or lost at each trophic level? | Lost
-   Energy is used up or lost as what? | Heat
+   Energy is used for life processes or lost as what? | Heat
    What else removes energy from the chain? | Waste
    About what percentage passes to the next level? | 10%
    Which diagram shows energy reducing up the levels? | Trophic pyramid
-   Do higher levels support more or fewer organisms? | Fewer
+   Do higher levels usually support more or fewer organisms? | Fewer
    Many interconnected food chains form a what? | Food web
    Which species keep ecosystems stable? | Keystone
    Keystone changes can trigger a trophic what? | Cascade
+   A trophic cascade unbalances predators, prey and what? | Producers
 
    # 3C The Role of Microorganisms
-   Organisms too small to see unaided are called what? | Microorganisms
+   Organisms too small to see without a microscope are what? | Microorganisms
    Microorganisms are also called what? | Microbes
    Microbes come from how many main kingdoms? | Three
    Monera, Protista and which other kingdom? | Fungi
@@ -259,7 +266,7 @@ Example: Living Things & Ecosystems
    What forms the base of aquatic pyramids? | Phytoplankton
    Microbial consumers eat other what? | Microorganisms
    Microbes usually occupy which trophic levels? | Lower
-   Many microbes live inside animals to aid what? | Digestion
+   Microbes inside animals help them do what? | Digest food
    The two main decomposers are fungi and what? | Bacteria
    Dead matter and waste is called what? | Detritus
    Do decomposers digest inside or outside their bodies? | Outside
@@ -282,7 +289,8 @@ Example: Living Things & Ecosystems
    Seasonal movement between regions is called what? | Migration
    Dormancy caused by extreme cold is called what? | Hibernation
    Dormancy caused by extreme heat is called what? | Aestivation
-   Pollinators and top predators stabilize what? | Food webs
+   Besides migration, what timing helps organisms survive seasons? | Reproductive timing
+   Pollinators and top predators stabilise what? | Food webs
    Losing pollinators prevents plant what? | Reproduction
    Losing top predators increases which numbers? | Prey
    Too many prey causes what? | Overgrazing
@@ -291,24 +299,24 @@ Example: Living Things & Ecosystems
    Growing one crop repeatedly is called what? | Monoculture
    Heavy livestock cause soil what? | Compaction
    Compaction increases runoff and soil what? | Erosion
-   Fertilizer runoff into water causes what? | Eutrophication
+   Fertiliser runoff into water causes what? | Eutrophication
    Algal blooms block sunlight and deplete what? | Oxygen
 
    # 3E The Impact of Invasive Species
-   Species taken outside their natural area are called what? | Introduced
+   Species moved by humans outside their natural area are called what? | Introduced
    Introduced species that spread and cause harm are what? | Invasive
    Species occurring naturally in a region are called what? | Native
    Invasive species outcompete native species for what? | Resources
+   These resources include food, water and what? | Shelter
    Competition can cause local declines or what? | Extinctions
    Name a deliberate reason for introducing a species. | Farming
    Species arrive accidentally through cargo or what? | Ballast water
    Completely removing a species is called what? | Eradication
    Releasing a natural enemy to manage pests is called what? | Biological control
    Which predators affect many trophic levels? | Generalist
-   Cane toad tadpoles affect what in water? | Algae
+   Cane toad tadpoles eat what in water? | Algae
    Adult cane toads eat native what? | Insects
    Cane toad skin toxins poison native what? | Predators
-
 
 Example: Energy & Circuits
 --------------------------
@@ -324,57 +332,66 @@ Example: Energy & Circuits
    Energy can move objects or do what? | Work
    Which type of energy is stored energy? | Potential
    Potential energy depends on position or what? | State
-   What is the energy of motion called? | Kinetic
-   Moving particles in hot objects have which energy? | Thermal
-   Chemical energy is stored in what? | Bonds
+   What is the energy of a moving object called? | Kinetic
+   The energy of moving particles is which energy? | Thermal
+   How do particles in hotter objects move? | Faster
+   Chemical energy is stored in chemical what? | Bonds
    Food, fuel and batteries store which energy? | Chemical
-   Raised objects store which energy? | Gravitational
+   Raised objects store which potential energy? | Gravitational
    Stretched or squeezed materials store which energy? | Elastic
    Name a stretchy object that stores elastic energy. | Rubber band
-   Sound energy travels through vibrating what? | Air particles
-   Sound travels through air to which body part? | Ears
+   Sound energy is carried by vibrating what? | Particles
+   Sound travels through the air to which body part? | Ears
+   Moving charged particles carry which energy? | Electrical
+   Energy carried by electromagnetic waves is called what? | Radiant
+   Which visible energy can travel through empty space? | Light
+   Nuclear energy comes from splitting or combining what? | Nuclei
+   The energy of moving machine parts is called what? | Mechanical
 
    # 6B Energy Transfers & Transformations
-   Energy cannot be destroyed. This is called the ___ of energy. | Conservation
-   Can energy be created from nothing? | No
-   Energy moving between objects is called a what? | Transfer
-   Does energy change form during a transfer? | No
-   Energy changing into another form is called a what? | Transformation
-   Do transformations happen inside or between objects? | Inside
+   Energy cannot be created or what? | Destroyed
+   This is the law of what of energy? | Conservation
+   Energy can only be transferred or what? | Transformed
+   Energy moving between objects in the same form is a what? | Transfer
+   Energy changing into another form is a what? | Transformation
+   Transformations often happen inside a what? | Device
    Flow diagrams use what to show energy changes? | Arrows
-   Hairdryers transform electrical energy mainly into what? | Heat
+   Hairdryers transform electrical energy mainly into which energy? | Thermal
    Hairdryers also produce kinetic and which energy? | Sound
    Phone batteries turn chemical energy into which energy? | Electrical
    Which diagram shows useful and wasted energy? | Sankey
+   In a Sankey diagram, what shows the amount of energy? | Arrow width
    Total input energy always equals total ___ energy. | Output
 
    # 6C Waste Energy
-   Secondary forms of energy are called energy what? | By-products
+   Extra, usually unwanted, forms of energy are called what? | By-products
    By-products form during transfers or what? | Transformations
-   The energy going in is called what? | Input
-   The energy coming out is called what? | Output
+   The energy going into a device is called what? | Input
+   The energy coming out of a device is called what? | Output
    Output energy that we need is called what? | Useful
    Output energy that we don't use is called what? | Waste
-   Waste energy is usually heat, light or what? | Sound
-   Devices that maximise useful output are called what? | Efficient
-   Efficient devices create very little what? | Waste
+   Waste energy is usually thermal energy, light or what? | Sound
+   Devices that turn most input energy into useful energy are what? | Efficient
+   How much energy do efficient devices waste? | Very little
    Heat transfer through direct particle contact? | Conduction
-   Can conduction occur in gases? | Yes
+   Conduction works best in which state of matter? | Solids
    Heat transfer through moving liquids or gases? | Convection
    Heat transfer through electromagnetic waves? | Radiation
+   Which heat transfer can cross empty space? | Radiation
 
    # 6D Everyday Energy Efficiency
-   Which labels show appliance efficiency? | Energy star
-   Star labels compare similar appliance what? | Models
-   Yearly energy use is measured in what unit? | Kilowatt-hours
-   Kilowatt-hours show total yearly use of what? | Electricity
+   Which labels show appliance efficiency? | Energy Rating
+   More stars means a more what appliance? | Efficient
+   Labels help compare similar appliance what? | Models
+   Yearly electricity use is measured in what unit? | Kilowatt-hours
    The rate a device transforms energy is called what? | Power
    Power is measured in what unit? | Watts
-   Running cost = energy used × what? | Unit cost
-   Modern appliances use newer what? | Technologies
-   What reduces appliance energy waste by trapping heat? | Insulation
+   One watt equals one what per second? | Joule
+   Running cost = energy used × what? | Unit price
+   Name an efficient lighting technology. | LED
+   What reduces heat flow into or out of appliances? | Insulation
    Which home design uses sunlight and airflow? | Passive solar
-   Passive solar design warms and ___ homes. | Cools
+   In Australia, passive solar windows face which way? | North
    Name one thermal mass material. | Concrete
    Thermal mass releases absorbed heat how? | Slowly
    Which inspection identifies wasted energy? | Energy audit
@@ -382,43 +399,46 @@ Example: Energy & Circuits
    # 7A Electric Circuits
    Which circuit has one single pathway? | Series
    In series, current flows through each component in what? | Turn
-   Which circuit branches into multiple pathways? | Parallel
-   In parallel, each component has its own what? | Loop
-   Switching off a series circuit stops how many bulbs? | All
+   Which circuit splits into several branches? | Parallel
+   In parallel, each component has its own what? | Branch
+   Opening a switch in series turns off how many bulbs? | All
    In parallel, if one branch is off, the others do what? | Keep working
    In which circuit is current the same throughout? | Series
    Series components share the total what? | Voltage
    Each parallel branch gets the full battery what? | Voltage
    Which circuit type do houses use? | Parallel
    Which device cuts power during short circuits? | Circuit breaker
-   Circuit breakers prevent fires and electric what? | Shock
+   Circuit breakers prevent overheating and what? | Fires
+   Which device protects people from electric shock? | Safety switch
 
    # 7B Series and Parallel Circuits
-   Electricity needs what type of circuit to flow? | Closed
-   The circuit path must be what? | Unbroken
+   Current only flows in what type of circuit? | Closed
    Materials that let current flow easily are called what? | Conductors
-   A simple circuit has a power supply and a what? | Load
+   A simple circuit has a power supply, a switch and a what? | Load
    What joins the parts of a circuit together? | Wires
-   What provides voltage and current for a circuit? | Battery
-   The electrical push moving energy is called what? | Voltage
-   Voltmeters measure voltage in what unit? | Volts
+   Batteries provide the electrical push called what? | Voltage
+   Voltage is measured in what unit? | Volts
+   Which meter measures voltage? | Voltmeter
+   Are voltmeters connected in series or parallel? | Parallel
    The flow of electric charge is called what? | Current
-   Ammeters measure current in what unit? | Amps
-   What opposes or slows electric current? | Resistance
-   Opening a switch breaks the circuit what? | Loop
-   When the loop breaks, what happens to current? | Stops
+   Current is measured in what unit? | Amps
+   Which meter measures current? | Ammeter
+   Are ammeters connected in series or parallel? | Series
+   What reduces the current in a circuit? | Resistance
+   Opening a switch does what to the current? | Stops it
+   Which tool measures voltage, current and resistance? | Multimeter
 
    # 7C Applications of Electric Circuits
    Devices that detect changes in the environment? | Sensors
-   Sensors convert changes into electrical what? | Signals
+   Sensors turn changes into electrical what? | Signals
    Which sensors detect objects without touching? | Proximity
-   Proximity sensors detect presence, absence or what? | Distance
-   Ultrasonic sensors emit high-frequency what? | Sound waves
+   Ultrasonic sensors send out sound and time the what? | Echo
    Self-driving cars use which sensors for distance? | Ultrasonic
-   Infrared sensors emit a beam of what? | Light
-   Automatic taps use which type of sensor? | Infrared
+   Automatic taps send out which invisible beam? | Infrared
+   Security systems detect infrared from what? | Body heat
    What is a temperature-sensitive resistor called? | Thermistor
    Central heating uses which component? | Thermistor
    What is a light-sensitive resistor called? | Photoresistor
+   A photoresistor's resistance rises in the what? | Dark
    Street lights use which component? | Photoresistor
-   Street lights switch on automatically when it is what? | Dark
+   A complete pathway for current is an electric what? | Circuit

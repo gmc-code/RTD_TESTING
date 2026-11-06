@@ -89,7 +89,9 @@ extensions = [
     "labels.labels",  # custom directive
     "structuredquestion.structuredquestion",  # custom directive
     "flashquiz.flashquiz",  # custom directive
- ]
+    "wordsearch.wordsearch",  # custom directive
+    "guessword.guessword",  # custom directive
+]
 
 # "sphinx.ext.doctest",
 #     "sphinx.ext.napoleon",
