@@ -74,14 +74,13 @@ Controls
 
 The ◀◀ and ▶▶ buttons (and the arrow keys) also take modifier keys:
 
-=====================  =========================================  ====================================================
-Modifier               ◀◀ / Left arrow                            ▶▶ / Right arrow
-=====================  =========================================  ====================================================
-**Shift** (or          Start of this section; press again for     Next section
-long-press)            the previous section
-**Alt**                Replay this question from the start        Next question, without showing this answer
-**Ctrl**               First question                             Last question
-=====================  =========================================  ====================================================
+=========================  ===========================================================  ==========================================
+Modifier                   ◀◀ / Left arrow                                              ▶▶ / Right arrow
+=========================  ===========================================================  ==========================================
+**Shift** (or long-press)  Start of this section; press again for the previous section  Next section
+**Alt**                    Replay this question from the start                          Next question, without showing this answer
+**Ctrl**                   First question                                               Last question
+=========================  ===========================================================  ==========================================
 
 Long-press works on touchscreens and interactive whiteboards. Hover over
 ◀◀ or ▶▶ to see these as a tooltip.

@@ -28,6 +28,7 @@ readthedocs-flyout {
     color: #3333ff;
     font-size: 90%!important;
 }
+
 /* ========================================== */
 /* Custom transition  4+char like ---- */
 /* keep grey for both #e1e4e5  and not rst  #413d3d */
@@ -287,6 +288,30 @@ table.docutils.plain tbody tr:nth-child(odd),
 table.docutils.plain td {
     background-color: transparent !important;
     background: none !important;
+}
+
+/* ========================================== */
+/* Tables: comfortable line spacing everywhere */
+/* ========================================== */
+/* The theme's fixed 16-18px line height squashes wrapped lines and inline
+   code boxes together in table cells. Tables with their own class
+   (e.g. large-table below) can still override this. */
+.rst-content table.docutils td,
+.rst-content table.docutils th,
+.rst-content table.docutils td p,
+.rst-content table.docutils th p,
+.rst-content table.docutils td li,
+.rst-content table.docutils td span {
+    line-height: 1.5 !important;
+}
+.rst-content table.docutils td,
+.rst-content table.docutils th {
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+}
+.rst-content table.docutils td p:last-child,
+.rst-content table.docutils th p:last-child {
+    margin-bottom: 0 !important;
 }
 
 /* Target paragraph text and custom spans specifically inside large-table */
