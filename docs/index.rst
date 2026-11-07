@@ -38,6 +38,8 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/flashquiz.rst
     info/wordsearch.rst
     info/guessword.rst
+    info/crossword.rst
+    info/flashcards.rst
 
 
 .. toctree::

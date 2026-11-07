@@ -17,14 +17,22 @@ Option reference
      - The word or phrase to guess, written after ``.. guessword::``. For
        several words, leave this out and put one word per line in the
        content instead.
-   * - ``:theme:``
-     - ``snowman`` (default), ``beaker``, ``balloons``, ``flower``,
+   * - ``:image:``
+     - Which picture: ``snowman`` (default), ``beaker``, ``balloons``, ``flower``,
        ``battery``, ``thermometer``, ``machine`` (a Rube Goldberg
        machine; ``rubegoldberg`` also works), ``rocket``, ``circuit``,
        ``pendulum``, ``daynight``, ``moon``, ``fuse`` or ``volcano``.
        ``random`` gives a different picture for each word. A
        comma-separated list, such as ``rocket, fuse, machine``, picks
-       randomly from just those.
+       randomly from just those. (Older pages used ``:theme:`` for the
+       picture. That still works, but the build shows a warning asking you
+       to change it to ``:image:``.)
+   * - ``:theme:``
+     - Colour theme: ``light`` (default), ``dark``, ``auto`` (match the
+       computer), ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black
+       and white with strong colours, good on a projector). The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. On
+       dark themes the picture stays on a light panel so it looks right.
+       Printing is always black and white.
    * - ``:hint:``
      - Hint for the single-word form. Students reveal it with a button.
        In the multi-word form, put the hint after a ``|`` on each line.
@@ -46,6 +54,11 @@ Option reference
        and ``moon`` pictures. In the southern hemisphere the sun crosses
        the northern sky from right to left, and a waning moon is lit on
        the right. ``north`` shows the mirror image.
+   * - ``:no-settings:``
+     - Hides the ⚙ settings button, so students can't change the picture,
+       the number of wrong guesses, the colour theme or the hint button.
+       Useful for a class challenge where everyone should have the same
+       game.
    * - ``:class:``
      - Extra CSS classes on the game box.
 
@@ -87,6 +100,23 @@ Each game has a **🖨 Print** button that prints just that game as a blank
 worksheet, with the answer key on a second page if ``:answers: print`` is
 set. Printing the whole page from the browser also gives blank games.
 
+The **⚙** button opens settings for that game:
+
+* **Picture**: the default (from ``:image:``), random for each word,
+  or any one picture. It changes straight away and keeps the game's
+  progress.
+* **Wrong guesses allowed**: 3 to 12. If letters have already been guessed
+  in the current word, the new number starts with the next word, so moving
+  the slider can't win or lose a round.
+* **Theme**: any of the colour themes (see ``:theme:``).
+* **Show the hint button**: hide it for a harder game.
+* **Reset settings** undoes all of these.
+
+Choices are saved in that browser, separately for each game. The words
+never change. **🖨 Print** uses the picture and number of wrong guesses
+showing on screen, so a teacher can set up the game and print it. Add
+``:no-settings:`` to hide the button.
+
 Each example below shows the RST first, then the game it makes.
 
 Snowman (default)
@@ -108,12 +138,12 @@ Beaker
 .. code-block:: rst
 
    .. guessword:: photosynthesis
-      :theme: beaker
+      :image: beaker
       :hint: How plants make glucose
       :lives: 12
 
 .. guessword:: photosynthesis
-   :theme: beaker
+   :image: beaker
    :hint: How plants make glucose
    :lives: 12
 
@@ -126,7 +156,7 @@ start with ``#`` are ignored.
 .. code-block:: rst
 
    .. guessword::
-      :theme: balloons
+      :image: balloons
       :title: Cells revision
       :lives: 12
       :shuffle:
@@ -137,7 +167,7 @@ start with ``#`` are ignored.
       nucleus
 
 .. guessword::
-   :theme: balloons
+   :image: balloons
    :title: Cells revision
    :lives: 12
    :shuffle:
@@ -155,12 +185,12 @@ Each wrong guess drops a petal. On the last one the flower wilts.
 .. code-block:: rst
 
    .. guessword:: pollination
-      :theme: flower
+      :image: flower
       :hint: Moving pollen from one flower to another
       :lives: 12
 
 .. guessword:: pollination
-   :theme: flower
+   :image: flower
    :hint: Moving pollen from one flower to another
    :lives: 12
 
@@ -173,12 +203,12 @@ is flat.
 .. code-block:: rst
 
    .. guessword:: circuit
-      :theme: battery
+      :image: battery
       :hint: A closed loop that current flows around
       :lives: 12
 
 .. guessword:: circuit
-   :theme: battery
+   :image: battery
    :hint: A closed loop that current flows around
    :lives: 12
 
@@ -191,12 +221,12 @@ the danger zone, and heat waves appear when it overheats.
 .. code-block:: rst
 
    .. guessword:: temperature
-      :theme: thermometer
+      :image: thermometer
       :hint: How hot or cold something is
       :lives: 12
 
 .. guessword:: temperature
-   :theme: thermometer
+   :image: thermometer
    :hint: How hot or cold something is
    :lives: 12
 
@@ -211,12 +241,12 @@ round is lost.
 .. code-block:: rst
 
    .. guessword:: kinetic energy
-      :theme: machine
+      :image: machine
       :hint: The energy an object has because it is moving
       :lives: 12
 
 .. guessword:: kinetic energy
-   :theme: machine
+   :image: machine
    :hint: The energy an object has because it is moving
    :lives: 12
 
@@ -230,12 +260,12 @@ fire. At zero the rocket lifts off without you.
 .. code-block:: rst
 
    .. guessword:: gravity
-      :theme: rocket
+      :image: rocket
       :hint: The force that pulls objects towards Earth
       :lives: 12
 
 .. guessword:: gravity
-   :theme: rocket
+   :image: rocket
    :hint: The force that pulls objects towards Earth
    :lives: 12
 
@@ -248,12 +278,12 @@ and lights the next bulb, until the last bulb overloads and blows.
 .. code-block:: rst
 
    .. guessword:: resistance
-      :theme: circuit
+      :image: circuit
       :hint: How much a component opposes the flow of current
       :lives: 12
 
 .. guessword:: resistance
-   :theme: circuit
+   :image: circuit
    :hint: How much a component opposes the flow of current
    :lives: 12
 
@@ -266,12 +296,12 @@ guess and the weight drops. At midnight the cuckoo pops out.
 .. code-block:: rst
 
    .. guessword:: frequency
-      :theme: pendulum
+      :image: pendulum
       :hint: The number of swings or waves per second
       :lives: 12
 
 .. guessword:: frequency
-   :theme: pendulum
+   :image: pendulum
    :hint: The number of swings or waves per second
    :lives: 12
 
@@ -286,12 +316,12 @@ left. Add ``:hemisphere: north`` for the northern view.
 .. code-block:: rst
 
    .. guessword:: rotation
-      :theme: daynight
+      :image: daynight
       :hint: Earth spinning on its axis causes day and night
       :lives: 12
 
 .. guessword:: rotation
-   :theme: daynight
+   :image: daynight
    :hint: Earth spinning on its axis causes day and night
    :lives: 12
 
@@ -307,12 +337,12 @@ on the left.
 .. code-block:: rst
 
    .. guessword:: waning crescent
-      :theme: moon
+      :image: moon
       :hint: The phase just before a new moon
       :lives: 12
 
 .. guessword:: waning crescent
-   :theme: moon
+   :image: moon
    :hint: The phase just before a new moon
    :lives: 12
 
@@ -325,25 +355,25 @@ right, and the waning moon is lit on the left.
 .. code-block:: rst
 
    .. guessword:: equinox
-      :theme: daynight
+      :image: daynight
       :hemisphere: north
       :hint: When day and night are the same length
       :lives: 12
 
    .. guessword:: gibbous
-      :theme: moon
+      :image: moon
       :hemisphere: north
       :hint: More than half lit, but not full
       :lives: 12
 
 .. guessword:: equinox
-   :theme: daynight
+   :image: daynight
    :hemisphere: north
    :hint: When day and night are the same length
    :lives: 12
 
 .. guessword:: gibbous
-   :theme: moon
+   :image: moon
    :hemisphere: north
    :hint: More than half lit, but not full
    :lives: 12
@@ -357,12 +387,12 @@ firework launches and bursts.
 .. code-block:: rst
 
    .. guessword:: combustion
-      :theme: fuse
+      :image: fuse
       :hint: A reaction where a fuel burns in oxygen
       :lives: 12
 
 .. guessword:: combustion
-   :theme: fuse
+   :image: fuse
    :hint: A reaction where a fuel burns in oxygen
    :lives: 12
 
@@ -376,26 +406,26 @@ volcano erupts.
 .. code-block:: rst
 
    .. guessword:: igneous rock
-      :theme: volcano
+      :image: volcano
       :hint: Rock formed when magma or lava cools
       :lives: 12
 
 .. guessword:: igneous rock
-   :theme: volcano
+   :image: volcano
    :hint: Rock formed when magma or lava cools
    :lives: 12
 
 Random pictures
 ---------------
 
-``:theme: random`` gives each word a different picture, chosen at random
+``:image: random`` gives each word a different picture, chosen at random
 and never the same twice in a row. To pick from a shortlist, list the
-themes with commas.
+pictures with commas.
 
 .. code-block:: rst
 
    .. guessword::
-      :theme: random
+      :image: random
       :title: Energy revision
       :lives: 12
       :shuffle:
@@ -407,7 +437,7 @@ themes with commas.
       gravitational | Energy of a raised object
 
    .. guessword::
-      :theme: rocket, fuse, machine
+      :image: rocket, fuse, machine
       :title: Forces and motion
       :lives: 12
 
@@ -416,7 +446,7 @@ themes with commas.
       inertia | Resistance to a change in motion
 
 .. guessword::
-   :theme: random
+   :image: random
    :title: Energy revision
    :lives: 12
    :shuffle:
@@ -428,7 +458,7 @@ themes with commas.
    gravitational | Energy of a raised object
 
 .. guessword::
-   :theme: rocket, fuse, machine
+   :image: rocket, fuse, machine
    :title: Forces and motion
    :lives: 12
 
@@ -450,12 +480,12 @@ classes, or a quick challenge at the end of a lesson.
       :hint: The smallest particle of an element
 
    .. guessword:: cell
-      :theme: beaker
+      :image: beaker
       :lives: 3
       :hint: The basic unit of life
 
    .. guessword::
-      :theme: balloons
+      :image: balloons
       :title: Forces challenge
       :lives: 3
 
@@ -464,57 +494,57 @@ classes, or a quick challenge at the end of a lesson.
       newton | The unit of force
 
    .. guessword:: leaf
-      :theme: flower
+      :image: flower
       :lives: 3
       :hint: Where photosynthesis mostly happens
 
    .. guessword:: volt
-      :theme: battery
+      :image: battery
       :lives: 3
       :hint: The unit of voltage
 
    .. guessword:: heat
-      :theme: thermometer
+      :image: thermometer
       :lives: 3
       :hint: Energy that flows from hot to cold
 
    .. guessword:: lever
-      :theme: machine
+      :image: machine
       :lives: 3
       :hint: A simple machine that turns about a pivot
 
    .. guessword:: orbit
-      :theme: rocket
+      :image: rocket
       :lives: 3
       :hint: The path of a satellite around a planet
 
    .. guessword:: ohm
-      :theme: circuit
+      :image: circuit
       :lives: 3
       :hint: The unit of resistance
 
    .. guessword:: swing
-      :theme: pendulum
+      :image: pendulum
       :lives: 3
       :hint: What a pendulum does
 
    .. guessword:: dusk
-      :theme: daynight
+      :image: daynight
       :lives: 3
       :hint: The time just after sunset
 
    .. guessword:: lunar
-      :theme: moon
+      :image: moon
       :lives: 3
       :hint: To do with the moon
 
    .. guessword:: spark
-      :theme: fuse
+      :image: fuse
       :lives: 3
       :hint: A tiny flash that can start a fire
 
    .. guessword:: lava
-      :theme: volcano
+      :image: volcano
       :lives: 3
       :hint: Molten rock that reaches the surface
 
@@ -523,12 +553,12 @@ classes, or a quick challenge at the end of a lesson.
    :hint: The smallest particle of an element
 
 .. guessword:: cell
-   :theme: beaker
+   :image: beaker
    :lives: 3
    :hint: The basic unit of life
 
 .. guessword::
-   :theme: balloons
+   :image: balloons
    :title: Forces challenge
    :lives: 3
 
@@ -537,57 +567,57 @@ classes, or a quick challenge at the end of a lesson.
    newton | The unit of force
 
 .. guessword:: leaf
-   :theme: flower
+   :image: flower
    :lives: 3
    :hint: Where photosynthesis mostly happens
 
 .. guessword:: volt
-   :theme: battery
+   :image: battery
    :lives: 3
    :hint: The unit of voltage
 
 .. guessword:: heat
-   :theme: thermometer
+   :image: thermometer
    :lives: 3
    :hint: Energy that flows from hot to cold
 
 .. guessword:: lever
-   :theme: machine
+   :image: machine
    :lives: 3
    :hint: A simple machine that turns about a pivot
 
 .. guessword:: orbit
-   :theme: rocket
+   :image: rocket
    :lives: 3
    :hint: The path of a satellite around a planet
 
 .. guessword:: ohm
-   :theme: circuit
+   :image: circuit
    :lives: 3
    :hint: The unit of resistance
 
 .. guessword:: swing
-   :theme: pendulum
+   :image: pendulum
    :lives: 3
    :hint: What a pendulum does
 
 .. guessword:: dusk
-   :theme: daynight
+   :image: daynight
    :lives: 3
    :hint: The time just after sunset
 
 .. guessword:: lunar
-   :theme: moon
+   :image: moon
    :lives: 3
    :hint: To do with the moon
 
 .. guessword:: spark
-   :theme: fuse
+   :image: fuse
    :lives: 3
    :hint: A tiny flash that can start a fire
 
 .. guessword:: lava
-   :theme: volcano
+   :image: volcano
    :lives: 3
    :hint: Molten rock that reaches the surface
 
@@ -605,7 +635,7 @@ appears when you print, so the answers never show on screen.
 .. code-block:: rst
 
    .. guessword::
-      :theme: snowman
+      :image: snowman
       :title: States of matter
       :lives: 12
       :answers: print
@@ -616,7 +646,7 @@ appears when you print, so the answers never show on screen.
       sublimation | Solid straight to gas
 
 .. guessword::
-   :theme: snowman
+   :image: snowman
    :title: States of matter
    :lives: 12
    :answers: print
@@ -625,3 +655,41 @@ appears when you print, so the answers never show on screen.
    condensation | Gas to liquid
    melting point | Temperature where a solid becomes a liquid
    sublimation | Solid straight to gas
+
+Colour themes
+-------------
+
+``:theme:`` sets the colours of the game. ``:image:`` still chooses the
+picture, so the two can be mixed freely.
+
+.. code-block:: rst
+
+   .. guessword:: evaporation
+      :image: beaker
+      :theme: dark
+      :hint: A liquid turning into a gas below its boiling point
+
+   .. guessword:: chlorophyll
+      :image: flower
+      :theme: forest
+      :hint: The green pigment in leaves
+
+   .. guessword:: magnet
+      :image: circuit
+      :theme: contrast
+      :hint: Attracts iron, nickel and cobalt
+
+.. guessword:: evaporation
+   :image: beaker
+   :theme: dark
+   :hint: A liquid turning into a gas below its boiling point
+
+.. guessword:: chlorophyll
+   :image: flower
+   :theme: forest
+   :hint: The green pigment in leaves
+
+.. guessword:: magnet
+   :image: circuit
+   :theme: contrast
+   :hint: Attracts iron, nickel and cobalt

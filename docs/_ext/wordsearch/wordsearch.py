@@ -43,6 +43,8 @@ Options
               Flag. Turns off letter highlighting. (Default: pressing a
               letter key highlights every cell with that letter; the same
               key again or Esc clears it.)
+:no-settings: Flag. Hide the settings button, so students can't change the
+              colour theme, letter size or letter highlight.
 :no-overlap:  Flag. Words never cross or share letters. (Default: words may
               cross where their letters match.) The grid grows if needed.
 :fill:        random (default) - random A-Z filler letters
@@ -57,7 +59,9 @@ Options
                                and each time Reset is pressed
 :case:        upper (default) | lower
 :instructions: Text shown above the puzzle.
-:theme:       white (default) | light
+:theme:       white (default) | light | dark | auto | ocean | forest |
+              sunset | contrast  (colour themes shared with flashquiz,
+              flashcards, crossword and guessword)
 :color:       Instruction colour (same names as wordjumble).
 :style:       filled (default) | border | plain
 """
@@ -87,6 +91,10 @@ PRESETS = {
     "medium": "across, down, diagonal",
     "hard": "all",
 }
+# Colour themes shared with flashquiz, flashcards, crossword and guessword.
+# "white" is the wordsearch default (plain white panel).
+THEMES = ("white", "light", "dark", "auto", "ocean", "forest", "sunset", "contrast")
+
 VALID_COLORS = [
     "red", "participant", "green", "process", "blue", "circumstance",
     "conj", "part", "theme", "rheme", "dependent", "embedded",
@@ -264,6 +272,7 @@ class WordSearchDirective(SphinxDirective):
         "clues": directives.flag,
         "no-overlap": directives.flag,
         "no-letter-highlight": directives.flag,
+        "no-settings": directives.flag,
         "fill": choice(("random", "words")),
         "sort": sort_choice,
         "case": choice(("upper", "lower")),
@@ -355,7 +364,11 @@ class WordSearchDirective(SphinxDirective):
 
         # Styling (matches wordjumble conventions)
         theme = (self.options.get("theme") or "white").strip().lower()
-        theme = theme if theme in ("white", "light") else "white"
+        if theme not in THEMES:
+            logger.warning(f"wordsearch: unknown :theme: {theme!r}, using white "
+                           f"(choose from {', '.join(THEMES)})",
+                           location=(self.env.docname, self.lineno))
+            theme = "white"
         color = (self.options.get("color") or "blue").strip().lower()
         color = color if color in VALID_COLORS else "blue"
         style = (self.options.get("style") or "filled").strip().lower()
@@ -398,6 +411,7 @@ class WordSearchDirective(SphinxDirective):
             "cols": cols,
             "shuffleList": sort_mode == "random",
             "keyHints": "no-letter-highlight" not in self.options,
+            "settings": "no-settings" not in self.options,
             "words": [
                 {"id": i, "cells": placements[i]} for i in range(len(entries))
             ],

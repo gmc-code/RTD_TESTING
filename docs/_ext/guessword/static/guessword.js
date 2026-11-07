@@ -638,6 +638,25 @@
     volcano: { svg: volcanoSVG, lose: "Oh no, the volcano erupted!" }
   };
 
+  var PICTURE_LABELS = {
+    snowman: "Snowman", beaker: "Beaker", balloons: "Balloons", flower: "Flower",
+    battery: "Battery", thermometer: "Thermometer", machine: "Machine",
+    rocket: "Rocket", circuit: "Circuit", pendulum: "Pendulum clock",
+    daynight: "Day and night", moon: "Moon phases", fuse: "Fuse", volcano: "Volcano"
+  };
+  var LOOKS = [["light", "Light"], ["dark", "Dark"], ["auto", "Auto"],
+    ["ocean", "Ocean"], ["forest", "Forest"], ["sunset", "Sunset"], ["contrast", "High contrast"]];
+
+  function storeGet(k) {
+    try { return JSON.parse(window.localStorage.getItem(k) || "null"); } catch (e) { return null; }
+  }
+  function storeSet(k, v) {
+    try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ }
+  }
+  function storeDel(k) {
+    try { window.localStorage.removeItem(k); } catch (e) { /* ignore */ }
+  }
+
   /* ---------- helpers ---------- */
   function decode(s) {
     var bin = atob(s);
@@ -679,11 +698,31 @@
   /* ---------- the game ---------- */
   function GuessWord(root) {
     var cfg = decode(root.getAttribute("data-gw"));
+    var allowSettings = cfg.settings !== false;
+    var gameIndex = Array.prototype.indexOf.call(document.querySelectorAll(".guessword[data-gw]"), root);
+    var settingsKey = "guessword-settings:" + location.pathname + ":" + gameIndex;
+    var teacherPool = [].concat(cfg.theme || "snowman").filter(function (t) { return THEMES[t]; });
+    if (!teacherPool.length) teacherPool = ["snowman"];
+    var teacherLook = cfg.look || "light";
+    // Student settings (only used when settings are allowed).
+    var saved = (allowSettings && storeGet(settingsKey)) || {};
+    var set = {
+      image: saved.image || "teacher",
+      lives: saved.lives || cfg.lives || 6,
+      look: saved.look || teacherLook,
+      hints: saved.hints !== false
+    };
+    if (set.image !== "teacher" && set.image !== "random" && !THEMES[set.image]) set.image = "teacher";
+    if (set.lives < 3 || set.lives > 12) set.lives = cfg.lives || 6;
+    function poolFor(image) {
+      if (image === "random") return Object.keys(THEMES);
+      if (THEMES[image]) return [image];
+      return teacherPool.slice();
+    }
     // cfg.theme is a list: one theme, a shortlist, or every theme ("random").
     // With more than one, each word gets a random picture (never the same
     // one twice in a row).
-    var pool = [].concat(cfg.theme || "snowman").filter(function (t) { return THEMES[t]; });
-    if (!pool.length) pool = ["snowman"];
+    var pool = poolFor(set.image);
     var themeName = pool[Math.floor(Math.random() * pool.length)];
     var theme = THEMES[themeName];
 
@@ -696,7 +735,8 @@
       root.classList.add("gw-theme-" + themeName);
     }
     var firstRound = true;
-    var lives = cfg.lives || 6;
+    var lives = set.lives;
+    var pendingLives = null;
     var words = cfg.shuffle ? shuffle(cfg.words.slice()) : cfg.words.slice();
 
     var round = 0, answer = "", guessed = {}, wrong = 0, over = false;
@@ -704,6 +744,12 @@
     root.innerHTML = "";
     root.classList.add("gw-theme-" + themeName);
     if (pool.length > 1) root.classList.add("gw-random");
+    applyLook(set.look);
+
+    function applyLook(look) {
+      LOOKS.forEach(function (l) { root.classList.remove("gw-look-" + l[0]); });
+      root.classList.add("gw-look-" + look);
+    }
 
     var head = el("div", "gw-head");
     var counter = el("span", "gw-round");
@@ -725,6 +771,11 @@
     var nextBtn = button("Next word", "gw-btn gw-btn-main");
     var printBtn = button("🖨 Print", "gw-btn gw-btn-print");
     printBtn.title = "Print this game as a worksheet";
+    var setBtn = button("\u2699", "gw-btn gw-btn-settings");
+    setBtn.title = "Settings";
+    setBtn.setAttribute("aria-label", "Settings");
+    setBtn.setAttribute("aria-expanded", "false");
+    var panel = buildSettings();
 
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function (L) {
       var b = button(L, "gw-key");
@@ -735,11 +786,125 @@
     });
 
     ctrl.append(hintBtn, revealBtn, nextBtn, printBtn);
-    printBtn.addEventListener("click", function () { printSheet(cfg, themeName); });
+    if (allowSettings) ctrl.append(setBtn);
+    printBtn.addEventListener("click", function () {
+      // Print what's on screen: the current picture and wrong guesses allowed.
+      printSheet(Object.assign({}, cfg, { lives: lives }), themeName);
+    });
     main.append(wordBox, hintBox, msg, keys, ctrl);
     picCol.append(pic, livesBox);
     body.append(picCol, main);
     root.append(head, body);
+    if (allowSettings) root.append(panel);
+    setBtn.addEventListener("click", function () {
+      panel.hidden = !panel.hidden;
+      setBtn.setAttribute("aria-expanded", String(!panel.hidden));
+    });
+
+    function saveSet() { storeSet(settingsKey, set); }
+
+    function buildSettings() {
+      var p = el("div", "gw-settings");
+      p.hidden = true;
+
+      // Picture
+      var picRow = el("label", "gw-set-row");
+      var picSel = el("select", "gw-set-select gw-in-image");
+      var teacherLabel = teacherPool.length > 1
+        ? "Default (" + (teacherPool.length === Object.keys(THEMES).length ? "random" : teacherPool.map(function (t) { return PICTURE_LABELS[t]; }).join(", ")) + ")"
+        : "Default (" + PICTURE_LABELS[teacherPool[0]] + ")";
+      [["teacher", teacherLabel], ["random", "Random each word"]].concat(
+        Object.keys(THEMES).map(function (t) { return [t, PICTURE_LABELS[t] || t]; })
+      ).forEach(function (o) {
+        var opt = el("option", null, o[1]); opt.value = o[0]; picSel.append(opt);
+      });
+      picSel.value = set.image;
+      picSel.addEventListener("change", function () {
+        set.image = picSel.value; saveSet();
+        changePicture();
+      });
+      picRow.append(el("span", "gw-set-label", "Picture"), picSel);
+
+      // Lives
+      var livesRow = el("label", "gw-set-row");
+      var livesIn = el("input", "gw-in-lives");
+      livesIn.type = "range"; livesIn.min = "3"; livesIn.max = "12"; livesIn.step = "1";
+      livesIn.value = String(set.lives);
+      var livesVal = el("span", "gw-set-val", String(set.lives));
+      livesIn.addEventListener("input", function () {
+        set.lives = +livesIn.value; livesVal.textContent = livesIn.value; saveSet();
+        changeLives();
+      });
+      livesRow.append(el("span", "gw-set-label", "Wrong guesses allowed"), livesIn, livesVal);
+      var livesNote = el("div", "gw-set-note");
+      livesNote.hidden = true;
+
+      // Colour theme
+      var lookRow = el("label", "gw-set-row");
+      var lookSel = el("select", "gw-set-select gw-in-look");
+      LOOKS.forEach(function (l) { var o = el("option", null, l[1]); o.value = l[0]; lookSel.append(o); });
+      lookSel.value = set.look;
+      lookSel.addEventListener("change", function () {
+        set.look = lookSel.value; saveSet(); applyLook(set.look);
+      });
+      lookRow.append(el("span", "gw-set-label", "Theme"), lookSel);
+
+      // Hint button
+      var hintRow = el("label", "gw-set-row gw-set-check");
+      var hintIn = el("input", "gw-in-hints");
+      hintIn.type = "checkbox"; hintIn.checked = set.hints;
+      hintIn.addEventListener("change", function () {
+        set.hints = hintIn.checked; saveSet();
+        if (!over) hintBtn.hidden = !(set.hints && words[round].h && hintBox.hidden);
+      });
+      hintRow.append(hintIn, el("span", null, "Show the hint button"));
+
+      // Reset
+      var resetBtn = el("button", "gw-set-reset", "Reset settings");
+      resetBtn.type = "button";
+      resetBtn.addEventListener("click", function () {
+        storeDel(settingsKey);
+        set = { image: "teacher", lives: cfg.lives || 6, look: teacherLook, hints: true };
+        picSel.value = set.image; livesIn.value = String(set.lives);
+        livesVal.textContent = String(set.lives); lookSel.value = set.look; hintIn.checked = true;
+        applyLook(set.look); changePicture(); changeLives();
+        if (!over) hintBtn.hidden = !(words[round].h && hintBox.hidden);
+      });
+
+      p.append(picRow, livesRow, livesNote, lookRow, hintRow, resetBtn);
+      p.livesNote = livesNote;
+      return p;
+    }
+
+    // Swap the picture straight away, keeping how far the game has got.
+    function changePicture() {
+      pool = poolFor(set.image);
+      root.classList.remove("gw-theme-" + themeName);
+      if (pool.indexOf(themeName) === -1 || pool.length === 1) {
+        themeName = pool[Math.floor(Math.random() * pool.length)];
+      }
+      theme = THEMES[themeName];
+      root.classList.add("gw-theme-" + themeName);
+      root.classList.toggle("gw-random", pool.length > 1);
+      pic.innerHTML = theme.svg(++uid, cfg);
+      setStage(pic, over && root.classList.contains("gw-lost") ? STAGES : stageFor(wrong));
+    }
+
+    // New lives apply now if nothing has been guessed yet in this word,
+    // otherwise from the next word (so a game can't be won or lost by
+    // moving the slider).
+    function changeLives() {
+      var guessedAny = Object.keys(guessed).length > 0;
+      if (over || !guessedAny) {
+        lives = set.lives; pendingLives = null;
+        panel.livesNote.hidden = true;
+        if (!over) { setStage(pic, stageFor(wrong)); drawLives(); }
+      } else {
+        pendingLives = set.lives;
+        panel.livesNote.textContent = "The new number of wrong guesses starts with the next word.";
+        panel.livesNote.hidden = pendingLives === lives;
+      }
+    }
 
     hintBtn.addEventListener("click", function () {
       hintBox.hidden = false;
@@ -865,6 +1030,7 @@
     }
 
     function start(i) {
+      if (pendingLives !== null) { lives = pendingLives; pendingLives = null; panel.livesNote.hidden = true; }
       round = i;
       answer = words[i].w;
       guessed = {};
@@ -877,7 +1043,7 @@
       setStage(pic, 0);
       hintBox.textContent = words[i].h ? "Hint: " + words[i].h : "";
       hintBox.hidden = true;
-      hintBtn.hidden = !words[i].h;
+      hintBtn.hidden = !(words[i].h && set.hints);
       counter.textContent = words.length > 1 ? "Word " + (i + 1) + " of " + words.length : "";
       msg.textContent = "";
       keys.querySelectorAll(".gw-key").forEach(function (b) {

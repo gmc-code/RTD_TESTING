@@ -59,8 +59,10 @@ Options
    questions tagged for review (see below). Default ``on``.
 
 ``:theme:``
-   ``dark``, ``light`` or ``auto``. ``auto`` follows the computer's light or
-   dark setting. Default ``dark``. Viewers can also pick a theme in ⚙ Settings;
+   ``dark`` (default), ``light``, ``auto`` (follows the computer's light or
+   dark setting), ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black
+   and white with strong colours, good on a washed-out projector).
+   The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. The section colours still show on every theme. Viewers can also pick a theme in ⚙ Settings;
    their choice is remembered in that browser and applies to every quiz.
 
 All of these can also be changed on the page with the ⚙ Settings button.
@@ -102,7 +104,7 @@ Tag any question the class found hard, and the next loop plays only those:
 * With ``:loop:`` off, the end screen has a **Review … tagged** button.
 * Tagged questions are marked with a flag in the **#** grid.
 * ⚙ Settings shows how many are tagged, has **Clear tags**, and a
-  **Next loop: only tagged questions** checkbox.
+  **Next loop: tagged only** checkbox.
 
 Tags are remembered in the browser you tagged them in, so you can tag in one
 lesson and review in the next; use **Clear tags** to start fresh. Each quiz on

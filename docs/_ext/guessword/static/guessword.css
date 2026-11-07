@@ -10,6 +10,10 @@
   --gw-good: #1e8449;
   --gw-bad: #c0392b;
   --gw-liquid: #3fa7e0;
+  --gw-hover: #eaf3fa;
+  --gw-accent-text: #ffffff;
+  --gw-accent-hover: #21618c;
+  --gw-pic-bg: var(--gw-panel);
 
   border: 1px solid var(--gw-line);
   border-radius: 10px;
@@ -38,13 +42,54 @@
 .gw-body { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
 .gw-piccol { flex: 0 0 190px; }
 .gw-pic {
-  background: var(--gw-panel);
+  background: var(--gw-pic-bg);
   border: 1px solid var(--gw-line);
   border-radius: 8px;
   padding: 6px;
 }
 .gw-svg { display: block; width: 100%; height: auto; }
 .gw-main { flex: 1 1 300px; min-width: 0; }
+
+/* ---------- colour themes (:theme:) ----------
+   Shared with flashquiz, flashcards, crossword and wordsearch. light is
+   the default (the variables above). The pictures are drawn for a light
+   background, so the picture panel stays light on dark themes. */
+.guessword.gw-look-ocean {
+  --gw-bg: #f4fbfb; --gw-line: #a3e4d7; --gw-accent: #138d90; --gw-accent-hover: #0f7a7d;
+  --gw-hover: #d1f2eb;
+}
+.guessword.gw-look-forest {
+  --gw-bg: #f6faf2; --gw-line: #c5e1a5; --gw-accent: #2e7d32; --gw-accent-hover: #256628;
+  --gw-hover: #dcedc8;
+}
+.guessword.gw-look-sunset {
+  --gw-bg: #fffaf5; --gw-line: #f9c9a5; --gw-accent: #c0510a; --gw-accent-hover: #a24408;
+  --gw-hover: #fde3cf;
+}
+.guessword.gw-look-contrast {
+  --gw-bg: #ffffff; --gw-panel: #ffffff; --gw-ink: #000000; --gw-muted: #000000;
+  --gw-line: #000000; --gw-accent: #0033cc; --gw-accent-hover: #00248f;
+  --gw-good: #006b2e; --gw-bad: #c00000; --gw-hover: #e0e0e0;
+  border-width: 2px;
+}
+.guessword.gw-look-dark {
+  --gw-bg: #0f1b2d; --gw-panel: #1b2e4a; --gw-ink: #ffffff; --gw-muted: #9fb3c8;
+  --gw-line: #2a3f5f; --gw-accent: #5dade2; --gw-accent-text: #0f1b2d;
+  --gw-accent-hover: #7cc4f0; --gw-good: #58d68d; --gw-bad: #ff6b5b;
+  --gw-hover: #24384f; --gw-pic-bg: #eef3f9;
+  color-scheme: dark;
+}
+.guessword.gw-look-dark .gw-pic { --gw-line: #9fb3c8; --gw-ink: #1f2933; }
+@media (prefers-color-scheme: dark) {
+  .guessword.gw-look-auto {
+    --gw-bg: #0f1b2d; --gw-panel: #1b2e4a; --gw-ink: #ffffff; --gw-muted: #9fb3c8;
+    --gw-line: #2a3f5f; --gw-accent: #5dade2; --gw-accent-text: #0f1b2d;
+    --gw-accent-hover: #7cc4f0; --gw-good: #58d68d; --gw-bad: #ff6b5b;
+    --gw-hover: #24384f; --gw-pic-bg: #eef3f9;
+    color-scheme: dark;
+  }
+  .guessword.gw-look-auto .gw-pic { --gw-line: #9fb3c8; --gw-ink: #1f2933; }
+}
 
 /* the word */
 .gw-word {
@@ -126,10 +171,48 @@
   color: var(--gw-accent);
   cursor: pointer;
 }
-.gw-btn:hover { background: #eaf3fa; }
-.gw-btn-main { background: var(--gw-accent); color: #fff; }
-.gw-btn-main:hover { background: #21618c; }
+.gw-btn:hover { background: var(--gw-hover); }
+.gw-btn-main { background: var(--gw-accent); color: var(--gw-accent-text); }
+.gw-btn-main:hover { background: var(--gw-accent-hover); }
 .gw-btn[hidden] { display: none; }
+.gw-btn-settings { padding: 6px 10px; }
+
+/* ---------- settings panel ---------- */
+.gw-settings {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--gw-line);
+  border-radius: 8px;
+  background: var(--gw-panel);
+  color: var(--gw-ink);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 8px 18px;
+  font-size: 0.92em;
+}
+.gw-settings[hidden] { display: none; }
+.guessword .gw-settings label,
+.guessword .gw-settings span { color: var(--gw-ink); }
+.gw-set-row { display: flex; align-items: center; gap: 8px; margin: 0; }
+.gw-set-label { font-weight: 600; white-space: nowrap; }
+.gw-set-val { min-width: 1.6em; font-variant-numeric: tabular-nums; font-weight: 700; }
+.gw-set-select {
+  font: inherit; font-size: 0.95em; flex: 1; min-width: 0;
+  color: var(--gw-ink); background: var(--gw-bg);
+  border: 1px solid var(--gw-line); border-radius: 6px; padding: 3px 6px;
+  height: auto; box-shadow: none;
+}
+.gw-set-select option { color: #1f2933; background: #fff; }
+.gw-settings input[type="range"] { flex: 1; accent-color: var(--gw-accent); }
+.gw-settings input[type="checkbox"] { accent-color: var(--gw-accent); margin: 0; }
+.gw-set-note { grid-column: 1 / -1; color: var(--gw-muted); font-style: italic; margin-top: -4px; }
+.gw-set-note[hidden] { display: none; }
+.gw-set-reset {
+  font: inherit; font-size: 0.95em; background: none; border: none; padding: 0;
+  color: var(--gw-accent); text-decoration: underline; cursor: pointer;
+  justify-self: start; align-self: center;
+}
+
 
 /* ---------- picture parts ---------- */
 .gw-ground { stroke: var(--gw-line); stroke-width: 2; }
@@ -386,7 +469,12 @@
 .gw-page-key .gw-pbox { color: #000; }
 
 @media print {
+  /* !important so the colour themes (more specific) can't win in print */
+  .guessword, .guessword .gw-pic {
+    --gw-bg: #fff !important; --gw-panel: #fff !important; --gw-ink: #000 !important;
+    --gw-muted: #333 !important; --gw-line: #999 !important; --gw-pic-bg: #fff !important;
+  }
   /* Whole page printed from the browser: show the blanks and picture only. */
   .guessword { break-inside: avoid; background: none; }
-  .gw-keys, .gw-ctrl, .gw-msg, .gw-lives { display: none !important; }
+  .gw-keys, .gw-ctrl, .gw-msg, .gw-lives, .gw-settings { display: none !important; }
 }

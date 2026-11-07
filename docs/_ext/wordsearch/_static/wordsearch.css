@@ -2,16 +2,105 @@
    wordsearch directive
    ========================================================================== */
 
+/* ==========================================================================
+   Colour themes – shared with flashquiz, flashcards, crossword, guessword.
+   white is the default; light has a soft grey panel; auto follows the
+   computer's light/dark setting.
+   ========================================================================== */
+.wordsearch-block {
+  --ws-bg: #ffffff;
+  --ws-border: #cbd5e1;
+  --ws-ink: #1e293b;
+  --ws-instr: #334155;
+  --ws-muted: #64748b;
+  --ws-faint: #94a3b8;
+  --ws-btn-bg: #ffffff;
+  --ws-btn-border: #cbd5e1;
+  --ws-btn-text: #475569;
+  --ws-btn-hover: #f1f5f9;
+  --ws-accent: #2563eb;
+  --ws-accent-hover: #1d4ed8;
+  --ws-accent-text: #ffffff;
+  --ws-chip: #f1f5f9;
+  --ws-chip-text: #0f172a;
+  --ws-grid-line: #334155;
+  --ws-grid-bg: #ffffff;
+  --ws-cell-ink: #0f172a;
+  --ws-cell-hover: rgba(37, 99, 235, 0.08);
+  --ws-anchor: rgba(37, 99, 235, 0.25);
+}
+.wordsearch-block.theme-light { --ws-bg: #f8fafc; --ws-border: #e2e8f0; }
+
+.wordsearch-block.theme-ocean {
+  --ws-bg: #f4fbfb; --ws-border: #a3e4d7; --ws-btn-border: #a3e4d7; --ws-btn-hover: #d1f2eb;
+  --ws-chip: #d1f2eb; --ws-grid-line: #1b4f5a; --ws-accent: #138d90; --ws-accent-hover: #0f7a7d;
+  --ws-cell-hover: rgba(19, 141, 144, 0.12); --ws-anchor: rgba(19, 141, 144, 0.3);
+}
+.wordsearch-block.theme-forest {
+  --ws-bg: #f6faf2; --ws-border: #c5e1a5; --ws-btn-border: #c5e1a5; --ws-btn-hover: #dcedc8;
+  --ws-chip: #dcedc8; --ws-grid-line: #33402c; --ws-accent: #2e7d32; --ws-accent-hover: #256628;
+  --ws-cell-hover: rgba(46, 125, 50, 0.12); --ws-anchor: rgba(46, 125, 50, 0.3);
+}
+.wordsearch-block.theme-sunset {
+  --ws-bg: #fffaf5; --ws-border: #f9c9a5; --ws-btn-border: #f9c9a5; --ws-btn-hover: #fde3cf;
+  --ws-chip: #fde3cf; --ws-grid-line: #5d3a1a; --ws-accent: #c0510a; --ws-accent-hover: #a24408;
+  --ws-cell-hover: rgba(192, 81, 10, 0.12); --ws-anchor: rgba(192, 81, 10, 0.3);
+}
+.wordsearch-block.theme-contrast {
+  --ws-bg: #ffffff; --ws-border: #000000; --ws-ink: #000000; --ws-instr: #000000;
+  --ws-muted: #000000; --ws-faint: #444444; --ws-btn-border: #000000; --ws-btn-text: #000000;
+  --ws-btn-hover: #e0e0e0; --ws-accent: #0033cc; --ws-accent-hover: #00248f; --ws-chip: #e0e0e0;
+  --ws-chip-text: #000000; --ws-grid-line: #000000; --ws-cell-ink: #000000;
+  --ws-cell-hover: rgba(0, 51, 204, 0.12); --ws-anchor: rgba(0, 51, 204, 0.3);
+}
+.wordsearch-block.theme-contrast { border-width: 2px; }
+
+/* dark: the navy used by flashquiz and flashcards */
+.wordsearch-block.theme-dark {
+  --ws-bg: #0f1b2d; --ws-border: #2a3f5f; --ws-ink: #ffffff; --ws-instr: #e2e8f0;
+  --ws-muted: #9fb3c8; --ws-faint: #7d8fa5; --ws-btn-bg: #1b2e4a; --ws-btn-border: #2a3f5f;
+  --ws-btn-text: #e2e8f0; --ws-btn-hover: #24384f; --ws-accent: #3b82f6; --ws-accent-hover: #2563eb;
+  --ws-chip: #1b2e4a; --ws-chip-text: #ffffff; --ws-grid-line: #9fb3c8; --ws-grid-bg: #13233a;
+  --ws-cell-ink: #ffffff; --ws-cell-hover: rgba(124, 196, 240, 0.15);
+  --ws-anchor: rgba(124, 196, 240, 0.35);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  .wordsearch-block.theme-auto {
+    --ws-bg: #0f1b2d; --ws-border: #2a3f5f; --ws-ink: #ffffff; --ws-instr: #e2e8f0;
+    --ws-muted: #9fb3c8; --ws-faint: #7d8fa5; --ws-btn-bg: #1b2e4a; --ws-btn-border: #2a3f5f;
+    --ws-btn-text: #e2e8f0; --ws-btn-hover: #24384f; --ws-accent: #3b82f6; --ws-accent-hover: #2563eb;
+    --ws-chip: #1b2e4a; --ws-chip-text: #ffffff; --ws-grid-line: #9fb3c8; --ws-grid-bg: #13233a;
+    --ws-cell-ink: #ffffff; --ws-cell-hover: rgba(124, 196, 240, 0.15);
+    --ws-anchor: rgba(124, 196, 240, 0.35);
+    color-scheme: dark;
+  }
+}
+/* very dark instruction colours would vanish on navy */
+.wordsearch-block.theme-dark.ws-color-blue .ws-instructions,
+.wordsearch-block.theme-dark.ws-color-circumstance .ws-instructions { color: #8ab4ff; }
+@media (prefers-color-scheme: dark) {
+  .wordsearch-block.theme-auto.ws-color-blue .ws-instructions,
+  .wordsearch-block.theme-auto.ws-color-circumstance .ws-instructions { color: #8ab4ff; }
+}
+.wordsearch-block.theme-dark.ws-color-rheme .ws-instructions,
+.wordsearch-block.theme-dark.ws-color-conj .ws-instructions,
+.wordsearch-block.theme-dark.ws-color-part .ws-instructions { color: var(--ws-instr); }
+@media (prefers-color-scheme: dark) {
+  .wordsearch-block.theme-auto.ws-color-rheme .ws-instructions,
+  .wordsearch-block.theme-auto.ws-color-conj .ws-instructions,
+  .wordsearch-block.theme-auto.ws-color-part .ws-instructions { color: var(--ws-instr); }
+}
+
 .wordsearch-block {
   padding: 0.9rem;
   margin-bottom: 1rem;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-  color: #1e293b;
+  border: 1px solid var(--ws-border);
+  background-color: var(--ws-bg);
+  color: var(--ws-ink);
 }
 
-.wordsearch-block.theme-light { background-color: #f8fafc; border-color: #e2e8f0; }
 .wordsearch-block.ws-style-border { border-width: 2px; }
 .wordsearch-block.ws-style-plain { border: none; padding: 0.4rem 0; background: transparent; }
 
@@ -25,7 +114,7 @@
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.6rem;
-  color: #334155;
+  color: var(--ws-instr);
 }
 
 /* Instruction colours — same palette as wordjumble */
@@ -59,14 +148,14 @@
   font-weight: 500;
   border-radius: 6px;
   cursor: pointer;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  color: #475569;
+  border: 1px solid var(--ws-btn-border);
+  background: var(--ws-btn-bg);
+  color: var(--ws-btn-text);
   transition: all 0.15s ease-in-out;
 }
-.ws-btn:hover { background: #f1f5f9; color: #1e293b; }
-.ws-btn-reveal { background: #2563eb; border-color: #2563eb; color: #fff; }
-.ws-btn-reveal:hover { background: #1d4ed8; color: #fff; }
+.ws-btn:hover { background: var(--ws-btn-hover); color: var(--ws-ink); }
+.ws-btn-reveal { background: var(--ws-accent); border-color: var(--ws-accent); color: var(--ws-accent-text); }
+.ws-btn-reveal:hover { background: var(--ws-accent-hover); color: var(--ws-accent-text); }
 .ws-btn-print { margin-left: auto; }
 .ws-hint-chip ~ .ws-btn-print { margin-left: 0; }
 .ws-timer + .ws-btn ~ .ws-btn-print,
@@ -79,12 +168,50 @@
   font-size: 1rem;
   padding: 0.3rem 0.7rem;
   border-radius: 6px;
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--ws-chip);
+  color: var(--ws-chip-text);
   margin-right: auto;
 }
 .ws-timer-low { background: #fef9c3; color: #a16207; }
 .ws-timer-up { background: #fee2e2; color: #b91c1c; }
+
+/* ---------------- Settings panel ---------------- */
+.ws-btn-settings { padding: 0.4rem 0.6rem; }
+.ws-hint-chip[hidden] { display: none !important; }
+/* keep Print on the right when the highlight tip is turned off */
+.ws-hint-chip[hidden] ~ .ws-btn-print { margin-left: auto; }
+.ws-timer ~ .ws-hint-chip[hidden] ~ .ws-btn-print { margin-left: 0; }
+.ws-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.4rem;
+  margin: -0.25rem 0 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--ws-border);
+  border-radius: 6px;
+  background: var(--ws-chip);
+  color: var(--ws-ink);
+  font-size: 0.9rem;
+}
+.ws-settings[hidden] { display: none; }
+.wordsearch-block .ws-settings label,
+.wordsearch-block .ws-settings span { color: var(--ws-ink); }
+.ws-set-row { display: inline-flex; align-items: center; gap: 0.45rem; margin: 0; }
+.ws-set-label { font-weight: 600; }
+.ws-set-val { min-width: 2.8em; font-variant-numeric: tabular-nums; }
+.ws-set-select {
+  font: inherit; font-size: 0.9rem; color: var(--ws-ink); background: var(--ws-btn-bg);
+  border: 1px solid var(--ws-btn-border); border-radius: 6px; padding: 0.15rem 0.4rem;
+  height: auto; box-shadow: none;
+}
+.ws-set-select option { color: #0f172a; background: #fff; }
+.ws-settings input[type="range"] { width: 8rem; accent-color: var(--ws-accent); }
+.ws-settings input[type="checkbox"] { accent-color: var(--ws-accent); margin: 0; }
+.ws-set-reset {
+  font: inherit; font-size: 0.9rem; background: none; border: none; padding: 0;
+  color: var(--ws-accent); text-decoration: underline; cursor: pointer;
+}
 
 /* ---------------- Layout ---------------- */
 .ws-body {
@@ -97,16 +224,16 @@
 .ws-grid-wrap {
   position: relative;
   flex: 1 1 22rem;
-  max-width: min(100%, calc(var(--ws-cols, 12) * 2.6rem));
+  max-width: min(100%, calc(var(--ws-cols, 12) * 2.6rem * var(--ws-scale, 1)));
   width: 100%;
 }
 
 .ws-grid {
   display: grid;
   grid-template-columns: repeat(var(--ws-cols), 1fr);
-  border: 2px solid #334155;
+  border: 2px solid var(--ws-grid-line);
   border-radius: 6px;
-  background: #ffffff;
+  background: var(--ws-grid-bg);
   container-type: inline-size;
   user-select: none;
   -webkit-user-select: none;
@@ -121,15 +248,15 @@
   justify-content: center;
   font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-weight: 600;
-  font-size: calc(100cqi / var(--ws-cols) * 0.55);
+  font-size: calc(100cqi / var(--ws-cols) * 0.55 * var(--ws-letter, 1));
   line-height: 1;
-  color: #0f172a;
+  color: var(--ws-cell-ink);
   cursor: pointer;
   position: relative;
   z-index: 2;
 }
-.ws-grid:not(.ws-grid-key) .ws-cell:hover { background: rgba(37, 99, 235, 0.08); }
-.ws-cell-anchor { background: rgba(37, 99, 235, 0.25) !important; border-radius: 50%; }
+.ws-grid:not(.ws-grid-key) .ws-cell:hover { background: var(--ws-cell-hover); }
+.ws-cell-anchor { background: var(--ws-anchor) !important; border-radius: 50%; }
 
 /* Letter highlight (press a letter key) */
 .ws-cell-hint {
@@ -142,7 +269,7 @@
 
 .ws-hint-chip {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: var(--ws-faint);
   margin-left: auto;
   display: inline-flex;
   align-items: center;
@@ -195,9 +322,9 @@
   fill: none;
 }
 .ws-line-found { stroke-opacity: 0.45; }
-.ws-line-temp { stroke: #2563eb; stroke-opacity: 0.3; }
+.ws-line-temp { stroke: var(--ws-accent); stroke-opacity: 0.3; }
 .ws-line-revealed {
-  stroke: #94a3b8;
+  stroke: var(--ws-faint);
   stroke-opacity: 0.35;
 }
 .ws-key-line {
@@ -213,9 +340,9 @@
 .ws-list-title {
   font-weight: 700;
   margin-bottom: 0.4rem;
-  color: #334155;
+  color: var(--ws-instr);
 }
-.ws-count { font-weight: 500; color: #64748b; font-size: 0.9em; }
+.ws-count { font-weight: 500; color: var(--ws-muted); font-size: 0.9em; }
 
 .wordsearch-block ul.ws-list,
 .wordsearch-block ol.ws-list {
@@ -242,18 +369,18 @@
 .ws-item-found .ws-word {
   text-decoration: line-through;
   text-decoration-thickness: 2px;
-  color: #64748b;
+  color: var(--ws-muted);
   background: color-mix(in srgb, var(--ws-found, #10b981) 25%, transparent);
 }
-.ws-item-revealed .ws-word { color: #94a3b8; font-style: italic; }
+.ws-item-revealed .ws-word { color: var(--ws-faint); font-style: italic; }
 
-.ws-len { color: #64748b; font-size: 0.9em; }
+.ws-len { color: var(--ws-muted); font-size: 0.9em; }
 .wordsearch-block ol.ws-list li { line-height: 1.6; }
 .ws-reveal { display: none; }
 .ws-blank {
   display: inline-block;
   min-width: 6rem;
-  border-bottom: 1px solid #94a3b8;
+  border-bottom: 1px solid var(--ws-faint);
   margin-left: 0.4rem;
 }
 .ws-item-found .ws-reveal,
@@ -265,10 +392,10 @@
   border-radius: 4px;
 }
 .ws-item-found .ws-reveal { background: color-mix(in srgb, var(--ws-found, #10b981) 30%, transparent); }
-.ws-item-revealed .ws-reveal { color: #64748b; font-style: italic; }
+.ws-item-revealed .ws-reveal { color: var(--ws-muted); font-style: italic; }
 .ws-item-found .ws-blank,
 .ws-item-revealed .ws-blank { display: none; }
-.ws-item-found .ws-clue { color: #64748b; }
+.ws-item-found .ws-clue { color: var(--ws-muted); }
 
 /* ---------------- Status ---------------- */
 .ws-status:empty { display: none; }
@@ -279,8 +406,8 @@
   padding: 0.4rem 0.7rem;
   border-radius: 6px;
   display: inline-block;
-  background: #f1f5f9;
-  color: #334155;
+  background: var(--ws-chip);
+  color: var(--ws-instr);
 }
 .ws-status-high { background: #dcfce7; color: #15803d; }
 .ws-status-medium { background: #fef9c3; color: #a16207; }
@@ -296,6 +423,16 @@
    Print
    ========================================================================== */
 @media print {
+  /* !important so the colour themes (more specific) can't win in print */
+  .wordsearch-block {
+    --ws-ink: #000 !important; --ws-instr: #000 !important;
+    --ws-muted: #333 !important; --ws-faint: #666 !important;
+    --ws-grid-bg: #fff !important; --ws-grid-line: #000 !important;
+    --ws-cell-ink: #000 !important;
+    --ws-scale: 1 !important; --ws-letter: 1 !important;
+    color: #000 !important;
+  }
+  .wordsearch-block .ws-instructions { color: #000 !important; }
   .wordsearch-block {
     border: none !important;
     padding: 0 !important;
@@ -303,6 +440,7 @@
     break-inside: avoid;
   }
   .ws-toolbar,
+  .ws-settings,
   .ws-status,
   .ws-count,
   .ws-overlay:not(.ws-overlay-key) { display: none !important; }

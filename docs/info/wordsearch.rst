@@ -9,6 +9,21 @@ Each puzzle has a **🖨 Print** button that prints just that puzzle as a clean,
 blank worksheet, with the answer key on a second page if ``:answers: print``
 is set. Printing the whole page from the browser also gives blank worksheets.
 
+The **⚙** button opens settings where students can change things that
+don't change the puzzle itself:
+
+* **Theme**: any of the colour themes (see ``:theme:`` below).
+* **Letter size**: 80% to 160%. Bigger makes the grid wider (when there is
+  room) and the letters larger, which helps on a projector or interactive
+  whiteboard.
+* **Letter highlight**: turn pressing a letter key to highlight it on or off.
+* **Reset settings** undoes their changes.
+
+Choices are saved in that browser, separately for each puzzle. Settings
+never change the grid or the words, so the screen still matches the printed
+worksheet, and printing always uses the normal size and black and white.
+Add ``:no-settings:`` to hide the button.
+
 Option reference
 ----------------
 
@@ -35,7 +50,11 @@ Option reference
        where their letters match. The grid grows if the words won't fit.
    * - ``:no-letter-highlight:``
      - Turns off letter highlighting. By default, pressing a letter key
-       highlights every cell with that letter.
+       highlights every cell with that letter. Students can turn it back on
+       in ⚙ settings unless ``:no-settings:`` is set.
+   * - ``:no-settings:``
+     - Hides the ⚙ settings button, so students can't change the theme,
+       letter size or letter highlight.
    * - ``:fill:``
      - ``random`` (default) fills gaps with A–Z. ``words`` fills them with
        letters taken from the puzzle words, which makes it harder.
@@ -63,8 +82,11 @@ Option reference
      - Replaces the instruction text. The default text changes to
        "find and circle" when printed.
    * - ``:theme:`` / ``:color:`` / ``:style:``
-     - Same as ``wordjumble``: ``white``/``light``; instruction colour;
-       ``filled``/``border``/``plain``.
+     - ``:theme:`` is the colour theme: ``white`` (default), ``light``,
+       ``dark``, ``auto``, ``ocean``, ``forest``, ``sunset`` or ``contrast``
+       (see the *Look* section below). ``:color:`` (instruction colour) and
+       ``:style:`` (``filled``/``border``/``plain``) are the same as
+       ``wordjumble``.
 
 Each example below shows the RST first, then the puzzle it makes.
 
@@ -808,8 +830,14 @@ and circle" when printed. Custom instructions print as you wrote them.
 Look — ``:theme:``, ``:color:``, ``:style:``
 --------------------------------------------
 
-These work the same as in ``wordjumble``. ``:theme:`` is ``white`` (default)
-or ``light``. ``:color:`` sets the instruction colour. ``:style:`` is
+``:theme:`` is the colour theme: ``white`` (default, a plain white panel),
+``light`` (a soft grey panel), ``dark``, ``auto`` (match the computer),
+``ocean``, ``forest``, ``sunset`` or ``contrast`` (black and white with
+strong colours, good on a projector). The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. Printing
+is always a plain black-and-white worksheet.
+
+``:color:`` and ``:style:`` work the same as in ``wordjumble``.
+``:color:`` sets the instruction colour. ``:style:`` is
 ``filled`` (default), ``border`` or ``plain``.
 
 Light theme, red, border
@@ -838,6 +866,51 @@ Light theme, red, border
    POTENTIAL
    THERMAL
    JOULE
+
+Dark and ocean themes
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: rst
+
+   .. wordsearch:: Dark theme
+      :theme: dark
+      :directions: easy
+
+      PLANET
+      ORBIT
+      GRAVITY
+      COMET
+      GALAXY
+
+   .. wordsearch:: Ocean theme
+      :theme: ocean
+      :directions: easy
+
+      TIDE
+      CORAL
+      PLANKTON
+      SALINITY
+      CURRENT
+
+.. wordsearch:: Dark theme
+   :theme: dark
+   :directions: easy
+
+   PLANET
+   ORBIT
+   GRAVITY
+   COMET
+   GALAXY
+
+.. wordsearch:: Ocean theme
+   :theme: ocean
+   :directions: easy
+
+   TIDE
+   CORAL
+   PLANKTON
+   SALINITY
+   CURRENT
 
 Plain style, green
 ~~~~~~~~~~~~~~~~~~

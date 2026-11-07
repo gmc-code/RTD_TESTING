@@ -1,0 +1,672 @@
+/* ============================================================
+   flashcards – flip cards with spaced repetition
+   ============================================================ */
+
+.flashcards {
+  --fc-accent: #ffc93c;
+  /* Dark theme (default) */
+  --fc-bg: #0f1b2d;
+  --fc-bg-2: #1b2e4a;
+  --fc-text: #ffffff;
+  --fc-muted: #9fb3c8;
+  --fc-card-front: #ffffff;
+  --fc-card-front-text: #0f1b2d;
+  --fc-card-back: #fff6dc;
+  --fc-card-back-text: #0f1b2d;
+  --fc-card-edge: rgba(0, 0, 0, 0.08);
+  --fc-tag: #64748b;
+  --fc-frame: transparent;
+  --fc-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --fc-toolbar: #0a1422;
+  --fc-btn-bg: rgba(255, 255, 255, 0.06);
+  --fc-btn-border: rgba(255, 255, 255, 0.18);
+  --fc-btn-hover: rgba(255, 255, 255, 0.16);
+  --fc-btn-text: #ffffff;
+  --fc-track: rgba(255, 255, 255, 0.10);
+  --fc-panel-bg: #13233a;
+  --fc-panel-text: #e2e8f0;
+  --fc-panel-border: #2a3f5f;
+  --fc-link: #7cc4f0;
+  --fc-red: #ef5d5d;
+  --fc-amber: #f5a524;
+  --fc-green: #34c27a;
+  --fc-new: #7cc4f0;
+  --fc-due: #ffc93c;
+  --fc-accent-text: #0f1b2d;
+  --fc-accent-hover: #ffd65e;
+  color-scheme: dark;
+
+  max-width: 900px;
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--fc-bg);
+  color: var(--fc-text);
+  border: 1px solid var(--fc-frame);
+  box-shadow: var(--fc-shadow);
+  font-family: inherit;
+  outline: none;
+  position: relative;
+}
+
+.flashcards:focus-visible {
+  box-shadow: 0 0 0 3px #3fa7d6, var(--fc-shadow);
+}
+
+.flashcards [hidden] { display: none !important; }
+
+/* ---------- Themes ----------
+   dark (default, above), light, auto (follows the computer), and the
+   colour sets from the crossword directive: ocean, forest, sunset,
+   contrast. The colour sets all start from the light theme. */
+
+.flashcards.fc-theme-light,
+.flashcards.fc-theme-ocean,
+.flashcards.fc-theme-forest,
+.flashcards.fc-theme-sunset,
+.flashcards.fc-theme-contrast {
+    --fc-bg: #ffffff;
+    --fc-bg-2: #eef3f9;
+    --fc-text: #0f1b2d;
+    --fc-muted: #475569;
+    --fc-card-front: #f8fafc;
+    --fc-card-back: #fff6dc;
+    --fc-card-edge: #d5dee9;
+    --fc-frame: #d5dee9;
+    --fc-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+    --fc-toolbar: #eef3f9;
+    --fc-btn-bg: #ffffff;
+    --fc-btn-border: #c7d3e1;
+    --fc-btn-hover: #e2eaf3;
+    --fc-btn-text: #0f1b2d;
+    --fc-track: #e2e8f0;
+    --fc-panel-bg: #f8fafc;
+    --fc-panel-text: #1e293b;
+    --fc-panel-border: #d5dee9;
+    --fc-link: #1d6fa5;
+    --fc-red: #d43c3c;
+    --fc-amber: #c77c00;
+    --fc-green: #1d9a5b;
+    --fc-new: #1d6fa5;
+    --fc-due: #b7791f;
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  .flashcards.fc-theme-auto {
+      --fc-bg: #ffffff;
+      --fc-bg-2: #eef3f9;
+      --fc-text: #0f1b2d;
+      --fc-muted: #475569;
+      --fc-card-front: #f8fafc;
+      --fc-card-back: #fff6dc;
+      --fc-card-edge: #d5dee9;
+      --fc-frame: #d5dee9;
+      --fc-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+      --fc-toolbar: #eef3f9;
+      --fc-btn-bg: #ffffff;
+      --fc-btn-border: #c7d3e1;
+      --fc-btn-hover: #e2eaf3;
+      --fc-btn-text: #0f1b2d;
+      --fc-track: #e2e8f0;
+      --fc-panel-bg: #f8fafc;
+      --fc-panel-text: #1e293b;
+      --fc-panel-border: #d5dee9;
+      --fc-link: #1d6fa5;
+      --fc-red: #d43c3c;
+      --fc-amber: #c77c00;
+      --fc-green: #1d9a5b;
+      --fc-new: #1d6fa5;
+      --fc-due: #b7791f;
+      color-scheme: light;
+  }
+}
+
+.flashcards.fc-theme-ocean {
+  --fc-accent: #138d90; --fc-accent-text: #ffffff; --fc-accent-hover: #0f7a7d;
+  --fc-bg: #f4fbfb; --fc-bg-2: #d1f2eb; --fc-toolbar: #e8f6f3;
+  --fc-card-back: #e8f6f3; --fc-frame: #a3e4d7; --fc-panel-bg: #f4fbfb;
+  --fc-panel-border: #a3e4d7; --fc-link: #117864; --fc-new: #1b6f8a; --fc-due: #138d90;
+}
+
+.flashcards.fc-theme-forest {
+  --fc-accent: #2e7d32; --fc-accent-text: #ffffff; --fc-accent-hover: #256628;
+  --fc-bg: #f6faf2; --fc-bg-2: #dcedc8; --fc-toolbar: #eef3e6;
+  --fc-card-back: #fff9db; --fc-frame: #c5e1a5; --fc-panel-bg: #f6faf2;
+  --fc-panel-border: #c5e1a5; --fc-link: #2e7d32; --fc-new: #33691e; --fc-due: #7b5e00;
+}
+
+.flashcards.fc-theme-sunset {
+  --fc-accent: #c0510a; --fc-accent-text: #ffffff; --fc-accent-hover: #a24408;
+  --fc-bg: #fffaf5; --fc-bg-2: #fde3cf; --fc-toolbar: #fbeee4;
+  --fc-card-back: #fff3b0; --fc-frame: #f9c9a5; --fc-panel-bg: #fffaf5;
+  --fc-panel-border: #f9c9a5; --fc-link: #a24408; --fc-new: #8e2c6b; --fc-due: #c0510a;
+}
+
+/* High contrast: black and white with strong colours, for projectors. */
+.flashcards.fc-theme-contrast {
+  --fc-accent: #ffd400; --fc-accent-text: #000000; --fc-accent-hover: #ffe24d;
+  --fc-bg: #ffffff; --fc-bg-2: #e0e0e0; --fc-toolbar: #e0e0e0;
+  --fc-text: #000000; --fc-muted: #000000; --fc-tag: #000000;
+  --fc-card-front: #ffffff; --fc-card-back: #ffffff; --fc-card-edge: #000000;
+  --fc-frame: #000000; --fc-btn-border: #000000; --fc-panel-bg: #ffffff;
+  --fc-panel-text: #000000; --fc-panel-border: #000000; --fc-link: #0033cc;
+  --fc-red: #c00000; --fc-amber: #8a5a00; --fc-green: #006b2e;
+  --fc-new: #0033cc; --fc-due: #0033cc;
+}
+.flashcards.fc-theme-contrast .fc-face { border-width: 2px; }
+.flashcards.fc-theme-contrast .fc-front { border-top-color: #0033cc; }
+.flashcards.fc-theme-contrast .fc-back { border-top-color: #006b2e; }
+
+/* Read the Docs gives <label> and form controls its own colours, which
+   made the settings unreadable on the dark theme. */
+.flashcards .fc-settings label,
+.flashcards .fc-settings span,
+.flashcards .fc-settings strong {
+  color: var(--fc-panel-text);
+}
+
+.flashcards .fc-settings select {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--fc-btn-text);
+  background: var(--fc-btn-bg);
+  border: 1px solid var(--fc-btn-border);
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  margin-left: 0.3rem;
+  box-shadow: none;
+  height: auto;
+}
+
+.flashcards .fc-settings select option {
+  color: #0f1b2d;
+  background: #ffffff;
+}
+
+.flashcards .fc-settings input[type="checkbox"],
+.flashcards .fc-settings input[type="range"] {
+  accent-color: var(--fc-accent);
+  margin: 0 0.35rem 0 0;
+}
+
+.flashcards .fc-settings input[type="range"] { width: 100%; }
+
+/* ---------- Header: title + Leitner boxes ---------- */
+
+.flashcards .fc-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem 0.6rem;
+  background: var(--fc-bg-2);
+}
+
+.flashcards .fc-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.flashcards .fc-boxes {
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-end;
+}
+
+.flashcards .fc-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2.1rem;
+  font-size: 0.72rem;
+  color: var(--fc-muted);
+}
+
+.flashcards .fc-box-n {
+  font-weight: 700;
+  color: var(--fc-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.flashcards .fc-box-bar {
+  width: 100%;
+  height: 2.2rem;
+  background: var(--fc-track);
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  margin: 2px 0;
+}
+
+.flashcards .fc-box-fill {
+  width: 100%;
+  height: 0;
+  transition: height 0.3s ease;
+  background: var(--fc-amber);
+}
+
+.flashcards .fc-box-0 .fc-box-fill { background: var(--fc-new); }
+.flashcards .fc-box-1 .fc-box-fill { background: var(--fc-red); }
+.flashcards .fc-box-2 .fc-box-fill { background: #f08a4b; }
+.flashcards .fc-box-3 .fc-box-fill { background: var(--fc-amber); }
+.flashcards .fc-box-4 .fc-box-fill { background: #9ccc3a; }
+.flashcards .fc-box-5 .fc-box-fill { background: var(--fc-green); }
+
+/* ---------- Stage ---------- */
+
+.flashcards .fc-stage {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem 1.2rem;
+}
+
+.flashcards .fc-home,
+.flashcards .fc-done {
+  text-align: center;
+  width: 100%;
+}
+
+.flashcards .fc-home-sub {
+  color: var(--fc-muted);
+  margin-bottom: 0.8rem;
+}
+
+.flashcards .fc-home-stats,
+.flashcards .fc-done-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+
+.flashcards .fc-stat {
+  min-width: 6.5rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  background: var(--fc-bg-2);
+}
+
+.flashcards .fc-stat-n {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.flashcards .fc-stat-l {
+  font-size: 0.82rem;
+  color: var(--fc-muted);
+}
+
+.flashcards .fc-stat-due .fc-stat-n { color: var(--fc-due); }
+.flashcards .fc-stat-new .fc-stat-n { color: var(--fc-new); }
+.flashcards .fc-stat-top .fc-stat-n,
+.flashcards .fc-k3 .fc-stat-n { color: var(--fc-green); }
+.flashcards .fc-k2 .fc-stat-n { color: var(--fc-amber); }
+.flashcards .fc-k1 .fc-stat-n { color: var(--fc-red); }
+
+.flashcards .fc-home-btns {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.flashcards .fc-home-note,
+.flashcards .fc-done-msg {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  color: var(--fc-muted);
+}
+
+.flashcards .fc-done-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+
+/* ---------- The card ---------- */
+
+.flashcards .fc-card {
+  width: 100%;
+  max-width: 620px;
+  height: 260px;
+  perspective: 1400px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.flashcards .fc-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+  transform-style: preserve-3d;
+}
+
+.flashcards .fc-flipped .fc-inner { transform: rotateY(180deg); }
+.flashcards .fc-noanim .fc-inner { transition: none; }
+
+.flashcards .fc-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.2rem 1.6rem 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--fc-card-edge);
+}
+
+.flashcards .fc-front {
+  background: var(--fc-card-front);
+  color: var(--fc-card-front-text);
+  border-top: 6px solid var(--fc-accent);
+}
+
+.flashcards .fc-is-new .fc-front { border-top-color: var(--fc-new); }
+
+.flashcards .fc-back {
+  background: var(--fc-card-back);
+  color: var(--fc-card-back-text);
+  transform: rotateY(180deg);
+  border-top: 6px solid var(--fc-green);
+}
+
+.flashcards .fc-face-tag {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.9rem;
+  right: 0.9rem;
+  font-size: 0.75rem;
+  color: var(--fc-tag);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flashcards .fc-hint {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0;
+  right: 0;
+  font-size: 0.75rem;
+  color: var(--fc-tag);
+}
+
+.flashcards .fc-text {
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  overflow-wrap: anywhere;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.flashcards .fc-text.fc-long { font-size: 1.35rem; }
+.flashcards .fc-text.fc-xlong { font-size: 1.05rem; font-weight: 500; }
+
+/* ---------- Rating buttons ---------- */
+
+.flashcards .fc-rate {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0 1rem 1rem;
+  flex-wrap: wrap;
+}
+
+.flashcards .fc-rate .fc-btn {
+  min-width: 9rem;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  opacity: 0.35;
+  transition: opacity 0.2s, background 0.15s;
+}
+
+.flashcards .fc-rate.fc-rate-on .fc-btn { opacity: 1; }
+.flashcards .fc-r1 { border-color: var(--fc-red) !important; color: var(--fc-red) !important; }
+.flashcards .fc-r2 { border-color: var(--fc-amber) !important; color: var(--fc-amber) !important; }
+.flashcards .fc-r3 { border-color: var(--fc-green) !important; color: var(--fc-green) !important; }
+
+.flashcards .fc-key {
+  display: inline-block;
+  min-width: 1.35em;
+  padding: 0 0.3em;
+  margin-right: 0.25em;
+  border: 1px solid currentColor;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.8em;
+  line-height: 1.35;
+  text-align: center;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  opacity: 0.85;
+}
+
+.flashcards .fc-home-secs {
+  margin: -0.4rem 0 1rem;
+  font-size: 0.9rem;
+  color: var(--fc-muted);
+}
+
+/* ---------- Buttons & toolbar ---------- */
+
+.flashcards .fc-btn {
+  font: inherit;
+  background: var(--fc-btn-bg);
+  color: var(--fc-btn-text);
+  border: 1px solid var(--fc-btn-border);
+  border-radius: 7px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.flashcards .fc-btn:hover:not(:disabled) { background: var(--fc-btn-hover); }
+.flashcards .fc-btn:disabled { cursor: default; opacity: 0.45; }
+
+.flashcards .fc-btn-big {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  background: var(--fc-accent);
+  color: var(--fc-accent-text);
+  border-color: var(--fc-accent);
+}
+
+.flashcards .fc-btn-big:hover:not(:disabled) { background: var(--fc-accent-hover); }
+
+.flashcards .fc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  background: var(--fc-toolbar);
+}
+
+.flashcards .fc-progress {
+  font-size: 0.9rem;
+  color: var(--fc-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.flashcards .fc-spacer { flex: 1; }
+
+.flashcards .fc-link {
+  font: inherit;
+  background: none;
+  border: none;
+  color: var(--fc-link);
+  cursor: pointer;
+  padding: 0 0.3rem;
+  text-decoration: underline;
+}
+
+/* ---------- Settings ---------- */
+
+.flashcards .fc-settings {
+  background: var(--fc-panel-bg);
+  color: var(--fc-panel-text);
+  border-top: 1px solid var(--fc-panel-border);
+  padding: 0.7rem 1rem 0.75rem;
+  font-size: 0.88rem;
+}
+
+/* Two rows: controls on the first; sections and reset on the second. */
+.flashcards .fc-set-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.8rem;
+}
+
+.flashcards .fc-set-row > label,
+.flashcards .fc-set-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.flashcards .fc-settings input[type="range"] { width: 5rem; }
+.flashcards .fc-settings .fc-val-new { display: inline-block; min-width: 1.4em; }
+
+.flashcards .fc-set-row2 {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--fc-panel-border);
+  gap: 0.35rem 1.1rem;
+}
+
+.flashcards .fc-sections-head { white-space: nowrap; }
+
+.flashcards .fc-sections {
+  display: contents;
+}
+
+.flashcards .fc-sections label { white-space: nowrap; }
+
+.flashcards .fc-reset-line { margin-left: auto; white-space: nowrap; }
+
+.flashcards .fc-reset { color: var(--fc-red); padding-left: 0; }
+.flashcards .fc-reset-yes { color: var(--fc-red); font-weight: 700; }
+
+/* ---------- Full screen ---------- */
+
+.flashcards:fullscreen {
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.flashcards:fullscreen .fc-stage { flex: 1; }
+.flashcards:fullscreen .fc-card { max-width: 1000px; height: 55vh; }
+.flashcards:fullscreen .fc-text { font-size: 3rem; }
+.flashcards:fullscreen .fc-text.fc-long { font-size: 2.2rem; }
+.flashcards:fullscreen .fc-text.fc-xlong { font-size: 1.6rem; }
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+  .flashcards .fc-head { flex-direction: column; align-items: flex-start; }
+  .flashcards .fc-card { height: 220px; }
+  .flashcards .fc-text { font-size: 1.45rem; }
+  .flashcards .fc-rate .fc-btn { min-width: 0; flex: 1; font-size: 0.9rem; padding: 0.55rem 0.4rem; }
+}
+
+/* ---------- Print sheet: fold-and-cut table ---------- */
+
+.flashcards .fc-printsheet { display: none; }
+
+@media print {
+  .flashcards {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border: none !important;
+    max-width: none;
+    break-inside: auto;
+  }
+  .flashcards > *:not(.fc-printsheet) { display: none !important; }
+  .flashcards .fc-printsheet { display: block; }
+
+  .flashcards .fc-print-title { font-size: 16pt; font-weight: 700; margin-bottom: 2pt; }
+  .flashcards .fc-print-help { font-size: 9pt; color: #555; margin-bottom: 8pt; }
+
+  .flashcards .fc-print-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  .flashcards .fc-print-table td {
+    width: 50%;
+    height: 1.9cm;
+    padding: 6pt 10pt;
+    border: 1px dashed #888;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 12pt;
+    break-inside: avoid;
+  }
+  .flashcards .fc-print-table td:first-child {
+    font-weight: 700;
+    border-right: 2px solid #000; /* the fold line */
+  }
+  .flashcards .fc-print-table tr { break-inside: avoid; }
+  .flashcards .fc-print-sec th {
+    text-align: left;
+    font-size: 11pt;
+    padding: 8pt 0 3pt;
+    border: none;
+  }
+
+  /* Print button: only this deck */
+  html.fc-printing body * { visibility: hidden; }
+  html.fc-printing .flashcards.fc-print-target,
+  html.fc-printing .flashcards.fc-print-target * { visibility: visible; }
+  html.fc-printing .flashcards.fc-print-target {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.flashcards .fc-done .fc-home-btns { margin-top: 1rem; }
+
+/* Read the Docs styles <kbd> with a grey box; keep the key badge plain. */
+.flashcards kbd.fc-key {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  border-color: currentColor !important;
+  font-family: inherit !important;
+}
+
+.flashcards.fc-theme-contrast .fc-settings input[type="checkbox"],
+.flashcards.fc-theme-contrast .fc-settings input[type="range"] { accent-color: #0033cc; }
+
+/* Keep the settings' first row on one line: size the theme menu to its options. */
+.flashcards .fc-settings select.fc-in-theme { width: auto; max-width: 8.5rem; padding-right: 0.2rem; }

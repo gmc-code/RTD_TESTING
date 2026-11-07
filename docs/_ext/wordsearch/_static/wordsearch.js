@@ -167,15 +167,126 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnReset = mkBtn("Reset", "ws-btn-reset");
     const btnPrint = mkBtn("🖨 Print", "ws-btn-print");
 
-    // Letter highlight: press a letter key to light up every cell with it
-    const keyHints = puzzle.keyHints !== false;
-    let hintChip = null;
-    if (keyHints) {
-      hintChip = document.createElement("span");
-      hintChip.className = "ws-hint-chip";
-      toolbar.insertBefore(hintChip, btnPrint);
+    // ---------------- Settings (saved in this browser) ----------------
+    const THEMES = [["white", "White"], ["light", "Light"], ["dark", "Dark"],
+      ["auto", "Auto"], ["ocean", "Ocean"], ["forest", "Forest"],
+      ["sunset", "Sunset"], ["contrast", "High contrast"]];
+    const allowSettings = puzzle.settings !== false;
+    const blockIndex = [...document.querySelectorAll(".wordsearch-block")].indexOf(block);
+    const settingsKey = "wordsearch-settings:" + location.pathname + ":" + blockIndex;
+    const teacherTheme = (THEMES.find(([t]) => block.classList.contains("theme-" + t)) || ["white"])[0];
+    const teacher = { theme: teacherTheme, scale: 100, keyHints: puzzle.keyHints !== false };
+    let saved = null;
+    if (allowSettings) {
+      try { saved = JSON.parse(localStorage.getItem(settingsKey) || "null"); } catch (e) { saved = null; }
     }
+    const settings = Object.assign({}, teacher, saved || {});
+    if (!THEMES.some(([t]) => t === settings.theme)) settings.theme = teacher.theme;
+    settings.scale = Math.min(160, Math.max(80, +settings.scale || 100));
+    const saveSettings = () => {
+      try { localStorage.setItem(settingsKey, JSON.stringify(settings)); } catch (e) { /* ignore */ }
+    };
+    const applyTheme = () => {
+      THEMES.forEach(([t]) => block.classList.remove("theme-" + t));
+      block.classList.add("theme-" + settings.theme);
+    };
+    const applyScale = () => {
+      const f = settings.scale / 100;
+      block.style.setProperty("--ws-scale", String(f));
+      // When the grid can't get any wider, bigger letters fill more of each square.
+      block.style.setProperty("--ws-letter", String(f > 1 ? Math.min(1.3, f) : 1));
+    };
+    applyTheme();
+    applyScale();
+
+    // Letter highlight: press a letter key to light up every cell with it
+    let keyHints = settings.keyHints;
+    const hintChip = document.createElement("span");
+    hintChip.className = "ws-hint-chip";
+    hintChip.hidden = !keyHints;
+    toolbar.insertBefore(hintChip, btnPrint);
     btnPrint.title = "Print this word search";
+
+    let btnSettings = null;
+    let panel = null;
+    if (allowSettings) {
+      btnSettings = mkBtn("\u2699", "ws-btn-settings");
+      btnSettings.title = "Settings";
+      btnSettings.setAttribute("aria-label", "Settings");
+      btnSettings.setAttribute("aria-expanded", "false");
+
+      panel = document.createElement("div");
+      panel.className = "ws-settings";
+      panel.hidden = true;
+
+      const row = (label, control, extra) => {
+        const l = document.createElement("label");
+        l.className = "ws-set-row";
+        const span = document.createElement("span");
+        span.className = "ws-set-label";
+        span.textContent = label;
+        l.append(span, control);
+        if (extra) l.append(extra);
+        return l;
+      };
+
+      const themeSel = document.createElement("select");
+      themeSel.className = "ws-set-select";
+      THEMES.forEach(([v, label]) => {
+        const o = document.createElement("option");
+        o.value = v; o.textContent = label;
+        themeSel.append(o);
+      });
+      themeSel.value = settings.theme;
+      themeSel.addEventListener("change", () => {
+        settings.theme = themeSel.value; saveSettings(); applyTheme();
+      });
+
+      const sizeIn = document.createElement("input");
+      sizeIn.type = "range"; sizeIn.min = "80"; sizeIn.max = "160"; sizeIn.step = "10";
+      sizeIn.value = String(settings.scale);
+      const sizeVal = document.createElement("span");
+      sizeVal.className = "ws-set-val";
+      sizeVal.textContent = settings.scale + "%";
+      sizeIn.addEventListener("input", () => {
+        settings.scale = +sizeIn.value; sizeVal.textContent = sizeIn.value + "%";
+        saveSettings(); applyScale();
+      });
+
+      const hlIn = document.createElement("input");
+      hlIn.type = "checkbox"; hlIn.checked = keyHints;
+      const hlRow = document.createElement("label");
+      hlRow.className = "ws-set-row ws-set-check";
+      const hlText = document.createElement("span");
+      hlText.textContent = "Letter highlight (press a letter key)";
+      hlRow.append(hlIn, hlText);
+      hlIn.addEventListener("change", () => {
+        settings.keyHints = keyHints = hlIn.checked; saveSettings();
+        hintChip.hidden = !keyHints;
+        if (!keyHints) setHint(null); else applyHint();
+      });
+
+      const resetBtn = document.createElement("button");
+      resetBtn.type = "button";
+      resetBtn.className = "ws-set-reset";
+      resetBtn.textContent = "Reset settings";
+      resetBtn.addEventListener("click", () => {
+        try { localStorage.removeItem(settingsKey); } catch (e) { /* ignore */ }
+        Object.assign(settings, teacher);
+        themeSel.value = settings.theme; sizeIn.value = "100"; sizeVal.textContent = "100%";
+        hlIn.checked = keyHints = settings.keyHints;
+        hintChip.hidden = !keyHints;
+        if (!keyHints) setHint(null); else applyHint();
+        applyTheme(); applyScale();
+      });
+
+      panel.append(row("Theme", themeSel), row("Letter size", sizeIn, sizeVal), hlRow, resetBtn);
+      toolbar.after(panel);
+      btnSettings.addEventListener("click", () => {
+        panel.hidden = !panel.hidden;
+        btnSettings.setAttribute("aria-expanded", String(!panel.hidden));
+      });
+    }
 
     // Print just this puzzle (plus its answer key page, if it has one).
     // The puzzle is copied into a hidden frame so the rest of the page
@@ -433,7 +544,6 @@ document.addEventListener("DOMContentLoaded", () => {
         c.classList.toggle("ws-cell-hint", on);
         if (on) count++;
       });
-      if (!hintChip) return;
       if (hintLetter) {
         hintChip.classList.add("ws-hint-on");
         hintChip.innerHTML = "";
@@ -455,7 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hintLetter = letter;
       applyHint();
     };
-    if (keyHints) applyHint();
+    applyHint();
 
     const entry = {
       el: block,

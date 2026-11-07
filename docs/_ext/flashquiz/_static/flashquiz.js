@@ -9,7 +9,7 @@
   var PALETTE = ["#FFC93C", "#F26B38", "#E84A5F", "#7BC67E", "#3FA7D6", "#9B8AE6"];
   var IDLE_MS = 2500;
   var LONG_PRESS_MS = 550;
-  var THEMES = ["dark", "light", "auto"];
+  var THEMES = ["dark", "light", "auto", "ocean", "forest", "sunset", "contrast"];
   var THEME_KEY = "flashquiz-theme";
 
   function esc(text) {

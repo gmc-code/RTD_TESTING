@@ -91,6 +91,8 @@ extensions = [
     "flashquiz.flashquiz",  # custom directive
     "wordsearch.wordsearch",  # custom directive
     "guessword.guessword",  # custom directive
+    "crossword.crossword",  # custom directive
+    "flashcards.flashcards",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

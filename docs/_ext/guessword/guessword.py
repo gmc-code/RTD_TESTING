@@ -9,13 +9,14 @@ countdown) instead of a gallows.
 Single word::
 
     .. guessword:: photosynthesis
-       :theme: beaker
+       :image: beaker
        :hint: How plants make glucose
 
 Several words in one game (one per line, optional hint after a ``|``)::
 
     .. guessword::
-       :theme: balloons
+       :image: balloons
+       :theme: ocean
        :lives: 8
        :shuffle:
 
@@ -24,11 +25,15 @@ Several words in one game (one per line, optional hint after a ``|``)::
        stomata
 
 Options
-    :theme:   snowman (default) | beaker | balloons | flower | battery |
+    :image:   snowman (default) | beaker | balloons | flower | battery |
               thermometer | machine (also accepts rubegoldberg) | rocket |
               circuit | pendulum | daynight | moon | fuse | volcano
               random = a random picture for each word; a comma-separated
               list (e.g. rocket, fuse, machine) picks randomly from those
+    :theme:   colour theme shared with flashquiz, flashcards, crossword and
+              wordsearch: light (default) | dark | auto | ocean | forest |
+              sunset | contrast. (Older pages used :theme: for the picture;
+              a picture name there still works, with a build warning.)
     :hint:    hint for the single-word form
     :lives:   wrong guesses allowed, 3-12 (default 6)
     :title:   heading shown above the game (default "Guess the word")
@@ -36,6 +41,8 @@ Options
     :answers: none (default) | print - print an answer key on a second page
     :hemisphere: south (default) | north - which way the sun crosses the
               sky (daynight) and which side a waning moon is lit (moon)
+    :no-settings: flag - hide the settings button (students can't change
+              the picture, wrong guesses allowed, colour theme or hint button)
     :class:   extra CSS classes
 
 Every game has a Print button that prints it as a blank worksheet.
@@ -59,17 +66,19 @@ THEMES = ("snowman", "beaker", "balloons", "flower", "battery", "thermometer",
 THEME_ALIASES = {"rubegoldberg": "machine", "goldberg": "machine"}
 ANSWERS = ("none", "print")
 HEMISPHERES = ("south", "north")
+# Colour themes shared by flashquiz, flashcards, crossword and wordsearch.
+COLOUR_THEMES = ("light", "dark", "auto", "ocean", "forest", "sunset", "contrast")
 
 
 class guessword_node(nodes.General, nodes.Element):
     """Placeholder node; the game itself is built by guessword.js."""
 
 
-def _theme(argument):
-    """One theme, ``random`` (any theme), or a comma-separated shortlist.
+def _image(argument):
+    """One picture, ``random`` (any picture), or a comma-separated shortlist.
 
-    Always returns a list; with more than one theme each word gets a
-    random picture."""
+    Always returns a list; with more than one picture each word gets a
+    random one."""
     names = []
     for part in (argument or "").split(","):
         value = part.strip().lower().replace(" ", "").replace("-", "")
@@ -79,7 +88,7 @@ def _theme(argument):
             return list(THEMES)
         names.append(directives.choice(THEME_ALIASES.get(value, value), THEMES))
     if not names:
-        raise ValueError("no theme given")
+        raise ValueError("no picture given")
     return list(dict.fromkeys(names))
 
 
@@ -103,13 +112,15 @@ class GuessWordDirective(Directive):
     final_argument_whitespace = True
     has_content = True
     option_spec = {
-        "theme": _theme,
+        "image": _image,
+        "theme": directives.unchanged_required,
         "hint": directives.unchanged,
         "lives": _lives,
         "title": directives.unchanged,
         "shuffle": directives.flag,
         "answers": _answers,
         "hemisphere": _hemisphere,
+        "no-settings": directives.flag,
         "class": directives.class_option,
     }
 
@@ -136,18 +147,44 @@ class GuessWordDirective(Directive):
             if not any(c.isalpha() for c in w["w"]):
                 raise self.error(f"guessword: '{w['w']}' has no letters to guess.")
 
+        messages = []
+        images = self.options.get("image")
+        colour = "light"
+        theme = (self.options.get("theme") or "").strip().lower()
+        if theme in COLOUR_THEMES:
+            colour = theme
+        elif theme:
+            # Older pages used :theme: for the picture.
+            try:
+                old_images = _image(theme)
+            except ValueError:
+                messages.append(self.state.document.reporter.warning(
+                    f"guessword: unknown :theme: {theme!r}. Colour themes are "
+                    f"{', '.join(COLOUR_THEMES)}; pictures now go in :image:.",
+                    line=self.lineno))
+            else:
+                messages.append(self.state.document.reporter.warning(
+                    f"guessword: ':theme: {theme}' is a picture - please change "
+                    f"it to ':image: {theme}'. :theme: is now the colour theme.",
+                    line=self.lineno))
+                if images is None:
+                    images = old_images
+
         node = guessword_node()
         node["data"] = {
             "words": words,
-            "theme": self.options.get("theme", ["snowman"]),
+            # "theme" here is the picture list (guessword.js reads it).
+            "theme": images or ["snowman"],
             "lives": self.options.get("lives", 6),
             "title": self.options.get("title", "Guess the word"),
             "shuffle": "shuffle" in self.options,
             "answers": self.options.get("answers", "none"),
             "hemisphere": self.options.get("hemisphere", "south"),
+            "look": colour,
+            "settings": "no-settings" not in self.options,
         }
-        node["classes"] += self.options.get("class", [])
-        return [node]
+        node["classes"] += ["gw-look-" + colour] + self.options.get("class", [])
+        return [node] + messages
 
 
 def visit_guessword_html(self, node):
