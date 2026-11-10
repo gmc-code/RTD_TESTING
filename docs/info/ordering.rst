@@ -358,6 +358,40 @@ Example 10: fixed lines
                 max_val = num
         return max_val
 
+
+| The following example demonstrates the ordering directive with blank lines included. The directive will render them as placeholders that users can drag to maintain formatting structure.
+
+.. code-block:: rst
+
+    .. ordering::
+        :fixed: 3, 7
+
+        def rect_perimeter(width, height):
+            return 2 * (width + height)
+
+        def rect_area(width, height):
+            area = width * height
+            return area
+
+        print(f'Perimeter: {rect_perimeter(5, 3)}')
+        print(f'Area: {rect_area(5, 3)}')
+
+
+.. ordering::
+    :fixed: 3, 7
+
+    def rect_perimeter(width, height):
+        return 2 * (width + height)
+
+    def rect_area(width, height):
+        area = width * height
+        return area
+
+    print(f'Perimeter: {rect_perimeter(5, 3)}')
+    print(f'Area: {rect_area(5, 3)}')
+
+
+
 | Ranges also work, and ``:fixed:`` can be combined with the paragraph modes. Here the first sentence is fixed.
 
 .. code-block:: rst
