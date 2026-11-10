@@ -7,7 +7,32 @@ from docutils import nodes
 from docutils.core import publish_parts
 from docutils.parsers.rst import directives
 from sphinx.directives.code import CodeBlock
+from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
+
+logger = logging.getLogger(__name__)
+
+
+def fixed_lines_option(argument):
+    """Parse ':fixed: 1, 4-6' into a sorted list of 1-based item numbers."""
+    if argument is None or not argument.strip():
+        raise ValueError('expected line numbers, e.g. "1, 4-6"')
+
+    numbers = set()
+    cleaned = re.sub(r'\s*-\s*', '-', argument.strip())
+    for part in re.split(r'[,\s]+', cleaned):
+        if not part:
+            continue
+        match = re.fullmatch(r'(\d+)(?:-(\d+))?', part)
+        if not match:
+            raise ValueError(
+                f'"{part}" is not a line number or range (use e.g. "1, 4-6")')
+        start = int(match.group(1))
+        end = int(match.group(2)) if match.group(2) else start
+        if start < 1 or end < start:
+            raise ValueError(f'"{part}" is not a valid line number or range')
+        numbers.update(range(start, end + 1))
+    return sorted(numbers)
 
 
 class ordering_node(nodes.General, nodes.Element):
@@ -36,6 +61,7 @@ class OrderingDirective(SphinxDirective):
         'paragraphblocks': directives.flag,    # Reorders whole paragraph blocks
         'show-code': directives.flag,
         'keeprst': directives.flag,            # Enable inline RST formatting render
+        'fixed': fixed_lines_option,           # Lines locked in place, e.g. 1, 4-6
     }
 
     def render_rst_to_html(self, text_block):
@@ -73,6 +99,22 @@ class OrderingDirective(SphinxDirective):
                 break
 
         return shuffled
+
+    def _arrange(self, items, shuffle):
+        """Keeps fixed items in their correct slots; fills the other slots
+        with the movable items (shuffled if requested)."""
+        movable = [item for item in items if not item['is_fixed']]
+        if shuffle:
+            movable = self._shuffle_guaranteed(movable)
+
+        arranged = [None] * len(items)
+        for item in items:
+            if item['is_fixed']:
+                arranged[item['correct_idx']] = item
+
+        remaining = iter(movable)
+        return [slot if slot is not None else next(remaining)
+                for slot in arranged]
 
     def run(self):
         raw_lines = list(self.content)
@@ -170,11 +212,24 @@ class OrderingDirective(SphinxDirective):
                     'is_paragraph': False
                 })
 
-        # Apply non-matching shuffle guarantee
-        if not no_reorder:
-            processed_items = self._shuffle_guaranteed(line_items)
-        else:
-            processed_items = line_items.copy()
+        # Mark the lines locked in place by :fixed: (1-based numbers)
+        fixed_indices = set()
+        for number in self.options.get('fixed', []):
+            if number > len(line_items):
+                logger.warning(
+                    'ordering: ":fixed:" number %d ignored - there are only '
+                    '%d items to order.', number, len(line_items),
+                    location=self.get_location())
+            else:
+                fixed_indices.add(number - 1)
+
+        for item in line_items:
+            item['is_fixed'] = item['correct_idx'] in fixed_indices
+
+        has_fixed = bool(fixed_indices)
+
+        # Apply non-matching shuffle guarantee (fixed lines keep their place)
+        processed_items = self._arrange(line_items, shuffle=not no_reorder)
 
         # Container wrapper
         main_block_node = nodes.container(
@@ -186,6 +241,9 @@ class OrderingDirective(SphinxDirective):
             base_instruction = 'Drag and drop the text elements into the correct logical order:'
         else:
             base_instruction = 'Drag and drop lines into the correct order and click to adjust indentation:'
+
+        if has_fixed:
+            base_instruction += ' Shaded lines marked \U0001F512 are fixed in place.'
 
         if show_code:
             instructions = f'{base_instruction} Get 100% to reveal the code for copying.'
@@ -209,9 +267,20 @@ class OrderingDirective(SphinxDirective):
 
                 extra_class = " ordering-paragraph" if item['is_paragraph'] else ""
 
-            is_draggable = "false" if no_reorder else "true"
+            is_fixed = item['is_fixed']
+            is_draggable = "false" if (no_reorder or is_fixed) else "true"
 
-            indent_controls_html = "" if is_paragraph_mode else '''
+            # Fixed lines are shown already at their correct indentation
+            start_indent = item['indent'] if is_fixed else 0
+            fixed_attr = ' data-fixed="true"' if is_fixed else ''
+            handle_html = (
+                '<span class="ordering-handle ordering-lock" '
+                'title="Fixed line - cannot be moved">\U0001F512</span>'
+                if is_fixed else '<span class="ordering-handle">\u2630</span>')
+            if is_fixed:
+                extra_class += " ordering-fixed"
+
+            indent_controls_html = "" if (is_paragraph_mode or is_fixed) else '''
                 <div class="ordering-indent-controls">
                     <button type="button" class="indent-btn decrease" title="Decrease Indent">«</button>
                     <button type="button" class="indent-btn increase" title="Increase Indent">»</button>
@@ -220,12 +289,12 @@ class OrderingDirective(SphinxDirective):
 
             html_output += f'''
             <div class="ordering-line{extra_class}"
-                 draggable="{is_draggable}"
+                 draggable="{is_draggable}"{fixed_attr}
                  data-correct-idx="{item['correct_idx']}"
                  data-correct-indent="{item['indent']}"
-                 data-current-indent="0"
-                 style="--indent-level: 0;">
-                <span class="ordering-handle">☰</span>
+                 data-current-indent="{start_indent}"
+                 style="--indent-level: {start_indent};">
+                {handle_html}
                 <div class="ordering-code">{display_html}</div>
                 {indent_controls_html}
             </div>
@@ -285,7 +354,7 @@ def setup(app):
     app.add_js_file("ordering.js")
     app.add_css_file("ordering.css")
     return {
-        "version": "2.7",
+        "version": "2.8",
         "parallel_read_safe": True,
         "parallel_write_safe": True
     }

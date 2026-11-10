@@ -35,6 +35,11 @@
   --or-tier-mid-bg: #fef08a;
   --or-tier-mid-border: #eab308;
   --or-tier-mid-text: #713f12;
+
+  /* Fixed (locked) line tokens - violet, distinct from feedback colours */
+  --or-fixed-bg: #ede9fe;
+  --or-fixed-border: #a78bfa;
+  --or-fixed-text: #4c1d95;
 }
 
 /* ==========================================================================
@@ -352,4 +357,33 @@
   margin-top: 1rem;
   margin-bottom: 2rem;
   transition: opacity 0.2s ease-in-out;
+}
+/* ==========================================================================
+   9. Fixed (locked) lines - set with the :fixed: option
+   ========================================================================== */
+.ordering-container .ordering-line.ordering-fixed,
+.ordering-container .ordering-line.ordering-fixed:hover,
+.ordering-container .ordering-line.ordering-fixed:active {
+  background-color: var(--or-fixed-bg);
+  border-color: var(--or-fixed-border);
+  border-left: 5px solid var(--or-fixed-border);
+  box-shadow: none;
+  cursor: default;
+}
+
+.ordering-container .ordering-line.ordering-fixed .ordering-code {
+  color: var(--or-fixed-text);
+}
+
+.ordering-line.ordering-fixed .ordering-lock {
+  color: var(--or-fixed-text);
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+@media print {
+  .ordering-container .ordering-line.ordering-fixed {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

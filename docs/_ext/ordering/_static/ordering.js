@@ -14,11 +14,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const noReorder = container.dataset.noReorder === "true";
 
-    // Helper to dynamically shuffle DOM lines and ensure it's not identical to correct order
+    const isFixed = line => line.classList.contains("ordering-fixed");
+    const correctIdxOf = line => parseInt(line.dataset.correctIdx, 10);
+
+    // Places the movable lines (in the order given) around the fixed lines,
+    // which always stay in their correct slots. Only touches the DOM if the
+    // resulting order differs from what is already displayed.
+    function applyLayout(movableOrder) {
+      const current = Array.from(container.querySelectorAll(".ordering-line"));
+      const slots = new Array(current.length).fill(null);
+
+      current.filter(isFixed).forEach(line => {
+        const idx = correctIdxOf(line);
+        if (idx >= 0 && idx < slots.length && !slots[idx]) slots[idx] = line;
+      });
+
+      let next = 0;
+      for (let i = 0; i < slots.length; i++) {
+        if (!slots[i]) slots[i] = movableOrder[next++];
+      }
+
+      const changed = slots.some((line, i) => line !== current[i]);
+      if (changed) slots.forEach(line => container.appendChild(line));
+    }
+
+    // Helper to dynamically shuffle the movable lines and ensure the result
+    // is not identical to the correct order (fixed lines stay where they are)
     function shuffleLines() {
       if (noReorder) return;
 
-      const lines = Array.from(container.querySelectorAll(".ordering-line"));
+      const lines = Array.from(container.querySelectorAll(".ordering-line"))
+        .filter(line => !isFixed(line));
       if (lines.length <= 1) return;
 
       let isIdentical = true;
@@ -33,16 +59,15 @@ document.addEventListener("DOMContentLoaded", () => {
           lines[j] = temp;
         }
 
-        // Check if current DOM order matches correct_idx 0, 1, 2...
+        // Movable lines are in the correct order when their correct_idx ascends
         isIdentical = lines.every((line, index) => {
-          return parseInt(line.dataset.correctIdx, 10) === index;
+          return index === 0 || correctIdxOf(lines[index - 1]) < correctIdxOf(line);
         });
 
         attempts++;
       }
 
-      // Append items back to DOM in new shuffled order
-      lines.forEach(line => container.appendChild(line));
+      applyLayout(lines);
     }
 
     // Helper to clear evaluation styles and feedback
@@ -61,11 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Initializes dragging mechanics, click-to-indent listeners, and DOM listeners
+    // Initializes dragging mechanics and click-to-indent listeners on the lines
     function initPuzzleEvents() {
       const lines = container.querySelectorAll(".ordering-line");
 
       lines.forEach(line => {
+        // Fixed lines cannot be dragged or re-indented
+        if (isFixed(line)) return;
+
         // Drag Handling Events
         line.addEventListener("dragstart", (e) => {
           if (line.classList.contains("disabled")) return;
@@ -106,26 +134,33 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
       });
-
-      // Drag Sorting Over Container Area
-      container.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        const draggingItem = container.querySelector(".dragging");
-        if (!draggingItem) return;
-
-        const siblings = Array.from(container.querySelectorAll(".ordering-line:not(.dragging)"));
-        const nextSibling = siblings.find(sibling => {
-          const box = sibling.getBoundingClientRect();
-          return e.clientY <= box.top + box.height / 2;
-        });
-
-        if (nextSibling) {
-          container.insertBefore(draggingItem, nextSibling);
-        } else {
-          container.appendChild(draggingItem);
-        }
-      });
     }
+
+    // Drag Sorting Over Container Area (registered once; survives Reset).
+    // The dragged line is slotted among the other movable lines, then the
+    // fixed lines are kept pinned to their own positions.
+    container.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const draggingItem = container.querySelector(".dragging");
+      if (!draggingItem) return;
+
+      const movable = Array.from(
+        container.querySelectorAll(".ordering-line:not(.dragging)")
+      ).filter(line => !isFixed(line));
+
+      const nextIndex = movable.findIndex(sibling => {
+        const box = sibling.getBoundingClientRect();
+        return e.clientY <= box.top + box.height / 2;
+      });
+
+      if (nextIndex === -1) {
+        movable.push(draggingItem);
+      } else {
+        movable.splice(nextIndex, 0, draggingItem);
+      }
+
+      applyLayout(movable);
+    });
 
     // 1. Scoring Engine Mechanics
     if (btnScore) {
@@ -134,10 +169,14 @@ document.addEventListener("DOMContentLoaded", () => {
         btnScore.disabled = true;
 
         const currentLines = Array.from(container.querySelectorAll(".ordering-line"));
-        const totalLines = currentLines.length;
+        let totalLines = 0;
         let correctCount = 0;
 
         currentLines.forEach((line, index) => {
+          // Fixed lines are given, so they are not marked or scored
+          if (isFixed(line)) return;
+          totalLines++;
+
           const correctIdx = parseInt(line.dataset.correctIdx, 10);
           const correctIndent = parseInt(line.dataset.correctIndent, 10);
           const currentIndent = parseInt(line.dataset.currentIndent, 10);
@@ -151,7 +190,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
 
-        const finalPercentage = Math.round((correctCount / totalLines) * 100);
+        const finalPercentage = totalLines === 0
+          ? 100
+          : Math.round((correctCount / totalLines) * 100);
         feedbackBadge.style.display = "inline-flex";
         feedbackBadge.className = "ordering-feedback-badge";
 
@@ -207,8 +248,10 @@ document.addEventListener("DOMContentLoaded", () => {
           line.dataset.currentIndent = targetIndent;
           line.style.setProperty("--indent-level", targetIndent);
 
-          line.classList.add("disabled", "correct-line");
+          line.classList.add("disabled");
           line.classList.remove("incorrect-line");
+          // Fixed lines keep their own colour rather than turning green
+          if (!isFixed(line)) line.classList.add("correct-line");
           line.setAttribute("draggable", "false");
         });
 

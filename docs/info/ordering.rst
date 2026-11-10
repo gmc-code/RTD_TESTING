@@ -67,6 +67,12 @@ Options for the ordering directive
      - | Renders reStructuredText inline markup
        | (e.g., **bold**, *italics*, links) inside cards.
        | Leave off for raw code snippets to prevent syntax misinterpretation.
+   * - ``:fixed:``
+     - numbers
+     - None
+     - | Line numbers to lock in place, e.g. ``1, 4-6``. Fixed lines start
+       | in their correct position (and indentation), cannot be dragged,
+       | and are shaded violet with a 🔒 so students can see they are fixed.
    * - ``:theme:``
      - string
      - ``white``
@@ -78,6 +84,7 @@ Options for the ordering directive
 | **Paragraph Modes**: Use ``:paragraphblocks:`` to reorder full multi-line blocks, or ``:paragraph:`` to split text into individual sentences for fine-grained reordering. Indentation controls are automatically hidden in both modes.
 | **RST Formatting**: Use ``:keeprst:`` if your cards contain prose with markup like bolding, italics, or headings. Omit it for code blocks so characters like ``*args`` or math operators are rendered safely as literal text.
 | **Guaranteed Shuffling**: Items are automatically randomized on page render and on Reset button click, with checks in place to guarantee the starting display order differs from the correct answer key.
+| **Fixed Lines**: Use ``:fixed:`` to give students anchor lines. Numbers count the lines of the directive content from 1, including blank lines (in ``:paragraph:`` mode they count sentences; in ``:paragraphblocks:`` mode they count paragraphs). Other lines move around the fixed ones, and fixed lines are not counted in the score.
 | **Visual Badges**: When validated, inline symbols provide quick feedback right alongside choices.
 | **Empty Lines**: In standard code mode, empty lines render as blank placeholders that users can drag to maintain formatting structure.
 
@@ -320,3 +327,51 @@ Example 9: paragraphblocks
     This animal is special because it lays **eggs** instead of giving birth to live babies. It hunts underwater with its eyes and ears closed. Instead, its bill can feel tiny electrical signals from swimming bugs and shrimp. Male platypuses also have sharp, **venomous spurs** on their back legs for protection.
 
     Today, platypuses face big problems in the wild. Building dams and cutting down trees ruins their river homes. Trash in the water can also hurt them. People are working hard to clean up rivers so the platypus stays safe.
+
+----
+
+Example 10: fixed lines
+-------------------------------------
+
+| The following example demonstrates the ``:fixed:`` option, which locks chosen lines in place.
+| Here lines 1 and 6 (the ``def`` line and the ``return`` line) are fixed. They are shaded and marked with a 🔒, and the other lines are dragged around them.
+
+.. code-block:: rst
+
+    .. ordering::
+        :fixed: 1, 6
+
+        def find_max(numbers):
+            max_val = numbers[0]
+            for num in numbers:
+                if num > max_val:
+                    max_val = num
+            return max_val
+
+.. ordering::
+    :fixed: 1, 6
+
+    def find_max(numbers):
+        max_val = numbers[0]
+        for num in numbers:
+            if num > max_val:
+                max_val = num
+        return max_val
+
+| Ranges also work, and ``:fixed:`` can be combined with the paragraph modes. Here the first sentence is fixed.
+
+.. code-block:: rst
+
+    .. ordering::
+        :paragraph:
+        :keeprst:
+        :fixed: 1
+
+        The **platypus** is a very unusual animal from eastern Australia. It has a bill like a duck, a tail like a beaver, and webbed feet for swimming. Its thick fur keeps it warm and dry in cold river water.
+
+.. ordering::
+    :paragraph:
+    :keeprst:
+    :fixed: 1
+
+    The **platypus** is a very unusual animal from eastern Australia. It has a bill like a duck, a tail like a beaver, and webbed feet for swimming. Its thick fur keeps it warm and dry in cold river water.
