@@ -791,18 +791,45 @@
 
   /* ---------- Print list ---------- */
 
+  /* Fold-and-cut sheet, the same as flashcards: questions on the left,
+     answers on the right, fold down the middle line to test yourself. */
   FlashQuiz.prototype.buildPrintList = function () {
     var div = document.createElement("div");
     div.className = "fq-print";
-    var htmlOut = this.cfg.title ? "<h3>" + esc(this.cfg.title) + "</h3>" : "";
+    var rows = "";
     this.sections.forEach(function (sec) {
-      if (sec.title) htmlOut += "<h4>" + esc(sec.title) + "</h4>";
-      htmlOut += "<ol>" + sec.questions.map(function (qa) {
-        return "<li>" + esc(qa[0]) + ' <span class="fq-print-answer">' + esc(qa[1]) + "</span></li>";
-      }).join("") + "</ol>";
+      if (sec.title) rows += '<tr class="fq-print-sec"><th colspan="2">' + esc(sec.title) + "</th></tr>";
+      sec.questions.forEach(function (qa) {
+        rows += "<tr><td>" + esc(qa[0]).replace(/\n/g, "<br>") + "</td><td>" + esc(qa[1]).replace(/\n/g, "<br>") + "</td></tr>";
+      });
     });
-    div.innerHTML = htmlOut;
+    div.innerHTML =
+      '<div class="fq-print-title">' + esc(this.cfg.title || "Flash Quiz") + "</div>" +
+      '<div class="fq-print-help">Cut along the rows, fold down the middle line, and test yourself.</div>' +
+      '<table class="fq-print-table">' + rows + "</table>";
     this.root.appendChild(div);
+  };
+
+  /* Print button: print a copy of the sheet on its own, with the rest of
+     the page taken out of the layout so there are no blank pages. */
+  FlashQuiz.prototype.print = function () {
+    var html = document.documentElement;
+    Array.prototype.forEach.call(document.querySelectorAll(".fq-print-host"), function (n) {
+      n.parentNode.removeChild(n);
+    });
+    var host = document.createElement("div");
+    host.className = "flashquiz fq-print-host";
+    host.appendChild(this.root.querySelector(".fq-print").cloneNode(true));
+    document.body.appendChild(host);
+    html.classList.add("fq-printing");
+    var cleanup = function () {
+      html.classList.remove("fq-printing");
+      if (host.parentNode) host.parentNode.removeChild(host);
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup);
+    window.print();
+    setTimeout(cleanup, 1000);
   };
 
   /* ---------- Controls ---------- */
@@ -845,6 +872,8 @@
     });
     r.querySelector(".fq-restart").addEventListener("click", function () { self.restart(); });
     r.querySelector(".fq-fullscreen").addEventListener("click", function () { self.toggleFullscreen(); });
+    var printBtn = r.querySelector(".fq-print-btn");
+    if (printBtn) printBtn.addEventListener("click", function () { self.print(); });
 
     // ⚑ button tags the question on screen for review.
     this.tagBtn.addEventListener("click", function () {

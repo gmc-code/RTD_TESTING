@@ -1,5 +1,5 @@
 ================================================
-Classifying Directive
+Classifying
 ================================================
 
 The classifying directive creates an interactive categorization activity.
@@ -21,43 +21,48 @@ Options for the classifying directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 15 60
+   :widths: 22 12 20 46
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:bins:``
      - string
+     - *From the items (A–Z)*
      - | Optional comma-separated list of category names (supports 2 to 6 distinct classifications).
        | Overrides category auto-detection. By default, unique categories are auto-collected and sorted alphabetically (A-Z).
    * - ``:delimiter:`` / ``:sep:``
      - string
+     - ``:`` (last colon)
      - | Custom separator string used to split the item text from its target category (e.g., ``=>``, ``::``, ``|``).
        | Useful when item text contains colons. Defaults to splitting on the last colon (``rsplit``) if omitted, allowing inline roles like ``:process:`word``` to work seamlessly.
    * - ``:solution:``
      - flag / string
+     - On
      - | Displays a **Solution** button alongside Check and Reset.
-       | Can be passed as a flag (``:solution:``) or as a string value (``:solution: true`` / ``:solution: yes``).
+       | Shown by default. Use ``:solution: false`` (or ``no``, ``0``, ``off``) to hide it.
    * - ``:instructions:``
      - string
+     - "Classify each item into its correct category:"
      - | Custom instruction text displayed at the top of the block.
        | Defaults to ``"Classify each item into its correct category:"``.
    * - ``:theme:``
      - string
+     - ``white``
      - | Sets the visual theme wrapper.
        | Options are ``white`` (default) or ``light``.
    * - ``:sort:``
      - string / boolean
+     - *Shuffled*
      - | Controls item shuffling behavior.
        | Accepts ``true``/``false`` or ``yes``/``no``. Default is ``true``.
    * - ``:nosort:``
      - flag
+     - Off
      - | Optional flag to disable random item shuffling and
        | preserve the exact list order specified in the directive content.
-   * - ``:shuffle:``
-     - flag
-     - | Optional flag to explicitly enable random item shuffling.
 
 
 | Syntax Rules: Items inside the body are mapped using key-value syntax formatted as ``Item Text: Category Name``.

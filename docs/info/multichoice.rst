@@ -1,5 +1,5 @@
 ================================================
-Multi-Choice Directive
+Multi-Choice
 ================================================
 
 The multichoice directive creates an interactive multiple-choice question format. Users can select one or more choices, validate their answers, and receive instant feedback alongside custom written explanations.
@@ -22,29 +22,35 @@ Options for the multichoice directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 15 60
+   :widths: 20 10 12 58
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:delimiter:``
      - string
+     - ``|``
      - | Sets the delimiter between the option text and the feedback message.
        | e.g. @@. The default is ``|`` (pipe).
    * - ``:no-letters:``
      - flag
+     - Off
      - If present, hides the alphabetical choice indicators (A, B, C...).
    * - ``:no-shuffle:``
      - flag
+     - Off
      - | If present, forces the multiple choice options to
        | stay fixed in their declared order instead of being randomized.
    * - ``:theme:``
      - string
+     - ``white``
      - | If present, sets the visual theme.
        | Options are ``white`` (default) or ``light``.
    * - ``:torf:``
      - flag
+     - Off
      - | Formats the block as a True/False question. Automatically enforces
        | "True" as the first option and disables shuffling.
 

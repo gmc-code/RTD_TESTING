@@ -95,6 +95,7 @@
 .gw-word {
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start; /* extra reserved height stays empty below */
   gap: 8px 18px;
   margin: 4px 0 12px;
   font-size: 1.55em;
@@ -116,7 +117,10 @@
 .guessword.gw-won .gw-ch { color: var(--gw-good); }
 
 .gw-hint { font-style: italic; color: var(--gw-muted); margin: -4px 0 8px; }
-.gw-hint[hidden] { display: none; }
+/* Always keeps one line (or the hint's real height) so showing it
+   doesn't move the keyboard; hidden hints are just invisible. */
+.gw-hint { min-height: 1.4em; }
+.gw-hint.gw-hint-off { visibility: hidden; }
 
 .gw-lives {
   display: flex;
@@ -129,8 +133,10 @@
   text-align: center;
 }
 .gw-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-.gw-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--gw-accent); }
-.gw-dot-used { background: transparent; border: 2px solid var(--gw-line); width: 7px; height: 7px; }
+/* border-box so used and unused dots are both exactly 11px, whatever the
+   page theme's box-sizing (Read the Docs made used dots smaller) */
+.gw-dot { box-sizing: border-box; width: 11px; height: 11px; border-radius: 50%; background: var(--gw-accent); }
+.gw-dot-used { background: transparent; border: 2px solid var(--gw-line); }
 
 .gw-msg { min-height: 1.5em; margin: 8px 0 4px; font-weight: 700; }
 .guessword.gw-won .gw-msg { color: var(--gw-good); }
@@ -180,37 +186,70 @@
 /* ---------- settings panel ---------- */
 .gw-settings {
   margin-top: 12px;
-  padding: 10px 12px;
+  padding: 8px 12px;
   border: 1px solid var(--gw-line);
   border-radius: 8px;
   background: var(--gw-panel);
   color: var(--gw-ink);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 8px 18px;
-  font-size: 0.92em;
+  font-size: 0.9em;
 }
 .gw-settings[hidden] { display: none; }
 .guessword .gw-settings label,
 .guessword .gw-settings span { color: var(--gw-ink); }
-.gw-set-row { display: flex; align-items: center; gap: 8px; margin: 0; }
-.gw-set-label { font-weight: 600; white-space: nowrap; }
-.gw-set-val { min-width: 1.6em; font-variant-numeric: tabular-nums; font-weight: 700; }
+/* Two rows on a shared grid, so Theme lines up under Picture:
+   [Picture][menu]  [Lives][slider]   [note]
+   [Theme]  [menu]  [x Hint button]   [Reset settings] */
+.gw-settings:not([hidden]) {
+  display: grid;
+  grid-template-columns: auto auto auto auto 1fr;
+  align-items: center;
+  gap: 6px 10px;
+}
+.gw-set-line,
+.gw-set-line > .gw-set-row:not(.gw-set-check) { display: contents; }
+.gw-set-line > .gw-set-row > .gw-set-label:not(:first-child) { margin-left: 0; }
+.gw-set-line > .gw-set-row:nth-child(2) > .gw-set-label { margin-left: 12px; }
+.gw-set-line > *,
+.gw-set-line > .gw-set-row > * { grid-row: 1; }
+.gw-set-line2 > *,
+.gw-set-line2 > .gw-set-row > * { grid-row: 2; }
+.gw-set-line > .gw-set-row:first-child > .gw-set-label { grid-column: 1; }
+.gw-set-line > .gw-set-row:first-child > .gw-set-select { grid-column: 2; }
+.gw-set-line2 > .gw-set-check { grid-column: 3 / 5; margin-left: 12px; }
+.gw-set-line2 > .gw-set-reset { grid-column: 5; justify-self: end; margin-left: 0; }
+.gw-set-line > .gw-set-note { grid-row: 1; grid-column: 5; }
+.gw-set-ctl { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Narrow screens: let the controls wrap instead */
+@media (max-width: 560px) {
+  .gw-settings:not([hidden]) { display: block; }
+  .gw-set-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+  .gw-set-line2 { margin-top: 6px; }
+  .gw-set-line > .gw-set-row:not(.gw-set-check) { display: inline-flex; }
+  .gw-set-line > .gw-set-row:nth-child(2) > .gw-set-label,
+  .gw-set-line2 > .gw-set-check { margin-left: 0; }
+  .gw-set-line2 > .gw-set-reset { margin-left: auto; }
+}
+.gw-set-row { display: inline-flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; }
+.gw-set-label { font-weight: 600; }
+.gw-set-val { min-width: 1.4em; font-variant-numeric: tabular-nums; font-weight: 700; }
 .gw-set-select {
-  font: inherit; font-size: 0.95em; flex: 1; min-width: 0;
+  font: inherit; font-size: 0.95em; width: auto; max-width: 11rem;
   color: var(--gw-ink); background: var(--gw-bg);
-  border: 1px solid var(--gw-line); border-radius: 6px; padding: 3px 6px;
+  border: 1px solid var(--gw-line); border-radius: 6px; padding: 3px 4px;
   height: auto; box-shadow: none;
 }
 .gw-set-select option { color: #1f2933; background: #fff; }
-.gw-settings input[type="range"] { flex: 1; accent-color: var(--gw-accent); }
+.gw-settings input[type="range"] { width: 6rem; accent-color: var(--gw-accent); }
 .gw-settings input[type="checkbox"] { accent-color: var(--gw-accent); margin: 0; }
-.gw-set-note { grid-column: 1 / -1; color: var(--gw-muted); font-style: italic; margin-top: -4px; }
+.gw-set-note { color: var(--gw-muted); font-style: italic; }
+.gw-set-disabled { opacity: 0.45; cursor: default; }
+.gw-set-disabled input { cursor: default; }
 .gw-set-note[hidden] { display: none; }
 .gw-set-reset {
   font: inherit; font-size: 0.95em; background: none; border: none; padding: 0;
   color: var(--gw-accent); text-decoration: underline; cursor: pointer;
-  justify-self: start; align-self: center;
+  margin-left: auto;
 }
 
 

@@ -1,7 +1,7 @@
 
 
 ================================================
-Ordering Directive
+Ordering
 ================================================
 
 The ordering directive creates an interactive code-reordering exercise. Users can drag and drop code lines into their correct sequence and adjust indentation levels.
@@ -19,47 +19,57 @@ Options for the ordering directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 22 10 12 56
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:no-solution:``
      - flag
+     - Off
      - If present, hides the "Show Solution" button from the user.
    * - ``:no-reorder:``
      - flag
+     - Off
      - | If present, keeps the initial line order while leaving
        | indentation interactive.
    * - ``:no-padding:``
      - flag
+     - Off
      - If present, removes vertical padding from the lines to drag.
    * - ``:show-code:``
      - flag
+     - Off
      - | If present, displays the final completed text/code block
        | upon achieving a 100% score for easy copying.
    * - ``:paragraph:``
      - flag
+     - Off
      - | Splits paragraphs down into individual sentences and hides
        | indentation controls («, »). Reorders sentences within
        | each block while preserving general reading structure.
    * - ``:paragraphblocks:``
      - flag
+     - Off
      - | Groups content into full multi-line paragraph blocks
        | (separated by double newlines) and hides indentation controls («, »).
        | Ideal for reordering entire sections, prose, or report paragraphs.
    * - ``:no-indent:``
      - flag
+     - Off
      - | Alias for paragraph-style display. Disables indentation controls
        | for non-code text ordering.
    * - ``:keeprst:``
      - flag
+     - Off
      - | Renders reStructuredText inline markup
        | (e.g., **bold**, *italics*, links) inside cards.
        | Leave off for raw code snippets to prevent syntax misinterpretation.
    * - ``:theme:``
      - string
+     - ``white``
      - Set the visual theme. Options are ``white`` (default) or ``light``.
 
 

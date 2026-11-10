@@ -43,6 +43,8 @@ Options
               Flag. Turns off letter highlighting. (Default: pressing a
               letter key highlights every cell with that letter; the same
               key again or Esc clears it.)
+:no-direction-indicator:
+              Flag. Hide the compass that shows which directions words run.
 :no-settings: Flag. Hide the settings button, so students can't change the
               colour theme, letter size or letter highlight.
 :no-overlap:  Flag. Words never cross or share letters. (Default: words may
@@ -137,6 +139,58 @@ def parse_directions(text):
     if "backwards" in parts:
         vectors += [(-dr, -dc) for dr, dc in vectors]
     return vectors, sorted(parts)
+
+
+ALL_VECTORS = [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
+
+
+def directions_label(vectors):
+    """Plain-English summary of the allowed directions."""
+    vs = set(map(tuple, vectors))
+    if len(vs) == 8:
+        return "All 8 directions, including backwards"
+    parts = []
+    if (0, 1) in vs or (0, -1) in vs:
+        parts.append("across")
+    if (1, 0) in vs or (-1, 0) in vs:
+        parts.append("down" if (1, 0) in vs else "up")
+    if vs & {(1, 1), (-1, 1), (1, -1), (-1, -1)}:
+        parts.append("diagonal")
+    if len(parts) > 1:
+        text = ", ".join(parts[:-1]) + " & " + parts[-1]
+    else:
+        text = parts[0] if parts else "across"
+    backwards = vs & {(0, -1), (-1, 0), (-1, -1), (1, -1)}
+    text = text[0].upper() + text[1:]
+    if backwards:
+        text += ", forwards and backwards"
+    return text
+
+
+def directions_svg(vectors):
+    """Small compass: allowed directions bold, others faint."""
+    vs = set(map(tuple, vectors))
+    c, r0, r1, head = 24.0, 6.0, 19.0, 5.0
+    parts = []
+    for dr, dc in ALL_VECTORS:
+        on = (dr, dc) in vs
+        length = (dr * dr + dc * dc) ** 0.5
+        ux, uy = dc / length, dr / length
+        x0, y0 = c + ux * r0, c + uy * r0
+        x1, y1 = c + ux * r1, c + uy * r1
+        # arrowhead: tip slightly past the line end
+        tx, ty = c + ux * (r1 + 3), c + uy * (r1 + 3)
+        px, py = -uy, ux
+        bx, by = tx - ux * head, ty - uy * head
+        pts = (f"{tx:.1f},{ty:.1f} {bx + px * head * 0.6:.1f},{by + py * head * 0.6:.1f} "
+               f"{bx - px * head * 0.6:.1f},{by - py * head * 0.6:.1f}")
+        cls = "ws-dir-on" if on else "ws-dir-off"
+        parts.append(
+            f'<g class="{cls}"><line x1="{x0:.1f}" y1="{y0:.1f}" x2="{x1:.1f}" y2="{y1:.1f}" />'
+            f'<polygon points="{pts}" /></g>')
+    return ('<svg class="ws-dirs-icon" viewBox="0 0 48 48" aria-hidden="true">'
+            f'<circle cx="{c}" cy="{c}" r="2.2" class="ws-dir-dot" />'
+            + "".join(parts) + "</svg>")
 
 
 def try_place(words, rows, cols, vectors, rng, no_overlap=False):
@@ -273,6 +327,7 @@ class WordSearchDirective(SphinxDirective):
         "no-overlap": directives.flag,
         "no-letter-highlight": directives.flag,
         "no-settings": directives.flag,
+        "no-direction-indicator": directives.flag,
         "fill": choice(("random", "words")),
         "sort": sort_choice,
         "case": choice(("upper", "lower")),
@@ -431,6 +486,7 @@ class WordSearchDirective(SphinxDirective):
             title, instructions, entries, idx_order, grid, rows, cols, placements,
             lower, use_clues, answers, timer_attr, theme, color, style, data,
             dir_names, print_instr,
+            ("", "") if "no-direction-indicator" in self.options else self.direction_html(vectors),
         )
         return [node]
 
@@ -452,9 +508,22 @@ class WordSearchDirective(SphinxDirective):
         return (f'<line class="{cls}" {extra} x1="{c0 + 0.5}" y1="{r0 + 0.5}" '
                 f'x2="{c1 + 0.5}" y2="{r1 + 0.5}" />')
 
+    @staticmethod
+    def direction_html(vectors):
+        """Returns (toolbar compass, printed compass with label)."""
+        label = html.escape(directions_label(vectors))
+        svg = directions_svg(vectors)
+        compact = (f'<span class="ws-dirs-compact" role="img" '
+                   f'aria-label="Directions: {label}" title="Directions: {label}">'
+                   f'{svg}</span>')
+        printed = (f'<div class="ws-dirs ws-dirs-print">{svg}'
+                   f'<span class="ws-dirs-text"><span class="ws-dirs-head">Directions</span>'
+                   f'{label}</span></div>')
+        return compact, printed
+
     def render_html(self, title, instructions, entries, idx_order, grid, rows, cols,
                     placements, lower, use_clues, answers, timer_attr, theme,
-                    color, style, data, dir_names, print_instr=None):
+                    color, style, data, dir_names, print_instr=None, dir_html=("", "")):
         esc = html.escape
         classes = " ".join([
             "wordsearch-block", f"theme-{theme}", f"ws-color-{color}",
@@ -472,7 +541,7 @@ class WordSearchDirective(SphinxDirective):
                 f'<span class="ws-print-only">{esc(print_instr)}</span></div>')
         else:
             out.append(f'<div class="ws-instructions">{esc(instructions)}</div>')
-        out.append('<div class="ws-toolbar"></div>')
+        out.append(f'<div class="ws-toolbar">{dir_html[0]}</div>')
 
         out.append('<div class="ws-body">')
         # Grid + live overlay
@@ -485,7 +554,7 @@ class WordSearchDirective(SphinxDirective):
 
         # Word / clue list
         list_label = "Clues" if use_clues else "Words to find"
-        out.append(f'<div class="ws-list-wrap"><div class="ws-list-title">{list_label}'
+        out.append(f'<div class="ws-list-wrap">{dir_html[1]}<div class="ws-list-title">{list_label}'
                    f' <span class="ws-count">(0 / {len(entries)})</span></div>')
         out.append('<ol class="ws-list">' if use_clues else '<ul class="ws-list">')
         for n, i in enumerate(idx_order):

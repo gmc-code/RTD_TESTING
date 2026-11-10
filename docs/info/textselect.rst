@@ -1,5 +1,5 @@
 ================================================
-Textselect Directive
+Textselect
 ================================================
 
 The textselect directive creates an interactive text selection exercise with dual interaction support.
@@ -23,18 +23,21 @@ Options for the textselect directive
 --------------------------------------
 
 .. list-table::
-    :widths: 20 10 65
+    :widths: 18 10 22 50
     :header-rows: 1
 
     * - Option
       - Type
+      - Default
       - Description
     * - ``:instructions:``
       - string
+      - "Click or drag to highlight the target words."
       - | A brief instruction to guide the user on what to select.
         | For example, "Select the Theme of the clause."
     * - ``:color:``
       - string
+      - ``blue``
       - | Sets the highlight color and functional role styling for selected text.
         | Core colors/roles: ``red`` (``participant``), ``green`` (``process``),
         | ``blue`` (``circumstance``), ``conjunction`` (``part``), ``theme``,
@@ -45,14 +48,17 @@ Options for the textselect directive
         | ``classifier``, ``thing``, ``qualifier``.
     * - ``:theme:``
       - string
+      - ``white``
       - | Sets the visual theme workspace wrapper.
         | Options are ``white`` (default), ``light``.
     * - ``:style:``
       - string
+      - ``filled``
       - | Sets the visual theme style.
         | Options are ``filled`` (default), ``plain``, ``border``.
     * - ``:shuffle:``
       - flag
+      - Off
       - | Randomizes the order of lines on page load
         | and whenever the reset button is clicked.
 

@@ -9,6 +9,11 @@ Each puzzle has a **🖨 Print** button that prints just that puzzle as a clean,
 blank worksheet, with the answer key on a second page if ``:answers: print``
 is set. Printing the whole page from the browser also gives blank worksheets.
 
+The **⛶** button shows the puzzle full screen. The grid grows as big as the
+screen allows, with the word list beside it (or underneath on a narrow
+screen), which suits the board. Press :kbd:`Esc` or the button again to go
+back.
+
 The **⚙** button opens settings where students can change things that
 don't change the puzzle itself:
 
@@ -29,64 +34,110 @@ Option reference
 
 .. list-table::
    :header-rows: 1
-   :widths: 18 82
+   :widths: 18 10 16 56
 
    * - Option
-     - What it does
+     - Type
+     - Default
+     - Description
    * - *(title)*
+     - string
+     - *None*
      - Optional heading, written after ``.. wordsearch::``.
    * - ``:size:``
+     - string
+     - *Auto*
      - Grid size. ``12`` gives a 12 × 12 square. ``15x10`` gives a
        rectangle 15 columns wide and 10 rows tall. By default the size is
        chosen automatically. If a word is too long the grid grows and the
        build shows a warning.
    * - ``:directions:``
+     - string
+     - ``medium``
      - Comma-separated list from ``across``, ``down``, ``diagonal``,
        ``backwards``, ``all``. Presets: ``easy`` (across, down), ``medium``
        (across, down, diagonal, the default), ``hard`` (all directions,
        including backwards).
    * - ``:no-overlap:``
+     - flag
+     - Off
      - Words never cross or share a letter. By default, words can cross
        where their letters match. The grid grows if the words won't fit.
    * - ``:no-letter-highlight:``
+     - flag
+     - Off
      - Turns off letter highlighting. By default, pressing a letter key
        highlights every cell with that letter. Students can turn it back on
        in ⚙ settings unless ``:no-settings:`` is set.
+   * - ``:no-direction-indicator:``
+     - flag
+     - Off
+     - Hides the compass in the toolbar that shows which directions the
+       words run.
    * - ``:no-settings:``
+     - flag
+     - Off
      - Hides the ⚙ settings button, so students can't change the theme,
        letter size or letter highlight.
    * - ``:fill:``
+     - string
+     - ``random``
      - ``random`` (default) fills gaps with A–Z. ``words`` fills them with
        letters taken from the puzzle words, which makes it harder.
    * - ``:clues:``
+     - flag
+     - Off
      - Show the clues instead of the words (``WORD : clue`` lines).
    * - ``:timer:``
+     - string
+     - *None*
      - ``up`` for a stopwatch, or a number of minutes for a countdown
        (e.g. ``5`` or ``2.5``). It starts at the first selection.
    * - ``:answers:``
+     - string
+     - ``button``
      - ``button`` (default) adds a *Show answers* button. ``hidden`` gives no
        button. ``print`` adds the button and prints an answer key on a
        separate page. ``shown`` shows the answers on load (a teacher copy).
    * - ``:seed:``
+     - string
+     - *From the words*
      - The same seed and words give the same puzzle on every build, so the
        printed and online versions match. The default seed comes from the
        words, so the puzzle stays stable anyway. ``random`` makes a new
        puzzle on every page load and whenever **Reset** is pressed.
    * - ``:sort:``
+     - string
+     - ``none``
      - ``none`` (default, your order), ``alpha``, ``shortest`` (by length,
        shortest first; ``length`` also works), ``longest`` (longest first) or
        ``random`` (reshuffled on each page load and on Reset).
    * - ``:case:``
+     - string
+     - ``upper``
      - ``upper`` (default) or ``lower``.
    * - ``:instructions:``
+     - string
+     - *Standard text*
      - Replaces the instruction text. The default text changes to
        "find and circle" when printed.
-   * - ``:theme:`` / ``:color:`` / ``:style:``
-     - ``:theme:`` is the colour theme: ``white`` (default), ``light``,
-       ``dark``, ``auto``, ``ocean``, ``forest``, ``sunset`` or ``contrast``
-       (see the *Look* section below). ``:color:`` (instruction colour) and
-       ``:style:`` (``filled``/``border``/``plain``) are the same as
-       ``wordjumble``.
+   * - ``:theme:``
+     - string
+     - ``white``
+     - Colour theme: ``white`` (default), ``light``, ``dark``, ``auto`` (match the
+       computer), ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black
+       and white with strong colours, good on a projector). The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``.
+   * - ``:color:``
+     - string
+     - ``blue``
+     - | Accent color for instruction headers
+       | (e.g., ``blue``, ``green``, ``red``).
+   * - ``:style:``
+     - string
+     - ``filled``
+     - | Container border variant.
+       | Options are ``filled``,  or ``plain``.
+
 
 Each example below shows the RST first, then the puzzle it makes.
 
@@ -214,6 +265,13 @@ word list.
 
 Directions — ``:directions:``
 -----------------------------
+
+Every puzzle shows a small compass at the start of the toolbar. The
+directions words can run are drawn in bold and the rest are faint. Hover over
+it to see them in words, such as "Across, down & diagonal". On paper the
+compass prints next to the word list with that label. Add
+``:no-direction-indicator:`` to hide it, for example if finding the direction
+is part of the challenge.
 
 Easy
 ~~~~

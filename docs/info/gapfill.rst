@@ -1,5 +1,5 @@
 ================================================
-Gapfill Directive
+Gapfill
 ================================================
 
 The gapfill directive creates an interactive "Fill-in-the-Blanks" text or code exercise.
@@ -18,17 +18,20 @@ Options for the gapfill directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 20 10 30 40
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:theme:``
      - string
+     - ``white``
      - Set the visual theme. Options are ``white`` (default) or ``light``.
    * - ``:instructions:``
      - string
+     - "Choose from the drop downs to fill in the missing gaps below:"
      - | Custom instruction header
        | Default: "Choose from the drop downs to fill in the missing gaps below:"
 

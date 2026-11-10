@@ -118,6 +118,7 @@ def visit_flashquiz_html(self, node):
     <button type="button" class="fq-btn fq-restart" title="Restart (R)" aria-label="Restart">&#8635;</button>
     <button type="button" class="fq-btn fq-jump-toggle" title="Go to a question" aria-label="Go to a question" aria-expanded="false">#</button>
     <button type="button" class="fq-btn fq-settings-toggle" title="Settings" aria-label="Settings" aria-expanded="false">&#9881;</button>
+    <button type="button" class="fq-btn fq-print-btn" title="Print the questions and answers" aria-label="Print">&#128424;</button>
     <button type="button" class="fq-btn fq-fullscreen" title="Full screen (F)" aria-label="Full screen">&#x26F6;</button>
   </div>
   <div class="fq-jump" hidden>

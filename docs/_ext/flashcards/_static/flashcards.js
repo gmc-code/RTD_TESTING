@@ -593,14 +593,20 @@
     }
   };
 
+  /* Print a copy of this deck's sheet on its own. Hiding the rest of the
+     page with visibility left it taking up space, which printed blank
+     pages, so everything else is taken out of the layout instead. */
   Deck.prototype.print = function () {
     var html = document.documentElement;
-    var root = this.root;
+    document.querySelectorAll(".fc-print-host").forEach(function (n) { n.remove(); });
+    var host = document.createElement("div");
+    host.className = "flashcards fc-print-host";
+    host.appendChild(this.root.querySelector(".fc-printsheet").cloneNode(true));
+    document.body.appendChild(host);
     html.classList.add("fc-printing");
-    root.classList.add("fc-print-target");
     var cleanup = function () {
       html.classList.remove("fc-printing");
-      root.classList.remove("fc-print-target");
+      if (host.parentNode) host.parentNode.removeChild(host);
       window.removeEventListener("afterprint", cleanup);
     };
     window.addEventListener("afterprint", cleanup);

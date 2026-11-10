@@ -1,5 +1,5 @@
 ================================================
-Label Diagram Directive
+Label Diagram
 ================================================
 
 The label diagram directive creates an interactive image-labelling exercise with dual interaction support.
@@ -23,23 +23,28 @@ Options for the label-diagram directive
 ---------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 20 10 15 55
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:image:``
      - string
+     - *None* (required)
      - | Relative path to the base background image file.
    * - ``:width:``
      - integer
+     - ``560``
      - | Pixel width of the interactive diagram canvas (default: ``560``).
    * - ``:height:``
      - integer
+     - ``500``
      - | Pixel height of the interactive diagram canvas (default: ``500``).
    * - ``:font-size:``
      - string
+     - ``0.95rem``
      - | Label font size (default: ``0.95rem``). Accepts values like "14px", "1.2rem"
 
 

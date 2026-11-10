@@ -25,7 +25,6 @@ class classifyingDirective(SphinxDirective):
         'instructions': directives.unchanged, # Custom instruction text override
         'delimiter': directives.unchanged,    # Custom separator e.g., '=>', '::', '|'
         'sep': directives.unchanged,          # Alias for delimiter
-        'shuffle': directives.flag,
         'nosort': directives.flag,
         'sort': directives.unchanged,
         'solution': directives.unchanged,     # Accepts "true"/"false" or flag
@@ -127,9 +126,9 @@ class classifyingDirective(SphinxDirective):
 
         # Check solution option (flag or explicit boolean)
         solution_opt = self.options.get('solution', '').strip().lower()
-        show_solution = 'solution' in self.options or solution_opt in [
-            'true', 'yes', '1', ''
-        ]
+        # On by default. A bare ``:solution:`` flag also means on;
+        # ``:solution: false`` / ``no`` / ``0`` / ``off`` hides the button.
+        show_solution = solution_opt not in ['false', 'no', '0', 'off']
 
         # 4. Generate HTML Output
         html_output = f'<div class="classifying-block {chosen_theme}">'

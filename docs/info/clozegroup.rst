@@ -1,5 +1,5 @@
 ================================================
-Cloze Group Directive
+Cloze Group
 ================================================
 
 | The clozegroup directive creates a group of cloze questions.

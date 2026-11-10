@@ -1,5 +1,5 @@
 ================================================
-Structured Question Directive
+Structured Question
 ================================================
 
 The structuredquestion directive creates interactive exam-style questions with sub-questions, model answers, marking guidance, and self-grading controls.
@@ -33,17 +33,20 @@ Options for the structuredquestion directive
 --------------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 22 10 12 56
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:total-marks:``
      - integer
+     - ``0``
      - Total available marks for the entire question container (default: ``0``).
    * - ``:category:``
      - string
+     - *None*
      - Optional topic or subject category displayed as a header badge.
 
 
@@ -51,27 +54,32 @@ Options for nested directives
 -----------------------------
 
 .. list-table::
-   :widths: 50 20 10 20
+   :widths: 22 14 10 10 44
    :header-rows: 1
 
    * - Directive
      - Option
      - Type
+     - Default
      - Description
    * - ``.. subquestion::``
      - ``:marks:``
      - integer
+     - ``1``
      - Marks allocated to this sub-question (default: ``1``).
    * - ``.. stimulus::``
      - *None*
+     - N/A
      - N/A
      - Holds context or scenario text displayed in a highlighted box.
    * - ``.. model-answer::``
      - *None*
      - N/A
+     - N/A
      - Contains sample responses shown when toggled.
    * - ``.. marking-guidance::``
      - *None*
+     - N/A
      - N/A
      - Contains teacher/marker rubric shown when toggled.
 

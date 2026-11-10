@@ -20,6 +20,12 @@ The directives covered in this documentation include:
 - :doc:`structuredquestion <structuredquestion>`
 - :doc:`labels <labels>`
 - :doc:`flashquiz <flashquiz>`
+- :doc:`flashcards <flashcards>`
+- :doc:`guessword <guessword>`
+- :doc:`wordsearch <wordsearch>`
+- :doc:`crossword <crossword>`
+- :doc:`imagesequence <imagesequence>`
+
 
 Group directives:
 

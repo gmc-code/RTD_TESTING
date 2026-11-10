@@ -666,17 +666,21 @@
   transition: opacity 0.3s ease;
 }
 
-/* ---------- Print: list the questions and answers instead ---------- */
+/* ---------- Print: fold-and-cut sheet (same as flashcards) ---------- */
 
 .fq-print {
   display: none;
 }
 
+/* The Print button's copy is never shown on screen. */
+.flashquiz.fq-print-host { display: none; }
+
 @media print {
   .flashquiz {
     box-shadow: none;
-    background: none;
-    color: #000;
+    background: none !important;
+    color: #000 !important;
+    border: none !important;
   }
   .fq-stage,
   .fq-timer,
@@ -688,15 +692,42 @@
   .fq-print {
     display: block;
   }
-  .fq-print h4 {
-    margin: 0.8em 0 0.3em;
+  .fq-print .fq-print-title { font-size: 16pt; font-weight: 700; margin-bottom: 2pt; }
+  .fq-print .fq-print-help { font-size: 9pt; color: #555; margin-bottom: 8pt; }
+  .fq-print .fq-print-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
   }
-  .fq-print ol {
-    margin: 0 0 0.5em 1.5em;
+  .fq-print .fq-print-table td {
+    width: 50%;
+    height: 1.9cm;
+    padding: 6pt 10pt;
+    border: 1px dashed #888;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 12pt;
+    color: #000;
+    break-inside: avoid;
   }
-  .fq-print .fq-print-answer {
+  .fq-print .fq-print-table td:first-child {
     font-weight: 700;
+    border-right: 2px solid #000; /* the fold line */
   }
+  .fq-print .fq-print-table tr { break-inside: avoid; }
+  .fq-print .fq-print-sec th {
+    text-align: left;
+    font-size: 11pt;
+    padding: 8pt 0 3pt;
+    border: none;
+    color: #000;
+  }
+
+  /* Print button: only a copy of this quiz's sheet, with the rest of the
+     page taken out of the layout (so no blank pages). */
+  html.fq-printing body > *:not(.fq-print-host) { display: none !important; }
+  html.fq-printing .fq-print-host { display: block !important; margin: 0; padding: 0; }
+  html.fq-printing body { margin: 0 !important; padding: 0 !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

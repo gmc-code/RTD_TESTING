@@ -1,5 +1,5 @@
 ================================================
-Fillin Directive
+Fillin
 ================================================
 
 The fillin directive creates an interactive "Fill-in-the-Blanks" text or code exercise.
@@ -18,17 +18,20 @@ Options for the fillin directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 10 65
+   :widths: 25 10 12 53
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - ``:theme:``
      - string
+     - ``white``
      - Set the visual theme. Options are ``white`` (default) or ``light``.
    * - ``:case_sensitive:``
      - flag
+     - Off
      - Require exact letter case matching during answer evaluation.
 
 | Syntax Rules: Inline text input fields are declared using the sequence format ``@@correct_answer@@``.

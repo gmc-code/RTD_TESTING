@@ -36,10 +36,13 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/labels.rst
     info/structuredquestion.rst
     info/flashquiz.rst
-    info/wordsearch.rst
-    info/guessword.rst
-    info/crossword.rst
     info/flashcards.rst
+    info/guessword.rst
+    info/wordsearch.rst
+    info/crossword.rst
+    info/imagesequence.rst
+    info/foodweb.rst
+
 
 
 .. toctree::
@@ -69,4 +72,17 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     diagrams/Cells - animal 4.rst
     diagrams/Classification.rst
     diagrams/microscope.rst
+
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Food webs:
+
+    food_webs/stringybark_food_chains.rst
+    food_webs/stringybark_food_web.rst
+
+    food_webs/australian_desert_food_web.rst
+    food_webs/african_savanna_food_web.rst
+    food_webs/arctic_tundra_food_web.rst
+    food_webs/antarctic_ocean_food_web.rst
 

@@ -1,5 +1,5 @@
 ================================================
-Multi-Choice Group Directive
+Multi-Choice Group
 ================================================
 
 | The mcqgroup directive creates a group of multiple-choice questions.

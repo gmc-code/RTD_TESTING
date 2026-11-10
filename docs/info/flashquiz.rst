@@ -31,41 +31,56 @@ title slide and answer colour, and can be switched on or off in Settings.
 
 Options
 -------
+.. list-table::
+   :header-rows: 1
+   :widths: 18 12 10 60
 
-``:question-time:``
-   Seconds the question shows before the answer appears. Default ``8``.
+   * - Option
+     - Type
+     - Default
+     - Description
+   * - ``:question-time:``
+     - number
+     - ``8``
+     - Seconds the question shows before the answer appears. Default ``8``.
+   * - ``:answer-time:``
+     - number
+     - ``4``
+     - Seconds the answer shows before the next question. Default ``4``.
+   * - ``:section-time:``
+     - number
+     - ``3``
+     - Seconds each section title slide shows. ``0`` skips them. Default ``3``.
+   * - ``:loop:``
+     - flag
+     - Off
+     - Start again from the first question after the last one.
+   * - ``:shuffle:``
+     - flag
+     - Off
+     - Shuffle the questions within each section (reshuffled on every loop).
+   * - ``:autostart:``
+     - flag
+     - Off
+     - Start playing as soon as the page loads.
+   * - ``:timer-bar:``
+     - string
+     - ``on``
+     - ``on`` or ``off``. Shows or hides the bar that fills up as the time runs out. Default ``on``.
+   * - ``:review:``
+     - string
+     - ``on``
+     - ``on`` or ``off``. When ``on``, the round after a loop plays only the questions tagged for review (see below). Default ``on``.
+   * - ``:theme:``
+     - string
+     - ``dark``
+     - ``dark`` (default), ``light``, ``auto`` (follows the computer's light or dark setting), ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black and white with strong colours, good on a washed-out projector).
 
-``:answer-time:``
-   Seconds the answer shows before the next question. Default ``4``.
-
-``:section-time:``
-   Seconds each section title slide shows. ``0`` skips them. Default ``3``.
-
-``:loop:``
-   Start again from the first question after the last one.
-
-``:shuffle:``
-   Shuffle the questions within each section (reshuffled on every loop).
-
-``:autostart:``
-   Start playing as soon as the page loads.
-
-``:timer-bar:``
-   ``on`` or ``off``. Shows or hides the bar that fills up as the time runs out.
-   Default ``on``.
-
-``:review:``
-   ``on`` or ``off``. When ``on``, the round after a loop plays only the
-   questions tagged for review (see below). Default ``on``.
-
-``:theme:``
-   ``dark`` (default), ``light``, ``auto`` (follows the computer's light or
-   dark setting), ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black
-   and white with strong colours, good on a washed-out projector).
-   The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. The section colours still show on every theme. Viewers can also pick a theme in ⚙ Settings;
-   their choice is remembered in that browser and applies to every quiz.
+       The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. The section colours still show on every theme. Viewers can also pick a theme in ⚙ Settings; their choice is remembered in that browser and applies to every quiz.
 
 All of these can also be changed on the page with the ⚙ Settings button.
+
+----
 
 Controls
 --------
@@ -114,7 +129,10 @@ browser, and a private window forgets them when it closes.)
 In a review round each question keeps its number from the full quiz, so
 question 40 still shows as 40.
 
-Printing the page lists every question with its answer.
+The **🖨 Print** button prints the quiz as a fold-and-cut sheet, the same
+as ``flashcards``: questions on the left, answers on the right, with a fold
+line down the middle and the section titles as headings. Only that quiz is
+printed. Printing the whole page from the browser gives the same sheet.
 
 Example: Living Things & Ecosystems
 -----------------------------------

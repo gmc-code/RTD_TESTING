@@ -32,10 +32,10 @@ Options
 :letter-size:   small | medium | large | x-large, or a percentage such as 130
 :hints:         hint letters filled in at random when the page opens: a number
                 (e.g. 5) or a percentage of the squares (e.g. 20%)
+:first-letters: flag — show the first letter of every word as a hint
 :border:        flag — draw a border around the whole puzzle
 :full-width:    flag — make the grid fill the width of the page (good on a projector)
-:theme:         light (default; also "classic"), dark, auto (match the
-                computer), ocean, forest, sunset or contrast
+:theme:         classic (default), ocean, forest, sunset, contrast or dark
 :class:         extra CSS class(es) on the outer element
 
 Enable it in conf.py (with docs/_ext on sys.path)::
@@ -243,14 +243,7 @@ def build_puzzle(entries: list[dict], seed: int) -> dict:
 # Option parsers
 # --------------------------------------------------------------------------
 
-# Colour themes shared by flashquiz, flashcards, crossword, wordsearch and
-# guessword. "classic" is the crossword's original name for light.
-THEMES = ("light", "classic", "dark", "auto", "ocean", "forest", "sunset", "contrast")
-
-
-def theme_choice(value):
-    value = directives.choice(value.strip().lower(), THEMES)
-    return "classic" if value == "light" else value
+THEMES = ("classic", "ocean", "forest", "sunset", "contrast", "dark")
 
 LETTER_SIZES = {"small": 85, "medium": 100, "large": 125, "x-large": 150, "xlarge": 150}
 
@@ -317,7 +310,8 @@ class CrosswordDirective(SphinxDirective):
         "hints": hint_amount,
         "border": directives.flag,
         "full-width": directives.flag,
-        "theme": theme_choice,
+        "first-letters": directives.flag,
+        "theme": lambda v: directives.choice(v, THEMES),
         "class": directives.class_option,
     }
 
@@ -391,6 +385,7 @@ class CrosswordDirective(SphinxDirective):
             "border": "border" in self.options,
             "theme": self.options.get("theme", "classic"),
             "fill": "full-width" in self.options,
+            "firstLetters": "first-letters" in self.options,
             "key": hashlib.md5(json.dumps(words).encode()).hexdigest()[:10],
         }
 

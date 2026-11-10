@@ -53,35 +53,53 @@ Option reference
 
 .. list-table::
    :header-rows: 1
-   :widths: 22 78
+   :widths: 18 12 16 54
 
    * - Option
-     - What it does
+     - Type
+     - Default
+     - Description
    * - *(title)*
+     - string
+     - *None*
      - Optional heading, written after ``.. flashcards::``.
    * - ``:new-per-session:``
+     - integer
+     - ``10``
      - How many new cards are added to each review (default ``10``).
        Students can change this in ⚙ Settings.
    * - ``:intervals:``
+     - list of integers
+     - ``0, 1, 3, 7, 14``
      - Five numbers of days, one for each box (default ``0, 1, 3, 7, 14``).
        Decimals work, so ``0, 0.01, 0.02, 0.04, 0.08`` gives waits of a few
        minutes, which is handy for trying the deck out.
    * - ``:reverse:``
+     - flag
+     - Off
      - Show the back of each card first (e.g. give the definition and ask
        for the word). Students can switch this in Settings.
    * - ``:shuffle:``
+     - flag
+     - Off
      - Shuffle the cards. Without it, due cards come weakest first and new
        cards come in your order.
    * - ``:theme:``
+     - string
+     - ``dark``
      - ``dark`` (default), ``light``, ``auto`` (match the computer),
        ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black and white
        with strong colours, good on a washed-out projector). The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``.
        Students can change it in Settings.
    * - ``:sections:``
+     - string
+     - *All*
      - Which sections start switched on, as names or numbers separated by
        commas (e.g. ``Forces, Motion`` or ``1, 2``). By default all are on.
        Students can still switch sections on and off in Settings.
    * - ``:id:``
+     - string
+     - *From the page and title*
      - The name progress is saved under. By default it comes from the page
        and the title, so changing the title starts everyone again. Give two
        decks the same ``:id:`` to share progress between pages.

@@ -1,5 +1,5 @@
 ================================================
-Cloze Directive
+Cloze
 ================================================
 
 The cloze directive creates an interactive fill-in-the-blanks puzzle with dual interaction support.
@@ -20,29 +20,35 @@ Options for the cloze directive
 --------------------------------------
 
 .. list-table::
-   :widths: 25 15 60
+   :widths: 25 10 12 53
    :header-rows: 1
 
    * - Option
      - Type
+     - Default
      - Description
    * - | ``:shuffle-lines:`` /
        | ``:shuffle:``
      - flag
+     - Off
      - | Randomizes line order on each page render while preserving
        | gap counters and dropzones attached to each individual line.
    * - ``:instructions:``
      - string
+     - *None*
      - | Custom instruction text rendered above the word bank tray.
    * - ``:auto-distract:``
      - flag
+     - Off
      - | Automatically populates additional distractor tokens in the word bank
        | using unused context words from the text block.
    * - ``:show-code:``
      - flag
+     - Off
      - | Displays a syntax-highlighted code block container upon reaching a 100% score.
    * - ``:theme:``
      - string
+     - ``white``
      - | Options are ``white`` (default) or ``light``.
 
 | Indentation: When working with formatted blocks, ensure standard white space indentation remains aligned.

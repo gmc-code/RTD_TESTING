@@ -55,29 +55,13 @@
   --xw-muted: #000; --xw-bg: #fff; --xw-panel-border: #000;
 }
 .crossword.xw-theme-contrast .xw-clue-text { opacity: 1; }
-/* dark matches the navy dark theme of flashquiz and flashcards;
-   auto uses it when the computer is set to dark mode */
 .crossword.xw-theme-dark {
-  --xw-bg: #0f1b2d; --xw-ink: #ffffff; --xw-line: #9fb3c8; --xw-cell-bg: #1b2e4a;
-  --xw-hl: #24456b; --xw-cross: #2f5a88; --xw-active: #6b5a1e; --xw-accent: #5dade2;
-  --xw-hint-bg: #13233a; --xw-hint-ink: #d7bde2; --xw-btn-bg: #1b2e4a; --xw-panel: #13233a;
-  --xw-panel-border: #2a3f5f; --xw-muted: #9fb3c8; --xw-hover: #24384f;
-  --xw-solved: #1f4a35; --xw-solved-active: #2a5e44; --xw-wrong: #ff6b5b; --xw-right: #58d68d;
+  --xw-bg: #1e2329; --xw-ink: #e8eaed; --xw-line: #9aa5b1; --xw-cell-bg: #2b323a;
+  --xw-hl: #2f4b63; --xw-cross: #3b5f7d; --xw-active: #6b5a1e; --xw-accent: #5dade2;
+  --xw-hint-bg: #353d46; --xw-hint-ink: #d7bde2; --xw-btn-bg: #2b323a; --xw-panel: #262c33;
+  --xw-panel-border: #3a434d; --xw-muted: #c0c7ce; --xw-hover: #2f363e;
+  --xw-solved: #23452f; --xw-solved-active: #2d5a3c; --xw-wrong: #ff6b5b; --xw-right: #58d68d;
   --xw-note: #f0b27a;
-  color-scheme: dark;
-}
-@media (prefers-color-scheme: dark) {
-  .crossword.xw-theme-auto {
-    --xw-bg: #0f1b2d; --xw-ink: #ffffff; --xw-line: #9fb3c8; --xw-cell-bg: #1b2e4a;
-    --xw-hl: #24456b; --xw-cross: #2f5a88; --xw-active: #6b5a1e; --xw-accent: #5dade2;
-    --xw-hint-bg: #13233a; --xw-hint-ink: #d7bde2; --xw-btn-bg: #1b2e4a; --xw-panel: #13233a;
-    --xw-panel-border: #2a3f5f; --xw-muted: #9fb3c8; --xw-hover: #24384f;
-    --xw-solved: #1f4a35; --xw-solved-active: #2a5e44; --xw-wrong: #ff6b5b; --xw-right: #58d68d;
-    --xw-note: #f0b27a;
-    color-scheme: dark;
-  }
-  .crossword.xw-theme-auto .xw-clue-heading,
-  .crossword.xw-theme-auto .xw-title { color: var(--xw-ink); }
 }
 .crossword.xw-theme-dark .xw-clue-heading,
 .crossword.xw-theme-dark .xw-title { color: var(--xw-ink); }
@@ -173,7 +157,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5em 1.4em;
+  gap: 0.5em 1.15em;
   min-height: 2em;
 }
 /* the RTD theme makes labels block-level with a bottom margin */
@@ -211,8 +195,8 @@
   vertical-align: middle;
 }
 .crossword .xw-settings input[type="number"] { width: 4.2em; }
-.crossword .xw-settings select { width: auto; min-width: 7.5em; }
-.crossword .xw-settings input[type="range"] { width: 7.5em; margin: 0; vertical-align: middle; accent-color: var(--xw-accent); }
+.crossword .xw-settings select { width: auto; min-width: 6.5em; }
+.crossword .xw-settings input[type="range"] { width: 6.5em; margin: 0; vertical-align: middle; accent-color: var(--xw-accent); }
 .crossword .xw-settings input[type="checkbox"] { accent-color: var(--xw-accent); }
 .crossword .xw-settings input[type="range"]:disabled { opacity: 0.4; }
 .crossword .xw-settings input[type="checkbox"] { width: 1.05em; height: 1.05em; margin: 0; vertical-align: middle; }
@@ -411,6 +395,32 @@
 }
 .crossword .xw-wordbank li { margin: 0; list-style: none; letter-spacing: 0.05em; }
 .xw-wordbank li.xw-used { text-decoration: line-through; opacity: 0.5; }
+
+/* ---------- full screen ---------- */
+.crossword:fullscreen, .crossword.xw-full {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 1.2rem 1.6rem;
+  overflow: auto;
+  box-sizing: border-box;
+  background: #fff;
+}
+.crossword.xw-themed:fullscreen, .crossword.xw-themed.xw-full { background: var(--xw-bg); }
+.crossword.xw-full .xw-title { font-size: 1.6rem; }
+.crossword.xw-full .xw-current { max-width: none; font-size: 1.1em; }
+.crossword.xw-full .xw-body { gap: 2rem; }
+.crossword.xw-full .xw-board { flex: 0 0 auto; }
+.crossword.xw-full .xw-clues { max-height: none; font-size: 1.15rem; }
+@media (min-width: 900px) {
+  .crossword.xw-full .xw-body { flex-wrap: nowrap; }
+  .crossword.xw-full .xw-clues { flex: 1 1 18rem; flex-direction: column; flex-wrap: nowrap; }
+  .crossword.xw-full .xw-clue-group { flex: 0 0 auto; }
+  .crossword.xw-full .xw-clues { overflow-y: auto; }
+  .crossword.xw-full .xw-clues > .xw-wordbank { flex: 0 0 auto; margin: 0 0 1em; font-size: 0.95em; }
+}
+/* same size as the other toolbar buttons */
+.xw-full-icon { width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block; }
 
 .xw-print-root { display: none; }
 

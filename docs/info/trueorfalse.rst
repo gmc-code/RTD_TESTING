@@ -1,5 +1,5 @@
 ==========================================================
-True or False using MultiChoice  Directive
+True or False using MultiChoice
 ==========================================================
 
 The ``multichoice`` directive can create interactive True/False questions. Each question includes its own dedicated check control, reset button, and immediate feedback.

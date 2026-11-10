@@ -1,5 +1,5 @@
 ================================================
-WordJumble Directive
+WordJumble
 ================================================
 
 The wordjumble directive creates an interactive text unscrambling exercise.

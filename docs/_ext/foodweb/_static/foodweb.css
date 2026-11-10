@@ -1,0 +1,574 @@
+/* ============================================================
+   foodweb – pictures in levels with arrows from food to eater
+   ============================================================ */
+
+.foodweb {
+  --fw-accent: #ffc93c;
+  --fw-accent-text: #0f1b2d;
+  /* Dark theme */
+  --fw-bg: #0f1b2d;
+  --fw-bg-2: #1b2e4a;
+  --fw-text: #ffffff;
+  --fw-muted: #9fb3c8;
+  --fw-card: #ffffff;
+  --fw-card-text: #0f1b2d;
+  --fw-card-edge: #4b6488;
+  --fw-arrow: #c9d6e6;
+  --fw-in: #4ade80;        /* what it eats */
+  --fw-out: #fb923c;       /* what eats it */
+  --fw-chain: #ffc93c;
+  --fw-wrong: #ef5d5d;
+  --fw-frame: transparent;
+  --fw-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --fw-toolbar: #0a1422;
+  --fw-btn-bg: rgba(255, 255, 255, 0.06);
+  --fw-btn-border: rgba(255, 255, 255, 0.18);
+  --fw-btn-hover: rgba(255, 255, 255, 0.16);
+  --fw-btn-text: #ffffff;
+  --fw-panel-bg: #13233a;
+  --fw-panel-text: #e2e8f0;
+  --fw-row: rgba(255, 255, 255, 0.03);
+  color-scheme: dark;
+
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--fw-bg);
+  color: var(--fw-text);
+  border: 1px solid var(--fw-frame);
+  box-shadow: var(--fw-shadow);
+  font-family: inherit;
+  position: relative;
+}
+
+.foodweb [hidden] { display: none !important; }
+
+/* ---------- Themes (same seven as imagesequence, flashcards, etc.) ---------- */
+
+.foodweb.fw-theme-light,
+.foodweb.fw-theme-ocean,
+.foodweb.fw-theme-forest,
+.foodweb.fw-theme-sunset,
+.foodweb.fw-theme-contrast {
+  --fw-accent: #1d6fa5;
+  --fw-accent-text: #ffffff;
+  --fw-bg: #ffffff;
+  --fw-bg-2: #eef3f9;
+  --fw-text: #0f1b2d;
+  --fw-muted: #475569;
+  --fw-card-edge: #c7d3e1;
+  --fw-arrow: #51647c;
+  --fw-in: #15803d;
+  --fw-out: #c2410c;
+  --fw-chain: #1d6fa5;
+  --fw-wrong: #d43c3c;
+  --fw-frame: #d5dee9;
+  --fw-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+  --fw-toolbar: #eef3f9;
+  --fw-btn-bg: #ffffff;
+  --fw-btn-border: #c7d3e1;
+  --fw-btn-hover: #e2eaf3;
+  --fw-btn-text: #0f1b2d;
+  --fw-panel-bg: #f8fafc;
+  --fw-panel-text: #1e293b;
+  --fw-row: rgba(15, 27, 45, 0.025);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  .foodweb.fw-theme-auto {
+    --fw-accent: #1d6fa5;
+    --fw-accent-text: #ffffff;
+    --fw-bg: #ffffff;
+    --fw-bg-2: #eef3f9;
+    --fw-text: #0f1b2d;
+    --fw-muted: #475569;
+    --fw-card-edge: #c7d3e1;
+    --fw-arrow: #51647c;
+    --fw-in: #15803d;
+    --fw-out: #c2410c;
+    --fw-chain: #1d6fa5;
+    --fw-wrong: #d43c3c;
+    --fw-frame: #d5dee9;
+    --fw-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+    --fw-toolbar: #eef3f9;
+    --fw-btn-bg: #ffffff;
+    --fw-btn-border: #c7d3e1;
+    --fw-btn-hover: #e2eaf3;
+    --fw-btn-text: #0f1b2d;
+    --fw-panel-bg: #f8fafc;
+    --fw-panel-text: #1e293b;
+    --fw-row: rgba(15, 27, 45, 0.025);
+    color-scheme: light;
+  }
+}
+
+.foodweb.fw-theme-ocean {
+  --fw-accent: #138d90; --fw-chain: #138d90;
+  --fw-bg: #f4fbfb; --fw-bg-2: #d1f2eb; --fw-toolbar: #e8f6f3;
+  --fw-frame: #a3e4d7; --fw-panel-bg: #f4fbfb; --fw-card-edge: #a3e4d7; --fw-arrow: #3d6b6c;
+}
+
+.foodweb.fw-theme-forest {
+  --fw-accent: #2e7d32; --fw-chain: #1d6fa5;
+  --fw-bg: #f6faf2; --fw-bg-2: #dcedc8; --fw-toolbar: #eef3e6;
+  --fw-frame: #c5e1a5; --fw-panel-bg: #f6faf2; --fw-card-edge: #b5d48f; --fw-arrow: #4e6b3a;
+  --fw-in: #2e7d32; --fw-out: #c2410c; --fw-row: rgba(46, 125, 50, 0.04);
+}
+
+.foodweb.fw-theme-sunset {
+  --fw-accent: #c0510a; --fw-chain: #c0510a;
+  --fw-bg: #fffaf5; --fw-bg-2: #fde3cf; --fw-toolbar: #fbeee4;
+  --fw-frame: #f9c9a5; --fw-panel-bg: #fffaf5; --fw-card-edge: #f9c9a5; --fw-arrow: #7a4a2a;
+  --fw-out: #9333ea;
+}
+
+/* High contrast: black and white with strong colours, for projectors. */
+.foodweb.fw-theme-contrast {
+  --fw-accent: #0033cc; --fw-chain: #0033cc;
+  --fw-bg: #ffffff; --fw-bg-2: #e0e0e0; --fw-toolbar: #e0e0e0;
+  --fw-text: #000000; --fw-muted: #000000;
+  --fw-card-edge: #000000; --fw-frame: #000000; --fw-arrow: #000000;
+  --fw-btn-border: #000000; --fw-panel-bg: #ffffff; --fw-panel-text: #000000;
+  --fw-in: #006b2e; --fw-out: #c00000; --fw-wrong: #c00000; --fw-row: transparent;
+}
+.foodweb.fw-theme-contrast .fw-card { stroke-width: 2; }
+
+/* ---------- Header ---------- */
+
+.foodweb .fw-head { padding: 0.85rem 1.1rem 0.5rem; background: var(--fw-bg-2); }
+.foodweb .fw-title { font-size: 1.15rem; font-weight: 700; }
+.foodweb .fw-sub { font-size: 0.88rem; color: var(--fw-muted); margin-top: 0.15rem; }
+
+/* ---------- Toolbar ---------- */
+
+.foodweb .fw-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--fw-toolbar);
+  border-top: 1px solid var(--fw-frame);
+}
+.foodweb .fw-spacer { flex: 1 1 auto; }
+.foodweb .fw-btn {
+  font: inherit;
+  font-size: 0.88rem;
+  line-height: 1.2;
+  padding: 0.38rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--fw-btn-border);
+  background: var(--fw-btn-bg);
+  color: var(--fw-btn-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.foodweb .fw-btn:hover { background: var(--fw-btn-hover); }
+.foodweb .fw-btn:focus-visible { outline: 2px solid var(--fw-accent); outline-offset: 2px; }
+.foodweb .fw-btn[aria-pressed="true"] {
+  background: var(--fw-accent);
+  border-color: var(--fw-accent);
+  color: var(--fw-accent-text);
+}
+.foodweb .fw-btn:disabled { opacity: 0.45; cursor: default; }
+.foodweb .fw-icon { padding: 0.38rem 0.55rem; }
+.foodweb .fw-full-icon { width: 1em; height: 1em; vertical-align: -0.12em; }
+.foodweb .fw-group {
+  display: inline-flex;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid var(--fw-btn-border);
+}
+.foodweb .fw-group .fw-btn { border: none; border-radius: 0; }
+.foodweb .fw-group .fw-btn + .fw-btn { border-left: 1px solid var(--fw-btn-border); }
+
+.foodweb .fw-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--fw-panel-bg);
+  color: var(--fw-panel-text);
+  border-top: 1px solid var(--fw-frame);
+  font-size: 0.88rem;
+}
+.foodweb .fw-settings select {
+  font: inherit;
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+  border: 1px solid var(--fw-btn-border);
+  background: var(--fw-btn-bg);
+  color: var(--fw-btn-text);
+}
+
+/* ---------- Copy layout panel ---------- */
+
+.foodweb .fw-layoutbox[hidden] { display: none; }
+.foodweb .fw-layoutbox {
+  padding: 0.55rem 0.9rem;
+  background: var(--fw-panel-bg);
+  color: var(--fw-panel-text);
+  border-top: 1px solid var(--fw-frame);
+  font-size: 0.88rem;
+}
+.foodweb .fw-layout-text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.4rem 0;
+  font: 0.82rem/1.35 ui-monospace, Consolas, monospace;
+  white-space: pre;
+  border: 1px solid var(--fw-btn-border);
+  border-radius: 4px;
+  padding: 0.4rem;
+}
+.foodweb .fw-layoutbox-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+@media print {
+  .foodweb .fw-layoutbox { display: none !important; }
+}
+
+/* ---------- Info line ---------- */
+
+.foodweb .fw-info {
+  min-height: 2.7em;          /* room for two lines */
+  padding: 0.5rem 1rem;
+  background: var(--fw-panel-bg);
+  color: var(--fw-panel-text);
+  border-top: 1px solid var(--fw-frame);
+  font-size: 32px;
+  line-height: 1.35;
+}
+.foodweb .fw-info .fw-k-in { color: var(--fw-in); font-weight: 700; }
+.foodweb .fw-info .fw-k-out { color: var(--fw-out); font-weight: 700; }
+.foodweb .fw-info .fw-k-wrong { color: var(--fw-wrong); font-weight: 700; }
+.foodweb .fw-info .fw-k-good { color: var(--fw-in); font-weight: 700; }
+.foodweb .fw-info .fw-chaintext { font-weight: 600; }
+
+/* ---------- The web ---------- */
+
+.foodweb .fw-board {
+  padding: 0.6rem 0.6rem 0.8rem;
+  overflow: auto;
+}
+.foodweb .fw-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  font-family: inherit;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.foodweb .fw-card {
+  fill: var(--fw-card);
+  stroke: var(--fw-card-edge);
+  stroke-width: 1.4;
+  transition: stroke 0.15s, stroke-width 0.15s;
+}
+.foodweb .fw-name {
+  fill: var(--fw-card-text);
+  font-size: 26px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.foodweb.fw-no-names .fw-name,
+.foodweb.fw-no-names .fw-nameband { display: none; }
+/* :names: overlay - the name on a see-through band over the bottom of the picture */
+.foodweb .fw-nameband { fill: #ffffff; fill-opacity: 0.50; }
+.foodweb .fw-name.fw-name-on { font-size: 24px; }
+.foodweb.fw-theme-contrast .fw-nameband { fill-opacity: 0.95; }
+.foodweb .fw-level-label {
+  fill: var(--fw-muted);
+  font-size: 22px;
+  font-weight: 700;
+  dominant-baseline: middle;
+}
+
+.foodweb .fw-node { cursor: grab; outline: none; transition: opacity 0.15s; touch-action: none; }
+.foodweb.fw-dragging, .foodweb.fw-dragging .fw-node { cursor: grabbing; }
+.foodweb.fw-dragging .fw-edge, .foodweb.fw-dragging .fw-node { transition: none; }
+.foodweb .fw-node:hover .fw-card,
+.foodweb .fw-node:focus-visible .fw-card { stroke: var(--fw-accent); stroke-width: 2.5; }
+
+.foodweb .fw-edge { color: var(--fw-arrow); transition: opacity 0.15s; }
+.foodweb .fw-line { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.foodweb .fw-halo { fill: none; stroke: var(--fw-bg); stroke-width: 5; stroke-linecap: round; }
+.foodweb .fw-head { fill: currentColor; }
+.foodweb .fw-edge.fw-odd .fw-line { stroke-dasharray: 5 4; }
+.foodweb.fw-no-arrows .fw-edge { display: none; }
+.foodweb.fw-no-arrows .fw-edge.fw-chainlink { display: inline; }
+
+/* Highlight one organism: green arrows bring its food, orange arrows go
+   to what eats it. Everything else fades. */
+.foodweb.fw-focus .fw-edge { opacity: 0.1; }
+.foodweb.fw-focus .fw-node { opacity: 0.35; }
+.foodweb.fw-focus .fw-node.fw-sel,
+.foodweb.fw-focus .fw-node.fw-food,
+.foodweb.fw-focus .fw-node.fw-eater { opacity: 1; }
+.foodweb.fw-focus .fw-edge.fw-in,
+.foodweb.fw-focus .fw-edge.fw-out { opacity: 1; display: inline; }
+.foodweb .fw-edge.fw-in { color: var(--fw-in); }
+.foodweb .fw-edge.fw-out { color: var(--fw-out); }
+.foodweb .fw-edge.fw-in .fw-line,
+.foodweb .fw-edge.fw-out .fw-line { stroke-width: 3; }
+.foodweb .fw-node.fw-sel .fw-card { stroke: var(--fw-accent); stroke-width: 3.5; }
+.foodweb .fw-node.fw-food .fw-card { stroke: var(--fw-in); stroke-width: 3; }
+.foodweb .fw-node.fw-eater .fw-card { stroke: var(--fw-out); stroke-width: 3; }
+
+/* Trace a chain */
+.foodweb.fw-tracing .fw-edge { opacity: 0.18; }
+.foodweb.fw-tracing .fw-edge.fw-chainlink { opacity: 1; color: var(--fw-chain); }
+.foodweb.fw-tracing .fw-edge.fw-chainlink .fw-line { stroke-width: 3.5; }
+.foodweb.fw-tracing.fw-hinting .fw-edge.fw-out { opacity: 1; }
+.foodweb .fw-node.fw-inchain .fw-card { stroke: var(--fw-chain); stroke-width: 3.5; }
+.foodweb .fw-node.fw-hint .fw-card { stroke: var(--fw-out); stroke-width: 3; stroke-dasharray: 6 4; }
+.foodweb .fw-node.fw-wrong .fw-card { stroke: var(--fw-wrong); stroke-width: 4; }
+.foodweb .fw-node.fw-wrong { animation: fw-shake 0.35s; }
+@keyframes fw-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.foodweb .fw-badge circle { fill: var(--fw-chain); stroke: #fff; stroke-width: 2; }
+.foodweb .fw-badge text {
+  fill: #fff; font-size: 13px; font-weight: 700; text-anchor: middle; dominant-baseline: central;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foodweb .fw-node.fw-wrong { animation: none; }
+  .foodweb .fw-node, .foodweb .fw-edge, .foodweb .fw-card { transition: none; }
+}
+
+/* ---------- Full screen ---------- */
+
+.foodweb:fullscreen {
+  border-radius: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.foodweb:fullscreen .fw-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.foodweb:fullscreen .fw-svg { width: 100%; height: 100%; max-width: none !important; }
+
+/* ---------- Print ---------- */
+
+.foodweb.fw-print-host { display: none; }
+
+@media print {
+  .foodweb {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible;
+    break-inside: avoid;
+    --fw-bg: #fff;
+    --fw-card: #fff;
+    --fw-card-text: #000;
+    --fw-card-edge: #555;
+    --fw-arrow: #000;
+    --fw-muted: #333;
+  }
+  .foodweb .fw-toolbar,
+  .foodweb .fw-settings,
+  .foodweb .fw-info,
+  .foodweb .fw-sub { display: none !important; }
+  .foodweb .fw-head { background: none !important; padding: 0 0 6pt; }
+  .foodweb .fw-title { font-size: 15pt; }
+  .foodweb .fw-board { padding: 0; overflow: visible; }
+  .foodweb .fw-svg { max-height: 24cm; width: 100%; }
+  .foodweb.fw-focus .fw-edge,
+  .foodweb.fw-focus .fw-node { opacity: 1; }
+
+  html.fw-printing body > *:not(.fw-print-host) { display: none !important; }
+  html.fw-printing .fw-print-host { display: block !important; margin: 0; }
+  html.fw-printing body { margin: 0 !important; padding: 0 !important; }
+}
+
+/* ---------- Place the pictures ---------- */
+
+.foodweb .fw-tray-bg { fill: var(--fw-bg-2); stroke: var(--fw-frame); stroke-width: 1; }
+.foodweb .fw-trayinfo-host { width: 100%; height: 100%; overflow: hidden; }
+.foodweb .fw-trayinfo-host .fw-info {
+  min-height: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid var(--fw-frame);
+  border-left: 5px solid var(--fw-accent);
+  border-radius: 8px;
+  background: var(--fw-bg);
+  font-size: 32px;
+  line-height: 1.35;
+}
+.foodweb.fw-placing .fw-node .fw-pic,
+.foodweb.fw-placing .fw-node .fw-name,
+.foodweb.fw-placing .fw-node .fw-nameband { display: none; }
+.foodweb.fw-placing .fw-node .fw-card {
+  fill: var(--fw-bg);
+  stroke: var(--fw-muted);
+  stroke-width: 1.6;
+  stroke-dasharray: 7 5;
+}
+.foodweb.fw-placing .fw-node { cursor: pointer; }
+.foodweb.fw-placing .fw-node:hover .fw-card { stroke: var(--fw-accent); stroke-width: 2.5; }
+.foodweb .fw-piece { cursor: grab; touch-action: none; outline: none; transition: transform 0.22s ease; }
+.foodweb .fw-piece.fw-lifted { cursor: grabbing; transition: none; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.25)); }
+.foodweb .fw-piece.fw-given { cursor: default; }
+.foodweb .fw-piece.fw-given .fw-card { stroke: var(--fw-muted); stroke-width: 2; }
+.foodweb .fw-piece:focus-visible .fw-card,
+.foodweb .fw-piece:hover:not(.fw-given) .fw-card { stroke: var(--fw-accent); stroke-width: 2.5; }
+.foodweb .fw-piece.fw-picked .fw-card { stroke: var(--fw-accent); stroke-width: 4; }
+.foodweb .fw-piece.fw-right .fw-card { stroke: var(--fw-in); stroke-width: 4; }
+.foodweb .fw-piece.fw-wrong .fw-card { stroke: var(--fw-wrong); stroke-width: 4; }
+.foodweb.fw-no-names .fw-piece .fw-name { display: none; }
+.foodweb .fw-btn-main { font-weight: 700; }
+/* Dragging a picture over a box: its arrows light up, the rest fade. */
+.foodweb.fw-dropping .fw-edge { opacity: 0.15; }
+.foodweb.fw-dropping .fw-edge.fw-drop-in,
+.foodweb.fw-dropping .fw-edge.fw-drop-out { opacity: 1; display: inline; }
+.foodweb .fw-edge.fw-drop-in { color: var(--fw-in); }
+.foodweb .fw-edge.fw-drop-out { color: var(--fw-out); }
+.foodweb .fw-edge.fw-drop-in .fw-line,
+.foodweb .fw-edge.fw-drop-out .fw-line { stroke-width: 3.5; }
+.foodweb.fw-placing .fw-node.fw-droptarget .fw-card { stroke: var(--fw-accent); stroke-width: 3.5; stroke-dasharray: none; }
+@media (prefers-reduced-motion: reduce) { .foodweb .fw-piece { transition: none; } }
+@media print {
+  .foodweb .fw-piece.fw-right .fw-card,
+  .foodweb .fw-piece.fw-wrong .fw-card,
+  .foodweb .fw-piece.fw-picked .fw-card { stroke: #555; stroke-width: 1.4; }
+}
+
+/* ---------- Clue table ---------- */
+
+.foodweb .fw-clues {
+  padding: 0.6rem 1rem 0.8rem;
+  background: var(--fw-panel-bg);
+  color: var(--fw-panel-text);
+  border-top: 1px solid var(--fw-frame);
+}
+.foodweb .fw-clues-title { font-weight: 700; margin-bottom: 0.45rem; }
+.foodweb .fw-clues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.4rem 0.9rem;
+}
+.foodweb .fw-clue {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  break-inside: avoid;
+}
+.foodweb .fw-clue img {
+  width: 64px;
+  height: auto;
+  flex: none;
+  border-radius: 4px;
+  border: 1px solid var(--fw-frame);
+  background: #fff;
+}
+.foodweb .fw-clue .fw-k-in { color: var(--fw-in); font-weight: 700; }
+@media print {
+  .foodweb .fw-clues { background: none !important; border: none; padding: 6pt 0 0; }
+  .foodweb .fw-clues-grid { grid-template-columns: repeat(3, 1fr); gap: 3pt 10pt; }
+  .foodweb .fw-clue { font-size: 8.5pt; }
+  .foodweb .fw-clue img { width: 40px; }
+  .foodweb .fw-clue .fw-k-in { color: #000 !important; }
+}
+
+/* ---------- Enlarge a picture (magnifier, as in imagesequence) ---------- */
+
+.foodweb .fw-zoom { cursor: zoom-in; opacity: 0; transition: opacity 0.15s; }
+.foodweb .fw-zoom rect { fill: rgba(255, 255, 255, 0.85); stroke: rgba(0, 0, 0, 0.15); stroke-width: 1; }
+.foodweb .fw-zoom text {
+  font-size: 12.8px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.foodweb .fw-zoom:hover rect { fill: #ffffff; stroke: var(--fw-accent); }
+.foodweb .fw-node:hover .fw-zoom,
+.foodweb .fw-node:focus-visible .fw-zoom,
+.foodweb .fw-piece:hover .fw-zoom,
+.foodweb .fw-piece:focus-visible .fw-zoom,
+.foodweb .fw-piece.fw-picked .fw-zoom { opacity: 1; }
+@media (hover: none) { .foodweb .fw-zoom { opacity: 0.85; } }
+/* The same button in HTML: on the clue table pictures and in the info line.
+   Sizes copied from imagesequence's .isq-zoom. */
+.foodweb .fw-zoombtn {
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: zoom-in;
+}
+.foodweb .fw-zoombtn:hover { background: #ffffff; border-color: var(--fw-accent); }
+.foodweb .fw-zoombtn:focus-visible { outline: 2px solid var(--fw-accent); outline-offset: 2px; }
+.foodweb .fw-thumb { position: relative; flex: none; display: inline-block; line-height: 0; }
+.foodweb .fw-thumb .fw-zoombtn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.foodweb .fw-clue:hover .fw-zoombtn,
+.foodweb .fw-thumb .fw-zoombtn:focus-visible { opacity: 1; }
+@media (hover: none) { .foodweb .fw-thumb .fw-zoombtn { opacity: 0.85; } }
+/* In the info line, next to the organism's name (always shown). */
+.foodweb .fw-info .fw-zoombtn { vertical-align: middle; margin: 0 0.3rem 0 0.35rem; }
+/* Empty boxes in Place mode have no picture to enlarge. */
+.foodweb.fw-placing .fw-node .fw-zoom { display: none; }
+.foodweb .fw-piece.fw-lifted .fw-zoom { display: none; }
+
+.foodweb .fw-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 20, 34, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+.foodweb .fw-lb-inner {
+  background: #fff;
+  color: #0f1b2d;
+  border-radius: 10px;
+  padding: 0.8rem;
+  max-width: min(1100px, 95vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.foodweb .fw-lb-img { max-width: 100%; max-height: 78vh; object-fit: contain; display: block; }
+.foodweb .fw-lb-cap { font-size: 1.4rem; font-weight: 700; text-align: center; }
+.foodweb .fw-lb-close { background: #eef3f9; color: #0f1b2d; border-color: #c7d3e1; }
+
+@media print {
+  .foodweb .fw-zoom, .foodweb .fw-zoombtn, .foodweb .fw-lightbox { display: none !important; }
+}

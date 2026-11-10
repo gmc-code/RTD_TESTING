@@ -1,0 +1,1 @@
+from .imagesequence import setup

@@ -760,7 +760,14 @@
     var pic = el("div", "gw-pic");
     var main = el("div", "gw-main");
     var wordBox = el("div", "gw-word");
-    var hintBox = el("div", "gw-hint");
+    var hintBox = el("div", "gw-hint gw-hint-off");
+    // The hint line always takes up its space (just invisible until shown),
+    // so revealing it doesn't push the keyboard down.
+    var hintShown = false;
+    function showHint(on) {
+      hintShown = on;
+      hintBox.classList.toggle("gw-hint-off", !on);
+    }
     var livesBox = el("div", "gw-lives");
     var msg = el("div", "gw-msg");
     msg.setAttribute("aria-live", "polite");
@@ -785,7 +792,7 @@
       keys.append(b);
     });
 
-    ctrl.append(hintBtn, revealBtn, nextBtn, printBtn);
+    ctrl.append(revealBtn, hintBtn, nextBtn, printBtn);
     if (allowSettings) ctrl.append(setBtn);
     printBtn.addEventListener("click", function () {
       // Print what's on screen: the current picture and wrong guesses allowed.
@@ -810,19 +817,23 @@
       // Picture
       var picRow = el("label", "gw-set-row");
       var picSel = el("select", "gw-set-select gw-in-image");
-      var teacherLabel = teacherPool.length > 1
-        ? "Default (" + (teacherPool.length === Object.keys(THEMES).length ? "random" : teacherPool.map(function (t) { return PICTURE_LABELS[t]; }).join(", ")) + ")"
-        : "Default (" + PICTURE_LABELS[teacherPool[0]] + ")";
+      var allPictures = teacherPool.length === Object.keys(THEMES).length;
+      var teacherNames = teacherPool.map(function (t) { return PICTURE_LABELS[t]; }).join(", ");
+      var teacherLabel = teacherPool.length === 1 ? "Default (" + teacherNames + ")"
+        : allPictures ? "Default (random)"
+        : "Default (" + teacherPool.length + " pictures)";
       [["teacher", teacherLabel], ["random", "Random each word"]].concat(
         Object.keys(THEMES).map(function (t) { return [t, PICTURE_LABELS[t] || t]; })
       ).forEach(function (o) {
         var opt = el("option", null, o[1]); opt.value = o[0]; picSel.append(opt);
       });
       picSel.value = set.image;
+      if (teacherPool.length > 1 && !allPictures) picSel.options[0].title = teacherNames;
       picSel.addEventListener("change", function () {
         set.image = picSel.value; saveSet();
         changePicture();
       });
+      picRow.title = "Which picture is drawn";
       picRow.append(el("span", "gw-set-label", "Picture"), picSel);
 
       // Lives
@@ -835,7 +846,10 @@
         set.lives = +livesIn.value; livesVal.textContent = livesIn.value; saveSet();
         changeLives();
       });
-      livesRow.append(el("span", "gw-set-label", "Wrong guesses allowed"), livesIn, livesVal);
+      livesRow.title = "Wrong guesses allowed";
+      var livesCtl = el("span", "gw-set-ctl");
+      livesCtl.append(livesIn, livesVal);
+      livesRow.append(el("span", "gw-set-label", "Lives"), livesCtl);
       var livesNote = el("div", "gw-set-note");
       livesNote.hidden = true;
 
@@ -855,9 +869,16 @@
       hintIn.type = "checkbox"; hintIn.checked = set.hints;
       hintIn.addEventListener("change", function () {
         set.hints = hintIn.checked; saveSet();
-        if (!over) hintBtn.hidden = !(set.hints && words[round].h && hintBox.hidden);
+        if (!over) hintBtn.hidden = !(set.hints && words[round].h && !hintShown);
       });
-      hintRow.append(hintIn, el("span", null, "Show the hint button"));
+      hintRow.title = "Show the hint button";
+      // No word in this game has a hint, so there's nothing to switch on.
+      if (!words.some(function (w) { return w.h; })) {
+        hintIn.disabled = true;
+        hintRow.classList.add("gw-set-disabled");
+        hintRow.title = "None of these words has a hint";
+      }
+      hintRow.append(hintIn, el("span", null, "Hint button"));
 
       // Reset
       var resetBtn = el("button", "gw-set-reset", "Reset settings");
@@ -868,10 +889,16 @@
         picSel.value = set.image; livesIn.value = String(set.lives);
         livesVal.textContent = String(set.lives); lookSel.value = set.look; hintIn.checked = true;
         applyLook(set.look); changePicture(); changeLives();
-        if (!over) hintBtn.hidden = !(words[round].h && hintBox.hidden);
+        if (!over) hintBtn.hidden = !(words[round].h && !hintShown);
       });
 
-      p.append(picRow, livesRow, livesNote, lookRow, hintRow, resetBtn);
+      // Two rows: picture, lives and theme; then hint button, any note, reset.
+      var line1 = el("div", "gw-set-line");
+      var line2 = el("div", "gw-set-line gw-set-line2");
+      // Picture and Theme share the first column so Theme sits under Picture.
+      line1.append(picRow, livesRow, livesNote);
+      line2.append(lookRow, hintRow, resetBtn);
+      p.append(line1, line2);
       p.livesNote = livesNote;
       return p;
     }
@@ -901,13 +928,13 @@
         if (!over) { setStage(pic, stageFor(wrong)); drawLives(); }
       } else {
         pendingLives = set.lives;
-        panel.livesNote.textContent = "The new number of wrong guesses starts with the next word.";
+        panel.livesNote.textContent = "New lives start with the next word.";
         panel.livesNote.hidden = pendingLives === lives;
       }
     }
 
     hintBtn.addEventListener("click", function () {
-      hintBox.hidden = false;
+      showHint(true);
       hintBtn.hidden = true;
     });
     revealBtn.addEventListener("click", function () { finish("revealed"); });
@@ -1024,7 +1051,7 @@
       keys.querySelectorAll(".gw-key").forEach(function (b) { b.disabled = true; });
       revealBtn.hidden = true;
       hintBtn.hidden = true;
-      if (words[round].h) hintBox.hidden = false;
+      if (words[round].h) showHint(true);
       nextBtn.textContent = round < words.length - 1 ? "Next word" : "Play again";
       nextBtn.hidden = false;
     }
@@ -1042,7 +1069,7 @@
       pic.innerHTML = theme.svg(++uid, cfg);
       setStage(pic, 0);
       hintBox.textContent = words[i].h ? "Hint: " + words[i].h : "";
-      hintBox.hidden = true;
+      showHint(false);
       hintBtn.hidden = !(words[i].h && set.hints);
       counter.textContent = words.length > 1 ? "Word " + (i + 1) + " of " + words.length : "";
       msg.textContent = "";
@@ -1056,7 +1083,49 @@
       drawLives();
     }
 
+    // Keep the keyboard still: reserve room for the tallest hint and the
+    // longest end-of-word message in this game, so nothing above the
+    // keyboard changes height when a hint shows, a word ends or the next
+    // word starts.
+    function fitSpace() {
+      if (!root.offsetWidth) return;
+      var curHint = hintBox.textContent, curMsg = msg.textContent;
+      var curAnswer = answer, curWord = Array.from(wordBox.childNodes);
+      hintBox.style.minHeight = ""; msg.style.minHeight = ""; wordBox.style.minHeight = "";
+      var maxHint = 0, maxMsg = 0, maxWord = 0;
+      var allPics = Object.keys(THEMES);
+      words.forEach(function (w) {
+        if (w.h) {
+          hintBox.textContent = "Hint: " + w.h;
+          maxHint = Math.max(maxHint, hintBox.offsetHeight);
+        }
+        // long words can wrap onto a second line of letter boxes
+        answer = w.w;
+        drawWord(true);
+        maxWord = Math.max(maxWord, wordBox.offsetHeight);
+        var shown = String(w.w).toUpperCase();
+        // every picture, so changing the picture in settings can't move things
+        allPics.forEach(function (t) {
+          msg.textContent = THEMES[t].lose + " The word was " + shown + ".";
+          maxMsg = Math.max(maxMsg, msg.offsetHeight);
+        });
+      });
+      hintBox.textContent = curHint; msg.textContent = curMsg;
+      answer = curAnswer;
+      wordBox.replaceChildren.apply(wordBox, curWord);
+      if (maxHint) hintBox.style.minHeight = maxHint + "px";
+      if (maxMsg) msg.style.minHeight = maxMsg + "px";
+      if (maxWord) wordBox.style.minHeight = maxWord + "px";
+    }
+
     start(0);
+    fitSpace();
+    var fitTimer = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(fitTimer);
+      fitTimer = setTimeout(fitSpace, 150);
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSpace);
   }
 
   /* ---------- printable worksheet ---------- */

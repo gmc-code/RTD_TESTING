@@ -641,18 +641,15 @@
     border: none;
   }
 
-  /* Print button: only this deck */
-  html.fc-printing body * { visibility: hidden; }
-  html.fc-printing .flashcards.fc-print-target,
-  html.fc-printing .flashcards.fc-print-target * { visibility: visible; }
-  html.fc-printing .flashcards.fc-print-target {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-  }
+  /* Print button: only a copy of this deck's sheet, with the rest of the
+     page taken out of the layout (so no blank pages). */
+  html.fc-printing body > *:not(.fc-print-host) { display: none !important; }
+  html.fc-printing .fc-print-host { display: block !important; margin: 0; }
+  html.fc-printing body { margin: 0 !important; padding: 0 !important; }
 }
+
+/* The print copy is never shown on screen. */
+.flashcards.fc-print-host { display: none; }
 
 .flashcards .fc-done .fc-home-btns { margin-top: 1rem; }
 

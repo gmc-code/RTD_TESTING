@@ -1,5 +1,5 @@
 ================================================
-Quiz Group Directive
+Quiz Group
 ================================================
 
 | The quizgroup directive creates a group of quiz questions.

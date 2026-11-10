@@ -288,6 +288,40 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // ---------------- Full screen ----------------
+    const btnFull = mkBtn("", "ws-btn-fullscreen");
+    // A drawn icon rather than the ⛶ character, which isn't in most fonts
+    // and made this button taller than the others.
+    btnFull.innerHTML = '<svg class="ws-full-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const isFull = () => document.fullscreenElement === block || document.webkitFullscreenElement === block;
+    const fitFull = () => {
+      // Room left below the title and toolbar, so the grid fits the screen.
+      const wrap = block.querySelector(".ws-body .ws-grid-wrap");
+      if (!wrap) return;
+      wrap.style.width = "";
+      const top = wrap.getBoundingClientRect().top - block.getBoundingClientRect().top + block.scrollTop;
+      const pad = parseFloat(getComputedStyle(block).paddingBottom) || 0;
+      block.style.setProperty("--ws-fs-avail", Math.max(200, block.clientHeight - top - pad - 8) + "px");
+    };
+    const updateFull = () => {
+      const on = isFull();
+      block.classList.toggle("ws-full", on);
+      btnFull.title = on ? "Exit full screen (Esc)" : "Full screen";
+      btnFull.setAttribute("aria-label", btnFull.title);
+      btnFull.classList.toggle("ws-btn-on", on);
+      if (on) requestAnimationFrame(fitFull);
+      else block.style.removeProperty("--ws-fs-avail");
+    };
+    btnFull.addEventListener("click", () => {
+      if (isFull()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else if (block.requestFullscreen) block.requestFullscreen().catch(() => {});
+      else if (block.webkitRequestFullscreen) block.webkitRequestFullscreen();
+    });
+    document.addEventListener("fullscreenchange", updateFull);
+    document.addEventListener("webkitfullscreenchange", updateFull);
+    window.addEventListener("resize", () => { if (isFull()) fitFull(); });
+    updateFull();
+
     // Print just this puzzle (plus its answer key page, if it has one).
     // The puzzle is copied into a hidden frame so the rest of the page
     // isn't printed and page breaks still work.
@@ -558,7 +592,8 @@ document.addEventListener("DOMContentLoaded", () => {
         hintChip.append(label, x);
       } else {
         hintChip.classList.remove("ws-hint-on");
-        hintChip.textContent = "⌨ Press a letter to highlight it";
+        hintChip.textContent = "⌨ Type a letter";
+        hintChip.title = "Press a letter key to highlight it in the grid";
       }
     };
     const setHint = (letter) => {

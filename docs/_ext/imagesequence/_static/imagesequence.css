@@ -1,0 +1,778 @@
+/* ============================================================
+   imagesequence – put pictures into order
+   ============================================================ */
+
+.imagesequence {
+  --isq-accent: #ffc93c;
+  --isq-accent-text: #0f1b2d;
+  --isq-accent-hover: #ffd65e;
+  /* Dark theme */
+  --isq-bg: #0f1b2d;
+  --isq-bg-2: #1b2e4a;
+  --isq-text: #ffffff;
+  --isq-muted: #9fb3c8;
+  --isq-card: #ffffff;
+  --isq-card-text: #0f1b2d;
+  --isq-card-edge: rgba(0, 0, 0, 0.12);
+  --isq-slot: rgba(255, 255, 255, 0.04);
+  --isq-slot-edge: rgba(255, 255, 255, 0.35);
+  --isq-label-bg: #ffc93c;
+  --isq-label-text: #0f1b2d;
+  --isq-arrow: #ffc93c;
+  --isq-frame: transparent;
+  --isq-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --isq-toolbar: #0a1422;
+  --isq-btn-bg: rgba(255, 255, 255, 0.06);
+  --isq-btn-border: rgba(255, 255, 255, 0.18);
+  --isq-btn-hover: rgba(255, 255, 255, 0.16);
+  --isq-btn-text: #ffffff;
+  --isq-panel-bg: #13233a;
+  --isq-panel-text: #e2e8f0;
+  --isq-panel-border: #2a3f5f;
+  --isq-tray: rgba(255, 255, 255, 0.05);
+  --isq-red: #ef5d5d;
+  --isq-amber: #f5a524;
+  --isq-green: #34c27a;
+  --isq-select: #7cc4f0;
+  --isq-ratio: 4 / 3;
+  color-scheme: dark;
+
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--isq-bg);
+  color: var(--isq-text);
+  border: 1px solid var(--isq-frame);
+  box-shadow: var(--isq-shadow);
+  font-family: inherit;
+  position: relative;
+}
+
+.imagesequence [hidden] { display: none !important; }
+
+/* ---------- Themes (same seven as flashcards, crossword, etc.) ---------- */
+
+.imagesequence.isq-theme-light,
+.imagesequence.isq-theme-ocean,
+.imagesequence.isq-theme-forest,
+.imagesequence.isq-theme-sunset,
+.imagesequence.isq-theme-contrast {
+  --isq-accent: #1d6fa5;
+  --isq-accent-text: #ffffff;
+  --isq-accent-hover: #175c8a;
+  --isq-bg: #ffffff;
+  --isq-bg-2: #eef3f9;
+  --isq-text: #0f1b2d;
+  --isq-muted: #475569;
+  --isq-card: #ffffff;
+  --isq-card-edge: #c7d3e1;
+  --isq-slot: #f8fafc;
+  --isq-slot-edge: #94a3b8;
+  --isq-label-bg: #1d6fa5;
+  --isq-label-text: #ffffff;
+  --isq-arrow: #1d6fa5;
+  --isq-frame: #d5dee9;
+  --isq-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+  --isq-toolbar: #eef3f9;
+  --isq-btn-bg: #ffffff;
+  --isq-btn-border: #c7d3e1;
+  --isq-btn-hover: #e2eaf3;
+  --isq-btn-text: #0f1b2d;
+  --isq-panel-bg: #f8fafc;
+  --isq-panel-text: #1e293b;
+  --isq-panel-border: #d5dee9;
+  --isq-tray: #eef3f9;
+  --isq-red: #d43c3c;
+  --isq-amber: #c77c00;
+  --isq-green: #1d9a5b;
+  --isq-select: #f5a524;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  .imagesequence.isq-theme-auto {
+    --isq-accent: #1d6fa5;
+    --isq-accent-text: #ffffff;
+    --isq-accent-hover: #175c8a;
+    --isq-bg: #ffffff;
+    --isq-bg-2: #eef3f9;
+    --isq-text: #0f1b2d;
+    --isq-muted: #475569;
+    --isq-card: #ffffff;
+    --isq-card-edge: #c7d3e1;
+    --isq-slot: #f8fafc;
+    --isq-slot-edge: #94a3b8;
+    --isq-label-bg: #1d6fa5;
+    --isq-label-text: #ffffff;
+    --isq-arrow: #1d6fa5;
+    --isq-frame: #d5dee9;
+    --isq-shadow: 0 2px 10px rgba(15, 27, 45, 0.08);
+    --isq-toolbar: #eef3f9;
+    --isq-btn-bg: #ffffff;
+    --isq-btn-border: #c7d3e1;
+    --isq-btn-hover: #e2eaf3;
+    --isq-btn-text: #0f1b2d;
+    --isq-panel-bg: #f8fafc;
+    --isq-panel-text: #1e293b;
+    --isq-panel-border: #d5dee9;
+    --isq-tray: #eef3f9;
+    --isq-red: #d43c3c;
+    --isq-amber: #c77c00;
+    --isq-green: #1d9a5b;
+    --isq-select: #f5a524;
+    color-scheme: light;
+  }
+}
+
+.imagesequence.isq-theme-ocean {
+  --isq-accent: #138d90; --isq-accent-hover: #0f7a7d;
+  --isq-bg: #f4fbfb; --isq-bg-2: #d1f2eb; --isq-toolbar: #e8f6f3; --isq-tray: #e8f6f3;
+  --isq-frame: #a3e4d7; --isq-panel-bg: #f4fbfb; --isq-panel-border: #a3e4d7;
+  --isq-label-bg: #138d90; --isq-arrow: #138d90; --isq-slot-edge: #76c7b7;
+}
+
+.imagesequence.isq-theme-forest {
+  --isq-accent: #2e7d32; --isq-accent-hover: #256628;
+  --isq-bg: #f6faf2; --isq-bg-2: #dcedc8; --isq-toolbar: #eef3e6; --isq-tray: #eef3e6;
+  --isq-frame: #c5e1a5; --isq-panel-bg: #f6faf2; --isq-panel-border: #c5e1a5;
+  --isq-label-bg: #2e7d32; --isq-arrow: #2e7d32; --isq-slot-edge: #9ccc65;
+}
+
+.imagesequence.isq-theme-sunset {
+  --isq-accent: #c0510a; --isq-accent-hover: #a24408;
+  --isq-bg: #fffaf5; --isq-bg-2: #fde3cf; --isq-toolbar: #fbeee4; --isq-tray: #fbeee4;
+  --isq-frame: #f9c9a5; --isq-panel-bg: #fffaf5; --isq-panel-border: #f9c9a5;
+  --isq-label-bg: #c0510a; --isq-arrow: #c0510a; --isq-slot-edge: #f0a875;
+}
+
+/* High contrast: black and white with strong colours, for projectors. */
+.imagesequence.isq-theme-contrast {
+  --isq-accent: #0033cc; --isq-accent-text: #ffffff; --isq-accent-hover: #002699;
+  --isq-bg: #ffffff; --isq-bg-2: #e0e0e0; --isq-toolbar: #e0e0e0; --isq-tray: #f0f0f0;
+  --isq-text: #000000; --isq-muted: #000000;
+  --isq-card-edge: #000000; --isq-slot-edge: #000000; --isq-frame: #000000;
+  --isq-btn-border: #000000; --isq-panel-bg: #ffffff; --isq-panel-text: #000000;
+  --isq-panel-border: #000000; --isq-label-bg: #000000; --isq-label-text: #ffffff;
+  --isq-arrow: #000000; --isq-red: #c00000; --isq-green: #006b2e; --isq-select: #0033cc;
+}
+.imagesequence.isq-theme-contrast .isq-card,
+.imagesequence.isq-theme-contrast .isq-slot-hint { border-width: 2px; }
+
+/* ---------- Header ---------- */
+
+.imagesequence .isq-head {
+  padding: 0.85rem 1.1rem 0.5rem;
+  background: var(--isq-bg-2);
+}
+.imagesequence .isq-title { font-size: 1.15rem; font-weight: 700; }
+.imagesequence .isq-sub { font-size: 0.88rem; color: var(--isq-muted); margin-top: 0.15rem; }
+.imagesequence .isq-chaininfo {
+  display: inline-block; margin-top: 0.4rem; padding: 0.15rem 0.6rem;
+  font-size: 0.85rem; font-weight: 600; border-radius: 999px;
+  background: var(--isq-bg-2); color: var(--isq-muted);
+}
+.imagesequence .isq-chaininfo:empty { display: none; }
+.imagesequence .isq-noscript { padding: 0 1.1rem; }
+
+/* Before the script runs (or with JavaScript off) show the steps in order. */
+.imagesequence .isq-source {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+  padding: 1rem;
+}
+.imagesequence .isq-source img { max-width: 100%; height: auto; background: #fff; }
+
+/* ---------- Board (boxes + arrows) ---------- */
+
+.imagesequence .isq-board { padding: 1rem 1.1rem 0.6rem; }
+
+.imagesequence .isq-grid.isq-arrows-down,
+.imagesequence .isq-grid.isq-arrows-up { justify-content: center; }
+.imagesequence .isq-grid {
+  display: grid;
+  align-items: start;
+  justify-items: stretch;
+}
+
+.imagesequence .isq-arrow {
+  color: var(--isq-arrow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  pointer-events: none;
+}
+.imagesequence .isq-arrow svg { width: 1.7rem; height: 1.7rem; display: block; }
+/* Horizontal arrows sit level with the middle of the picture. */
+.imagesequence .isq-arrow-right,
+.imagesequence .isq-arrow-left { padding-top: 1.1rem; }
+.imagesequence .isq-arrow-left svg { transform: rotate(180deg); }
+.imagesequence .isq-arrow-down svg { transform: rotate(90deg); }
+.imagesequence .isq-arrow-up svg { transform: rotate(-90deg); }
+.imagesequence .isq-arrow-wrap { opacity: 0.55; }
+.imagesequence .isq-arrow-wrap svg { width: 1.2rem; height: 1.2rem; }
+
+.imagesequence .isq-slot {
+  position: relative;
+  min-width: 0;
+  outline: none;
+  border-radius: 8px;
+  cursor: default;
+}
+.imagesequence.isq-has-selection .isq-slot:not(.isq-fixed) { cursor: pointer; }
+.imagesequence .isq-slot:focus-visible { box-shadow: 0 0 0 3px #3fa7d6; }
+
+.imagesequence .isq-slot-label {
+  position: absolute;
+  top: -0.55rem;
+  left: -0.45rem;
+  z-index: 3;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--isq-label-bg);
+  color: var(--isq-label-text);
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1.75rem;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* A label written with :label: (e.g. "Producer") is wider and covers more
+   of the picture, so its background is 40% see-through. Numbers and
+   letters stay solid. */
+.imagesequence .isq-slot-label.isq-slot-label-text {
+  background: color-mix(in srgb, var(--isq-label-bg) 60%, transparent);
+  text-shadow: 0 0 2px var(--isq-label-bg), 0 0 4px var(--isq-label-bg);
+}
+
+.imagesequence .isq-slot-hint {
+  aspect-ratio: var(--isq-ratio);
+  border: 2px dashed var(--isq-slot-edge);
+  border-radius: 8px;
+  background: var(--isq-slot);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--isq-muted);
+  font-size: 0.85rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.imagesequence .isq-slot.isq-filled .isq-slot-hint { display: none; }
+.imagesequence.isq-has-selection .isq-slot:not(.isq-fixed) .isq-slot-hint,
+.imagesequence.isq-is-dragging .isq-slot:not(.isq-fixed) .isq-slot-hint {
+  border-color: var(--isq-select);
+}
+.imagesequence .isq-slot.isq-over:not(.isq-fixed) .isq-slot-hint,
+.imagesequence .isq-slot.isq-over:not(.isq-fixed) .isq-card {
+  border-color: var(--isq-select);
+  box-shadow: 0 0 0 3px var(--isq-select);
+}
+
+.imagesequence .isq-slot-cap {
+  display: none;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--isq-text);
+}
+.imagesequence.isq-cap-slot .isq-slot-cap { display: block; }
+.imagesequence .isq-slot-cap p,
+.imagesequence .isq-cap p { margin: 0; line-height: inherit; font-size: inherit; }
+
+/* ---------- Cards ---------- */
+
+.imagesequence .isq-card {
+  position: relative;
+  background: var(--isq-card);
+  color: var(--isq-card-text);
+  border: 1px solid var(--isq-card-edge);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  transition: box-shadow 0.15s, transform 0.15s, opacity 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.imagesequence .isq-card:hover { box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); }
+.imagesequence .isq-card:focus-visible { box-shadow: 0 0 0 3px #3fa7d6; }
+.imagesequence .isq-card.isq-selected {
+  box-shadow: 0 0 0 3px var(--isq-select), 0 4px 12px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
+}
+.imagesequence .isq-card.isq-dragging { opacity: 0.3; }
+.imagesequence .isq-card.isq-locked { cursor: default; }
+.imagesequence .isq-card.isq-locked::after {
+  content: "\1F512";
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+.imagesequence .isq-card.isq-locked .isq-zoom { right: 1.6rem; }
+
+.imagesequence .isq-imgwrap {
+  aspect-ratio: var(--isq-ratio);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.imagesequence .isq-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  margin: 0 !important;
+  max-width: none;
+}
+
+.imagesequence .isq-cap {
+  display: none;
+  padding: 0.35rem 0.5rem 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.3;
+  text-align: center;
+  border-top: 1px solid var(--isq-card-edge);
+}
+.imagesequence.isq-cap-below .isq-cap,
+.imagesequence.isq-cap-reveal.isq-revealed .isq-cap { display: block; }
+.imagesequence .isq-cap:empty { display: none !important; }
+/* :captions: overlay - the caption on a see-through band across the bottom
+   of the picture, so the cards are shorter. */
+.imagesequence.isq-cap-overlay .isq-cap {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.2rem 0.4rem 0.25rem;
+  font-size: 0.76rem;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #0f1b2d;
+  background: rgba(255, 255, 255, 0.84);
+  border-top: none;
+  pointer-events: none;
+}
+.imagesequence.isq-cap-overlay.isq-theme-contrast .isq-cap { background: rgba(255, 255, 255, 0.95); color: #000; }
+
+.imagesequence .isq-zoom {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: zoom-in;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.imagesequence .isq-card:hover .isq-zoom,
+.imagesequence .isq-card:focus-within .isq-zoom,
+.imagesequence .isq-card.isq-selected .isq-zoom { opacity: 1; }
+@media (hover: none) { .imagesequence .isq-zoom { opacity: 0.85; } }
+
+.imagesequence .isq-mark {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  z-index: 2;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.8rem;
+  text-align: center;
+  display: none;
+}
+.imagesequence .isq-card.isq-right { border-color: var(--isq-green); box-shadow: 0 0 0 3px var(--isq-green); }
+.imagesequence .isq-card.isq-wrong { border-color: var(--isq-red); box-shadow: 0 0 0 3px var(--isq-red); }
+.imagesequence .isq-card.isq-shown { border-color: var(--isq-green); box-shadow: 0 0 0 2px var(--isq-green); }
+.imagesequence .isq-card.isq-right .isq-mark { display: block; background: var(--isq-green); }
+.imagesequence .isq-card.isq-wrong .isq-mark { display: block; background: var(--isq-red); }
+/* In a box the step number sits top left, so put the tick top right
+   (and move the enlarge button along). */
+.imagesequence .isq-slot .isq-mark { left: auto; right: 0.3rem; }
+.imagesequence .isq-slot .isq-right .isq-zoom,
+.imagesequence .isq-slot .isq-wrong .isq-zoom { right: 2.4rem; }
+
+.imagesequence.isq-solved .isq-slot .isq-card { animation: isq-pop 0.5s ease; }
+@keyframes isq-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.isq-ghost {
+  position: fixed !important;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0.92;
+  transform: rotate(-2deg);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35) !important;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #c7d3e1;
+}
+.isq-ghost .isq-imgwrap { aspect-ratio: auto; background: #fff; }
+.isq-ghost .isq-img { width: 100%; height: auto; display: block; }
+.isq-ghost .isq-cap { display: none !important; }
+.isq-ghost .isq-zoom, .isq-ghost .isq-mark { display: none !important; }
+
+/* ---------- Status, tray ---------- */
+
+.imagesequence .isq-status {
+  min-height: 1.5rem;
+  padding: 0 1.1rem;
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+.imagesequence .isq-status:empty { min-height: 0; }
+.imagesequence .isq-status-good { color: var(--isq-green); }
+.imagesequence .isq-status-part { color: var(--isq-amber); }
+.imagesequence .isq-status-bad { color: var(--isq-red); }
+
+.imagesequence .isq-traywrap {
+  margin: 0.6rem 1.1rem 1rem;
+  padding: 0.6rem 0.75rem 0.8rem;
+  border-radius: 8px;
+  background: var(--isq-tray);
+  border: 1px solid var(--isq-frame);
+  transition: box-shadow 0.15s;
+}
+.imagesequence .isq-traywrap.isq-over { box-shadow: 0 0 0 3px var(--isq-select); }
+.imagesequence.isq-has-selection .isq-traywrap { cursor: pointer; }
+.imagesequence .isq-trayhead { font-size: 0.88rem; color: var(--isq-muted); margin-bottom: 0.5rem; }
+.imagesequence .isq-trayhead strong { color: var(--isq-text); }
+.imagesequence .isq-clue {
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  background: var(--isq-bg);
+  border: 1px solid var(--isq-frame);
+  border-left: 4px solid var(--isq-accent);
+  color: var(--isq-text);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  min-height: 1.4em;
+}
+.imagesequence .isq-clue.isq-clue-idle { color: var(--isq-muted); font-style: italic; border-left-color: var(--isq-frame); }
+.imagesequence .isq-clue p { margin: 0; display: inline; }
+.imagesequence .isq-distract-note { color: var(--isq-amber); font-weight: 600; margin-left: 0.4rem; }
+.imagesequence .isq-tray {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.6rem;
+  min-height: 2rem;
+}
+.imagesequence .isq-tray-empty .isq-tray { min-height: 0; }
+/* :tray-columns: a set number of pictures in each row (not on phones,
+   and not in full screen, which has :fullscreen-tray-columns:). */
+@media (min-width: 561px) {
+  .imagesequence.isq-tray-set:not(:fullscreen) .isq-tray {
+    grid-template-columns: repeat(var(--isq-tray-cols), minmax(0, 1fr));
+  }
+}
+
+/* ---------- Toolbar, settings ---------- */
+
+.imagesequence .isq-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.8rem;
+  background: var(--isq-toolbar);
+}
+.imagesequence .isq-spacer { flex: 1; }
+.imagesequence .isq-btn {
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 0.38rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--isq-btn-border);
+  background: var(--isq-btn-bg);
+  color: var(--isq-btn-text);
+  cursor: pointer;
+  line-height: 1.2;
+}
+.imagesequence .isq-btn:hover { background: var(--isq-btn-hover); }
+.imagesequence .isq-btn:focus-visible { outline: 3px solid #3fa7d6; outline-offset: 1px; }
+.imagesequence .isq-btn-main {
+  background: var(--isq-accent);
+  color: var(--isq-accent-text);
+  border-color: var(--isq-accent);
+  font-weight: 700;
+}
+.imagesequence .isq-btn-main:hover { background: var(--isq-accent-hover); }
+.imagesequence .isq-btn:disabled,
+.imagesequence .isq-btn:disabled:hover {
+  opacity: 0.45; cursor: not-allowed; filter: grayscale(0.6);
+  background: var(--isq-accent); transform: none; box-shadow: none;
+}
+.imagesequence .isq-btn:not(.isq-btn-main):disabled { background: var(--isq-btn-bg); }
+.imagesequence .isq-icon { padding: 0.38rem 0.6rem; }
+
+.imagesequence .isq-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
+  padding: 0.65rem 1rem;
+  background: var(--isq-panel-bg);
+  border-top: 1px solid var(--isq-panel-border);
+  font-size: 0.9rem;
+}
+.imagesequence .isq-settings label { color: var(--isq-panel-text); font-weight: normal; margin: 0; }
+.imagesequence .isq-settings select {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--isq-btn-text);
+  background: var(--isq-btn-bg);
+  border: 1px solid var(--isq-btn-border);
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  margin-left: 0.3rem;
+  box-shadow: none;
+  height: auto;
+  width: auto;
+}
+.imagesequence .isq-settings select option { color: #0f1b2d; background: #ffffff; }
+/* Starts the row of "in a row" controls on a new line. */
+.imagesequence .isq-settings .isq-set-break { flex-basis: 100%; height: 0; }
+
+/* ---------- Enlarged picture ---------- */
+
+.imagesequence .isq-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 20, 34, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+}
+.imagesequence .isq-lb-inner {
+  background: #fff;
+  color: #0f1b2d;
+  border-radius: 10px;
+  padding: 0.8rem;
+  max-width: min(1100px, 95vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.imagesequence .isq-lb-img { max-width: 100%; max-height: 78vh; object-fit: contain; display: block; }
+.imagesequence .isq-lb-cap { font-size: 1.05rem; text-align: center; }
+.imagesequence .isq-lb-cap p { margin: 0; }
+.imagesequence .isq-lb-close { background: #eef3f9; color: #0f1b2d; border-color: #c7d3e1; }
+
+/* ---------- Full screen ---------- */
+
+/* Everything on one screen: boxes on the left, pictures still to place in
+   a column on the right (it scrolls if it has to). imagesequence.js sizes
+   the boxes so they fit the height of the screen. */
+.imagesequence:fullscreen {
+  margin: 0;
+  border-radius: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, var(--isq-tray-w, 24%));
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  grid-template-areas:
+    "head head"
+    "board tray"
+    "status tray"
+    "bar bar"
+    "set set";
+}
+.imagesequence:fullscreen .isq-head { grid-area: head; }
+.imagesequence:fullscreen .isq-board {
+  grid-area: board;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 1.2rem;
+}
+.imagesequence:fullscreen .isq-board .isq-grid { width: 100%; }
+.imagesequence:fullscreen .isq-status { grid-area: status; padding-bottom: 0.4rem; }
+.imagesequence:fullscreen .isq-traywrap {
+  grid-area: tray;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 1rem 1.1rem 0.8rem 0;
+}
+.imagesequence:fullscreen .isq-tray { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); }
+.imagesequence:fullscreen .isq-toolbar { grid-area: bar; }
+.imagesequence:fullscreen .isq-settings { grid-area: set; }
+/* Empty boxes keep room for a caption, so the layout doesn't grow as
+   pictures (with captions) are placed. */
+.imagesequence:fullscreen.isq-cap-below .isq-slot:not(.isq-filled) .isq-slot-body::after {
+  content: "";
+  display: block;
+  height: 2.6rem;
+}
+/* :fullscreen-tray-columns: */
+@media (min-width: 800px) {
+  .imagesequence.isq-tray-set-full:fullscreen .isq-tray {
+    grid-template-columns: repeat(var(--isq-tray-cols-full), minmax(0, 1fr));
+  }
+}
+/* Narrow screens: one column that scrolls, as on the page. */
+@media (max-width: 799px) {
+  .imagesequence:fullscreen { display: block; overflow: auto; height: auto; min-height: 100%; }
+}
+.imagesequence .isq-full-icon { width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block; }
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 560px) {
+  .imagesequence .isq-board { padding: 0.9rem 0.7rem 0.5rem; }
+  .imagesequence .isq-traywrap { margin: 0.5rem 0.7rem 0.8rem; }
+  .imagesequence .isq-tray { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+}
+
+/* ---------- Print ---------- */
+
+.imagesequence .isq-printsheet { display: none; }
+
+@media print {
+  .imagesequence {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible;
+  }
+  .imagesequence > *:not(.isq-printsheet) { display: none !important; }
+  .imagesequence .isq-printsheet { display: block; }
+
+  .imagesequence .isq-pbreak { break-before: page; page-break-before: always; }
+  .imagesequence .isq-ptitle { font-size: 16pt; font-weight: 700; margin-bottom: 2pt; }
+  .imagesequence .isq-phelp { font-size: 10pt; color: #333; margin-bottom: 10pt; }
+
+  /* The step badges stick out 5-6pt above and left of each box, so leave
+     room for them or the left-hand ones are cut off at the page edge. */
+  .imagesequence .isq-pgrid { display: grid; align-items: start; margin-bottom: 14pt; padding: 7pt 0 0 7pt; }
+  .imagesequence .isq-pgrid .isq-arrow { color: #000; display: flex; align-items: center; justify-content: center; }
+  .imagesequence .isq-pgrid .isq-arrow svg { width: 16pt; height: 16pt; }
+  .imagesequence .isq-pgrid .isq-arrow-left svg { transform: rotate(180deg); }
+  .imagesequence .isq-pgrid .isq-arrow-down svg { transform: rotate(90deg); }
+  .imagesequence .isq-pgrid .isq-arrow-up svg { transform: rotate(-90deg); }
+  .imagesequence .isq-pgrid .isq-arrow-wrap { opacity: 0.5; }
+
+  .imagesequence .isq-pslot { position: relative; break-inside: avoid; }
+  .imagesequence .isq-pslot-label {
+    position: absolute;
+    top: -6pt;
+    left: -5pt;
+    min-width: 16pt;
+    height: 16pt;
+    padding: 0 4pt;
+    border-radius: 8pt;
+    background: #000;
+    color: #fff;
+    font-weight: 700;
+    font-size: 9pt;
+    line-height: 16pt;
+    text-align: center;
+    z-index: 2;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .imagesequence .isq-pslot-box {
+    position: relative;
+    border: 1.5pt solid #000;
+    border-radius: 4pt;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  /* Worksheet: small boxes to write a letter in. */
+  .imagesequence .isq-pgrid-write .isq-pslot-box { height: 1.5cm; }
+  .imagesequence .isq-pgrid-write .isq-pslot-box.isq-pslot-fixed { height: auto; aspect-ratio: var(--isq-ratio); }
+  .imagesequence .isq-pgrid-write .isq-arrow-right,
+  .imagesequence .isq-pgrid-write .isq-arrow-left { padding-top: 0; }
+  /* Cut and stick / answers: boxes the size of a picture. */
+  .imagesequence .isq-pgrid-pics .isq-pslot-box { aspect-ratio: var(--isq-ratio); }
+  .imagesequence .isq-pgrid-pics .isq-arrow-right,
+  .imagesequence .isq-pgrid-pics .isq-arrow-left { padding-top: 0; }
+
+  .imagesequence .isq-pimg { width: 100%; height: 100%; object-fit: contain; display: block; margin: 0 !important; }
+  .imagesequence .isq-pkey {
+    position: absolute;
+    right: 3pt;
+    bottom: 3pt;
+    background: #fff;
+    border: 1pt solid #000;
+    border-radius: 3pt;
+    padding: 0 4pt;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+  .imagesequence .isq-pslot-cap { font-size: 8.5pt; line-height: 1.25; text-align: center; margin-top: 3pt; }
+  .imagesequence .isq-pslot-cap p, .imagesequence .isq-ppic-cap p { margin: 0; }
+
+  .imagesequence .isq-ppics { display: grid; gap: 8pt; }
+  .imagesequence .isq-ppic {
+    position: relative;
+    border: 1pt solid #888;
+    border-radius: 4pt;
+    padding: 3pt;
+    break-inside: avoid;
+  }
+  .imagesequence .isq-ppic .isq-pimg { height: auto; aspect-ratio: var(--isq-ratio); }
+  .imagesequence .isq-ppics-cut { gap: 0; }
+  .imagesequence .isq-ppics-cut .isq-ppic { border: 1pt dashed #555; border-radius: 0; padding: 5pt; }
+  .imagesequence .isq-ppic-label {
+    position: absolute;
+    top: 3pt;
+    left: 3pt;
+    background: #fff;
+    border: 1pt solid #000;
+    border-radius: 3pt;
+    padding: 0 4pt;
+    font-weight: 700;
+    font-size: 11pt;
+    z-index: 1;
+  }
+  .imagesequence .isq-ppic-cap { font-size: 8.5pt; line-height: 1.25; text-align: center; margin-top: 2pt; }
+
+  /* Print button: only a copy of this activity's sheet, with the rest of
+     the page taken out of the layout (so no blank pages). */
+  html.isq-printing body > *:not(.isq-print-host) { display: none !important; }
+  html.isq-printing .isq-print-host { display: block !important; margin: 0; }
+  html.isq-printing body { margin: 0 !important; padding: 0 !important; }
+}
+
+/* The print copy is never shown on screen. */
+.imagesequence.isq-print-host { display: none; }

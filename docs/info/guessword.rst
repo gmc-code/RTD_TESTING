@@ -9,15 +9,21 @@ Option reference
 
 .. list-table::
    :header-rows: 1
-   :widths: 18 82
+   :widths: 16 10 16 58
 
    * - Option
-     - What it does
+     - Type
+     - Default
+     - Description
    * - *(word)*
+     - string
+     - *None* (required)
      - The word or phrase to guess, written after ``.. guessword::``. For
        several words, leave this out and put one word per line in the
        content instead.
    * - ``:image:``
+     - string
+     - ``snowman``
      - Which picture: ``snowman`` (default), ``beaker``, ``balloons``, ``flower``,
        ``battery``, ``thermometer``, ``machine`` (a Rube Goldberg
        machine; ``rubegoldberg`` also works), ``rocket``, ``circuit``,
@@ -28,38 +34,56 @@ Option reference
        picture. That still works, but the build shows a warning asking you
        to change it to ``:image:``.)
    * - ``:theme:``
+     - string
+     - ``light``
      - Colour theme: ``light`` (default), ``dark``, ``auto`` (match the
        computer), ``ocean``, ``forest``, ``sunset`` or ``contrast`` (black
        and white with strong colours, good on a projector). The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. On
        dark themes the picture stays on a light panel so it looks right.
        Printing is always black and white.
    * - ``:hint:``
+     - string
+     - *None*
      - Hint for the single-word form. Students reveal it with a button.
        In the multi-word form, put the hint after a ``|`` on each line.
    * - ``:lives:``
+     - integer
+     - ``6``
      - Wrong guesses allowed, 3 to 12. Default 6. Each picture has 12
        parts, so with 12 lives one part changes per wrong guess. With
        fewer lives, several parts change at once.
    * - ``:title:``
+     - string
+     - "Guess the word"
      - Heading above the game and on the worksheet. Default "Guess the
        word".
    * - ``:shuffle:``
+     - flag
+     - Off
      - Randomise the order of the words each time through. The printed
        worksheet always uses the order you wrote.
    * - ``:answers:``
+     - string
+     - ``none``
      - ``none`` (default) prints the worksheet only. ``print`` adds an
        answer key on a separate page.
    * - ``:hemisphere:``
+     - string
+     - ``south``
      - ``south`` (default) or ``north``. Only affects the ``daynight``
        and ``moon`` pictures. In the southern hemisphere the sun crosses
        the northern sky from right to left, and a waning moon is lit on
        the right. ``north`` shows the mirror image.
    * - ``:no-settings:``
+     - flag
+     - Off
      - Hides the ⚙ settings button, so students can't change the picture,
        the number of wrong guesses, the colour theme or the hint button.
        Useful for a class challenge where everyone should have the same
        game.
    * - ``:class:``
+     - string
+     - *None*
      - Extra CSS classes on the game box.
 
 Notes
@@ -105,11 +129,11 @@ The **⚙** button opens settings for that game:
 * **Picture**: the default (from ``:image:``), random for each word,
   or any one picture. It changes straight away and keeps the game's
   progress.
-* **Wrong guesses allowed**: 3 to 12. If letters have already been guessed
+* **Lives** (wrong guesses allowed): 3 to 12. If letters have already been guessed
   in the current word, the new number starts with the next word, so moving
   the slider can't win or lose a round.
 * **Theme**: any of the colour themes (see ``:theme:``).
-* **Show the hint button**: hide it for a harder game.
+* **Hint button**: untick it for a harder game.
 * **Reset settings** undoes all of these.
 
 Choices are saved in that browser, separately for each game. The words
@@ -118,6 +142,63 @@ showing on screen, so a teacher can set up the game and print it. Add
 ``:no-settings:`` to hide the button.
 
 Each example below shows the RST first, then the game it makes.
+
+Snowman (default): no settings
+--------------------------------
+
+.. code-block:: rst
+
+    .. guessword:: evaporation
+        :no-settings:
+        :hint: Liquid turning into a gas below its boiling point
+        :lives: 12
+
+.. guessword:: evaporation
+   :no-settings:
+   :hint: Liquid turning into a gas below its boiling point
+   :lives: 12
+
+----
+
+Snowman: no hint
+--------------------------------
+
+.. code-block:: rst
+
+    .. guessword:: evaporation
+        :lives: 3
+
+.. guessword:: evaporation
+   :lives: 3
+
+
+.. code-block:: rst
+
+    .. guessword::
+        :image: random
+        :title: Energy types
+        :lives: 5
+        :shuffle:
+
+        kinetic
+        thermal
+        chemical
+        elastic
+        gravitational
+
+.. guessword::
+   :image: random
+   :title: Energy types
+   :lives: 5
+   :shuffle:
+
+   kinetic
+   thermal
+   chemical
+   elastic
+   gravitational
+
+----
 
 Snowman (default)
 -----------------

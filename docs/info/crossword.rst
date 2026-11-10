@@ -16,6 +16,21 @@ settings for the letter size, hint letters, number of words and the border.
 Example
 -------
 
+Source:
+
+.. code-block:: rst
+
+   .. crossword:: Cells and organelles
+      :wordbank:
+      :hints: 6
+
+      NUCLEUS       | Controls the activities of the cell and contains DNA
+      CYTOPLASM     | Jelly-like substance where most chemical reactions happen
+      MITOCHONDRIA  | Where aerobic respiration releases energy
+      CELL WALL     | Rigid layer made of cellulose that supports a plant cell
+      ...
+
+
 .. crossword:: Cells and organelles
    :wordbank:
    :hints: 6
@@ -33,19 +48,7 @@ Example
    ORGAN         | Several tissues working together, e.g. the heart
    DIFFUSION     | Movement of particles from high to low concentration
 
-Source:
 
-.. code-block:: rst
-
-   .. crossword:: Cells and organelles
-      :wordbank:
-      :hints: 6
-
-      NUCLEUS       | Controls the activities of the cell and contains DNA
-      CYTOPLASM     | Jelly-like substance where most chemical reactions happen
-      MITOCHONDRIA  | Where aerobic respiration releases energy
-      CELL WALL     | Rigid layer made of cellulose that supports a plant cell
-      ...
 
 Writing the word list
 ---------------------
@@ -81,6 +84,10 @@ Options
        ``:hints: 20%``. Hints are spread across different words, and a word is
        never completely filled in. Hint letters are shaded and can't be
        changed. They also appear on the printed blank copy.
+   * - ``:first-letters:``
+     - Shows the first letter of every word as a hint. Works alongside
+       ``:hints:``, which adds random letters on top. Students can switch it
+       on or off with **First letters** in ⚙ settings.
    * - ``:letter-size:``
      - Size of the squares and letters: ``small``, ``medium`` (default),
        ``large``, ``x-large``, or a percentage between 70 and 170, such as
@@ -92,9 +99,8 @@ Options
    * - ``:border:``
      - Draws a thin border around the whole puzzle.
    * - ``:theme:``
-     - Colour theme: ``light`` (default; ``classic`` also works), ``dark``,
-       ``auto`` (match the computer), ``ocean``, ``forest``, ``sunset`` or
-       ``contrast`` (high contrast). The same seven colour themes work in ``flashquiz``, ``flashcards``, ``crossword``, ``wordsearch`` and ``guessword``. Students can
+     - Colour scheme: ``classic`` (default), ``ocean``, ``forest``,
+       ``sunset``, ``contrast`` (high contrast) or ``dark``. Students can
        change it in ⚙ settings. Printing always uses plain black and white.
    * - ``:words:``
      - How many words to use from the list, such as ``:words: 10``. Write a
@@ -147,10 +153,12 @@ Using the puzzle
        a different selection of words). If answers have been typed, the
        button asks you to click again to confirm.
    * - ⚙
-     - Settings: the letter size, **Fill width**, the number of hint letters (**New hints**
-       picks a different set), how many words per puzzle, the colour theme
+     - Settings: the letter size, **Fill width**, the number of hint letters (**↻** picks a different set), **First letters**, how many words per puzzle, the colour theme
        and the border. Changes are remembered in that
-       browser. **Reset settings** goes back to the page's defaults.
+       browser. **Reset** goes back to the page's defaults.
+   * - ⛶
+     - Full screen, for projecting on a board. The grid grows to fill the
+       screen with the clues beside it. Press :kbd:`Esc` or ⛶ again to exit.
    * - 🖨 Print ▾
      - **Blank copy** prints the current puzzle with Name / Class / Date
        lines. **Answer key** prints its solution. Either way only the crossword is
@@ -161,6 +169,21 @@ Harder example
 
 Without the word bank or letter counts, with large letters, a border, the
 ocean theme and three hint letters:
+
+.. code-block:: rst
+
+    .. crossword:: Forces (challenge)
+        :no-lengths:
+        :seed: 3
+        :letter-size: large
+        :border:
+        :theme: ocean
+        :hints: 3
+
+        GRAVITY      | Force that pulls objects towards the Earth
+        FRICTION     | Force that opposes motion between two surfaces
+        ...
+
 
 .. crossword:: Forces (challenge)
    :no-lengths:
@@ -187,6 +210,17 @@ Word pool example
 Twenty words in the list, ten used in each puzzle. Press **↻ New** for a
 different set:
 
+.. code-block:: rst
+
+   .. crossword:: Particles and matter (10 from 20)
+      :words: 10
+      :hints: 10%
+
+      SOLID        | State with a fixed shape and volume
+      LIQUID       | State that flows and takes the shape of its container
+      ...
+
+
 .. crossword:: Particles and matter (10 from 20)
    :words: 10
    :hints: 10%
@@ -212,12 +246,4 @@ different set:
    MOLECULE     | Two or more atoms joined together
    KINETIC      | Type of energy particles have because they move
 
-.. code-block:: rst
 
-   .. crossword:: Particles and matter (10 from 20)
-      :words: 10
-      :hints: 10%
-
-      SOLID        | State with a fixed shape and volume
-      LIQUID       | State that flows and takes the shape of its container
-      ...

@@ -201,9 +201,8 @@
   }
 
   const THEMES = [
-    ["classic", "Light"], ["dark", "Dark"], ["auto", "Auto"],
-    ["ocean", "Ocean"], ["forest", "Forest"], ["sunset", "Sunset"],
-    ["contrast", "High contrast"],
+    ["classic", "Classic"], ["ocean", "Ocean"], ["forest", "Forest"],
+    ["sunset", "Sunset"], ["contrast", "High contrast"], ["dark", "Dark"],
   ];
 
   /* ====================================================================== */
@@ -226,6 +225,9 @@
       this.updateStatus();
 
       window.addEventListener("resize", () => this.resize());
+      const onFull = () => this.updateFull();
+      document.addEventListener("fullscreenchange", onFull);
+      document.addEventListener("webkitfullscreenchange", onFull);
       document.addEventListener("click", (e) => {
         if (!e.target.closest || !this.root.contains(e.target) || !e.target.closest(".xw-menu-wrap")) this.closeMenus();
       });
@@ -290,6 +292,7 @@
       const s = {
         scale: this.data.letterScale || 100, hints: null, border: !!this.data.border,
         words: 0, theme: this.data.theme || "classic", fill: !!this.data.fill,
+        first: !!this.data.firstLetters,
       };
       const saved = storeGet(this.settingsKey);
       if (saved) Object.assign(s, saved);
@@ -316,6 +319,7 @@
         this.ui.hints.value = this.hintCount();
         this.ui.border.checked = !!s.border;
         this.ui.fill.checked = !!s.fill;
+        this.ui.first.checked = !!s.first;
         this.ui.scale.disabled = !!s.fill;
         if (this.ui.words) this.ui.words.value = this.pickCount() || this.data.entries.length;
       }
@@ -345,6 +349,7 @@
       if (d.title) root.append(el("div", "xw-title", d.title));
 
       root.append(this.renderToolbar());
+      if (this.isFull && this.isFull()) { this.fullBtn.classList.add("xw-btn-on"); this.fullBtn.title = "Exit full screen (Esc)"; }
       root.append(this.renderSettings());
       if (settingsOpen) this.toggleSettings(true);
 
@@ -476,6 +481,12 @@
       bar.append(fresh);
 
       const spacer = el("span", "xw-spacer");
+      const full = button("⛶", "Full screen", () => this.toggleFull(), "xw-btn-quiet xw-btn-icon xw-btn-full");
+      full.setAttribute("aria-label", "Full screen");
+      // A drawn icon rather than the ⛶ character, which isn't in most fonts
+      // and made this button taller than the others.
+      full.innerHTML = '<svg class="xw-full-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      this.fullBtn = full;
       bar.append(spacer,
         menu("🖨 Print", "Print this crossword", [
           ["Blank copy", "Print a copy for students to fill in", () => this.print(false)],
@@ -486,7 +497,8 @@
       gear.setAttribute("aria-label", "Settings");
       gear.setAttribute("aria-expanded", "false");
       this.gear = gear;
-      bar.append(gear);
+      // Full screen sits to the right of settings.
+      bar.append(gear, full);
       return bar;
     }
 
@@ -500,6 +512,28 @@
       setTimeout(() => {
         if (btn.isConnected) { btn.classList.remove("xw-btn-confirm"); btn.textContent = label; }
       }, 3000);
+    }
+
+    /* ---------- full screen ---------- */
+    isFull() {
+      return document.fullscreenElement === this.root || document.webkitFullscreenElement === this.root;
+    }
+
+    toggleFull() {
+      if (this.isFull()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else if (this.root.requestFullscreen) this.root.requestFullscreen().catch(() => {});
+      else if (this.root.webkitRequestFullscreen) this.root.webkitRequestFullscreen();
+    }
+
+    updateFull() {
+      const on = this.isFull();
+      this.root.classList.toggle("xw-full", on);
+      if (this.fullBtn) {
+        this.fullBtn.title = on ? "Exit full screen (Esc)" : "Full screen";
+        this.fullBtn.setAttribute("aria-label", this.fullBtn.title);
+        this.fullBtn.classList.toggle("xw-btn-on", on);
+      }
+      requestAnimationFrame(() => this.resize());
     }
 
     closeMenus() {
@@ -540,7 +574,7 @@
 
       // hint letters
       const hintRow = el("div", "xw-set-row");
-      const hl = el("label", "xw-set-label", "Hint letters");
+      const hl = el("label", "xw-set-label", "Hints");
       ui.hints = el("input", "xw-set-number");
       ui.hints.type = "number";
       ui.hints.min = 0;
@@ -559,11 +593,25 @@
         this.updateStatus();
       };
       ui.hints.addEventListener("change", applyHints);
-      const again = el("button", "xw-btn xw-btn-small", "New hints");
+      const again = el("button", "xw-btn xw-btn-small xw-btn-icon", "↻");
       again.type = "button";
-      again.title = "Show a different set of hint letters";
+      again.title = "New hints: show a different set of hint letters";
+      again.setAttribute("aria-label", "New hints");
       again.addEventListener("click", applyHints);
       hintRow.append(hl, ui.hints, el("span", "xw-set-note", "of " + this.cells.size), again);
+
+      const firstRow = el("label", "xw-set-row");
+      ui.first = el("input");
+      ui.first.type = "checkbox";
+      ui.first.addEventListener("change", () => {
+        this.settings.first = ui.first.checked;
+        this.saveSettings();
+        this.pickHints(this.hintCount());
+        this.save();
+        this.updateStatus();
+      });
+      firstRow.title = "Show the first letter of every word";
+      firstRow.append(el("span", "xw-set-label", "First letters"), ui.first);
 
       let wordRow = null;
 
@@ -617,7 +665,8 @@
       });
       borderRow.append(el("span", "xw-set-label", "Border"), ui.border);
 
-      const reset = el("button", "xw-btn xw-btn-small", "Reset settings");
+      const reset = el("button", "xw-btn xw-btn-small", "Reset");
+      reset.title = "Reset settings to this page's defaults";
       reset.type = "button";
       reset.addEventListener("click", () => {
         const before = this.pickCount();
@@ -634,7 +683,7 @@
       const line1 = el("div", "xw-set-line");
       line1.append(sizeRow, fillRow, themeRow, borderRow);
       const line2 = el("div", "xw-set-line");
-      line2.append(hintRow);
+      line2.append(hintRow, firstRow);
       if (wordRow) line2.append(wordRow);
       line2.append(el("span", "xw-spacer"), reset);
       panel.append(line1, line2);
@@ -661,6 +710,31 @@
 
     /* Squares and lines are sized in whole pixels so every grid line comes
        out the same thickness (browsers round border widths). */
+    /* In full screen the grid fills the height of the screen, so a word
+       bank underneath it would be off the bottom. On a wide screen it moves
+       to the top of the clue column instead, and back again afterwards.
+       The clue column also scrolls by itself so the grid stays in view. */
+    placeBank(side) {
+      const bank = this.root.querySelector(".xw-wordbank");
+      const clues = this.cluesEl;
+      if (bank && clues) {
+        if (side && bank.parentNode !== clues) clues.prepend(bank);
+        else if (!side && bank.parentNode === clues) {
+          const body = this.root.querySelector(".xw-body");
+          if (body) body.after(bank); else this.root.append(bank);
+        }
+      }
+      if (clues) {
+        if (side) {
+          const top = clues.getBoundingClientRect().top - this.root.getBoundingClientRect().top + this.root.scrollTop;
+          const pad = parseFloat(getComputedStyle(this.root).paddingBottom) || 0;
+          clues.style.maxHeight = Math.max(200, this.root.clientHeight - top - pad) + "px";
+        } else {
+          clues.style.maxHeight = "";
+        }
+      }
+    }
+
     resize() {
       const L = this.layout;
       const want = parseFloat(getComputedStyle(this.root).getPropertyValue("--xw-line-width")) || 2;
@@ -669,8 +743,22 @@
       this.root.classList.toggle("xw-fill", fill);
       const cs = getComputedStyle(this.root);
       const inner = (this.root.clientWidth || 600) - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const sideBySide = this.isFull() && inner >= 900;
+      this.placeBank(sideBySide);
       let cell;
-      if (fill) {
+      const full = this.isFull();
+      const grid0 = this.root.querySelector(".xw-grid");
+      if (full && grid0) {
+        // Full screen: as big as the screen allows, clues beside the grid
+        // (or underneath on a narrow screen).
+        const side = inner >= 900 ? Math.min(420, Math.max(280, inner * 0.3)) + 32 : 0;
+        const top = grid0.getBoundingClientRect().top - this.root.getBoundingClientRect().top + this.root.scrollTop;
+        const below = 48 + parseFloat(cs.paddingBottom);
+        const availW = inner - side - line - 4;
+        const availH = this.root.clientHeight - top - below - line;
+        const byW = Math.floor(availW / L.cols), byH = side ? Math.floor(availH / L.rows) : byW;
+        cell = Math.max(18, Math.min(100, Math.min(byW, byH))) + line;
+      } else if (fill) {
         // Fill the width of the page: squares grow until the grid spans it.
         cell = Math.max(16, Math.min(110, Math.floor((inner - line - 2) / L.cols) + line));
       } else {
@@ -683,7 +771,7 @@
       const dprNow = window.devicePixelRatio || 1;
       let m = 1;
       while (m < 8 && Math.abs(m * dprNow - Math.round(m * dprNow)) > 0.01) m++;
-      cell = line + Math.max(m, (fill ? Math.floor : Math.round)((cell - line) / m) * m);
+      cell = line + Math.max(m, (fill || full ? Math.floor : Math.round)((cell - line) / m) * m);
       this.root.style.setProperty("--xw-border", line + "px");
       this.root.style.setProperty("--xw-cell", cell + "px");
       // Start the grid on a whole screen pixel so lines aren't blurred.
@@ -718,6 +806,10 @@
     /* Spread n hint letters across the words, never filling a whole word. */
     pickHints(n) {
       this.clearHints();
+      // "First letters": every word starts with its first letter shown.
+      if (this.settings.first) {
+        for (const w of this.words) if (w.cells.length > 1) this.setHint(w.cells[0], true);
+      }
       n = Math.min(n === null || n === undefined ? this.hintCount() : n, this.maxHints());
       if (!n) return;
       const order = shuffle([...this.words]);
@@ -855,7 +947,12 @@
 
     focusWord(w) {
       this.dir = w.dir;
-      const target = w.cells.find((c) => !c.input.value) || w.cells.find((c) => !c.hint) || w.cells[0];
+      // Go to the first empty square, but step back over any hint squares just
+      // before it, so typing the word with its hint letters still lines up.
+      let i = w.cells.findIndex((c) => !c.input.value);
+      if (i < 0) i = Math.max(0, w.cells.findIndex((c) => !c.hint));
+      while (i > 0 && w.cells[i - 1].hint) i--;
+      const target = w.cells[i];
       this.focusCell(target);
     }
 
@@ -1001,7 +1098,10 @@
         if (c.hint) { h.push(k); continue; }
         if (c.input.value) v[k] = c.input.value + (c.box.classList.contains("xw-revealed") ? "!" : "");
       }
-      storeSet(this.storeKey, { seed: this.seed, pick: this.pickCount(), v, h });
+      storeSet(this.storeKey, {
+        seed: this.seed, pick: this.pickCount(), v, h,
+        hn: this.hintCount(), hf: !!this.settings.first,
+      });
     }
 
     /* Put back saved letters; returns true if the saved hint letters were used. */
@@ -1012,7 +1112,8 @@
         c.input.value = val[0];
         if (val[1] === "!") c.box.classList.add("xw-revealed");
       }
-      if (!Array.isArray(state.h) || state.h.length !== this.hintCount()) return false;
+      // Only reuse saved hints if the hint settings haven't changed since.
+      if (!Array.isArray(state.h) || state.hn !== this.hintCount() || !!state.hf !== !!this.settings.first) return false;
       state.h.forEach((k) => { const c = this.cells.get(k); if (c) this.setHint(c, true); });
       return true;
     }

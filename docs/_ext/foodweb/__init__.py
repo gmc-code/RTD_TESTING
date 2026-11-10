@@ -1,0 +1,1 @@
+from .foodweb import setup
