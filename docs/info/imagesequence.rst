@@ -11,13 +11,13 @@ Dropping a picture onto a full box swaps the two pictures. Dragging a
 picture back to the tray below takes it out again. The 🔍 button on a
 picture shows it full size, so small labels are easy to read.
 
-**🔀 Fill boxes randomly** puts a picture in every box in a random order.
+**🔀 Fill** puts a picture in every box in a random order.
 Students then drag pictures between boxes to swap them into the right
 order, which is quicker on the board than filling empty boxes one by one.
 
 **✓ Check** marks each picture right or wrong and says how many are in the
-right place. **Show answer** puts every picture in the right box, and
-**Start again** shuffles them again.
+right place. **Answer** puts every picture in the right box, and
+**↻ Restart** shuffles them again.
 
 The **🖨 Print** button prints a worksheet. Printing the whole page from
 the browser gives the same worksheet. There are two printed versions
@@ -105,7 +105,7 @@ Option reference
        it on a see-through band across the bottom of the picture, so the
        cards are shorter (printed worksheets still put it underneath).
        ``hidden`` shows pictures only. ``reveal`` hides the captions until the student
-       presses Check or Show answer. ``slot`` puts each caption on its
+       presses Check or Answer. ``slot`` puts each caption on its
        box instead, so students match the pictures to the descriptions.
    * - ``:columns:``
      - integer
@@ -169,8 +169,8 @@ Option reference
      - ``tray``
      - Where the pictures start: ``tray`` (below the boxes, with the boxes
        empty) or ``boxes`` (already in the boxes in a random order, ready
-       to swap). Start again uses the same setting. Students can switch
-       with the 🔀 Fill boxes randomly button either way.
+       to swap). Restart uses the same setting. Students can switch
+       with the 🔀 Fill button either way.
    * - ``:images:``
      - string
      - *None*
@@ -201,7 +201,8 @@ Option reference
    * - ``:next-label:``
      - string
      - ``New chain``
-     - Text on the 🎲 button that picks another chain.
+     - | Text on the 🎲 button that picks another chain. The default is
+       | shown on the button as "New"; your own text is shown as written.
    * - ``:labels:``
      - list of strings
      - *None*
@@ -246,7 +247,7 @@ Several sequences, one at a time
 --------------------------------
 
 One activity can hold several sequences. The page shows one at random,
-and the **🎲 New chain** button picks another. Every sequence comes up
+and the **🎲 New** button picks another. Every sequence comes up
 once before any repeats. A badge under the title, such as *Chain 4 of 9*,
 tells the class which one is showing.
 

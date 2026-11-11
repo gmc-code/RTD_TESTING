@@ -120,7 +120,6 @@
   --fw-accent: #c0510a; --fw-chain: #c0510a;
   --fw-bg: #fffaf5; --fw-bg-2: #fde3cf; --fw-toolbar: #fbeee4;
   --fw-frame: #f9c9a5; --fw-panel-bg: #fffaf5; --fw-card-edge: #f9c9a5; --fw-arrow: #7a4a2a;
-  --fw-out: #9333ea;
 }
 
 /* High contrast: black and white with strong colours, for projectors. */

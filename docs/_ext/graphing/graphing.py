@@ -207,7 +207,10 @@ class GraphingDirective(SphinxDirective):
 
         config_attr = html.escape(json.dumps(config), quote=True)
         html_output = (
-            f'<div class="graphing-block" data-config="{config_attr}">'
+            # data-activitygroup-events: this block tells an enclosing
+            # activitygroup when the graph is finished (see graphing.js)
+            f'<div class="graphing-block" data-activitygroup-events="check answer" '
+            f'data-config="{config_attr}">'
             '<noscript>The graphing activity needs JavaScript.</noscript>'
             '</div>'
         )
@@ -224,7 +227,7 @@ def setup(app):
     app.add_js_file('graphing.js')
     app.add_css_file('graphing.css')
     return {
-        'version': '1.1',
+        'version': '1.2',
         'parallel_read_safe': True,
         'parallel_write_safe': True,
     }

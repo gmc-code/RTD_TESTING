@@ -32,4 +32,5 @@ Group directives:
 
 - :doc:`quizgroup <quizgroup>`
 - :doc:`clozegroup <clozegroup>`
+- :doc:`activitygroup <activitygroup>`
 - :doc:`mcqgroup <mcqgroup>`

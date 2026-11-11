@@ -1,0 +1,117 @@
+/* ==========================================================================
+   activitygroup directive - an activity followed by questions about it
+   ========================================================================== */
+.activitygroup-block {
+  border: 2px solid #c7d2fe;
+  border-radius: 10px;
+  padding: 0.9rem;
+  margin-bottom: 1.4rem;
+  background: #f8fafc;
+}
+
+.activitygroup-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #312e81;
+  margin-bottom: 0.7rem;
+}
+
+/* the blocks inside keep their own look; just tidy the spacing */
+.activitygroup-activity > :last-child,
+.activitygroup-questions > :last-child {
+  margin-bottom: 0;
+}
+
+.activitygroup-questions {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 2px dashed #c7d2fe;
+}
+
+.activitygroup-questions-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #312e81;
+  margin-bottom: 0.6rem;
+}
+
+/* ---------- locked questions ---------- */
+.activitygroup-lock-notice {
+  margin-top: 1rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+  background: #fef9c3;
+  color: #713f12;
+  font-weight: 600;
+}
+
+.activitygroup-lock-notice.activitygroup-lock-open {
+  border-color: #22c55e;
+  background: #dcfce7;
+  color: #14532d;
+}
+
+/* Hidden without display:none so the question directives inside can still
+   measure themselves while they set up. */
+.activitygroup-locked > .activitygroup-questions {
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* ---------- controls ---------- */
+.activitygroup-controls {
+  margin-top: 0.9rem;
+}
+
+.activitygroup-btn-print {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+}
+
+.activitygroup-btn-print:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+/* ---------- printing ---------- */
+@media print {
+  .activitygroup-block {
+    border: none;
+    background: #ffffff;
+    padding: 0;
+  }
+
+  /* paper cannot be locked: always print the questions */
+  .activitygroup-lock-notice { display: none !important; }
+
+  .activitygroup-locked > .activitygroup-questions {
+    height: auto;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 2px dashed #c7d2fe;
+    overflow: visible;
+    visibility: visible;
+  }
+
+  /* no buttons on paper, whichever directive they belong to */
+  .activitygroup-block button,
+  .activitygroup-controls { display: none !important; }
+
+  .activitygroup-questions > * { break-inside: avoid; }
+  .activitygroup-questions-title { break-after: avoid; }
+
+  /* "Print activity and questions" button: print only this group */
+  body.activitygroup-printing > *:not(.activitygroup-print-host) { display: none !important; }
+  body.activitygroup-printing { background: #ffffff; margin: 0; }
+}

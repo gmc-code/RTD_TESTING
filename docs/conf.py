@@ -96,6 +96,7 @@ extensions = [
     "imagesequence.imagesequence",  # custom directive
     "foodweb.foodweb",  # custom directive
     "graphing.graphing",  # custom directive
+    "activitygroup.activitygroup",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

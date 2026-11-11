@@ -592,7 +592,7 @@ Random food chains
 ==================
 
 Each activity below picks one food chain at random from all the chains
-of that length. Press **🎲 New chain** for a different one: every chain
+of that length. Press **🎲 New** for a different one: every chain
 comes up once before any repeats. The organism names under the pictures
 are the names in the food chain lists above.
 

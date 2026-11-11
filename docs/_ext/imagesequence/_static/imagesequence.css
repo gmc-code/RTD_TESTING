@@ -499,15 +499,16 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.8rem;
+  gap: 0.35rem;
+  padding: 0.55rem 0.6rem;
   background: var(--isq-toolbar);
 }
 .imagesequence .isq-spacer { flex: 1; }
 .imagesequence .isq-btn {
   font: inherit;
   font-size: 0.92rem;
-  padding: 0.38rem 0.8rem;
+  padding: 0.38rem 0.6rem;
+  white-space: nowrap;
   border-radius: 6px;
   border: 1px solid var(--isq-btn-border);
   background: var(--isq-btn-bg);
@@ -530,7 +531,7 @@
   background: var(--isq-accent); transform: none; box-shadow: none;
 }
 .imagesequence .isq-btn:not(.isq-btn-main):disabled { background: var(--isq-btn-bg); }
-.imagesequence .isq-icon { padding: 0.38rem 0.6rem; }
+.imagesequence .isq-icon { padding: 0.38rem 0.5rem; }
 
 .imagesequence .isq-settings {
   display: flex;

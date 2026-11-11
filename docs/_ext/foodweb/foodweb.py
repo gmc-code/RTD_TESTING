@@ -1164,8 +1164,12 @@ def visit_foodweb_html(self, node):
         classes.append("fw-no-arrows")
     if cfg["names"] == "hidden":
         classes.append("fw-no-names")
+    # Only the Place activity can be "finished", so only it reports to an
+    # enclosing activitygroup (see announceComplete in foodweb.js).
+    group_events = (' data-activitygroup-events="check answer"'
+                    if cfg.get("mode", "place") == "place" else "")
     self.body.append(f"""
-<div class="{' '.join(classes)}" id="{uid}" aria-label="Food web: {esc_title}">
+<div class="{' '.join(classes)}" id="{uid}"{group_events} aria-label="Food web: {esc_title}">
   <script type="application/json" class="fw-data">{payload}</script>
   <div class="fw-head">
     <div class="fw-title">{esc_title or "Food web"}</div>
@@ -1402,7 +1406,7 @@ def setup(app):
     app.add_css_file("foodweb.css")
     app.connect("build-finished", copy_static_assets)
     return {
-        "version": "1.0",
+        "version": "1.1",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

@@ -142,6 +142,7 @@ Options for the graphing directive
 | **Draw my line**: Joins the student's own points using the chosen line type.
 | **Show answer**: Draws the correct points as blue circles and joins them with the chosen line. Checking and plotting are then switched off until "Start again" is pressed.
 | **Graph settings**: The ⚙ Graph settings panel lets the size, divisions per cm, line type, graph title form and zero start of each axis be changed on the page.
+| **Questions about the graph**: Put the graphing directive inside an :doc:`activitygroup <activitygroup>` to follow it with questions such as ``gapfill`` or ``multichoice``, which can stay locked until the graph is finished.
 | **Print**: The Print button prints just the table and graph. Points and lines on the graph are printed; buttons are not. Print before plotting to get blank graph paper for plotting by hand.
 
 

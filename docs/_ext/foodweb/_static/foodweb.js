@@ -344,7 +344,7 @@
   FoodWeb.prototype.idleText = function () {
     if (this.mode === "place") {
       return "Drag each picture from the tray into a box (or tap a picture, then tap a box). " +
-        "Use the arrows: an arrow goes from the food to the organism that eats it.";
+        "An arrow points to what eats it.";
     }
     return this.mode === "explore"
       ? "Point at or tap an organism. <span class=\"fw-k-in\">Green</span> arrows bring its food, " +
@@ -948,6 +948,9 @@
     tray.appendChild(fo);
     this.trayInfoHost = host;
     this.trayEl = tray;
+    this.trayBg = bg;
+    this.trayGeom = { cols: cols, cw: cw, chh: chh, gx: gx };
+    this.trayPos = {};
 
     this.spots = [];
     var free = [];
@@ -1062,11 +1065,39 @@
     });
   };
 
-  FoodWeb.prototype.setTrayShown = function (on) {
-    var h = on ? this.H0 + this.trayH : this.H0;
+  FoodWeb.prototype.applyHeight = function (h) {
     this.svg.setAttribute("viewBox", "0 0 " + this.W + " " + h);
     this.svg.setAttribute("height", h);
     this.H = h;
+  };
+
+  /* The tray is only as tall as the pictures still in it need: the
+     pictures left are closed up into full rows and the tray (and the
+     whole board) shrinks as pictures are placed, and grows again if one
+     is put back. */
+  FoodWeb.prototype.layoutTray = function () {
+    var self = this, t = this.trayGeom, left = [];
+    this.spotOrder.forEach(function (i) { if (self.pieces[i].slot < 0) left.push(i); });
+    var m = left.length, rows = Math.ceil(m / t.cols);
+    this.trayPos = {};
+    left.forEach(function (i, k) {
+      var r = Math.floor(k / t.cols), c = k % t.cols;
+      var inRow = r < Math.floor(m / t.cols) ? t.cols : (m - t.cols * r);
+      var rowW = inRow * t.cw + (inRow - 1) * t.gx;
+      self.trayPos[i] = {
+        x: (self.W - rowW) / 2 + c * (t.cw + t.gx),
+        y: self.trayTop + self.trayInfoH + 14 + r * (t.chh + t.gx)
+      };
+    });
+    var h = this.trayInfoH + 12 + rows * (t.chh + t.gx) + 6;
+    if (h === this.trayH) return;
+    this.trayH = h;
+    this.trayBg.setAttribute("height", h - 6);
+    if (this.mode === "place" && this.trayEl.style.display !== "none") this.applyHeight(this.H0 + h);
+  };
+
+  FoodWeb.prototype.setTrayShown = function (on) {
+    this.applyHeight(on ? this.H0 + this.trayH : this.H0);
     this.trayEl.style.display = on ? "" : "none";
     this.pieceLayer.style.display = on ? "" : "none";
     if (on) this.trayInfoHost.appendChild(this.info);
@@ -1100,7 +1131,7 @@
   FoodWeb.prototype.piecePos = function (i) {
     var pc = this.pieces[i];
     if (pc.slot >= 0) { var b = this.box(pc.slot); return { x: b.x, y: b.y }; }
-    var sp = this.spots[pc.spot];
+    var sp = this.trayPos[i] || this.spots[pc.spot];
     return { x: sp.x, y: sp.y };
   };
 
@@ -1110,6 +1141,7 @@
   };
 
   FoodWeb.prototype.layoutPieces = function () {
+    this.layoutTray();
     for (var i = 0; i < this.pieces.length; i++) {
       var p = this.piecePos(i);
       this.movePiece(i, p.x, p.y);
@@ -1203,6 +1235,7 @@
     if (right === c.total) {
       this.root.classList.add("fw-allright");
       this.info.innerHTML = '<span class="fw-k-good">All correct!</span> Every organism is in the right place.';
+      this.announceComplete("check");
     } else {
       this.info.innerHTML = '<span class="fw-k-good">' + right + " right</span>" +
         (wrong ? ', <span class="fw-k-wrong">' + wrong + " wrong</span>" : "") +
@@ -1211,8 +1244,18 @@
     }
   };
 
+  /* Tells an enclosing activitygroup that this activity is finished, so it
+     can unlock its questions. how = "check" (all right) or "answer" (shown). */
+  FoodWeb.prototype.announceComplete = function (how) {
+    try {
+      this.root.dispatchEvent(new CustomEvent("activitygroup:complete",
+        { bubbles: true, detail: { how: how, activity: "foodweb" } }));
+    } catch (e) { /* very old browsers: nothing to unlock */ }
+  };
+
   FoodWeb.prototype.showAnswer = function () {
     var self = this;
+    this.announceComplete("answer");
     this.unpick();
     // Keep pictures that are already right (or an equal swap); fill the rest.
     var placed = {};

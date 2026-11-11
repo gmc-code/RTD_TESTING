@@ -58,6 +58,8 @@ These docs provide details on sphinx extensions and how to use them. The extensi
 
     info/quizgroup.rst
 
+    info/activitygroup.rst
+
 
 
 .. toctree::
@@ -82,6 +84,8 @@ These docs provide details on sphinx extensions and how to use them. The extensi
 
     food_webs/stringybark_food_chains.rst
     food_webs/stringybark_food_web.rst
+    food_webs/stringybark_food_chain_questions.rst
+    food_webs/stringybark_food_web_questions.rst
 
     food_webs/australian_desert_food_web.rst
     food_webs/african_savanna_food_web.rst

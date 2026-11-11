@@ -244,7 +244,7 @@ def visit_imagesequence_html(self, node):
     esc_title = html.escape(title)
     payload = json.dumps(node["config"], ensure_ascii=False).replace("</", "<\\/")
     self.body.append(f"""
-<div class="imagesequence isq-theme-{node["config"]["theme"]}" aria-label="Sequencing activity: {esc_title}">
+<div class="imagesequence isq-theme-{node["config"]["theme"]}" data-activitygroup-events="check answer" aria-label="Sequencing activity: {esc_title}">
   <script type="application/json" class="isq-data">{payload}</script>
   <div class="isq-head">
     <div class="isq-title">{esc_title or "Put the steps in order"}</div>
@@ -772,7 +772,7 @@ def setup(app):
     app.connect("build-finished", copy_static_assets)
 
     return {
-        "version": "1.3",
+        "version": "1.4",
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }

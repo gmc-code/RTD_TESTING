@@ -319,14 +319,22 @@
     this.status = el("div", "isq-status");
     this.status.setAttribute("aria-live", "polite");
 
+    // "New chain" (the default) is shortened to "New"; a label set with
+    // :next-label: is used as written.
+    var nextFull = String(this.cfg.nextLabel || "New chain");
+    var escHtml = function (t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); };
+    var nextTitle = escHtml(nextFull);
+    var nextLabel = escHtml(nextFull === "New chain" ? "New" : nextFull);
+
     var bar = el("div", "isq-toolbar");
     bar.innerHTML =
       '<button type="button" class="isq-btn isq-btn-main isq-check">&#10003; Check</button>' +
-      '<button type="button" class="isq-btn isq-show">Show answer</button>' +
-      '<button type="button" class="isq-btn isq-scatter" title="Put every picture in a box in a random order, then swap them into the right order">&#128256; Fill boxes randomly</button>' +
-      '<button type="button" class="isq-btn isq-reset">&#8635; Start again</button>' +
-      (this.multi ? '<button type="button" class="isq-btn isq-next">&#127922; ' +
-        String(this.cfg.nextLabel || "New chain").replace(/&/g, "&amp;").replace(/</g, "&lt;") + '</button>' : '') +
+      // Short labels keep the buttons on one line; the full names are the tooltips.
+      '<button type="button" class="isq-btn isq-show" title="Show answer">Answer</button>' +
+      '<button type="button" class="isq-btn isq-scatter" title="Fill boxes randomly: put every picture in a box in a random order, then swap them into the right order">&#128256; Fill</button>' +
+      '<button type="button" class="isq-btn isq-reset" title="Start again">&#8635; Restart</button>' +
+      (this.multi ? '<button type="button" class="isq-btn isq-next" title="' + nextTitle + '">&#127922; ' +
+        nextLabel + '</button>' : '') +
       '<span class="isq-spacer"></span>' +
       '<button type="button" class="isq-btn isq-icon isq-settings-toggle" title="Settings" aria-label="Settings" aria-expanded="false">&#9881;</button>' +
       '<button type="button" class="isq-btn isq-icon isq-print" title="Print" aria-label="Print">&#128424;</button>' +
@@ -697,13 +705,13 @@
   };
 
   /* After Show answer, Check is turned off (the answer is on screen) until
-     Start again, Fill boxes randomly or New chain. Moving pictures doesn't
+     Restart, Fill or New. Moving pictures doesn't
      turn it back on: two could be swapped and swapped back. */
   Sequence.prototype.setCheckable = function (on) {
     var b = this.q(".isq-check");
     if (!b) return;
     b.disabled = !on;
-    b.title = on ? "" : "Press Start again to check again";
+    b.title = on ? "" : "Press Restart to check again";
   };
 
   Sequence.prototype.setStatus = function (html, kind) {
@@ -733,11 +741,21 @@
     if (right === this.n) {
       this.root.classList.add("isq-solved");
       this.setStatus("&#127881; All in the right order. Well done!", "good");
+      this.announceComplete("check");
       return;
     }
     var msg = right + " of " + this.n + " in the right place.";
     if (placed < this.n) msg += " " + (this.n - placed) + " box" + (this.n - placed === 1 ? "" : "es") + " still empty.";
     this.setStatus(msg, right ? "part" : "bad");
+  };
+
+  /* Tells an enclosing activitygroup that this activity is finished, so it
+     can unlock its questions. how = "check" (all right) or "answer" (shown). */
+  Sequence.prototype.announceComplete = function (how) {
+    try {
+      this.root.dispatchEvent(new CustomEvent("activitygroup:complete",
+        { bubbles: true, detail: { how: how, activity: "imagesequence" } }));
+    } catch (e) { /* very old browsers: nothing to unlock */ }
   };
 
   Sequence.prototype.showAnswer = function () {
@@ -751,6 +769,7 @@
     this.revealed = true;
     this.root.classList.add("isq-revealed");
     this.setCheckable(false);
+    this.announceComplete("answer");
     this.setStatus("Here is the right order." +
       (this.distractors ? " The picture" + (this.distractors === 1 ? " left below doesn't" : "s left below don't") + " belong." : ""), "part");
   };

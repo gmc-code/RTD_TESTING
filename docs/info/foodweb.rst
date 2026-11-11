@@ -14,7 +14,9 @@ chain in order. The web is shown as empty boxes joined by arrows, and the
 pictures are shuffled in a tray underneath. Students drag each picture into
 a box (or tap a picture, then tap a box), using the arrows as clues, and
 press **Check**. Right pictures go green and wrong ones red. **Show answer**
-fills in the rest and **Start again** shuffles the tray. Two organisms that
+fills in the rest and **Start again** shuffles the tray. The tray shrinks as
+pictures are placed, so it is only as big as the pictures left in it need.
+Two organisms that
 eat the same things and are eaten by the same things can swap boxes and
 still be marked right.
 

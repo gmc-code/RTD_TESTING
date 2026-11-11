@@ -3,7 +3,7 @@ Quiz Group
 ================================================
 
 | The quizgroup directive creates a group of quiz questions.
-| This diretive allows you to mix and match multiple choice questions (.. multichoice::), cloze fill-in-the-blank questions (.. cloze::), and any other custom question types inside a single group container with unified scoring, progress tracking, and navigation.
+| This directive allows you to mix and match multiple choice questions (.. multichoice::), cloze fill-in-the-blank questions (.. cloze::), and any other custom question types inside a single group container with unified scoring, progress tracking, and navigation.
 
 ----
 

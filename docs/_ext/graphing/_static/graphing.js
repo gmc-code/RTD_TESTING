@@ -675,6 +675,13 @@
       feedback.className = "graphing-feedback graphing-noprint graphing-feedback-" + kind;
     }
 
+    // Tells an enclosing activitygroup that the graph is finished, so it can
+    // unlock its questions. how = "check" (all correct) or "answer" (shown).
+    function announceComplete(how) {
+      root.dispatchEvent(new CustomEvent("activitygroup:complete",
+        { bubbles: true, detail: { how: how, activity: "graphing" } }));
+    }
+
     function refreshButtons() {
       btnCheck.disabled = state.answerShown;
       btnMyLine.classList.toggle("graphing-btn-on", state.myLine);
@@ -761,6 +768,7 @@
       const missing = total - correct - Math.min(wrong, total - correct);
       if (correct === total && wrong === 0) {
         setFeedback("✓ All " + total + " points are plotted correctly.", "good");
+        announceComplete("check");
       } else {
         let text = correct + " of " + total + " points correct.";
         if (wrong) text += " " + wrong + (wrong === 1 ? " point is" : " points are") + " in the wrong place (red).";
@@ -780,6 +788,7 @@
     btnAnswer.addEventListener("click", () => {
       if (state.answerShown) return;
       state.answerShown = true;
+      announceComplete("answer");
       clearMarks();
       setFeedback("The correct points are the blue circles. Press \u201cStart again\u201d to have another go.", "info");
       refreshButtons();
