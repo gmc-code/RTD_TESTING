@@ -25,6 +25,7 @@ The directives covered in this documentation include:
 - :doc:`wordsearch <wordsearch>`
 - :doc:`crossword <crossword>`
 - :doc:`imagesequence <imagesequence>`
+- :doc:`graphing <graphing>`
 
 
 Group directives:

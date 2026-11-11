@@ -95,6 +95,7 @@ extensions = [
     "flashcards.flashcards",  # custom directive
     "imagesequence.imagesequence",  # custom directive
     "foodweb.foodweb",  # custom directive
+    "graphing.graphing",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

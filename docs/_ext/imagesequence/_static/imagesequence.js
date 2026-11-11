@@ -144,7 +144,9 @@
       trayColumns: this.cfg.trayColumns || 0,
       fullTrayColumns: this.cfg.fullTrayColumns || 0,
       // Width of the full screen strip of pictures to place (%); 0 = 24%.
-      fullTrayWidth: this.cfg.fullTrayWidth || 0
+      fullTrayWidth: this.cfg.fullTrayWidth || 0,
+      // Size of the boxes in full screen: auto | screen | large (see fitFull).
+      fullFit: this.cfg.fullFit || "auto"
     };
     this.readSteps();
     this.build();
@@ -370,7 +372,11 @@
       '<label>in full screen: <select class="isq-in-fullTrayColumns" aria-label="Pictures to place in a row in full screen">' +
       numOptions(1, 6, "Auto") + '</select></label>' +
       '<label>Pictures to place, width in full screen: <select class="isq-in-fullTrayWidth">' +
-      widthOptions(this.cfg.fullTrayWidth) + '</select></label>';
+      widthOptions(this.cfg.fullTrayWidth) + '</select></label>' +
+      '<label>Box size in full screen: <select class="isq-in-fullFit">' +
+      '<option value="auto">Auto</option>' +
+      '<option value="screen">Fit all on screen</option>' +
+      '<option value="large">Large (scroll)</option></select></label>';
 
     this.lightbox = el("div", "isq-lightbox");
     this.lightbox.hidden = true;
@@ -399,6 +405,7 @@
     this.q(".isq-in-arrows").value = this.settings.arrows;
     this.q(".isq-in-numbering").value = this.settings.numbering;
     this.q(".isq-in-theme").value = this.settings.theme;
+    this.q(".isq-in-fullFit").value = this.settings.fullFit;
     COLUMN_KEYS.forEach(function (k) {
       this.q(".isq-in-" + k).value = String(this.settings[k]);
     }, this);
@@ -471,15 +478,26 @@
     });
   };
 
+  /* Boxes in a row: the number asked for (Settings or :columns: /
+     :fullscreen-columns:), unless the boxes would be too small to use.
+     On a phone that means two in a row; on a wider page the number asked
+     for is kept down to quite small boxes. */
   Sequence.prototype.effectiveCols = function () {
-    var w = this.board.clientWidth || 800;
+    var cs = getComputedStyle(this.board);
+    var w = (this.board.clientWidth || 800) -
+      (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
     // Full screen (wide enough for the side-by-side layout) can have its
-    // own number of columns (:fullscreen-columns:). Boxes may be a bit
-    // narrower there, as fitFull() sizes them to the screen anyway.
+    // own number of columns (:fullscreen-columns:).
     var full = this.isFull() && window.innerWidth >= 800;
     var want = (full && this.settings.fullColumns) || this.settings.columns;
-    var fit = Math.max(1, Math.floor((w + 40) / (full ? 150 : 190)));
-    return Math.min(want, fit);
+    var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    var mode = this.settings.arrows;
+    var gap = (mode === "none" ? 0.8 : 2.4) * rem;      // as in layoutGrid
+    var edge = mode === "right" ? 3.2 * rem : 0;
+    var min = window.innerWidth <= 560 ? 130 : 70;
+    var cols = Math.max(1, want);
+    while (cols > 1 && (w - edge - (cols - 1) * gap) / cols < min) cols--;
+    return cols;
   };
 
   Sequence.prototype.applySettings = function () {
@@ -794,11 +812,19 @@
     function autoScroll() {
       raf = null;
       if (!dragging) return;
-      var edge = 80, h = window.innerHeight, dy = 0;
-      if (lastY < edge) dy = -Math.ceil((edge - lastY) / 5);
-      else if (lastY > h - edge) dy = Math.ceil((lastY - (h - edge)) / 5);
+      var edge = 80, top = 0, bottom = window.innerHeight, dy = 0;
+      var full = self.isFull();
+      // Full screen, side by side: the boxes area is what scrolls.
+      var boxes = full && window.innerWidth >= 800;
+      if (boxes) {
+        var br = self.board.getBoundingClientRect();
+        top = br.top; bottom = br.bottom;
+      }
+      if (lastY < top + edge) dy = -Math.ceil((top + edge - lastY) / 5);
+      else if (lastY > bottom - edge) dy = Math.ceil((lastY - (bottom - edge)) / 5);
       if (dy) {
-        if (document.fullscreenElement === self.root) self.root.scrollTop += dy;
+        if (boxes) self.board.scrollTop += dy;
+        else if (full) self.root.scrollTop += dy;
         else window.scrollBy(0, dy);
         setOver(target(lastX, lastY));
         raf = requestAnimationFrame(autoScroll);
@@ -918,7 +944,7 @@
       tog.setAttribute("aria-expanded", String(open));
     });
 
-    ["captions", "arrows", "numbering", "theme"].forEach(function (k) {
+    ["captions", "arrows", "numbering", "theme", "fullFit"].forEach(function (k) {
       self.q(".isq-in-" + k).addEventListener("change", function (e) {
         self.settings[k] = e.target.value;
         self.applySettings();
@@ -972,38 +998,69 @@
   };
 
   /* Full screen: the tray sits in a column on the right, and the boxes are
-     made as wide as they can be while the whole activity still fits on the
-     screen (rather than filling the width and running off the bottom).
+     sized to the screen. settings.fullFit says how:
+       screen - as wide as they can be while every box still fits on the
+                screen (more rows = smaller boxes);
+       large  - as wide as they can be while one row of boxes fits on the
+                screen; the boxes scroll if there are more rows than fit;
+       auto   - "screen", unless that would make the boxes much smaller
+                than "large" (e.g. 1 or 2 in a row with many steps), when
+                it is "large". One-column arrows (down / up) stay "screen".
      onlyShrink: after a move, only make the boxes smaller if something
      no longer fits, so they don't jump about while students work. */
   Sequence.prototype.fitFull = function (onlyShrink) {
-    var g = this.grid, b = this.board;
+    var g = this.grid, b = this.board, slots = this.slotEls;
     if (!this.isFull() || window.innerWidth < 800) { g.style.maxWidth = ""; return; }
     var cs = getComputedStyle(b);
     var availH = b.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     var maxW = Math.floor(b.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
-    function height(w) { g.style.maxWidth = w + "px"; return g.offsetHeight; }
-    var cur = parseFloat(g.style.maxWidth) || maxW;
-    if (onlyShrink && height(cur) <= availH) return;
-    if (height(maxW) <= availH) return;
+    var mode = this.settings.fullFit || "auto";
+    var arrows = this.settings.arrows;
+    if (mode === "auto" && (arrows === "down" || arrows === "up")) mode = "screen";
+
+    function allH(w) { g.style.maxWidth = w + "px"; return g.offsetHeight; }
+    function rowH(w) {
+      g.style.maxWidth = w + "px";
+      var m = 0;
+      slots.forEach(function (s) { if (s.offsetHeight > m) m = s.offsetHeight; });
+      return m;
+    }
     // Narrower boxes make captions wrap onto more lines, so height doesn't
     // always go down as the width does. Scan for the widest size that fits,
     // then home in on it; if nothing fits, use the shortest layout (the
     // boxes area scrolls in that case).
-    var minW = 200, steps = 24, best = null, shortest = { w: maxW, h: Infinity };
-    for (var i = 0; i <= steps; i++) {
-      var w = Math.round(maxW - (maxW - minW) * i / steps);
-      var h = height(w);
-      if (h < shortest.h - 2) shortest = { w: w, h: h };
-      if (h <= availH) { best = w; break; }
+    function widest(height) {
+      if (height(maxW) <= availH) return { w: maxW, fits: true };
+      var minW = Math.min(200, maxW), steps = 24, best = null, shortest = { w: maxW, h: Infinity };
+      for (var i = 0; i <= steps; i++) {
+        var w = Math.round(maxW - (maxW - minW) * i / steps);
+        var h = height(w);
+        if (h < shortest.h - 2) shortest = { w: w, h: h };
+        if (h <= availH) { best = w; break; }
+      }
+      if (best == null) return { w: shortest.w, fits: false };
+      var lo = best, hi = Math.min(maxW, best + (maxW - minW) / steps);
+      for (var k = 0; k < 8 && hi - lo > 3; k++) {
+        var mid = (lo + hi) / 2;
+        if (height(mid) <= availH) lo = mid; else hi = mid;
+      }
+      return { w: Math.floor(lo), fits: true };
     }
-    if (best == null) { g.style.maxWidth = shortest.w + "px"; return; }
-    var lo = best, hi = Math.min(maxW, best + (maxW - minW) / steps);
-    for (var k = 0; k < 8 && hi - lo > 3; k++) {
-      var mid = (lo + hi) / 2;
-      if (height(mid) <= availH) lo = mid; else hi = mid;
+
+    var cur = parseFloat(g.style.maxWidth) || maxW;
+    var target;
+    if (mode === "screen") {
+      if (onlyShrink && allH(cur) <= availH) return;
+      target = widest(allH).w;
+    } else {
+      target = widest(rowH).w;
+      if (mode === "auto") {
+        var all = widest(allH);
+        if (all.fits && all.w >= 0.6 * target) target = all.w;
+      }
+      if (onlyShrink && target > cur) target = cur;
     }
-    g.style.maxWidth = Math.floor(lo) + "px";
+    g.style.maxWidth = target + "px";
   };
 
   Sequence.prototype.onFullChange = function () {

@@ -51,6 +51,12 @@ a strip down the right. ``:fullscreen-tray-width:`` (15 to 50) is how
 much of the screen's width that strip takes, as a percentage (normally
 24).
 
+``:fullscreen-fit:`` is how big the boxes are in full screen: ``screen``
+(every box fits on the screen, so more rows means smaller boxes),
+``large`` (as big as one row allows; the boxes scroll if there are more
+rows than fit) or ``auto`` (the default: ``screen`` unless that would
+make the boxes much smaller than ``large``, e.g. 1 or 2 in a row).
+
 ``step`` options:
 
 * ``:label:`` text shown on that step's box instead of its number.
@@ -149,6 +155,7 @@ PICK = ("random", "order")
 PRINT_CHAINS = ("shown", "all")
 START = ("tray", "boxes")
 CLUES = ("none", "selected")
+FULL_FIT = ("auto", "screen", "large")
 
 
 # ---------------------------------------------------------------- nodes
@@ -472,6 +479,7 @@ class ImageSequenceDirective(SphinxDirective):
         "tray-columns": _whole(1, 8),
         "fullscreen-tray-columns": _whole(1, 6),
         "fullscreen-tray-width": _whole(15, 50),
+        "fullscreen-fit": lambda a: directives.choice(a, FULL_FIT),
         "feedback": lambda a: directives.choice(a, FEEDBACK),
         "fixed": _int_list,
         "theme": lambda a: directives.choice(a, THEMES),
@@ -609,6 +617,7 @@ class ImageSequenceDirective(SphinxDirective):
             "trayColumns": self.options.get("tray-columns", 0),
             "fullTrayColumns": self.options.get("fullscreen-tray-columns", 0),
             "fullTrayWidth": self.options.get("fullscreen-tray-width", 0),
+            "fullFit": self.options.get("fullscreen-fit", "auto"),
             "feedback": self.options.get("feedback", "marks"),
             "fixed": sorted(set(fixed)),
             "theme": self.options.get("theme", "light"),
