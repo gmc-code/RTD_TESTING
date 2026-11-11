@@ -42,6 +42,7 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/crossword.rst
     info/imagesequence.rst
     info/foodweb.rst
+
     info/graphing.rst
 
 
