@@ -6,9 +6,23 @@
 import os
 import sys
 import sphinx_rtd_theme
+from sphinx.highlighting import lexers
+
+sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+package_path = os.path.abspath('../..')
+os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
+
 
 # Ensure custom extension path is available
 sys.path.append(os.path.abspath("./_ext"))
+
+from lexers.pseudocode_lexer import PseudocodeLexer
+lexers['pseudocode'] = PseudocodeLexer()
+
+from lexers.vcaapseudocode_lexer import VcaaPseudocodeLexer
+lexers['vcaapseudocode'] = VcaaPseudocodeLexer()
+
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -97,6 +111,9 @@ extensions = [
     "foodweb.foodweb",  # custom directive
     "graphing.graphing",  # custom directive
     "activitygroup.activitygroup",  # custom directive
+    "flowchart.flowchart",  # custom directive
+    "lever.lever",  # custom directive
+    "circuit.circuit",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

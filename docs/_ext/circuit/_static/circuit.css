@@ -1,0 +1,335 @@
+/* ==========================================================================
+   circuit directive - building series and parallel circuits
+   ========================================================================== */
+:root {
+  --cc-border: #cbd5e1;
+  --cc-text: #334155;
+  --cc-primary: #4f46e5;
+  --cc-primary-dark: #4338ca;
+
+  --cc-wire: #1f2937;
+  --cc-ammeter: #1d4ed8;
+  --cc-voltmeter: #15803d;
+  --cc-glow: #facc15;
+  --cc-pack: #e2e8f0;
+  --cc-plus: #b91c1c;
+  --cc-free: #f59e0b;
+}
+
+.circuit-block {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  color: var(--cc-text);
+  max-width: 900px;
+}
+
+.circuit-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  color: #111827;
+}
+
+/* ---------- component palette ---------- */
+.circuit-palette {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.circuit-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem 0.25rem 0.35rem;
+}
+
+.circuit-tool-group {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.circuit-tool-group .circuit-tool {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.circuit-block svg.circuit-tool-icon {
+  width: 46px;
+  height: 20px;
+  flex: none;
+}
+
+.circuit-erase-icon { stroke: #dc2626; stroke-width: 5; stroke-linecap: round; }
+
+.circuit-block select.circuit-select {
+  font: inherit;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid var(--cc-border);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  padding: 0.2rem 0.3rem;
+  box-shadow: none;
+  box-sizing: border-box;
+  height: auto;
+  width: auto;
+}
+
+.circuit-block select.circuit-select:focus {
+  outline: 2px solid var(--cc-primary);
+  outline-offset: 0;
+}
+
+/* ---------- drawing ---------- */
+.circuit-svg-wrap {
+  max-width: 100%;
+}
+
+.circuit-block svg.circuit-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.circuit-griddot { fill: #cbd5e1; }
+
+.circuit-wire { stroke: var(--cc-wire); stroke-width: 2.5; stroke-linecap: round; fill: none; }
+.circuit-junction { fill: var(--cc-wire); }
+
+.circuit-resistor { fill: #ffffff; stroke: var(--cc-wire); stroke-width: 2.5; stroke-linejoin: round; }
+
+.circuit-globe { fill: #ffffff; stroke: var(--cc-wire); stroke-width: 2.5; }
+.circuit-globe-lit { fill: var(--cc-glow); stroke: none; }
+.circuit-halo { fill: var(--cc-glow); stroke: none; }
+.circuit-globe-cross { stroke: var(--cc-wire); stroke-width: 2; stroke-linecap: round; }
+
+.circuit-meter { fill: #ffffff; stroke-width: 2.5; }
+.circuit-meter.circuit-ammeter { stroke: var(--cc-ammeter); }
+.circuit-meter.circuit-voltmeter { stroke: var(--cc-voltmeter); }
+
+.circuit-meter-letter {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.circuit-ammeter-text { fill: var(--cc-ammeter); }
+.circuit-voltmeter-text { fill: var(--cc-voltmeter); }
+
+.circuit-switch-arm { stroke: var(--cc-wire); stroke-width: 2.5; stroke-linecap: round; }
+.circuit-switch-dot { fill: #ffffff; stroke: var(--cc-wire); stroke-width: 2; }
+
+.circuit-pack { fill: var(--cc-pack); stroke: var(--cc-wire); stroke-width: 2.5; }
+
+.circuit-pack-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  fill: #0f172a;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.circuit-pack-sign {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.circuit-pack-plus { fill: var(--cc-plus); }
+.circuit-pack-minus { fill: #0f172a; }
+
+.circuit-arrow { fill: #dc2626; }
+
+.circuit-name,
+.circuit-value,
+.circuit-reading {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  fill: #1f2937;
+}
+
+.circuit-name { font-weight: 700; }
+.circuit-reading { font-weight: 700; font-size: 14px; }
+.circuit-reading.circuit-ammeter-text { fill: var(--cc-ammeter); }
+.circuit-reading.circuit-voltmeter-text { fill: var(--cc-voltmeter); }
+
+/* the lines that are clicked to place a component */
+.circuit-hit {
+  stroke: transparent;
+  stroke-width: 30;
+  stroke-linecap: butt;
+  pointer-events: stroke;
+}
+
+.circuit-editable { touch-action: none; }
+.circuit-editable .circuit-hit { cursor: pointer; }
+.circuit-editable .circuit-hit:hover { stroke: rgba(79, 70, 229, 0.16); }
+.circuit-editable.circuit-erasing .circuit-hit:hover { stroke: rgba(220, 38, 38, 0.18); }
+
+/* ---------- status and readings ---------- */
+.circuit-status {
+  display: inline-block;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.1rem 0.8rem;
+  margin: 0.2rem 0 0.4rem 0;
+  border: 1px solid transparent;
+}
+
+.circuit-status-on { background: #dcfce7; border-color: #22c55e; color: #14532d; }
+.circuit-status-off { background: #f1f5f9; border-color: var(--cc-border); color: #475569; font-weight: 600; }
+.circuit-status-short { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+
+.circuit-readings {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+}
+
+.circuit-readings:empty { display: none; }
+
+/* ---------- buttons ---------- */
+.circuit-btn {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--cc-border);
+  background: #ffffff;
+  color: var(--cc-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.circuit-btn:hover:not(:disabled) {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.circuit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.circuit-btn-primary {
+  background: var(--cc-primary);
+  border-color: var(--cc-primary);
+  color: #ffffff;
+}
+
+.circuit-btn-primary:hover:not(:disabled) {
+  background: var(--cc-primary-dark);
+  border-color: var(--cc-primary-dark);
+}
+
+.circuit-btn-on,
+.circuit-btn-on:hover:not(:disabled) {
+  background: #e0e7ff;
+  border-color: var(--cc-primary);
+  color: var(--cc-primary-dark);
+}
+
+.circuit-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- feedback ---------- */
+.circuit-feedback {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.circuit-feedback:empty { display: none; }
+
+.circuit-feedback-good,
+.circuit-feedback-bad,
+.circuit-feedback-info {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid;
+}
+
+.circuit-feedback-good { background: #dcfce7; border-color: #22c55e; color: #14532d; }
+.circuit-feedback-bad { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+.circuit-feedback-info { background: #e0f2fe; border-color: #38bdf8; color: #0c4a6e; }
+
+/* ---------- values table ---------- */
+.circuit-values-wrap {
+  margin-top: 0.7rem;
+  overflow-x: auto;
+}
+
+.circuit-values-wrap:empty { display: none; }
+
+.rst-content .circuit-block table.circuit-values,
+.circuit-block table.circuit-values {
+  border-collapse: collapse;
+  margin: 0;
+  width: auto;
+  font-size: 0.92rem;
+}
+
+.rst-content .circuit-block table.circuit-values th,
+.rst-content .circuit-block table.circuit-values td,
+.circuit-block table.circuit-values th,
+.circuit-block table.circuit-values td {
+  border: 1px solid #94a3b8;
+  padding: 0.25rem 0.6rem;
+  text-align: center;
+  background: #ffffff;
+  white-space: nowrap;
+}
+
+.rst-content .circuit-block table.circuit-values th,
+.circuit-block table.circuit-values th {
+  background: #eef2ff;
+  font-weight: 600;
+}
+
+.circuit-instructions {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.circuit-instructions:empty { display: none; }
+
+/* ---------- printing ---------- */
+@media print {
+  .circuit-noprint { display: none !important; }
+  .circuit-status { display: none !important; }
+  .circuit-griddot { display: none; }
+
+  .circuit-block {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    break-inside: avoid;
+  }
+
+  .circuit-globe-lit, .circuit-halo, .circuit-pack, .circuit-arrow {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* "Print" button: print only this circuit (see startPrintMode) */
+  body.circuit-printing > *:not(.circuit-print-host) { display: none !important; }
+  body.circuit-printing { background: #ffffff; margin: 0; }
+}

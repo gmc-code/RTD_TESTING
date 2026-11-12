@@ -26,6 +26,9 @@ The directives covered in this documentation include:
 - :doc:`crossword <crossword>`
 - :doc:`imagesequence <imagesequence>`
 - :doc:`graphing <graphing>`
+- :doc:`flowchart <flowchart>`
+- :doc:`lever <lever>`
+- :doc:`circuit <circuit>`
 
 
 Group directives:

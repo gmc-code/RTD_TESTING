@@ -44,6 +44,9 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/foodweb.rst
 
     info/graphing.rst
+    info/flowchart.rst
+    info/lever.rst
+    info/circuit.rst
 
 
 

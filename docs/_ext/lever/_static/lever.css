@@ -1,0 +1,363 @@
+/* ==========================================================================
+   lever directive - balancing class 1, 2 and 3 levers
+   ========================================================================== */
+:root {
+  --lv-border: #cbd5e1;
+  --lv-text: #334155;
+  --lv-primary: #4f46e5;
+  --lv-primary-dark: #4338ca;
+
+  --lv-beam: #ecd29a;
+  --lv-beam-edge: #8a6a2f;
+  --lv-stand: #64748b;
+
+  --lv-load: #b91c1c;
+  --lv-effort: #1d4ed8;
+  --lv-weight: #475569;
+  --lv-up: #15803d;
+  --lv-adjust: #f59e0b;
+
+  --lv-right: #15803d;
+  --lv-wrong: #dc2626;
+}
+
+.lever-block {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  color: var(--lv-text);
+  max-width: 800px;
+}
+
+.lever-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  color: #111827;
+}
+
+.lever-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.lever-class-label {
+  font-weight: 600;
+  min-height: 1.4rem;
+  margin-bottom: 0.2rem;
+}
+
+.lever-class-label:empty { display: none; }
+
+/* ---------- drawing ---------- */
+.lever-svg-wrap {
+  max-width: 100%;
+}
+
+.lever-block svg.lever-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.lever-beam { fill: var(--lv-beam); stroke: var(--lv-beam-edge); stroke-width: 1.2; }
+.lever-tick { stroke: var(--lv-beam-edge); stroke-width: 1; }
+.lever-pivot-dot { fill: var(--lv-beam-edge); }
+
+.lever-tick-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: #4a3712;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.lever-tick-text-small { font-size: 8px; }
+
+.lever-fulcrum { fill: #94a3b8; stroke: var(--lv-stand); stroke-width: 1.2; stroke-linejoin: round; }
+.lever-base { fill: var(--lv-stand); }
+.lever-prop { fill: #cbd5e1; stroke: var(--lv-stand); stroke-width: 0.8; }
+
+.lever-fulcrum-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  fill: #ffffff;
+  text-anchor: middle;
+}
+
+.lever-scale-note {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* forces: colour comes from the role */
+.lever-force { --lv-colour: var(--lv-weight); }
+.lever-role-load { --lv-colour: var(--lv-load); }
+.lever-role-effort { --lv-colour: var(--lv-effort); }
+.lever-role-up { --lv-colour: var(--lv-up); }
+
+.lever-hit { fill: transparent; }
+.lever-string { stroke: #1f2937; stroke-width: 1.5; }
+.lever-weight { fill: var(--lv-colour); stroke: #111827; stroke-width: 1; }
+.lever-arrow-shaft { stroke: var(--lv-colour); stroke-width: 5; stroke-linecap: butt; }
+.lever-arrow-head { fill: var(--lv-colour); }
+.lever-ring { fill: #ffffff; stroke: #1f2937; stroke-width: 1.5; }
+
+.lever-size {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--lv-colour);
+  text-anchor: middle;
+}
+
+.lever-size-inside { fill: #ffffff; dominant-baseline: central; font-size: 12px; }
+
+.lever-name {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  fill: #1f2937;
+  text-anchor: middle;
+}
+
+/* forces the student can change have an orange outline */
+.lever-adjustable .lever-weight { stroke: var(--lv-adjust); stroke-width: 2.5; }
+.lever-adjustable .lever-ring { stroke: var(--lv-adjust); stroke-width: 2.5; }
+.lever-adjustable .lever-arrow-head { stroke: var(--lv-adjust); stroke-width: 2; stroke-linejoin: round; }
+
+.lever-unknown .lever-weight { fill: #ffffff; stroke-dasharray: 4 3; }
+.lever-unknown .lever-size-inside { fill: var(--lv-colour); }
+.lever-unknown .lever-arrow-shaft { stroke-dasharray: 5 4; }
+
+.lever-draggable { cursor: grab; touch-action: none; }
+.lever-dragging { cursor: grabbing; }
+
+/* ---------- status ---------- */
+.lever-status {
+  display: inline-block;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.1rem 0.8rem;
+  margin: 0.2rem 0 0.5rem 0;
+  border: 1px solid transparent;
+}
+
+.lever-status:empty { display: none; }
+.lever-status-balanced { background: #dcfce7; border-color: #22c55e; color: #14532d; }
+.lever-status-unbalanced { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+.lever-status-held { background: #f1f5f9; border-color: var(--lv-border); color: #475569; font-weight: 600; }
+
+/* ---------- force controls ---------- */
+.lever-panel {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.lever-panel:empty { display: none; }
+
+.lever-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-left: 5px solid var(--lv-weight);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+}
+
+.lever-row-load { border-left-color: var(--lv-load); }
+.lever-row-effort { border-left-color: var(--lv-effort); }
+.lever-row-up { border-left-color: var(--lv-up); }
+
+.lever-row-name {
+  font-weight: 700;
+  min-width: 8.5rem;
+}
+
+.lever-row-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.lever-block input.lever-input,
+.lever-block select.lever-select {
+  font: inherit;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid var(--lv-border);
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  box-shadow: none;
+  box-sizing: border-box;
+  height: auto;
+}
+
+.lever-block input.lever-input { width: 4.8rem; text-align: center; }
+
+.lever-block input.lever-input:focus,
+.lever-block select.lever-select:focus {
+  outline: 2px solid var(--lv-primary);
+  outline-offset: 0;
+  border-color: var(--lv-primary);
+}
+
+.lever-remove { margin-left: auto; }
+
+.lever-add-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+/* ---------- buttons ---------- */
+.lever-btn {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--lv-border);
+  background: #ffffff;
+  color: var(--lv-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lever-btn:hover:not(:disabled) {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.lever-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lever-btn-primary {
+  background: var(--lv-primary);
+  border-color: var(--lv-primary);
+  color: #ffffff;
+}
+
+.lever-btn-primary:hover:not(:disabled) {
+  background: var(--lv-primary-dark);
+  border-color: var(--lv-primary-dark);
+}
+
+.lever-btn-small {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.lever-btn-on {
+  background: #e0e7ff;
+  border-color: var(--lv-primary);
+  color: var(--lv-primary-dark);
+}
+
+.lever-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- feedback ---------- */
+.lever-feedback {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.lever-feedback:empty { display: none; }
+
+.lever-feedback-good,
+.lever-feedback-bad,
+.lever-feedback-info {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid;
+}
+
+.lever-feedback-good { background: #dcfce7; border-color: #22c55e; color: #14532d; }
+.lever-feedback-bad { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+.lever-feedback-info { background: #e0f2fe; border-color: #38bdf8; color: #0c4a6e; }
+
+/* ---------- turning effects table ---------- */
+.lever-moments-wrap {
+  margin-top: 0.7rem;
+  overflow-x: auto;
+}
+
+.rst-content .lever-block table.lever-moments,
+.lever-block table.lever-moments {
+  border-collapse: collapse;
+  margin: 0;
+  width: auto;
+  font-size: 0.92rem;
+}
+
+.rst-content .lever-block table.lever-moments th,
+.rst-content .lever-block table.lever-moments td,
+.lever-block table.lever-moments th,
+.lever-block table.lever-moments td {
+  border: 1px solid #94a3b8;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+  background: #ffffff;
+  white-space: nowrap;
+}
+
+.rst-content .lever-block table.lever-moments th,
+.lever-block table.lever-moments th {
+  background: #eef2ff;
+  font-weight: 600;
+}
+
+.rst-content .lever-block table.lever-moments tfoot td,
+.lever-block table.lever-moments tfoot td {
+  background: #f1f5f9;
+  font-weight: 700;
+  white-space: pre-wrap;
+}
+
+.lever-block table.lever-moments td.lever-cw { color: #9a3412; }
+.lever-block table.lever-moments td.lever-acw { color: #1e40af; }
+
+.lever-instructions {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+/* ---------- printing ---------- */
+@media print {
+  .lever-noprint { display: none !important; }
+  .lever-status { display: none !important; }
+
+  .lever-block {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    break-inside: avoid;
+  }
+
+  .lever-weight, .lever-arrow-shaft, .lever-arrow-head, .lever-beam, .lever-fulcrum, .lever-base {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* "Print" button: print only this lever (see startPrintMode) */
+  body.lever-printing > *:not(.lever-print-host) { display: none !important; }
+  body.lever-printing { background: #ffffff; margin: 0; }
+}

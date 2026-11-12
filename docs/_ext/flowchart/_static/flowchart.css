@@ -1,0 +1,216 @@
+/* flowchart directive */
+.fc-widget {
+  --fc-line: #333;
+  --fc-accent: #e8590c;
+  --fc-cur: #1c7ed6;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  margin: 0 0 24px;
+  background: #fff;
+  font-size: 14px;
+}
+.fc-widget > .fc-source { margin: 0; padding: 12px; border: 0; background: #f8f8f8; }
+.fc-widget.fc-ready > .fc-source { display: none; }
+
+.fc-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  padding: 6px 8px; border-bottom: 1px solid #d0d7de; background: #f6f8fa; border-radius: 6px 6px 0 0;
+}
+.fc-spacer { flex: 1 1 auto; }
+.fc-sep { width: 1px; height: 22px; background: #c9d1d9; margin: 0 4px; }
+.fc-hint { color: #57606a; font-size: 13px; margin-left: 6px; }
+.fc-widget .fc-btn {
+  font: inherit; font-size: 13px; line-height: 1.2; padding: 5px 11px; cursor: pointer;
+  border: 1px solid #b6bec8; border-radius: 4px; background: #fff; color: #24292f;
+}
+.fc-widget .fc-btn:hover:not(:disabled) { background: #eef2f6; }
+.fc-widget .fc-btn:disabled { opacity: .45; cursor: default; }
+.fc-widget .fc-btn:focus-visible, .fc-chip:focus-visible { outline: 2px solid var(--fc-cur); outline-offset: 2px; }
+.fc-node:focus { outline: none; }
+.fc-node:focus-visible > rect, .fc-node:focus-visible > polygon { stroke: var(--fc-cur); stroke-width: 3.5; }
+
+.fc-body { display: flex; gap: 14px; padding: 12px; align-items: flex-start; }
+.fc-body.fc-stacked { flex-direction: column; }
+.fc-side > .fc-left { flex: 1 1 46%; min-width: 230px; }
+.fc-side > .fc-right { flex: 1 1 54%; min-width: 0; }
+.fc-stacked > .fc-left, .fc-stacked > .fc-right { width: 100%; }
+.fc-stacked > .fc-left { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); column-gap: 14px; align-items: start; }
+.fc-stacked > .fc-left > .fc-code { grid-row: 1 / span 3; }
+.fc-stacked > .fc-left > :only-child { grid-column: 1 / -1; }
+.fc-mode-view .fc-stacked > .fc-left, .fc-mode-blanks:not(.fc-solved) .fc-stacked > .fc-left { display: block; }
+
+/* pseudocode */
+.fc-widget ol.fc-code {
+  list-style: none; counter-reset: fcline; margin: 0 0 8px; padding: 6px 0;
+  background: #f8f8f8; border: 1px solid #e1e4e5; border-radius: 4px;
+  font-family: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px; line-height: 1.55;
+  overflow-x: auto;
+}
+.fc-widget ol.fc-code > li.fc-line {
+  counter-increment: fcline; list-style: none; margin: 0; padding: 0 10px 0 0; white-space: pre; cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.fc-widget ol.fc-code > li.fc-line::before {
+  content: counter(fcline); display: inline-block; width: 2.2em; margin-right: 10px; text-align: right;
+  color: #9aa4ae; user-select: none;
+}
+.fc-kw { color: #0b5cad; font-weight: 700; }
+.fc-str { color: #9a3412; }
+.fc-line.fc-hover, .fc-line.fc-pin { background: #ffe8cc; border-left-color: var(--fc-accent); }
+.fc-line.fc-cur { background: #d0ebff; border-left-color: var(--fc-cur); }
+.fc-mode-blanks:not(.fc-solved) .fc-line { cursor: default; }
+
+/* status, inputs, panels */
+.fc-status { min-height: 1.5em; margin: 0 0 8px; color: #24292f; }
+.fc-status:empty { display: none; }
+.fc-status-error { color: #c92a2a; }
+.fc-status-ok { color: #2b8a3e; font-weight: 700; }
+.fc-inputform { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; }
+.fc-inputform:empty { display: none; }
+.fc-prompt { flex: 1 0 100%; font-style: italic; }
+.fc-field { display: inline-flex; align-items: center; gap: 5px; margin: 0; font-family: Consolas, Menlo, monospace; }
+.fc-widget .fc-field input, .fc-widget input.fc-editor {
+  font: inherit; width: 8em; padding: 4px 6px; border: 2px solid var(--fc-cur); border-radius: 4px; background: #fff; color: #111;
+  box-shadow: none; height: auto;
+}
+.fc-widget .fc-field input.fc-missing { border-color: #c92a2a; }
+.fc-panels { display: flex; gap: 10px; flex-wrap: wrap; }
+.fc-panels:empty { display: none; }
+.fc-vars, .fc-out { flex: 1 1 130px; min-width: 0; }
+.fc-panel-title { font-size: 12px; font-weight: 700; color: #57606a; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
+.fc-widget .fc-vars table { width: 100%; border-collapse: collapse; margin: 0; font-size: 13px; }
+.fc-widget .fc-vars th, .fc-widget .fc-vars td { border: 1px solid #d0d7de; padding: 3px 7px; text-align: left; background: #fff; }
+.fc-widget .fc-vars th { background: #f6f8fa; font-weight: 700; }
+.fc-widget .fc-vars td { font-family: Consolas, Menlo, monospace; }
+.fc-widget .fc-vars tr.fc-changed td { background: #fff3bf; }
+.fc-widget .fc-vars td.fc-none { color: #8c959f; font-family: inherit; font-style: italic; }
+.fc-widget .fc-out pre {
+  margin: 0; padding: 6px 8px; min-height: 3.2em; max-height: 11em; overflow: auto; white-space: pre-wrap;
+  background: #1f2328; color: #f0f3f6; border: 0; border-radius: 4px; font-size: 13px; line-height: 1.45;
+}
+
+/* chart */
+.fc-title { font-weight: 700; text-align: center; margin-bottom: 6px; }
+.fc-chart { position: relative; overflow-x: auto; text-align: center; }
+.fc-svg { max-width: 100%; height: auto; display: inline-block; }
+.fc-edge polyline { fill: none; stroke: var(--fc-line); stroke-width: 1.3; }
+.fc-edge .fc-head { fill: var(--fc-line); stroke: none; }
+.fc-edge text { fill: #222; }
+.fc-node > rect, .fc-node > polygon { stroke-width: 1.6; }
+.fc-node text { fill: #111; pointer-events: none; }
+.fc-node { cursor: pointer; }
+.fc-start > rect { fill: #d5e8d4; stroke: #82b366; }
+.fc-end > rect { fill: #f8cecc; stroke: #b85450; }
+.fc-io > polygon { fill: #dae8fc; stroke: #6c8ebf; }
+.fc-process > rect { fill: #fff2cc; stroke: #d6b656; }
+.fc-decision > polygon { fill: #e1d5e7; stroke: #9673a6; }
+
+.fc-node.fc-hover > rect, .fc-node.fc-hover > polygon,
+.fc-node.fc-pin > rect, .fc-node.fc-pin > polygon { stroke: var(--fc-accent); stroke-width: 3.5; }
+.fc-edge.fc-hover polyline, .fc-edge.fc-pin polyline { stroke: var(--fc-accent); stroke-width: 3; }
+.fc-edge.fc-hover .fc-head, .fc-edge.fc-pin .fc-head { fill: var(--fc-accent); }
+.fc-edge.fc-hover text, .fc-edge.fc-pin text { fill: var(--fc-accent); font-weight: 700; }
+
+@media screen {
+  .fc-node.fc-cur > rect, .fc-node.fc-cur > polygon { stroke: var(--fc-cur); stroke-width: 4; fill: #fff3bf; }
+}
+.fc-edge.fc-taken polyline { stroke: var(--fc-cur); stroke-width: 3; }
+.fc-edge.fc-taken .fc-head { fill: var(--fc-cur); }
+.fc-edge.fc-taken text { fill: var(--fc-cur); font-weight: 700; }
+
+/* blanks */
+.fc-node.fc-blank > rect, .fc-node.fc-blank > polygon { stroke-dasharray: 6 4; }
+.fc-node.fc-blank.fc-filled > rect, .fc-node.fc-blank.fc-filled > polygon { stroke-dasharray: none; }
+.fc-node.fc-drop > rect, .fc-node.fc-drop > polygon { stroke: var(--fc-accent); stroke-width: 4; }
+.fc-node.fc-correct > rect, .fc-node.fc-correct > polygon { stroke: #2b8a3e; stroke-width: 4; stroke-dasharray: none; }
+.fc-node.fc-wrong > rect, .fc-node.fc-wrong > polygon { stroke: #c92a2a; stroke-width: 4; stroke-dasharray: 3 3; }
+.fc-bank { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; align-items: center; }
+.fc-bank:empty { display: none; }
+.fc-bank .fc-panel-title { flex: 1 0 100%; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 13px; }
+.fc-chip {
+  font: 13px Arial, Helvetica, sans-serif; padding: 6px 10px; border: 1.5px solid #6c8ebf; border-radius: 16px;
+  background: #fff; color: #111; cursor: grab; touch-action: none; user-select: none; max-width: 100%; text-align: left;
+}
+.fc-chip-sel { background: #ffe8cc; border-color: var(--fc-accent, #e8590c); box-shadow: 0 0 0 2px #ffd8a8; }
+.fc-chip-dragging { opacity: .35; }
+.fc-ghost { position: fixed; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 4px 12px rgba(0,0,0,.25); cursor: grabbing; }
+.fc-widget input.fc-editor { position: absolute; z-index: 5; text-align: center; height: 30px; }
+
+/* full screen */
+.fc-widget:fullscreen { overflow: auto; border: 0; border-radius: 0; font-size: 16px; }
+.fc-widget:fullscreen .fc-body { padding: 20px; }
+
+@media (max-width: 700px) {
+  .fc-body.fc-side { flex-direction: column; }
+  .fc-side > .fc-left, .fc-side > .fc-right { width: 100%; flex-basis: auto; }
+  .fc-stacked > .fc-left { display: block; }
+}
+
+@media print {
+  .fc-widget { border: 0; break-inside: avoid; page-break-inside: avoid; }
+  .fc-toolbar, .fc-inputform, .fc-status, .fc-panels { display: none !important; }
+  .fc-body { padding: 0; }
+  .fc-chart { overflow: visible; }
+  .fc-line, .fc-node, .fc-edge, .fc-chip { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .fc-line.fc-hover, .fc-line.fc-pin, .fc-line.fc-cur { background: none; border-left-color: transparent; }
+  .fc-bank .fc-panel-title { display: none; }
+  .fc-chip { box-shadow: none; }
+}
+
+/* draw it yourself */
+.fc-code-secret { display: none !important; }
+.fc-mode-blanks:not(.fc-solved) .fc-stepui, .fc-mode-draw:not(.fc-solved) .fc-stepui { display: none !important; }
+.fc-mode-draw .fc-stacked > .fc-left { display: block; }
+.fc-mode-draw.fc-solved .fc-stacked > .fc-left { display: grid; }
+.fc-palette { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+.fc-widget .fc-pal {
+  display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; padding: 4px 9px 4px 5px;
+  border: 1px solid #b6bec8; border-radius: 4px; background: #fff; color: #24292f; cursor: grab; touch-action: none; user-select: none;
+}
+.fc-widget .fc-pal:hover { background: #eef2f6; }
+.fc-widget .fc-pal:focus-visible { outline: 2px solid var(--fc-cur); outline-offset: 2px; }
+.fc-pal svg { flex: none; pointer-events: none; }
+.fc-pal span { pointer-events: none; }
+.fc-mode-draw .fc-bank { margin: 0 0 8px; }
+.fc-canvas { position: relative; overflow: auto; border: 1px solid #c9d1d9; border-radius: 4px; background: #fff; max-height: 85vh; }
+.fc-dsvg { display: block; outline: none; }
+.fc-dsvg:focus-visible { box-shadow: inset 0 0 0 2px var(--fc-cur); }
+.fc-dot { fill: #c5ccd3; }
+.fc-dshape { cursor: move; touch-action: none; }
+.fc-locked .fc-dshape { cursor: pointer; }
+.fc-dshape.fc-sel > rect, .fc-dshape.fc-sel > polygon { stroke: var(--fc-cur); stroke-width: 3; }
+.fc-handle { opacity: 0; cursor: crosshair; touch-action: none; }
+.fc-handle circle { fill: #fff; stroke: var(--fc-cur); stroke-width: 2; }
+.fc-handle circle.fc-handle-hit { fill: transparent; stroke: none; }
+.fc-dshape:hover .fc-handle, .fc-dshape.fc-sel .fc-handle, .fc-connecting .fc-handle { opacity: 1; }
+.fc-handle:hover circle:not(.fc-handle-hit) { fill: var(--fc-cur); }
+.fc-locked .fc-handle { display: none; }
+.fc-rubber { stroke: var(--fc-cur); stroke-width: 2; stroke-dasharray: 5 4; pointer-events: none; }
+.fc-edge polyline.fc-hit { stroke: transparent; stroke-width: 14; }
+.fc-darrow { cursor: pointer; }
+.fc-darrow.fc-sel polyline:not(.fc-hit) { stroke: var(--fc-cur); stroke-width: 2.6; }
+.fc-darrow.fc-sel .fc-head { fill: var(--fc-cur); }
+.fc-darrow.fc-abad polyline:not(.fc-hit) { stroke: #c92a2a; stroke-width: 2.6; stroke-dasharray: 5 3; }
+.fc-darrow.fc-abad .fc-head { fill: #c92a2a; }
+.fc-alabel rect { fill: #fff; stroke: #8c959f; stroke-width: 1; }
+.fc-alabel text { fill: #111; pointer-events: none; }
+.fc-alabel:hover rect { fill: #e7f5ff; stroke: var(--fc-cur); }
+.fc-alabel.fc-aq rect { fill: #fff3bf; stroke: var(--fc-accent); }
+.fc-edge.fc-taken .fc-alabel rect { stroke: var(--fc-cur); }
+.fc-answer .fc-canvas, .fc-answer .fc-palette, .fc-solved .fc-palette { display: none; }
+
+@media print {
+  .fc-palette { display: none !important; }
+  .fc-canvas { overflow: visible; max-height: none; }
+  .fc-handle, .fc-dot { display: none; }
+  .fc-dshape.fc-sel > rect, .fc-dshape.fc-sel > polygon { stroke-width: 1.6; }
+}
+
+/* click-by-click lines */
+.fc-rubber { fill: none; }
+.fc-via { fill: var(--fc-cur); pointer-events: none; }
+.fc-dsvg.fc-pen, .fc-dsvg.fc-pen .fc-dshape, .fc-dsvg.fc-pen .fc-darrow { cursor: crosshair; }
+.fc-dsvg.fc-pen .fc-darrow:hover polyline:not(.fc-hit) { stroke: var(--fc-cur); stroke-width: 2.6; }
+/* keep the drawing area still when the message above it changes */
+.fc-mode-draw .fc-status, .fc-mode-draw .fc-status:empty { display: block; min-height: 3.1em; }
+@media print { .fc-mode-draw .fc-status, .fc-mode-draw .fc-status:empty { display: none; } }
