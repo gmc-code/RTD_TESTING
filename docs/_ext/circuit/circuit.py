@@ -22,6 +22,10 @@ Consecutive ``branch:`` lines are the branches of a parallel section.
 ``voltmeter across <label>`` connects a voltmeter in parallel with a component
 (or ``across supply`` for the powerpack).
 
+Students can lay black, red or blue wire, e.g. red on the positive side of
+the circuit.  ``:colour-wires:`` draws the wires of a set circuit that are
+joined to the + terminal in red.
+
 ``:build:`` sets a building task that the Check button marks, e.g.
 ``:build: series, 2 globes, 1 ammeter``.
 
@@ -144,6 +148,7 @@ class CircuitDirective(SphinxDirective):
         'tools': tools_option,
         'build': directives.unchanged,
         'show-current': directives.flag,
+        'colour-wires': directives.flag,
         'show-values': directives.flag,
         'decimals': decimals_option,
         'no-solution': directives.flag,
@@ -393,6 +398,7 @@ class CircuitDirective(SphinxDirective):
             'tools': tools,
             'build': build,
             'showCurrent': 'show-current' in self.options,
+            'colourWires': 'colour-wires' in self.options,
             'showValues': 'show-values' in self.options,
             'decimals': self.options.get('decimals', 2),
             'noSolution': 'no-solution' in self.options,

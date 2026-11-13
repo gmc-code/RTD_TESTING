@@ -30,6 +30,8 @@
     wire: "Wire", resistor: "Resistor", globe: "Globe", ammeter: "Ammeter",
     voltmeter: "Voltmeter", "switch": "Switch", erase: "Erase",
   };
+  const WIRE_COLOURS = ["black", "red", "blue"];
+  const WIRE_COLOUR_NAMES = { black: "Black", red: "Red", blue: "Blue" };
   const PREFIX = { resistor: "R", globe: "L", ammeter: "A", voltmeter: "V", "switch": "S" };
   const PLURAL = {
     resistor: "resistors", globe: "globes", ammeter: "ammeters",
@@ -303,6 +305,41 @@
     return { edges: edges, cols: c + 1, rows: bottom + 1 };
   }
 
+  // ":colour-wires:" - the wires joined to the + terminal of the powerpack
+  // (through other wires, ammeters and switches) are made red
+  function colourPositive(layout) {
+    const cols = layout.cols, edges = layout.edges;
+    const parent = [];
+    for (let i = 0; i < cols * layout.rows; i++) parent.push(i);
+    function find(x) {
+      while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+      return x;
+    }
+    let plus = null;
+    Object.keys(edges).forEach(key => {
+      const kind = edges[key].kind;
+      const ends = endsOf(key, cols);
+      if (kind === "pack") plus = ends.a;
+      if (kind === "wire" || kind === "ammeter" || kind === "switch") parent[find(ends.a)] = find(ends.b);
+    });
+    if (plus === null) return layout;
+    Object.keys(edges).forEach(key => {
+      const el = edges[key];
+      const ends = endsOf(key, cols);
+      const positive = point => find(point) === find(plus);
+      if (el.kind === "wire") {
+        if (positive(ends.a)) el.colour = "red";
+      } else if (el.kind === "pack") {
+        el.leadA = "red";
+      } else {
+        // the lead on the + side of a component is red as well
+        if (positive(ends.a)) el.leadA = "red";
+        if (positive(ends.b)) el.leadB = "red";
+      }
+    });
+    return layout;
+  }
+
   // a circuit that satisfies a ":build:" task, for "Show answer"
   function answerPreset(build, config) {
     const counts = build.counts;
@@ -344,7 +381,11 @@
     function line(x1, y1, x2, y2, cls) {
       return svgEl("line", { x1: x1, y1: y1, x2: x2, y2: y2, "class": cls || "circuit-wire" }, g);
     }
-    function leads(half) { line(-HALF, 0, -half, 0); line(half, 0, HALF, 0); }
+    // the two leads of a component can be coloured like the wire they join
+    function leads(half) {
+      line(-HALF, 0, -half, 0, "circuit-wire circuit-wire-" + (el.leadA || "black"));
+      line(half, 0, HALF, 0, "circuit-wire circuit-wire-" + (el.leadB || "black"));
+    }
     // text stays the right way up on a vertical edge
     function text(x, y, cls, content) {
       const node = svgEl("text", { x: 0, y: 0, "class": cls,
@@ -355,7 +396,7 @@
 
     switch (el.kind) {
       case "wire":
-        line(-HALF, 0, HALF, 0);
+        line(-HALF, 0, HALF, 0, "circuit-wire circuit-wire-" + (el.colour || "black"));
         break;
       case "resistor":
         leads(24);
@@ -427,12 +468,14 @@
         spaced: tools.indexOf("voltmeter") !== -1,
         lockWires: !canEdit,
       });
+      if (config.colourWires) colourPositive(presetLayout);
       cols = Math.max(cols, presetLayout.cols, config.cols || 0);
       rows = Math.max(rows, presetLayout.rows, config.rows || 0);
     }
     let answerLayout = null;
     if (build && !config.preset && !config.noSolution) {
       answerLayout = layoutPreset(answerPreset(build, config), { globeR: config.globeR, lockWires: true });
+      if (config.colourWires) colourPositive(answerLayout);
       cols = Math.max(cols, answerLayout.cols);
       rows = Math.max(rows, answerLayout.rows);
     }
@@ -448,6 +491,7 @@
       edges: startingEdges(),
       tool: tools.indexOf("wire") !== -1 ? "wire" : (tools[0] || null),
       rValue: config.resistors[0],
+      wireColour: "black",
       answerShown: false,
     };
     let solution = null;
@@ -496,6 +540,7 @@
     palette.setAttribute("role", "group");
     palette.setAttribute("aria-label", "Components");
     const toolButtons = {};
+    const swatches = {};
     let resistorSelect = null;
 
     function toolIcon(kind) {
@@ -533,6 +578,28 @@
             updatePalette();
           });
           wrap.appendChild(resistorSelect);
+          palette.appendChild(wrap);
+        } else if (kind === "wire") {
+          // the wire button is followed by a dot for each colour of wire
+          const wrap = htmlEl("span", "circuit-tool-group");
+          wrap.appendChild(button);
+          const dots = htmlEl("span", "circuit-swatches");
+          dots.setAttribute("role", "group");
+          dots.setAttribute("aria-label", "Colour of the wire");
+          WIRE_COLOURS.forEach(colour => {
+            const dot = htmlEl("button", "circuit-swatch circuit-swatch-" + colour);
+            dot.type = "button";
+            dot.title = WIRE_COLOUR_NAMES[colour] + " wire";
+            dot.setAttribute("aria-label", WIRE_COLOUR_NAMES[colour] + " wire");
+            dot.addEventListener("click", () => {
+              state.wireColour = colour;
+              state.tool = "wire";
+              updatePalette();
+            });
+            swatches[colour] = dot;
+            dots.appendChild(dot);
+          });
+          wrap.appendChild(dots);
           palette.appendChild(wrap);
         } else {
           palette.appendChild(button);
@@ -656,6 +723,19 @@
       gDraw.textContent = "";
       gText.textContent = "";
 
+      // a lead takes the colour of the wire joined to it (when all of the
+      // wire at that point is the one colour)
+      const wireAt = {};
+      Object.keys(state.edges).forEach(key => {
+        const el = state.edges[key];
+        if (el.kind !== "wire") return;
+        const ends = endsOf(key, cols);
+        [ends.a, ends.b].forEach(point => {
+          const colour = el.colour || "black";
+          wireAt[point] = (point in wireAt && wireAt[point] !== colour) ? "black" : colour;
+        });
+      });
+
       const degree = {};
       Object.keys(state.edges).forEach(key => {
         const el = state.edges[key];
@@ -671,6 +751,8 @@
           transform: "translate(" + mid.x + " " + mid.y + ")" + (vertical ? " rotate(90)" : ""),
         }, gDraw);
         const shown = Object.assign({}, el);
+        shown.leadA = wireAt[ends.a] || el.leadA;
+        shown.leadB = wireAt[ends.b] || el.leadB;
         if (el.kind === "globe") shown.glow = Math.min(1, Math.abs(value.v) / voltage);
         if (el.kind === "pack") shown.text = voltage + " V";
         drawSymbol(g, shown, vertical);
@@ -678,7 +760,8 @@
         // an arrow on a wire shows the direction of the (conventional) current
         if (config.showCurrent && el.kind === "wire" && Math.abs(value.i) > FLOWING) {
           const turn = value.i > 0 ? 0 : 180;
-          svgEl("path", { d: "M 7 0 L -5 -6 L -5 6 Z", "class": "circuit-arrow",
+          svgEl("path", { d: "M 7 0 L -5 -6 L -5 6 Z",
+            "class": "circuit-arrow" + (el.colour === "red" ? " circuit-arrow-dark" : ""),
             transform: "rotate(" + turn + ")" }, g);
         }
 
@@ -780,6 +863,12 @@
         toolButtons[kind].setAttribute("aria-pressed", on ? "true" : "false");
         toolButtons[kind].disabled = state.answerShown;
       }
+      for (const colour in swatches) {
+        const on = colour === state.wireColour;
+        swatches[colour].classList.toggle("circuit-swatch-on", on);
+        swatches[colour].setAttribute("aria-pressed", on ? "true" : "false");
+        swatches[colour].disabled = state.answerShown;
+      }
       if (resistorSelect) {
         resistorSelect.value = String(state.rValue);
         resistorSelect.disabled = state.answerShown;
@@ -834,8 +923,12 @@
         if (!el) return;
         delete state.edges[key];
       } else if (tool === "wire") {
-        if (el && (dragging || el.kind === "wire")) return;
+        // dragging lays wire in the gaps and recolours wire, but does not
+        // replace components
+        if (el && el.kind !== "wire" && dragging) return;
+        if (el && el.kind === "wire" && (el.colour || "black") === state.wireColour) return;
         state.edges[key] = { kind: "wire" };
+        if (state.wireColour !== "black") state.edges[key].colour = state.wireColour;
       } else {
         if (dragging) return;
         if (el && el.kind === tool && (tool !== "resistor" || el.r === state.rValue)) return;
@@ -1041,7 +1134,10 @@
     const parts = [];
     if (canEdit) {
       parts.push("Choose a component, then click between two dots to place it.");
-      if (tools.indexOf("wire") !== -1) parts.push("Drag along the dots to lay wire quickly.");
+      if (tools.indexOf("wire") !== -1) {
+        parts.push("Drag along the dots to lay wire quickly. Pick a colour for the wire with the " +
+          "dots beside \u201CWire\u201D, e.g. red for the positive side.");
+      }
       parts.push("An ammeter goes in series; a voltmeter goes in parallel, across a component.");
     }
     if (hasSwitch) parts.push("Click a switch to open or close it.");

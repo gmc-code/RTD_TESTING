@@ -116,6 +116,12 @@ Options for the circuit directive
      - Off
      - | If present, arrows on the wires show the direction of the
        | (conventional) current, from + to −.
+   * - ``:colour-wires:``
+     - flag
+     - Off
+     - | If present, the wires and component leads of a circuit set by the
+       | teacher (and of "Show answer") that are joined to the + terminal
+       | are red. The others stay black.
    * - ``:show-values:``
      - flag
      - Off
@@ -141,6 +147,7 @@ Options for the circuit directive
 
 
 | **Building**: Choose a component, then click between two dots to place it. Drag along the dots to lay wire quickly. Clicking a place that is already used swaps the component. "Erase" removes components and wire (drag to erase several).
+| **Wire colours**: The dots beside the Wire button choose black, red or blue wire, so red wire can be used on the positive side of a circuit and black on the negative side. Clicking or dragging over wire with a different colour chosen recolours it. The leads of a component take the colour of the wire joined to them. The colour is for the student's own bookkeeping and does not change how the circuit works or how it is checked.
 | **Ammeters**: An ammeter has no resistance and goes in series. It shows the current through it. An ammeter connected across a component by mistake takes the current around that component, as a real ammeter does.
 | **Voltmeters**: A voltmeter has a very high resistance and goes in parallel, across a component. It shows the voltage between its two ends. A voltmeter connected in series by mistake stops the current and reads the powerpack voltage.
 | **Globes**: Globes glow more brightly with more voltage across them, so two globes in series are dimmer than two in parallel.
@@ -179,14 +186,14 @@ Example 2: Series circuit to measure
     .. circuit::
         :title: Two globes in series
 
-        ammeter, globe, globe
+        ammeter, globe, wire, globe
         voltmeter across L1
         voltmeter across L2
 
 .. circuit::
     :title: Two globes in series
 
-    ammeter, globe, globe
+    ammeter, globe, wire, globe
     voltmeter across L1
     voltmeter across L2
 
@@ -203,9 +210,9 @@ Example 3: Parallel circuit to measure
         :title: Two resistors in parallel
         :show-current:
 
-        ammeter
-        branch: ammeter, resistor 4
-        branch: ammeter, resistor 6
+        ammeter, wire
+        branch: ammeter, resistor 4, wire
+        branch: ammeter, resistor 6, wire
         voltmeter across R1
         voltmeter across R2
 
@@ -213,9 +220,9 @@ Example 3: Parallel circuit to measure
     :title: Two resistors in parallel
     :show-current:
 
-    ammeter
-    branch: ammeter, resistor 4
-    branch: ammeter, resistor 6
+    ammeter, wire
+    branch: ammeter, resistor 4, wire
+    branch: ammeter, resistor 6, wire
     voltmeter across R1
     voltmeter across R2
 
@@ -334,7 +341,7 @@ Example 9: Series and parallel together
     .. circuit::
         :show-values:
 
-        ammeter, resistor 2
+        ammeter, resistor 2, wire
         branch: resistor 6
         branch: resistor 12
         voltmeter across R1
@@ -344,7 +351,7 @@ Example 9: Series and parallel together
 .. circuit::
     :show-values:
 
-    ammeter, resistor 2
+    ammeter, resistor 2, wire
     branch: resistor 6
     branch: resistor 12
     voltmeter across R1
@@ -381,3 +388,24 @@ Example 10: With questions
     .. gapfill::
 
         The ammeter reads @@0.50 | 1.00 | 2.00@@ A. If a third globe is added in series, the current @@decreases | increases | stays the same@@.
+
+----
+
+Example 11: Coloured wires
+----------------------------------------------------
+
+| ``:colour-wires:`` draws the wires and leads joined to the + terminal in red. With ``:tools:``, the student can add more wire in black, red or blue.
+
+.. code-block:: rst
+
+    .. circuit::
+        :colour-wires:
+        :tools: wire ammeter voltmeter
+
+        wire, ammeter, globe, globe
+
+.. circuit::
+    :colour-wires:
+    :tools: wire ammeter voltmeter
+
+    wire, ammeter, globe, globe
