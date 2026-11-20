@@ -1,4 +1,0 @@
-
-
-from .quizgroup import setup
-

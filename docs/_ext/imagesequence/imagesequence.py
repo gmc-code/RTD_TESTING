@@ -137,6 +137,7 @@ import html
 import json
 import random
 import re
+from contextlib import contextmanager
 from pathlib import Path
 
 from docutils import nodes
@@ -348,6 +349,32 @@ class ChainDirective(SphinxDirective):
         return [node]
 
 
+# Child directives that only mean something inside an imagesequence.
+# Other extensions can own the same names (sphinx-design 0.8+ has its own
+# ``steps``/``step``), so these are switched on only while an imagesequence
+# reads its content, then put back. ``isq-step`` etc. always work too.
+CHILD_DIRECTIVES = {
+    "step": StepDirective,
+    "chain": ChainDirective,
+}  # chains and captions are added after their classes, below
+
+
+@contextmanager
+def _child_directives():
+    reg = directives._directives
+    missing = object()
+    saved = {name: reg.get(name, missing) for name in CHILD_DIRECTIVES}
+    reg.update(CHILD_DIRECTIVES)
+    try:
+        yield
+    finally:
+        for name, old in saved.items():
+            if old is missing:
+                reg.pop(name, None)
+            else:
+                reg[name] = old
+
+
 def _named_step(env, pattern, name, source, line, missing, distractor=False):
     """A step whose picture path comes from a {name} pattern; the name is its caption."""
     uri = pattern.replace("{name}", name.replace(" ", "_"))
@@ -440,6 +467,10 @@ class CaptionsDirective(SphinxDirective):
         return [node]
 
 
+CHILD_DIRECTIVES["chains"] = ChainsDirective
+CHILD_DIRECTIVES["captions"] = CaptionsDirective
+
+
 def _number_steps(steps):
     """Give each step its id (position) and answer (-1 for distractors)."""
     answer = 0
@@ -505,7 +536,8 @@ class ImageSequenceDirective(SphinxDirective):
         saved = self.env.temp_data.get("isq_images")
         self.env.temp_data["isq_images"] = self.options.get("images", "")
         try:
-            self.state.nested_parse(self.content, self.content_offset, node)
+            with _child_directives():
+                self.state.nested_parse(self.content, self.content_offset, node)
         finally:
             if had:
                 self.env.temp_data["isq_images"] = saved
@@ -761,10 +793,11 @@ def setup(app):
         text=(skip_node, None),
     )
     app.add_directive("imagesequence", ImageSequenceDirective)
-    app.add_directive("step", StepDirective)
-    app.add_directive("chain", ChainDirective)
-    app.add_directive("chains", ChainsDirective)
-    app.add_directive("captions", CaptionsDirective)
+    # step/chain/chains/captions are switched on inside each imagesequence
+    # (see _child_directives), so they never clash with sphinx-design etc.
+    # These prefixed names work anywhere, as an unambiguous alternative.
+    for name, cls in CHILD_DIRECTIVES.items():
+        app.add_directive("isq-" + name, cls)
 
     app.add_js_file("imagesequence.js")
     app.add_css_file("imagesequence.css")

@@ -62,7 +62,8 @@ Each component is written as:
      - | A closed switch. ``switch open`` starts open.
        | Students click a switch to open or close it.
    * - ``wire``
-     - A piece of wire.
+     - | A piece of wire. ``wire red``, ``wire blue`` or ``wire black``
+       | sets its colour.
    * - ``"label"``
      - | Optional name in quotes after any component, e.g. ``resistor 6 "Heater"``.
        | Without one, components are named R1, R2 (resistors), L1, L2 (globes),
@@ -117,11 +118,16 @@ Options for the circuit directive
      - | If present, arrows on the wires show the direction of the
        | (conventional) current, from + to −.
    * - ``:colour-wires:``
-     - flag
+     - colours
      - Off
-     - | If present, the wires and component leads of a circuit set by the
-       | teacher (and of "Show answer") that are joined to the + terminal
-       | are red. The others stay black.
+     - | Colours the wires and component leads of a circuit set by the
+       | teacher (and of "Show answer").
+       | With no value, those joined to the + terminal are red and the
+       | others stay black.
+       | One colour (``black``, ``red`` or ``blue``) is used for those joined
+       | to the + terminal.
+       | Two colours are for those joined to + and those joined to −,
+       | e.g. ``:colour-wires: red blue``.
    * - ``:show-values:``
      - flag
      - Off
@@ -147,6 +153,7 @@ Options for the circuit directive
 
 
 | **Building**: Choose a component, then click between two dots to place it. Drag along the dots to lay wire quickly. Clicking a place that is already used swaps the component. "Erase" removes components and wire (drag to erase several).
+| **Setting wire colours**: In a circuit set by the teacher, ``wire red`` (or ``red wire``) in the content is a piece of wire of that colour, in series or in a branch. ``:colour-wires:`` colours the wires that are drawn automatically, such as the wire back to the − terminal. A colour written on a ``wire`` is kept when ``:colour-wires:`` is used. Wires between components that are joined to neither terminal stay black unless a coloured ``wire`` is written there.
 | **Wire colours**: The dots beside the Wire button choose black, red or blue wire, so red wire can be used on the positive side of a circuit and black on the negative side. Clicking or dragging over wire with a different colour chosen recolours it. The leads of a component take the colour of the wire joined to them. The colour is for the student's own bookkeeping and does not change how the circuit works or how it is checked.
 | **Ammeters**: An ammeter has no resistance and goes in series. It shows the current through it. An ammeter connected across a component by mistake takes the current around that component, as a real ammeter does.
 | **Voltmeters**: A voltmeter has a very high resistance and goes in parallel, across a component. It shows the voltage between its two ends. A voltmeter connected in series by mistake stops the current and reads the powerpack voltage.
@@ -409,3 +416,43 @@ Example 11: Coloured wires
     :tools: wire ammeter voltmeter
 
     wire, ammeter, globe, globe
+
+----
+
+Example 12: Setting the wire colours
+----------------------------------------------------
+
+| ``:colour-wires: red blue`` makes the wires joined to + red and the wires joined to − blue. The piece of wire between the two globes is written as ``wire blue``; without a colour it would be black.
+
+.. code-block:: rst
+
+    .. circuit::
+        :colour-wires: red blue
+
+        wire, ammeter, globe, wire blue, globe
+
+.. circuit::
+    :colour-wires: red blue
+
+    wire, ammeter, globe, wire blue, globe
+
+----
+
+Example 13: Coloured wire in each branch
+----------------------------------------------------
+
+| Without ``:colour-wires:``, only the wires given a colour are coloured.
+
+.. code-block:: rst
+
+    .. circuit::
+
+        ammeter, wire red
+        branch: wire red, globe, wire blue
+        branch: wire red, globe, wire blue
+
+.. circuit::
+
+    ammeter, wire red
+    branch: wire red, globe, wire blue
+    branch: wire red, globe, wire blue

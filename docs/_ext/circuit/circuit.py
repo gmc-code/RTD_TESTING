@@ -24,7 +24,9 @@ Consecutive ``branch:`` lines are the branches of a parallel section.
 
 Students can lay black, red or blue wire, e.g. red on the positive side of
 the circuit.  ``:colour-wires:`` draws the wires of a set circuit that are
-joined to the + terminal in red.
+joined to the + terminal in red; ``:colour-wires: red blue`` also makes the
+wires joined to the - terminal blue.  A piece of wire written in the content
+can have its own colour, e.g. ``wire red`` or ``branch: wire blue, globe``.
 
 ``:build:`` sets a building task that the Check button marks, e.g.
 ``:build: series, 2 globes, 1 ammeter``.
@@ -58,6 +60,7 @@ KIND_WORDS = {
 }
 PREFIX = {'resistor': 'R', 'globe': 'L', 'ammeter': 'A', 'voltmeter': 'V', 'switch': 'S'}
 SUPPLY_WORDS = ('supply', 'powerpack', 'power pack', 'pack', 'battery')
+WIRE_COLOURS = ('black', 'red', 'blue')
 UNIT_WORDS = ('ohm', 'ohms', 'Ω', 'ω')
 LABEL_RE = re.compile(r'"([^"]*)"')
 MAX_SERIES = 8        # components along one line / branch
@@ -134,6 +137,20 @@ def tools_option(argument):
     return [tool for tool in TOOLS if tool in tools]
 
 
+def colour_wires_option(argument):
+    """Nothing (red on the + side, black elsewhere) or one or two colours:
+    the wires joined to + and the wires joined to -."""
+    words = [w for w in re.split(r'[,\s]+', (argument or '').strip().lower()) if w]
+    for word in words:
+        if word not in WIRE_COLOURS:
+            raise ValueError('"%s" is not a wire colour; use %s'
+                             % (word, ', '.join(WIRE_COLOURS)))
+    if len(words) > 2:
+        raise ValueError('expected one or two colours: the wires joined to + '
+                         'and the wires joined to -')
+    return [words[0] if words else 'red', words[1] if len(words) > 1 else 'black']
+
+
 class CircuitDirective(SphinxDirective):
     has_content = True
     optional_arguments = 0
@@ -148,7 +165,7 @@ class CircuitDirective(SphinxDirective):
         'tools': tools_option,
         'build': directives.unchanged,
         'show-current': directives.flag,
-        'colour-wires': directives.flag,
+        'colour-wires': colour_wires_option,
         'show-values': directives.flag,
         'decimals': decimals_option,
         'no-solution': directives.flag,
@@ -169,6 +186,10 @@ class CircuitDirective(SphinxDirective):
         tokens = text.split()
         if not tokens:
             return None
+        # "red wire" is the same as "wire red"
+        if len(tokens) > 1 and tokens[0].lower() in WIRE_COLOURS \
+                and KIND_WORDS.get(tokens[1].lower()) == 'wire':
+            tokens[0], tokens[1] = tokens[1], tokens[0]
         kind = KIND_WORDS.get(tokens[0].lower())
         if kind is None:
             self._warn('"%s" is not a component (use resistor, globe, ammeter, '
@@ -185,7 +206,9 @@ class CircuitDirective(SphinxDirective):
             word = token.lower()
             if word in UNIT_WORDS:
                 continue
-            if word == 'hidden' and kind in ('resistor', 'globe'):
+            if kind == 'wire' and word in WIRE_COLOURS:
+                comp['colour'] = word
+            elif word == 'hidden' and kind in ('resistor', 'globe'):
                 comp['hidden'] = True
             elif word in ('open', 'closed') and kind == 'switch':
                 comp['open'] = word == 'open'
@@ -398,7 +421,7 @@ class CircuitDirective(SphinxDirective):
             'tools': tools,
             'build': build,
             'showCurrent': 'show-current' in self.options,
-            'colourWires': 'colour-wires' in self.options,
+            'colourWires': self.options.get('colour-wires'),
             'showValues': 'show-values' in self.options,
             'decimals': self.options.get('decimals', 2),
             'noSolution': 'no-solution' in self.options,

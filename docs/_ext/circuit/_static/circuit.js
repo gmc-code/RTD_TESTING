@@ -258,7 +258,14 @@
     }
 
     function place(c, r, comp) {
-      if (!comp || comp.kind === "wire") { wire("h", c, r); return; }
+      if (!comp || comp.kind === "wire") {
+        wire("h", c, r);
+        // a colour written by the teacher is kept by ":colour-wires:"
+        if (comp && comp.colour) {
+          edges[eKey("h", c, r)] = { kind: "wire", locked: lockWires, colour: comp.colour, set: true };
+        }
+        return;
+      }
       edges[eKey("h", c, r)] = element(comp);
       if (comp.vm) {
         edges[eKey("h", c, r - 1)] = { kind: "voltmeter", label: comp.vm, locked: true };
@@ -307,7 +314,10 @@
 
   // ":colour-wires:" - the wires joined to the + terminal of the powerpack
   // (through other wires, ammeters and switches) are made red
-  function colourPositive(layout) {
+  // colours = [colour for the + side, colour for the - side]
+  function colourPositive(layout, colours) {
+    const plusColour = (colours && colours[0]) || "red";
+    const minusColour = (colours && colours[1]) || "black";
     const cols = layout.cols, edges = layout.edges;
     const parent = [];
     for (let i = 0; i < cols * layout.rows; i++) parent.push(i);
@@ -315,26 +325,25 @@
       while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
       return x;
     }
-    let plus = null;
+    let plus = null, minus = null;
     Object.keys(edges).forEach(key => {
       const kind = edges[key].kind;
       const ends = endsOf(key, cols);
-      if (kind === "pack") plus = ends.a;
+      if (kind === "pack") { plus = ends.a; minus = ends.b; }
       if (kind === "wire" || kind === "ammeter" || kind === "switch") parent[find(ends.a)] = find(ends.b);
     });
     if (plus === null) return layout;
     Object.keys(edges).forEach(key => {
       const el = edges[key];
       const ends = endsOf(key, cols);
-      const positive = point => find(point) === find(plus);
+      const colourAt = point => (find(point) === find(plus) ? plusColour
+        : (find(point) === find(minus) ? minusColour : "black"));
       if (el.kind === "wire") {
-        if (positive(ends.a)) el.colour = "red";
-      } else if (el.kind === "pack") {
-        el.leadA = "red";
+        if (!el.set) el.colour = colourAt(ends.a);
       } else {
-        // the lead on the + side of a component is red as well
-        if (positive(ends.a)) el.leadA = "red";
-        if (positive(ends.b)) el.leadB = "red";
+        // the leads of a component (and of the powerpack) are coloured too
+        el.leadA = colourAt(ends.a);
+        el.leadB = colourAt(ends.b);
       }
     });
     return layout;
@@ -468,14 +477,14 @@
         spaced: tools.indexOf("voltmeter") !== -1,
         lockWires: !canEdit,
       });
-      if (config.colourWires) colourPositive(presetLayout);
+      if (config.colourWires) colourPositive(presetLayout, config.colourWires);
       cols = Math.max(cols, presetLayout.cols, config.cols || 0);
       rows = Math.max(rows, presetLayout.rows, config.rows || 0);
     }
     let answerLayout = null;
     if (build && !config.preset && !config.noSolution) {
       answerLayout = layoutPreset(answerPreset(build, config), { globeR: config.globeR, lockWires: true });
-      if (config.colourWires) colourPositive(answerLayout);
+      if (config.colourWires) colourPositive(answerLayout, config.colourWires);
       cols = Math.max(cols, answerLayout.cols);
       rows = Math.max(rows, answerLayout.rows);
     }
