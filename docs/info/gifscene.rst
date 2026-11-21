@@ -20,13 +20,13 @@ Click a picture to bring it to life.
 
     star.gif | Star | x=50 y=14 width=16.5
     bauble.gif | Bauble | x=18 y=75 width=7
-    bell.gif | Bell | x=27.7 y=75 width=8
-    tree.gif | Christmas tree | x=22 y=58 width=20
+    bell.gif | Bell | x=27.7 y=75 width=8 spawn=note.gif count=4 spread=up
+    tree.gif | Christmas tree | x=22 y=58 width=20 spawn=sparkle.gif count=7 spread=burst
     snowman.gif | Snowman | x=72 y=66 width=15
     present.gif | Present | x=37 y=82 width=10
     candle.gif | Candle | x=55.7 y=67.5 width=8
     gingerbread.gif | Gingerbread | x=89 y=80 width=10
-    santa_sleigh.gif | Santa's sleigh | x=40 y=33 width=30 seconds=8 move=right
+    santa_sleigh.gif | Santa's sleigh | x=40 y=33 width=30 seconds=8 move=right spawn=gift.gif count=6 spread=trail spawnwidth=4
     shooting_star.gif | Shooting star | x=71.5 y=5.1 width=13 seconds=3 move=left
     elf_green.gif | Green elf | x=47 y=91 width=8 seconds=6 move=right
     elf_red.gif | Red elf | x=40 y=93 width=9.5 seconds=6.5 move=right
@@ -57,13 +57,13 @@ ball bounce (``hop-``) and the dolphin leaps (``jump``).
     cloud.gif | Cloud | x=34 y=13 width=15 seconds=24 move=right
     seagull.gif | Seagull | x=62 y=27 width=8 seconds=10 move=wave-left
     sailboat.gif | Sailboat | x=58 y=45.5 width=7 seconds=20 move=wave-right
-    dolphin.gif | Dolphin | x=80 y=57 width=10 seconds=1.5 move=jump
+    dolphin.gif | Dolphin | x=80 y=57 width=10 seconds=1.5 move=jump spawn=drop.gif count=7 spread=fountain
     surfer.gif | Surfer | x=28 y=60 width=10 seconds=9 move=wave-right
     flag.gif | Red and yellow flag | x=6 y=69 width=6
     flag.gif | Other flag | x=46 y=69 width=6
     umbrella.gif | Beach umbrella | x=74 y=74 width=15
     sandcastle.gif | Sandcastle | x=55 y=84 width=10
-    esky.gif | Esky | x=92 y=85 width=8
+    esky.gif | Esky | x=92 y=85 width=8 spawn=sparkle.gif count=6 spread=burst
     kangaroo.gif | Kangaroo | x=21 y=80 width=11 seconds=7 move=hop-right
     beach_ball.gif | Beach ball | x=37 y=90 width=5 seconds=7 move=hop-left
     crab.gif | Crab | x=66 y=93 width=6 seconds=10 move=left
@@ -260,12 +260,78 @@ the finishing message. Anything you set on the directive wins over the theme.
      - bubbles
      - ☀
      - You found them all. Have a sunny summer holiday!
+   * - ``reef``
+     - Coral reef
+     - bubbles
+     - 🐠
+     - You found them all. What a reef!
+   * - ``toyroom``
+     - Toy room
+     - confetti
+     - 🧸
+     - You found them all. Time to tidy up!
 
 * The effect is ``snow`` (falls), ``bubbles`` (rise from the bottom) or ``confetti``
   (falls and spins). It always comes on when every picture has been found;
   ``:start-effect:`` also turns it on when the page opens.
 * Leaving out ``:theme:`` gives a neutral navy and gold box. ``christmas`` is green,
-  red and gold; ``beach`` uses ocean colours.
+  red and gold; ``beach`` uses ocean colours; ``reef`` is deep blue and coral;
+  ``toyroom`` is purple, pink and yellow.
+
+
+Spawning more GIFs
+------------------
+
+A picture can make copies of another, smaller GIF come out of it when it plays. In the
+scenes at the top of this page the bell sends up music notes, the tree bursts into
+sparkles, Santa's sleigh drops presents, the dolphin splashes water drops and the esky
+sparkles.
+
+.. code-block:: rst
+
+   bell.gif         | Bell           | x=27.7 y=75 width=8 spawn=note.gif count=4 spread=up
+   santa_sleigh.gif | Santa's sleigh | x=40 y=33 width=30 move=right seconds=8 spawn=gift.gif count=6 spread=trail spawnwidth=4
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 50 30
+
+   * - ``spread=``
+     - What the copies do
+     - Good for
+   * - ``burst`` (default)
+     - Fly out in all directions and fade away
+     - sparkles, fireworks, a party popper
+   * - ``up``
+     - Float upwards, drifting from side to side
+     - bubbles, music notes, hearts
+   * - ``down``
+     - Fall, getting faster as they go
+     - raindrops, leaves, snowflakes
+   * - ``fountain``
+     - Shoot up, then curve over and fall
+     - coins, water splashes
+   * - ``trail``
+     - Drop out one at a time behind the picture for as long as it plays
+     - presents from a sleigh, bubbles behind a submarine
+
+* ``count=`` is how many copies come out (5 if it is left out, up to 20). With
+  ``trail`` it is how many drop out during one trip (one every ``seconds ÷ count``).
+* ``spawnwidth=`` is the size of the copies, as a percentage of the background's
+  width. Left out, they are a third of the width of the picture.
+* The small GIF is found the same way as the pictures (in ``:folder:``, then next to
+  the page). 120 × 120 pixels and 4 to 6 frames is plenty: lots of copies are on the
+  screen at once.
+* Copies start from wherever the picture is, so they follow a travelling picture.
+  They cannot be clicked and are not counted in **Clicked ... of ...**.
+* Spawning only happens in a scene. In a grid of cards, and on devices set to reduce
+  motion, the picture plays without spawning.
+
+In a student kit the settings go on the picture's line in ``myGifs``:
+
+.. code-block:: javascript
+
+   { file: "bell.gif", name: "Bell", x: 27.7, y: 75, width: 8, spawn: "note.gif", count: 4, spread: "up" },
 
 
 Arranging the pictures
@@ -329,6 +395,9 @@ Troubleshooting
    * - No snow (or bubbles, confetti)
      - Add ``:start-effect:`` or press the effect button. It does not start by itself on
        devices set to reduce motion.
+   * - Nothing comes out of a picture with ``spawn=``
+     - Check the small GIF's file name and that it is in the same folder as the
+       pictures. Spawning only happens in a scene, not a grid.
    * - A picture does not travel
      - Check the ``move=`` word against the table in `Pictures that travel`_. The
        build gives a warning for one it does not know.
@@ -390,7 +459,7 @@ Options
      - Meaning
    * - ``:theme:``
      - none
-     - ``christmas`` or ``beach``. Sets the colours and the defaults for
+     - ``christmas``, ``beach``, ``reef`` or ``toyroom``. Sets the colours and the defaults for
        ``:title:``, ``:effect:``, ``:icon:`` and ``:message:`` (see
        `Themes and effects`_).
    * - ``:title:``
@@ -461,6 +530,16 @@ spaces:
        ``hop-right``, ``hop-left`` or ``jump`` (see `Pictures that travel`_).
        ``seconds`` is then the time for the trip (default 6, or 1.5 for ``jump``).
        Scenes only.
+   * - ``spawn=``
+     - A small GIF that comes out of the picture when it plays (see
+       `Spawning more GIFs`_). Scenes only.
+   * - ``count=``
+     - How many copies of the ``spawn`` GIF come out (1 to 20, default 5).
+   * - ``spread=``
+     - ``burst`` (default), ``up``, ``down``, ``fountain`` or ``trail``.
+   * - ``spawnwidth=``
+     - Width of the copies, as a percentage of the background (default a third of
+       the picture's width).
 
 
 How it works
@@ -483,32 +562,46 @@ How it works
   sampled along the path, with the height worked out from the distance travelled;
   ``jump`` is a sampled arc that also rotates the picture. It runs once in ``once``
   mode and repeats in ``toggle`` and ``hover``.
+* **Spawning** (``spawn=``) adds an ``<img>`` of the small GIF to a layer over the
+  pictures for each copy, starting at the middle of the picture (read from its
+  position on screen, so it follows a travelling picture). Each copy is moved with a
+  Web Animations keyframe path for its ``spread`` and removed when the animation
+  ends. ``trail`` uses a timer that adds one copy every ``seconds ÷ count`` until the
+  picture stops; the others send all the copies at once, 70 ms apart.
 * **Themes** are applied in ``gifscene.js``: the directive passes on only the
   ``:title:``, ``:effect:``, ``:icon:`` and ``:message:`` it was given, and the
   rest come from the theme's defaults. The colours are the ``--gs-*`` CSS
-  variables, which the ``gs-christmas`` and ``gs-beach`` classes change.
+  variables, which the ``gs-christmas``, ``gs-beach``, ``gs-reef`` and ``gs-toyroom``
+  classes change.
 * **The student kit** loads the same ``gifscene.js`` and ``gifscene.css``. In
   place of the JSON block it reads the ``myGifs`` list and the other settings
   from ``my_scene.js`` and draws into ``<div data-gifscene-kit>``. The kit
   settings are ``sceneTitle``, ``sceneBackground``, ``sceneTheme``, ``myGifs``,
   ``playMode``, ``sceneEffect``, ``startEffect``, ``playSound``, ``finishIcon``
-  and ``finishMessage``. Any that are left out come from the theme. If
+  and ``finishMessage``. Each line in ``myGifs`` can have ``file``, ``name``,
+  ``x``, ``y``, ``width``, ``seconds``, ``move``, ``still``, ``spawn``, ``count``,
+  ``spread`` and ``spawnWidth``. Any that are left out come from the theme. If
   ``my_scene.js`` has a mistake that stops it loading, the page says so in plain
   words.
 
-Build warnings are given for a file that cannot be found, a GIF with only one
-frame, a file that is not a GIF, and a setting that is not understood.
+Build warnings are given for a file that cannot be found (including a ``spawn``
+GIF), a GIF with only one frame, a file that is not a GIF, a setting that is not
+understood, and ``count``, ``spread`` or ``spawnwidth`` used without ``spawn``.
 
 
 Updating the student kit
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The kit zips (``christmas/christmas_kit/christmas_student_kit.zip`` and
-``christmas/beach_kit/beach_student_kit.zip`` in PC-MultiMedia) each hold their own copy
+The kit zips in PC-MultiMedia (``christmas/christmas_kit/christmas_student_kit.zip``,
+``christmas/beach_kit/beach_student_kit.zip``, ``scenes/reef_kit/reef_student_kit.zip`` and
+``scenes/toyroom_kit/toyroom_student_kit.zip``) each hold their own copy
 of ``gifscene.js`` and ``gifscene.css`` in their ``engine`` folder. After changing
 either file in ``_ext/gifscene/_static``, copy them into each kit and zip it again.
 
-The kit also holds the Photoshop resources: ``photoshop_frames`` (the star frames,
+Each kit also has ``photoshop_frames`` folders for its small spawn GIFs (for
+example ``gift``, ``note`` and ``sparkle`` in the Christmas kit).
+
+The Christmas kit also holds the Photoshop resources: ``photoshop_frames`` (the star frames,
 a plain tree, and a folder of numbered frames for each of the other GIFs,
 including the six that travel) and ``photoshop_parts`` (the bell, bauble, present,
 candle, snowman and gingerbread as separate pieces).
