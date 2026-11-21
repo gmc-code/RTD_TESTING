@@ -114,6 +114,7 @@ extensions = [
     "flowchart.flowchart",  # custom directive
     "lever.lever",  # custom directive
     "circuit.circuit",  # custom directive
+    "gifscene.gifscene",  # custom directive
 ]
 
 # "sphinx.ext.doctest",

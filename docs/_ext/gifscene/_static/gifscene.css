@@ -1,0 +1,444 @@
+/* gifscene.css : styles for the gifscene directive and the student kits.
+ *
+ * Colours come from the --gs-* variables. The base set is a neutral navy and gold; the
+ * gs-christmas and gs-beach theme classes (from :theme: or sceneTheme) swap in their own. */
+
+.gifscene {
+  --gs-main: #1e3a5f;
+  --gs-main-light: #2c5684;
+  --gs-accent: #d9534f;
+  --gs-highlight: #f4c95d;
+  --gs-paper: #fffbeb;
+  --gs-stage: #1e2a5a;
+  box-sizing: border-box;
+  margin: 1.25rem 0;
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: var(--gs-main);
+  color: var(--gs-paper);
+  border: 3px solid var(--gs-highlight);
+  font-family: system-ui, -apple-system, "Segoe UI", Calibri, sans-serif;
+}
+
+.gifscene *,
+.gifscene *::before,
+.gifscene *::after {
+  box-sizing: border-box;
+}
+
+.gs-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0 0.25rem;
+}
+
+.gs-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gs-highlight);
+}
+
+.gs-counter {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.gs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.gs-btn {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 2px solid var(--gs-highlight);
+  background: var(--gs-main-light);
+  color: var(--gs-paper);
+  cursor: pointer;
+}
+
+.gs-btn:hover {
+  background: var(--gs-accent);
+}
+
+.gs-btn[aria-pressed="true"] {
+  background: var(--gs-highlight);
+  color: #1c1917;
+}
+
+.gs-btn:focus-visible,
+.gs-item:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- stage */
+
+.gs-stage {
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  border-radius: 10px;
+  background: var(--gs-stage);
+}
+
+.gs-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  user-select: none;
+}
+
+.gs-no-bg {
+  aspect-ratio: 16 / 9;
+}
+
+.gs-is-grid .gs-stage {
+  display: grid;
+  grid-template-columns: repeat(var(--gs-columns, 4), minmax(0, 1fr));
+  gap: 0.6rem;
+  padding: 0.75rem;
+}
+
+/* ---------------------------------------------------------------- pictures */
+
+.gs-item {
+  appearance: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s ease;
+}
+
+.gs-is-scene .gs-item {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.gs-is-scene .gs-item:hover,
+.gs-is-scene .gs-item:focus-visible {
+  transform: translate(-50%, -50%) scale(1.06);
+  z-index: 2;
+}
+
+.gs-is-grid .gs-item {
+  padding: 0.5rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.gs-is-grid .gs-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.gs-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.gs-still,
+.gs-gif {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.gs-gif {
+  visibility: hidden;
+}
+
+.gs-playing .gs-gif {
+  visibility: visible;
+}
+
+.gs-playing .gs-still {
+  visibility: hidden;
+}
+
+.gs-name {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* In a scene the name is a small label that shows when the picture is pointed at. */
+.gs-is-scene .gs-name {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.gs-is-scene .gs-item:hover .gs-name,
+.gs-is-scene .gs-item:focus-visible .gs-name,
+.gs-arranging .gs-name {
+  opacity: 1;
+}
+
+.gs-hide-names .gs-name {
+  display: none;
+}
+
+.gs-missing .gs-frame {
+  aspect-ratio: 1 !important;
+  border: 3px dashed #fca5a5;
+  border-radius: 8px;
+  background: rgba(127, 29, 29, 0.85);
+}
+
+.gs-missing-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------------- snow */
+
+.gs-effects {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.gs-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 50%;
+  background: #fff;
+  animation: gs-fall linear infinite;
+}
+
+@keyframes gs-fall {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--gs-drift, 0), 1200px);
+  }
+}
+
+/* Bubbles float up from the bottom; confetti falls and spins. */
+.gs-piece.gs-fx-bubbles {
+  top: auto;
+  bottom: -30px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0 12%, rgba(255, 255, 255, 0.15) 30%, rgba(255, 255, 255, 0.05) 70%);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  animation-name: gs-rise;
+}
+
+.gs-piece.gs-fx-confetti {
+  border-radius: 2px;
+  animation-name: gs-confetti;
+}
+
+@keyframes gs-rise {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--gs-drift, 0), -1200px);
+  }
+}
+
+@keyframes gs-confetti {
+  from {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate(var(--gs-drift, 0), 1200px) rotate(900deg);
+  }
+}
+
+/* ---------------------------------------------------------------- messages */
+
+.gs-message {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: var(--gs-accent);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.gs-problems {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: #fef3c7;
+  color: #7c2d12;
+  font-size: 0.95rem;
+}
+
+.gs-kit-error {
+  background: #fef3c7;
+  color: #7c2d12;
+  border-color: #b91c1c;
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------- arranging */
+
+.gs-arranging .gs-item {
+  cursor: move;
+  touch-action: none;
+  outline: 2px dashed rgba(255, 255, 255, 0.7);
+}
+
+.gs-arranging .gs-item.gs-selected {
+  outline: 3px solid var(--gs-highlight);
+  z-index: 2;
+}
+
+.gs-arrange {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  background: var(--gs-paper);
+  color: #1c1917;
+}
+
+.gs-arrange-help {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.gs-size-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.gs-size-row input {
+  flex: 1 1 12rem;
+}
+
+.gs-output {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.4rem;
+  border: 1px solid #a8a29e;
+  border-radius: 6px;
+  background: #fff;
+  color: #1c1917;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.85rem;
+  white-space: pre;
+}
+
+.gs-arrange .gs-btn {
+  background: var(--gs-main);
+}
+
+/* ---------------------------------------------------------------- themes */
+
+/* :theme: christmas (or sceneTheme = "christmas" in a kit) */
+.gifscene.gs-christmas {
+  --gs-main: #14532d;
+  --gs-main-light: #1f7a45;
+  --gs-accent: #b91c1c;
+  --gs-highlight: #fbbf24;
+  --gs-paper: #fffbeb;
+  --gs-stage: #1e2a5a;
+}
+
+/* :theme: beach (or sceneTheme = "beach" in a kit) */
+.gifscene.gs-beach {
+  --gs-main: #0e6f8a;
+  --gs-main-light: #1397b5;
+  --gs-accent: #f26b3a;
+  --gs-highlight: #ffd166;
+  --gs-paper: #fffaf0;
+  --gs-stage: #8fd3f5;
+}
+
+/* ---------------------------------------------------------------- full screen, motion, print */
+
+.gifscene:fullscreen {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  overflow: auto;
+}
+
+.gifscene:fullscreen .gs-stage {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-item {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .gs-is-grid .gs-stage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media print {
+  .gs-bar,
+  .gs-effects,
+  .gs-arrange,
+  .gs-counter {
+    display: none !important;
+  }
+
+  .gifscene {
+    background: none;
+    color: #000;
+    border-color: #000;
+  }
+
+  .gs-title {
+    color: #000;
+  }
+}

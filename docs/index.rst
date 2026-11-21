@@ -47,8 +47,8 @@ These docs provide details on sphinx extensions and how to use them. The extensi
     info/flowchart.rst
     info/lever.rst
     info/circuit.rst
-    info/christmas.rst
-    info/christmas_info.rst
+    info/gifscene.rst
+
 
 
 .. toctree::

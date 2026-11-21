@@ -24,11 +24,17 @@ Each content line is ``file | name | settings``. Only the file is needed.
   (otherwise the first frame of the GIF is used).
 * ``move=right`` or ``move=left`` makes the picture travel when it is clicked: it goes off that
   side of the scene, comes back in on the other side and returns to its place. ``seconds`` is
-  then how long the trip takes (6 if left out).
+  then how long the trip takes (6 if left out). ``move=up`` and ``move=down`` do the same
+  vertically. ``move=wave-right`` / ``wave-left`` bob up and down as they go (a boat, a bird),
+  ``move=hop-right`` / ``hop-left`` bounce along (a ball, a kangaroo) and ``move=jump`` leaps up
+  in an arc and lands back in place (a dolphin; 1.5 seconds if left out).
 
 With ``:background:`` the pictures are placed over the background (a scene). Without it they are
 set out in a grid of cards (``:columns:``). ``:play:`` is ``once`` (play once per click),
 ``toggle`` (click to start, click to stop) or ``hover`` (play while the mouse is over it).
+``:effect:`` chooses what ``:snow:`` (and the Snow button) shows: ``snow``, ``bubbles`` or
+``confetti``. ``:icon:`` is put in front of ``:message:`` (default 🎄) and ``:theme: beach``
+uses ocean colours instead of Christmas ones.
 The Arrange button lets pictures be dragged and resized on the page, then gives the lines to
 paste back into the directive.
 
@@ -57,9 +63,12 @@ ASSETS = ("christmas.css", "christmas.js")
 MEDIA_DIR = "_static/christmas-media"
 PLAY_MODES = ("once", "toggle", "hover")
 ITEM_KEYS = ("x", "y", "width", "seconds", "still", "move")
-MOVES = ("left", "right")
+MOVES = ("left", "right", "up", "down", "wave-left", "wave-right", "hop-left", "hop-right", "jump")
+EFFECTS = ("snow", "bubbles", "confetti")
+THEMES = ("christmas", "beach")
 DEFAULT_SECONDS = 3.0
 DEFAULT_MOVE_SECONDS = 6.0
+DEFAULT_JUMP_SECONDS = 1.5
 
 
 # ----------------------------------------------------------------------------
@@ -155,6 +164,9 @@ class ChristmasDirective(SphinxDirective):
         "columns": directives.unchanged,
         "message": directives.unchanged,
         "snow": directives.flag,
+        "effect": _choice(*EFFECTS),
+        "icon": directives.unchanged,
+        "theme": _choice(*THEMES),
         "sound": directives.flag,
         "hide-names": directives.flag,
         "class": directives.class_option,
@@ -198,7 +210,7 @@ class ChristmasDirective(SphinxDirective):
                 if value.lower() in MOVES:
                     found[key] = value.lower()
                 else:
-                    self.warn("%s: move=%r should be move=left or move=right." % (filename, value))
+                    self.warn("%s: move=%r should be one of: %s." % (filename, value, ", ".join(MOVES)))
                 continue
             try:
                 found[key] = _number(value, *{"seconds": (0.2, 60)}.get(key, (0, 100)))
@@ -246,7 +258,7 @@ class ChristmasDirective(SphinxDirective):
             if "move" in settings:
                 # a lap of the scene takes longer than one run of the GIF
                 item["move"] = settings["move"]
-                item["seconds"] = DEFAULT_MOVE_SECONDS
+                item["seconds"] = DEFAULT_JUMP_SECONDS if settings["move"] == "jump" else DEFAULT_MOVE_SECONDS
             if "seconds" in settings:
                 item["seconds"] = settings["seconds"]
             # settings the Arrange button must keep when it writes the line out again
@@ -286,6 +298,9 @@ class ChristmasDirective(SphinxDirective):
             "columns": columns,
             "message": self.options.get("message", "You found them all. Merry Christmas!"),
             "snow": "snow" in self.options,
+            "effect": self.options.get("effect", "snow"),
+            "icon": self.options.get("icon", "🎄"),
+            "theme": self.options.get("theme", "christmas"),
             "sound": "sound" in self.options,
             "showNames": "hide-names" not in self.options,
             "items": items,
@@ -413,4 +428,4 @@ def setup(app):
     app.connect("env-merge-info", merge_docs)
     app.connect("env-get-outdated", outdated_if_assets_changed)
     app.connect("build-finished", copy_static_files)
-    return {"version": "1.0", "parallel_read_safe": True, "parallel_write_safe": True}
+    return {"version": "1.1", "parallel_read_safe": True, "parallel_write_safe": True}

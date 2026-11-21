@@ -46,6 +46,15 @@
     return b;
   }
 
+  // move= values. left/right/up/down go off one side and come back in on the other.
+  // wave-* bob up and down as they go, hop-* bounce along, jump leaps up and lands again.
+  var MOVES = ["left", "right", "up", "down", "wave-left", "wave-right", "hop-left", "hop-right", "jump"];
+  var EFFECTS = {
+    snow: { label: "❄ Snow", title: "Turn the snow on or off" },
+    bubbles: { label: "○ Bubbles", title: "Turn the bubbles on or off" },
+    confetti: { label: "✦ Confetti", title: "Turn the confetti on or off" }
+  };
+
   function round1(n) { return Math.round(n * 10) / 10; }
   function clamp(n, low, high) { return Math.max(low, Math.min(high, n)); }
 
@@ -81,10 +90,10 @@
       x: typeof it.x === "number" ? it.x : round1((index + 0.5) * 100 / count),
       y: typeof it.y === "number" ? it.y : 80,
       width: typeof it.width === "number" ? it.width : clamp(Math.floor(80 / count), 6, 14),
-      seconds: typeof it.seconds === "number" && it.seconds > 0 ? it.seconds : (it.move ? 6 : 3),
+      seconds: typeof it.seconds === "number" && it.seconds > 0 ? it.seconds : (it.move === "jump" ? 1.5 : it.move ? 6 : 3),
       secondsGiven: typeof it.seconds === "number",
       keep: it.keep || "",
-      move: it.move === "left" || it.move === "right" ? it.move : null,
+      move: MOVES.indexOf(it.move) >= 0 ? it.move : null,
       trip: null,
       ratio: it.w && it.h ? it.w / it.h : 1,
       playing: false,
@@ -104,6 +113,8 @@
     root.classList.toggle("xmas-is-scene", this.isScene);
     root.classList.toggle("xmas-is-grid", !this.isScene);
     root.classList.toggle("xmas-hide-names", cfg.showNames === false);
+    if (cfg.theme) root.classList.add("xmas-" + String(cfg.theme).replace(/[^a-z0-9-]/gi, ""));
+    this.effect = EFFECTS[cfg.effect] ? cfg.effect : "snow";
     root.textContent = "";
 
     var head = el("div", "xmas-head");
@@ -116,7 +127,8 @@
     var bar = el("div", "xmas-bar");
     bar.appendChild(button("▶ Play all", "Play every picture", function () { self.playAll(); }));
     bar.appendChild(button("■ Stop all", "Stop every picture", function () { self.stopAll(); }));
-    this.snowBtn = button("❄ Snow", "Turn the snow on or off", function () { self.setSnow(!self.snowing); });
+    var fx = EFFECTS[this.effect];
+    this.snowBtn = button(fx.label, fx.title, function () { self.setSnow(!self.snowing); });
     bar.appendChild(this.snowBtn);
     this.soundBtn = button("🔔 Sound", "Turn the bell sound on or off", function () {
       self.soundOn = !self.soundOn;
@@ -291,25 +303,95 @@
     this.travel(item, timed);
   };
 
-  // A picture with move=left or move=right goes off that side of the scene, comes back in
-  // on the other side and returns to its place. One lap takes item.seconds.
+  // A picture with a move= setting travels when it plays (see MOVES). One lap takes item.seconds,
+  // and every lap ends back where the picture started.
   Scene.prototype.travel = function (item, timed) {
     if (item.trip) { item.trip.cancel(); item.trip = null; }
     if (!item.move || !this.isScene || !item.el.animate) return;
+    item.trip = item.el.animate(this.tripFrames(item), {
+      duration: item.seconds * 1000, iterations: timed ? 1 : Infinity, easing: "linear"
+    });
+  };
+
+  Scene.prototype.tripFrames = function (item) {
+    var move = item.move;
+    var w = this.stage.offsetWidth, h = this.stage.offsetHeight;
+    // the picture's height as a percentage of the scene's height
+    var high = item.width * (w && h ? w / h : 16 / 9) / (item.ratio || 1);
+    var i, t;
+
+    if (move === "jump") {
+      // up in an arc and back down, nose up on the way up and nose down on the way down
+      var lift = high * 1.1, jump = [];
+      for (i = 0; i <= 24; i++) {
+        t = i / 24;
+        jump.push({
+          left: item.x + "%",
+          top: round1(item.y - lift * 4 * t * (1 - t)) + "%",
+          transform: "translate(-50%, -50%) rotate(" + round1(-30 * Math.sin(2 * Math.PI * t)) + "deg)"
+        });
+      }
+      return jump;
+    }
+
+    if (move === "up" || move === "down") {
+      var halfH = high / 2 + 1;
+      var exitY = move === "down" ? 100 + halfH : -halfH;
+      var enterY = move === "down" ? -halfH : 100 + halfH;
+      var outY = Math.abs(exitY - item.y), backY = Math.abs(item.y - enterY);
+      var turnY = outY / (outY + backY);
+      return [
+        { left: item.x + "%", top: item.y + "%" },
+        { left: item.x + "%", top: exitY + "%", offset: turnY },
+        { left: item.x + "%", top: enterY + "%", offset: turnY },
+        { left: item.x + "%", top: item.y + "%" }
+      ];
+    }
+
+    var right = /right$/.test(move);
+    var sign = right ? 1 : -1;
     var half = item.width / 2 + 1;
-    var offRight = 100 + half;
-    var offLeft = -half;
-    var exit = item.move === "right" ? offRight : offLeft;
-    var enter = item.move === "right" ? offLeft : offRight;
+    var exit = right ? 100 + half : -half;
+    var enter = right ? -half : 100 + half;
     var out = Math.abs(exit - item.x);
-    var back = Math.abs(item.x - enter);
-    var turn = out / (out + back);
-    item.trip = item.el.animate([
-      { left: item.x + "%" },
-      { left: exit + "%", offset: turn },
-      { left: enter + "%", offset: turn },
-      { left: item.x + "%" }
-    ], { duration: item.seconds * 1000, iterations: timed ? 1 : Infinity, easing: "linear" });
+    var total = out + Math.abs(item.x - enter);
+    var turn = out / total;
+
+    if (move === "left" || move === "right") {
+      return [
+        { left: item.x + "%", top: item.y + "%" },
+        { left: exit + "%", top: item.y + "%", offset: turn },
+        { left: enter + "%", top: item.y + "%", offset: turn },
+        { left: item.x + "%", top: item.y + "%" }
+      ];
+    }
+
+    // wave-* and hop-*: work out the height from the distance travelled, with a whole number
+    // of waves or hops in a lap so the picture lands back exactly where it started.
+    var hop = /^hop/.test(move);
+    var step = hop ? item.width * 1.4 : item.width * 3;
+    var count = Math.max(1, Math.round(total / step));
+    step = total / count;
+    var size = hop ? high * 0.7 : high * 0.18;
+    function lift(d) {
+      return hop ? -size * Math.abs(Math.sin(Math.PI * d / step)) : size * Math.sin(2 * Math.PI * d / step);
+    }
+    function at(d, x, offset) {
+      return { left: round1(x) + "%", top: round1(item.y + lift(d)) + "%", offset: offset };
+    }
+    var frames = [], samples = Math.max(40, count * (hop ? 12 : 16));
+    var turned = false;
+    for (i = 0; i <= samples; i++) {
+      var d = total * i / samples;
+      if (!turned && d >= out) {
+        frames.push(at(out, exit, turn));
+        frames.push(at(out, enter, turn));
+        turned = true;
+        if (d === out) continue;
+      }
+      frames.push(at(d, d < out ? item.x + sign * d : enter + sign * (d - out), d / total));
+    }
+    return frames;
   };
 
   Scene.prototype.stop = function (item) {
@@ -340,7 +422,8 @@
     var all = this.items.every(function (it) { return it.found || it.el.classList.contains("xmas-missing"); });
     if (all && !this.celebrated && this.items.length > 1) {
       this.celebrated = true;
-      this.message.textContent = "🎄 " + (this.cfg.message || "You found them all. Merry Christmas!");
+      this.message.textContent = (this.cfg.icon === undefined ? "🎄" : this.cfg.icon) + " " +
+        (this.cfg.message || "You found them all. Merry Christmas!");
       this.message.hidden = false;
       if (!reducedMotion) this.setSnow(true);
     }
@@ -353,20 +436,25 @@
 
   // ------------------------------------------------------------------ snow
 
+  // The weather effect: snow (falls), bubbles (rise) or confetti (falls and spins).
   Scene.prototype.setSnow = function (on) {
     this.snowing = on;
     this.snowBtn.setAttribute("aria-pressed", on);
     this.snowLayer.textContent = "";
     if (!on) return;
+    var effect = this.effect;
+    var colours = ["#f43f5e", "#f59e0b", "#22c55e", "#0ea5e9", "#a855f7", "#facc15"];
     for (var i = 0; i < 40; i++) {
-      var flake = el("span", "xmas-flake");
-      var size = 4 + Math.random() * 8;
+      var flake = el("span", "xmas-flake xmas-fx-" + effect);
+      var size = effect === "bubbles" ? 8 + Math.random() * 18 : 4 + Math.random() * 8;
       flake.style.left = Math.random() * 100 + "%";
-      flake.style.width = flake.style.height = size + "px";
+      flake.style.width = size + "px";
+      flake.style.height = (effect === "confetti" ? size * 0.5 : size) + "px";
       flake.style.opacity = 0.5 + Math.random() * 0.5;
       flake.style.animationDuration = 6 + Math.random() * 8 + "s";
       flake.style.animationDelay = -Math.random() * 14 + "s";
       flake.style.setProperty("--xmas-drift", (Math.random() * 60 - 30) + "px");
+      if (effect === "confetti") flake.style.background = colours[i % colours.length];
       this.snowLayer.appendChild(flake);
     }
   };
@@ -537,8 +625,11 @@
       background: typeof sceneBackground !== "undefined" ? sceneBackground : "",
       backgroundUrl: typeof sceneBackground !== "undefined" ? sceneBackground : "",
       play: typeof playMode !== "undefined" ? playMode : "once",
-      snow: typeof letItSnow !== "undefined" ? letItSnow : true,
-      sound: typeof bellSound !== "undefined" ? bellSound : true,
+      snow: typeof startEffect !== "undefined" ? startEffect : typeof letItSnow !== "undefined" ? letItSnow : true,
+      effect: typeof sceneEffect !== "undefined" ? sceneEffect : "snow",
+      theme: typeof sceneTheme !== "undefined" ? sceneTheme : "",
+      icon: typeof finishIcon !== "undefined" ? finishIcon : undefined,
+      sound: typeof playSound !== "undefined" ? playSound : typeof bellSound !== "undefined" ? bellSound : true,
       message: typeof finishMessage !== "undefined" ? finishMessage : "You found them all. Merry Christmas!",
       columns: typeof gridColumns !== "undefined" ? gridColumns : 4,
       items: myGifs.filter(function (g) { return g && g.file; }).map(function (g) {

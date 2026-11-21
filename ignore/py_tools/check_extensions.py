@@ -15,7 +15,7 @@ sphinx_copybutton, sphinx_design, ...) are kept, and checked to see whether
 they are installed.
 
 Usage (from anywhere):
-    python check_extensions.py                 # uses ../docs next to this script
+    python check_extensions.py                 # finds the nearest docs/_ext above this script
     python check_extensions.py path/to/docs    # or name the docs folder
 """
 
@@ -93,8 +93,19 @@ def is_installed(name):
 
 
 def main():
-    script_dir = Path(__file__).resolve().parent
-    docs = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else script_dir.parent / "docs"
+    if len(sys.argv) > 1:
+        docs = Path(sys.argv[1]).resolve()
+    else:
+        # Walk up from the script's folder until we find a docs folder with _ext in it,
+        # so this works from ignore/ or ignore/py_tools/ (or any depth).
+        script_dir = Path(__file__).resolve().parent
+        docs = next(
+            (p / "docs" for p in [script_dir, *script_dir.parents] if (p / "docs" / "_ext").is_dir()),
+            None,
+        )
+        if docs is None:
+            sys.exit("Cannot find a docs/_ext folder above this script. "
+                     "Give the docs folder: python check_extensions.py path/to/docs")
     ext_dir = docs / "_ext"
     conf_file = docs / "conf.py"
 

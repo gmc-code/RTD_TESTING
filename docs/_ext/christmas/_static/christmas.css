@@ -254,6 +254,38 @@
   }
 }
 
+/* Bubbles float up from the bottom; confetti falls and spins. */
+.xmas-flake.xmas-fx-bubbles {
+  top: auto;
+  bottom: -30px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0 12%, rgba(255, 255, 255, 0.15) 30%, rgba(255, 255, 255, 0.05) 70%);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  animation-name: xmas-rise;
+}
+
+.xmas-flake.xmas-fx-confetti {
+  border-radius: 2px;
+  animation-name: xmas-confetti;
+}
+
+@keyframes xmas-rise {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--xmas-drift, 0), -1200px);
+  }
+}
+
+@keyframes xmas-confetti {
+  from {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate(var(--xmas-drift, 0), 1200px) rotate(900deg);
+  }
+}
+
 /* ---------------------------------------------------------------- messages */
 
 .xmas-message {
@@ -339,6 +371,21 @@
 
 .xmas-arrange .xmas-btn {
   background: var(--xmas-green);
+}
+
+/* ---------------------------------------------------------------- themes */
+
+/* :theme: beach (or sceneTheme = "beach" in the kit): ocean colours instead of Christmas ones. */
+.xmas.xmas-beach {
+  --xmas-green: #0e6f8a;
+  --xmas-green-light: #1397b5;
+  --xmas-red: #f26b3a;
+  --xmas-gold: #ffd166;
+  --xmas-cream: #fffaf0;
+}
+
+.xmas-beach .xmas-stage {
+  background: #8fd3f5;
 }
 
 /* ---------------------------------------------------------------- full screen, motion, print */
