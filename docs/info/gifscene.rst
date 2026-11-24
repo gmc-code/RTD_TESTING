@@ -5,8 +5,13 @@ GIF scene
 The ``gifscene`` directive makes a picture full of surprises. Each item in it is an
 animated GIF that sits still until a student clicks it, then it plays: the star
 twinkles, the bell rings, the present opens. A counter shows how many have been
-clicked, and there is a message (and snow, bubbles or confetti) when every one has
+clicked, and there is a message (and snow, bubbles, confetti or wind) when every one has
 been found. A theme sets the colours and the words to suit the scene.
+
+----
+
+A Christmas scene
+------------------------
 
 Click a picture to bring it to life.
 
@@ -17,6 +22,7 @@ Click a picture to bring it to life.
     :folder: images/christmas_images
     :start-effect:
     :sound:
+    :play: once
 
     star.gif | Star | x=50 y=14 width=16.5
     bauble.gif | Bauble | x=18 y=75 width=7
@@ -26,11 +32,11 @@ Click a picture to bring it to life.
     present.gif | Present | x=37 y=82 width=10
     candle.gif | Candle | x=55.7 y=67.5 width=8
     gingerbread.gif | Gingerbread | x=89 y=80 width=10
-    santa_sleigh.gif | Santa's sleigh | x=40 y=33 width=30 seconds=8 move=right spawn=gift.gif count=6 spread=trail spawnwidth=4
+    santa_sleigh.gif | Santa's sleigh | x=10 y=33 width=30 seconds=8 move=right spawn=gift.gif count=8 spread=down   spawnwidth=1-3 life=7 spawnfor=6
     shooting_star.gif | Shooting star | x=71.5 y=5.1 width=13 seconds=3 move=left
-    elf_green.gif | Green elf | x=47 y=91 width=8 seconds=6 move=right
+    elf_green.gif | Green elf | x=47 y=91 width=8 seconds=6 move=wave-right
     elf_red.gif | Red elf | x=40 y=93 width=9.5 seconds=6.5 move=right
-    penguin.gif | Penguin | x=75.6 y=95.5 width=7.5 seconds=6 move=left
+    penguin.gif | Penguin | x=75.6 y=95.5 width=7.5 seconds=4 move=left
     snowball.gif | Snowball | x=9.4 y=89.6 width=5 seconds=7 move=right
 
 The sleigh, the shooting star, the elves, the penguin and the snowball have ``move=`` on
@@ -41,7 +47,7 @@ their lines, so they travel across the scene when they are clicked.
 A beach scene
 -------------
 
-The same directive with ``:theme: beach``, which brings ocean colours, bubbles and a
+The same directive with ``:theme: beach``, which brings ocean colours, wind and a
 summery message. The pictures that travel
 use the other paths: the seagull and the boat bob along (``wave-``), the kangaroo and the
 ball bounce (``hop-``) and the dolphin leaps (``jump``).
@@ -52,21 +58,22 @@ ball bounce (``hop-``) and the dolphin leaps (``jump``).
     :background: images/beach_images/background.png
     :folder: images/beach_images
     :sound:
+    :play: once
 
     sun.gif | Sun | x=86 y=15 width=13
-    cloud.gif | Cloud | x=34 y=13 width=15 seconds=24 move=right
-    seagull.gif | Seagull | x=62 y=27 width=8 seconds=10 move=wave-left
-    sailboat.gif | Sailboat | x=58 y=45.5 width=7 seconds=20 move=wave-right
-    dolphin.gif | Dolphin | x=80 y=57 width=10 seconds=1.5 move=jump spawn=drop.gif count=7 spread=fountain
+    cloud.gif | Cloud | x=26 y=17.3 width=15 seconds=24 move=right
+    seagull.gif | Seagull | x=62 y=33.9 width=8 seconds=10 move=wave-left
+    sailboat.gif | Sailboat | x=42.7 y=48.2 width=7 seconds=20 move=wave-right
+    dolphin.gif | Dolphin | x=80 y=57 width=10 seconds=1.5 move=jump spawn=drop.gif count=7 spread=fountain spawnwidth=1-1.5 spawnfor=1.5 life=2.2 distance=25
     surfer.gif | Surfer | x=28 y=60 width=10 seconds=9 move=wave-right
     flag.gif | Red and yellow flag | x=6 y=69 width=6
     flag.gif | Other flag | x=46 y=69 width=6
     umbrella.gif | Beach umbrella | x=74 y=74 width=15
-    sandcastle.gif | Sandcastle | x=55 y=84 width=10
-    esky.gif | Esky | x=92 y=85 width=8 spawn=sparkle.gif count=6 spread=burst
-    kangaroo.gif | Kangaroo | x=21 y=80 width=11 seconds=7 move=hop-right
-    beach_ball.gif | Beach ball | x=37 y=90 width=5 seconds=7 move=hop-left
-    crab.gif | Crab | x=66 y=93 width=6 seconds=10 move=left
+    sandcastle.gif | Sandcastle | x=89.4 y=66.7 width=10
+    esky.gif | Esky | x=61.8 y=68.7 width=14.5 spawn=sparkle.gif count=6 spread=burst
+    kangaroo.gif | Kangaroo | x=21 y=80 width=11 seconds=57 move=hop-right
+    beach_ball.gif | Beach ball | x=36.7 y=85.7 width=5 seconds=7 move=hop-left
+    crab.gif | Crab | x=53.8 y=93 width=12.5 seconds=6 move=left
 
 ----
 
@@ -140,8 +147,12 @@ Using the scene
      - Plays every picture, one after another.
    * - **Stop all**
      - Returns every picture to its still frame.
-   * - **Snow**, **Bubbles** or **Confetti**
-     - Turns the effect on or off. The theme or ``:effect:`` decides which one it is.
+   * - **Snow**, **Bubbles**, **Confetti** or **Wind**
+     - Shows the effect and how much of it there is, for example **❄ Snow: Medium**.
+       Clicking it opens a small panel: **Off**, **Light ●○○**, **Medium ●●○** and
+       **Heavy ●●●**. Choosing one applies it and closes the panel (so does clicking
+       elsewhere or pressing Escape). The theme or ``:effect:`` decides which effect
+       it is, and ``:intensity:`` the level it starts at.
    * - **Sound**
      - Turns the chime on or off. Each picture has its own note.
    * - **Arrange**
@@ -188,6 +199,23 @@ The length of each GIF is read from the file when the site is built, so ``once``
 plays exactly one run. Add ``seconds=`` to a line to make a picture play for
 longer or shorter, for example ``seconds=3`` to let a 1 second GIF repeat three
 times.
+
+One picture can have its own mode with ``play=`` on its line. It overrides
+``:play:`` for that picture only; the others keep the scene's mode.
+
+.. code-block:: rst
+
+   .. gifscene::
+      :play: once
+
+      star.gif     | Star     | x=50 y=12 width=10
+      snowman.gif  | Snowman  | x=78 y=62 width=14 play=toggle
+      candle.gif   | Candle   | x=40 y=70 width=6 play=hover
+
+Here the star plays once per click, the snowman keeps going until it is clicked
+again, and the candle flickers while the mouse is over it. **Play all** plays the
+``once`` pictures for one run and starts the others until **Stop all**. In a
+student kit it is ``play: "toggle"`` on the picture's line in ``myGifs``.
 
 
 Pictures that travel
@@ -257,7 +285,7 @@ the finishing message. Anything you set on the directive wins over the theme.
      - You found them all. Merry Christmas!
    * - ``beach``
      - At the beach
-     - bubbles
+     - wind
      - ☀
      - You found them all. Have a sunny summer holiday!
    * - ``reef``
@@ -271,9 +299,30 @@ the finishing message. Anything you set on the directive wins over the theme.
      - 🧸
      - You found them all. Time to tidy up!
 
-* The effect is ``snow`` (falls), ``bubbles`` (rise from the bottom) or ``confetti``
-  (falls and spins). It always comes on when every picture has been found;
+* The effect is ``snow`` (falls), ``bubbles`` (rise from the bottom), ``confetti``
+  (falls and spins) or ``wind`` (streaks and grains of sand blow across from left to
+  right). It always comes on when every picture has been found;
   ``:start-effect:`` also turns it on when the page opens.
+* ``:intensity:`` sets how much of the effect there is:
+
+  .. list-table::
+     :header-rows: 1
+     :widths: 20 80
+
+     * - ``:intensity:``
+       - What it looks like
+     * - ``light``
+       - About half as many pieces, moving more slowly: a few snowflakes, a gentle
+         breeze.
+     * - ``medium`` (default)
+       - The normal amount.
+     * - ``heavy``
+       - More than twice as many pieces, moving faster: a blizzard, a gale, a
+         shower of confetti.
+
+  In a student kit it is ``effectIntensity = "light"`` (or ``"medium"``,
+  ``"heavy"``). This is only where it starts: choosing a level from the effect
+  button's panel changes it while the page is open.
 * Leaving out ``:theme:`` gives a neutral navy and gold box. ``christmas`` is green,
   red and gold; ``beach`` uses ocean colours; ``reef`` is deep blue and coral;
   ``toyroom`` is purple, pink and yellow.
@@ -318,20 +367,56 @@ sparkles.
 * ``count=`` is how many copies come out (5 if it is left out, up to 20). With
   ``trail`` it is how many drop out during one trip (one every ``seconds ÷ count``).
 * ``spawnwidth=`` is the size of the copies, as a percentage of the background's
-  width. Left out, they are a third of the width of the picture.
+  width. Left out, they are a third of the width of the picture. A range such as
+  ``spawnwidth=2-5`` gives each copy a random size between the two.
 * The small GIF is found the same way as the pictures (in ``:folder:``, then next to
   the page). 120 × 120 pixels and 4 to 6 frames is plenty: lots of copies are on the
   screen at once.
 * Copies start from wherever the picture is, so they follow a travelling picture.
   They cannot be clicked and are not counted in **Clicked ... of ...**.
-* Spawning only happens in a scene. In a grid of cards, and on devices set to reduce
-  motion, the picture plays without spawning.
+* Spawning only happens in a scene. In a grid of cards the picture plays without
+  spawning.
+
+Controlling the copies
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :header-rows: 1
+   :widths: 22 78
+
+   * - Setting
+     - What it does
+   * - ``every=``
+     - Copies come out one at a time, this many seconds apart (0.05 to 10), like a
+       stream. ``count`` is not used.
+   * - ``spawnfor=``
+     - How many seconds the stream keeps going (0.1 to 60). Left out, it stops when
+       the picture stops playing. With ``spawnfor`` but no ``every``, ``count`` copies
+       are spread out over that time. A stream with ``spawnfor`` carries on after a
+       short GIF has finished playing; **Stop all** (or a second click in ``toggle``
+       mode) still stops it.
+   * - ``life=``
+     - How many seconds each copy takes to finish its path and fade (0.2 to 20, give
+       or take 10%). Left out, each spread has its own timing (about 1 to 3.5 s).
+   * - ``distance=``
+     - How far each copy goes, as a percentage of the scene (1 to 150, give or take
+       15%): how far a ``burst`` flies out, how high ``up`` copies rise, the height of
+       a ``fountain`` and how far ``down`` and ``trail`` copies fall.
+
+.. code-block:: rst
+
+   pufferfish.gif | Pufferfish | x=38 y=68 width=8 spawn=bubble.gif spread=up spawnwidth=1.5-4 every=0.25 spawnfor=3 life=4
+
+That pufferfish blows a bubble every quarter of a second for 3 seconds, each a random
+size from 1.5 to 4, and each floating up for about 4 seconds. At most 60 copies are on
+screen at once in a scene; any more are skipped so the page stays smooth.
 
 In a student kit the settings go on the picture's line in ``myGifs``:
 
 .. code-block:: javascript
 
    { file: "bell.gif", name: "Bell", x: 27.7, y: 75, width: 8, spawn: "note.gif", count: 4, spread: "up" },
+   { file: "pufferfish.gif", name: "Pufferfish", x: 38, y: 68, width: 8, spawn: "bubble.gif", spread: "up", spawnWidth: "1.5-4", every: 0.25, spawnFor: 3, life: 4 },
 
 
 Arranging the pictures
@@ -392,9 +477,9 @@ Troubleshooting
        background layer.
    * - A picture stops too soon or too late
      - Add ``seconds=`` to its line.
-   * - No snow (or bubbles, confetti)
-     - Add ``:start-effect:`` or press the effect button. It does not start by itself on
-       devices set to reduce motion.
+   * - No snow (or bubbles, confetti, wind)
+     - Add ``:start-effect:`` or press the effect button. It always comes on when every
+       picture has been found.
    * - Nothing comes out of a picture with ``spawn=``
      - Check the small GIF's file name and that it is in the same folder as the
        pictures. Spawning only happens in a scene, not a grid.
@@ -475,7 +560,7 @@ Options
        relative to the page, or to the top of ``docs`` if it starts with ``/``.
    * - ``:play:``
      - once
-     - ``once``, ``toggle`` or ``hover``.
+     - ``once``, ``toggle`` or ``hover``. A picture's own ``play=`` overrides it.
    * - ``:columns:``
      - 4
      - Cards in each row of a grid (1 to 8).
@@ -484,7 +569,10 @@ Options
      - Shown when every picture has been clicked.
    * - ``:effect:``
      - from the theme
-     - ``snow``, ``bubbles`` or ``confetti``.
+     - ``snow``, ``bubbles``, ``confetti`` or ``wind``.
+   * - ``:intensity:``
+     - medium
+     - ``light``, ``medium`` or ``heavy`` (see `Themes and effects`_).
    * - ``:icon:``
      - from the theme
      - Shown in front of ``:message:``.
@@ -525,6 +613,9 @@ spaces:
        one run of the GIF, read from the file.
    * - ``still=``
      - A picture to show while the GIF is not playing, in place of its first frame.
+   * - ``play=``
+     - ``once``, ``toggle`` or ``hover`` for this picture only, overriding
+       ``:play:`` (see `Play modes`_).
    * - ``move=``
      - ``right``, ``left``, ``up``, ``down``, ``wave-right``, ``wave-left``,
        ``hop-right``, ``hop-left`` or ``jump`` (see `Pictures that travel`_).
@@ -539,7 +630,15 @@ spaces:
      - ``burst`` (default), ``up``, ``down``, ``fountain`` or ``trail``.
    * - ``spawnwidth=``
      - Width of the copies, as a percentage of the background (default a third of
-       the picture's width).
+       the picture's width), or a range like ``2-5`` for random sizes.
+   * - ``every=``
+     - Seconds between copies, which makes a stream (see `Controlling the copies`_).
+   * - ``spawnfor=``
+     - Seconds the stream keeps going (default: while the picture plays).
+   * - ``life=``
+     - Seconds each copy takes (default depends on ``spread``).
+   * - ``distance=``
+     - How far each copy goes, as a percentage of the scene.
 
 
 How it works
@@ -566,8 +665,11 @@ How it works
   pictures for each copy, starting at the middle of the picture (read from its
   position on screen, so it follows a travelling picture). Each copy is moved with a
   Web Animations keyframe path for its ``spread`` and removed when the animation
-  ends. ``trail`` uses a timer that adds one copy every ``seconds ÷ count`` until the
-  picture stops; the others send all the copies at once, 70 ms apart.
+  ends. A stream (``every``, ``trail``, or ``spawnfor`` without ``every``) uses a
+  timer that adds one copy at a time until ``spawnfor`` runs out or the picture
+  stops; otherwise all the copies go at once, 70 ms apart. ``life`` replaces the
+  animation's duration and ``distance`` scales its path. No more than 60 copies are
+  kept on screen per scene.
 * **Themes** are applied in ``gifscene.js``: the directive passes on only the
   ``:title:``, ``:effect:``, ``:icon:`` and ``:message:`` it was given, and the
   rest come from the theme's defaults. The colours are the ``--gs-*`` CSS
@@ -577,16 +679,17 @@ How it works
   place of the JSON block it reads the ``myGifs`` list and the other settings
   from ``my_scene.js`` and draws into ``<div data-gifscene-kit>``. The kit
   settings are ``sceneTitle``, ``sceneBackground``, ``sceneTheme``, ``myGifs``,
-  ``playMode``, ``sceneEffect``, ``startEffect``, ``playSound``, ``finishIcon``
+  ``playMode``, ``sceneEffect``, ``effectIntensity``, ``startEffect``, ``playSound``, ``finishIcon``
   and ``finishMessage``. Each line in ``myGifs`` can have ``file``, ``name``,
-  ``x``, ``y``, ``width``, ``seconds``, ``move``, ``still``, ``spawn``, ``count``,
-  ``spread`` and ``spawnWidth``. Any that are left out come from the theme. If
+  ``x``, ``y``, ``width``, ``seconds``, ``move``, ``play``, ``still``, ``spawn``, ``count``,
+  ``spread``, ``spawnWidth``, ``every``, ``spawnFor``, ``life`` and ``distance``. Any that are left out come from the theme. If
   ``my_scene.js`` has a mistake that stops it loading, the page says so in plain
   words.
 
 Build warnings are given for a file that cannot be found (including a ``spawn``
 GIF), a GIF with only one frame, a file that is not a GIF, a setting that is not
-understood, and ``count``, ``spread`` or ``spawnwidth`` used without ``spawn``.
+understood, a number out of range, and a spawn setting (``count``, ``spread``,
+``spawnwidth``, ``every``, ``spawnfor``, ``life``, ``distance``) used without ``spawn``.
 
 
 Updating the student kit
